@@ -22,8 +22,6 @@ jobs:
         env:
           SYNC_PAT: ${{ secrets.SYNC_PAT }}
         run: |
-          set -e
-
           # Define branch -> target repo mapping
           declare -A BRANCH_MAP
           BRANCH_MAP["IONE-stratification-framework"]="ione-stratification-framework"
@@ -55,6 +53,7 @@ jobs:
 
           SYNCED=0
           SKIPPED=0
+          FAILED=0
 
           for BRANCH in "${!BRANCH_MAP[@]}"; do
             TARGET_REPO="${BRANCH_MAP[$BRANCH]}"
@@ -78,9 +77,16 @@ jobs:
             fi
 
             echo "SYNC: $BRANCH -> $TARGET_REPO (wip: $WIP_SHA, target: ${TARGET_SHA:-empty})"
-            git push --force "https://x-access-token:${SYNC_PAT}@github.com/bougtoir/${TARGET_REPO}.git" "origin/$BRANCH:refs/heads/main"
-            SYNCED=$((SYNCED + 1))
+            if git push --force "https://x-access-token:${SYNC_PAT}@github.com/bougtoir/${TARGET_REPO}.git" "origin/$BRANCH:refs/heads/main" 2>&1; then
+              SYNCED=$((SYNCED + 1))
+            else
+              echo "ERROR: Failed to sync $BRANCH -> $TARGET_REPO"
+              FAILED=$((FAILED + 1))
+            fi
           done
 
           echo ""
-          echo "Done: $SYNCED synced, $SKIPPED skipped"
+          echo "Done: $SYNCED synced, $SKIPPED skipped, $FAILED failed"
+          if [ "$FAILED" -gt 0 ]; then
+            exit 1
+          fi
