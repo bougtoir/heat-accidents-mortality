@@ -93,3 +93,105 @@
 2. **不採択の場合、PDR Research Note** に拡張投稿（先行研究との対話を追加、OECD検証結果を追加）
 
 理由：Lancet Correspondenceは準備コストが低く、採否が早い（通常2-4週間）。不採択でも、査読コメントがPDR版の改善に使える。
+
+---
+
+# English Translation
+
+---
+
+# Journal proposal: Tempo effect and co-resident population model
+
+We will suggest candidates based on the characteristics of the paper in descending order of suitability.
+
+---
+
+## Tier 1: Top Candidate
+
+### 1. **The Lancet** (Correspondence)
+- **IF**: ~170 | **Format**: 300 words Correspondence + 1 Figure
+- **Reason for suitability**: Original submission candidate. An optimal format for communicating the policy implications of tempo effects to physicians and public health professionals. Readers are less familiar with tempo effects and are likely to perceive them as new.
+- **Strengths**: Extremely high impact, reach to policy makers, short manuscripts naturally omit model details
+- **Weaknesses**: Peer review is strict and expertise in demography is not necessarily evaluated. There is little room to demonstrate mathematical contribution.
+- **Possibility of Adoption**: ★★☆☆☆ (Low to Medium)
+
+### 2. **Population and Development Review (PDR)**
+- **IF**: ~4.5 | **Format**: Research Note (3,000-5,000 words)
+- **Reason for Relevance**: **Goldstein, Lutz & Scherbov (2003) published**. The discussion of tempo effect → population size started in this very journal. Its natural positioning as “subsequent research”
+- **Strengths**: Flagship in demography, clear dialogue with previous research, Research Note allows for short manuscripts
+- **Weaknesses**: Possibility of being criticized for lack of theoretical novelty. It is necessary to convincingly demonstrate the difference from Goldstein et al.
+- **Possibility of Adoption**: ★★★☆☆ (medium)
+
+### 3. **Demography**
+- **IF**: ~4.2 | **Format**: Research Article or Research Note
+- **Reason for Relevance**: Top journal in North American demography. The combination of mathematical model + actual data verification matches the format
+- **Strengths**: Culture of evaluating methodological contributions, empirical analysis of 40 OECD countries is convincing
+- **Weaknesses**: Need to clarify the difference between Bongaarts-Feeney correction and previous studies
+- **Possibility of Adoption**: ★★★☆☆ (medium)
+
+---
+
+## Tier 2: Potential candidates
+
+### 4. **Population Studies**
+- **IF**: ~3.5 | **Format**: Research Article (6,000-8,000 words)
+- **Reason for suitability**: Traditional demographic journal based in the UK. A track record of publishing numerous theoretical and empirical studies on tempo effects
+- **Strengths**: Easy to find referees related to tempo effects, emphasis on balance between methodology and demonstration
+- **Weaknesses**: It tends to take a long time to post.
+- **Possibility of Adoption**: ★★★☆☆ (medium)
+
+### 5. **European Journal of Population**
+- **IF**: ~3.8 | **Format**: Research Article
+- **Reason for suitability**: Declining birth rates and late births in Europe are the main battleground for the tempo effect. Analysis results for OECD countries directly fit
+- **Strengths**: Influence on the European demography community, abundant prior research related to tempo
+- **Weaknesses**: It is unclear whether the comparison between China and DRC will impress readers of European journals.
+- **Possibility of Adoption**: ★★★☆☆ (medium)
+
+### 6. **BMJ Open** / **BMJ Global Health**
+- **IF**: ~3.0 / ~8.1 | **Format**: Analysis / Research Article
+- **Reason for suitability**: Higher acceptance rate than Lancet, similar public health/policy-oriented readership. There is room to develop the policy implications of “co-resident population”
+- **Strengths**: Open access, policy-oriented, allows for longer manuscripts than Lancet
+- **Weaknesses**: Possibility of reviewers having limited understanding of professional demography methodology
+- **Possibility of Adoption**: ★★★★☆ (Middle to High School)
+
+---
+
+## Tier 3: Candidates focused on certainty
+
+### 7. **Demographic Research**
+- **IF**: ~2.1 | **Format**: Research Article (Open Access)
+- **Reason for suitability**: Open access magazine operated by MPIDR. Most open to technical discussion of tempo effects
+- **Strengths**: Rapid peer review, open access, sufficient methodological detail, readable by demographers
+- **Weaknesses**: IF is slightly low
+- **Possibility of Adoption**: ★★★★☆ (High)
+
+### 8. **PLOS ONE**
+- **IF**: ~3.7 | **Format**: Research Article
+- **Reason for suitability**: It will be adopted if it is methodologically sound. Empirical analysis of 40 countries is of sufficient scale
+- **Strengths**: High acceptance rate, rapid peer review, wide readership
+- **Weaknesses**: Citations are more dispersed than field-specific journals, weak signal to the demography community
+- **Possibility of Adoption**: ★★★★★ (High)
+
+### 9. **Vienna Yearbook of Population Research**
+- **IF**: ~1.5 | **Format**: Research Article
+- **Reason for relevance**: Home turf of VID/IIASA demographers (Lutz, Scherbov, etc.). Directly linked to historical discussion of tempo effects
+- **Strengths**: Best thematic fit with co-authors of Goldstein et al.
+- **Weaknesses**: IF is low, it takes a long time to publish because it is an annual publication
+- **Possibility of Adoption**: ★★★★☆ (High)
+
+---
+
+## Strategic recommendations
+
+| Strategy | Recommended Journal | Reason |
+|------|---------------|------|
+| **Aim for maximum impact** | Lancet Correspondence → PDR Research Note | If Lancet is not accepted, go to PDR. Two-step strategy |
+| **Contribution to the demography community** | PDR or Demography | Highly valued and cited by experts |
+| **Reliable publication + policy reach** | BMJ Global Health or Demographic Research | High adoption rate and wide readership |
+| **Focus on speed** | Demographic Research or PLOS ONE | Fast peer review |
+
+### Personal recommendation (2-step strategy):
+1. **First post to The Lancet Correspondence** (315 words + 1 figure, minimum preparation cost)
+2. **If not adopted, expand PDR Research Note** (add dialogue with previous research, add OECD verification results)
+
+Why: Lancet Correspondence has low preparation costs and fast acceptance (typically 2-4 weeks). Even if the paper is not adopted, peer review comments can be used to improve the PDR version.
