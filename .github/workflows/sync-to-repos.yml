@@ -1,0 +1,92 @@
+name: Sync branches to independent repos
+
+# Schedule runs from the default branch (master), so the workflow file
+# only needs to exist here. Runs every 15 minutes to detect branch changes.
+# Can also be triggered manually via workflow_dispatch.
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout wip repo (all branches)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.SYNC_PAT }}
+
+      - name: Sync all tracked branches
+        env:
+          SYNC_PAT: ${{ secrets.SYNC_PAT }}
+        run: |
+          # Define branch -> target repo mapping
+          declare -A BRANCH_MAP
+          BRANCH_MAP["IONE-stratification-framework"]="ione-stratification-framework"
+          BRANCH_MAP["devin/1774274321-rct-decomposition-paper"]="kotha-rct-decomposition"
+          BRANCH_MAP["devin/1774353301-icr-paper"]="linko-icr-paper"
+          BRANCH_MAP["devin/1774514189-medical-accident-its-analysis"]="medical-accident-its-analysis"
+          BRANCH_MAP["devin/1774578035-cetacean-acoustic-analysis"]="cetacean-acoustic-analysis"
+          BRANCH_MAP["devin/1774681647-yoshka-pkpd-package"]="yoshika-pkpd"
+          BRANCH_MAP["devin/1774686640-cryoanesthesia-scoping-review"]="cryoanesthesia-scoping-review"
+          BRANCH_MAP["devin/1774689702-bbb-bhb-research"]="bbb-bhb-research"
+          BRANCH_MAP["devin/1774689786-onishi-submission-strategy"]="onishi-submission-strategy"
+          BRANCH_MAP["devin/1774689807-tempo-effect-paper"]="tempo-effect-paper"
+          BRANCH_MAP["devin/1774689832-bja-zero-calibration-paper"]="bja-zero-calibration-paper"
+          BRANCH_MAP["devin/1774689833-bja-manuscript-initial"]="bja-initial-compartment-pk"
+          BRANCH_MAP["devin/1774689842-wada-tue-scoping-review"]="wada-tue-scoping-review"
+          BRANCH_MAP["devin/1774690226-reproducibility-crisis-commercial-software"]="reproducibility-crisis-commercial-software"
+          BRANCH_MAP["devin/1774690359-anesthesia-regional-variation-japan"]="anesthesia-regional-variation-japan"
+          BRANCH_MAP["devin/1774690362-vaporizer-price-study"]="vaporizer-price-study"
+          BRANCH_MAP["devin/1774690371-ndb-pain-regional-variation-japan"]="ndb-pain-regional-variation-japan"
+          BRANCH_MAP["scoping-review/hansens-disease-work-visa-screening"]="hansens-disease-work-visa-screening"
+          BRANCH_MAP["tasuki-electoral-model"]="tasuki-electoral-model"
+          BRANCH_MAP["devin/1772247034-mafb-analysis"]="mafb-population-projection"
+          BRANCH_MAP["devin/1772961348-fim-interactive-dashboard"]="fim-interactive-dashboard"
+          BRANCH_MAP["devin/1773039065-cluster-statistical-testing"]="cluster-statistical-testing"
+          BRANCH_MAP["devin/1773285176-takalith-arduboy-fx"]="takalith-arduboy-fx"
+          BRANCH_MAP["devin/1773295400-border-check-arduboy"]="border-check-arduboy"
+          BRANCH_MAP["devin/1773350746-starchart-constellation-fixes"]="starchart-arduboy"
+          BRANCH_MAP["devin/1773634645-nuitka-build"]="nuitka-build-tools"
+
+          SYNCED=0
+          SKIPPED=0
+          FAILED=0
+
+          for BRANCH in "${!BRANCH_MAP[@]}"; do
+            TARGET_REPO="${BRANCH_MAP[$BRANCH]}"
+
+            # Get wip branch SHA
+            WIP_SHA=$(git rev-parse "origin/$BRANCH" 2>/dev/null || echo "")
+            if [ -z "$WIP_SHA" ]; then
+              echo "SKIP: Branch '$BRANCH' not found in wip"
+              SKIPPED=$((SKIPPED + 1))
+              continue
+            fi
+
+            # Get target repo main branch SHA
+            TARGET_SHA=$(git ls-remote "https://x-access-token:${SYNC_PAT}@github.com/bougtoir/${TARGET_REPO}.git" refs/heads/main 2>/dev/null | cut -f1 || echo "")
+
+            # Compare SHAs - skip if already in sync
+            if [ "$WIP_SHA" = "$TARGET_SHA" ]; then
+              echo "SKIP: $BRANCH -> $TARGET_REPO (already in sync: $WIP_SHA)"
+              SKIPPED=$((SKIPPED + 1))
+              continue
+            fi
+
+            echo "SYNC: $BRANCH -> $TARGET_REPO (wip: $WIP_SHA, target: ${TARGET_SHA:-empty})"
+            if git push --force "https://x-access-token:${SYNC_PAT}@github.com/bougtoir/${TARGET_REPO}.git" "origin/$BRANCH:refs/heads/main" 2>&1; then
+              SYNCED=$((SYNCED + 1))
+            else
+              echo "ERROR: Failed to sync $BRANCH -> $TARGET_REPO"
+              FAILED=$((FAILED + 1))
+            fi
+          done
+
+          echo ""
+          echo "Done: $SYNCED synced, $SKIPPED skipped, $FAILED failed"
+          if [ "$FAILED" -gt 0 ]; then
+            exit 1
+          fi
