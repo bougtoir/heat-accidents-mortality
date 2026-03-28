@@ -1,0 +1,87 @@
+name: Sync branches to independent repos
+
+on:
+  push:
+    branches:
+      - 'IONE-stratification-framework'
+      - 'devin/1774274321-rct-decomposition-paper'
+      - 'devin/1774353301-icr-paper'
+      - 'devin/1774514189-medical-accident-its-analysis'
+      - 'devin/1774578035-cetacean-acoustic-analysis'
+      - 'devin/1774681647-yoshka-pkpd-package'
+      - 'devin/1774686640-cryoanesthesia-scoping-review'
+      - 'devin/1774689702-bbb-bhb-research'
+      - 'devin/1774689786-onishi-submission-strategy'
+      - 'devin/1774689807-tempo-effect-paper'
+      - 'devin/1774689832-bja-zero-calibration-paper'
+      - 'devin/1774689833-bja-manuscript-initial'
+      - 'devin/1774689842-wada-tue-scoping-review'
+      - 'devin/1774690226-reproducibility-crisis-commercial-software'
+      - 'devin/1774690359-anesthesia-regional-variation-japan'
+      - 'devin/1774690362-vaporizer-price-study'
+      - 'devin/1774690371-ndb-pain-regional-variation-japan'
+      - 'scoping-review/hansens-disease-work-visa-screening'
+      - 'tasuki-electoral-model'
+      - 'devin/1772247034-mafb-analysis'
+      - 'devin/1772961348-fim-interactive-dashboard'
+      - 'devin/1773039065-cluster-statistical-testing'
+      - 'devin/1773285176-takalith-arduboy-fx'
+      - 'devin/1773295400-border-check-arduboy'
+      - 'devin/1773350746-starchart-constellation-fixes'
+      - 'devin/1773634645-nuitka-build'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout wip branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine target repo
+        id: target
+        run: |
+          BRANCH="${GITHUB_REF#refs/heads/}"
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+
+          # Map branch names to target repo names
+          case "$BRANCH" in
+            "IONE-stratification-framework") REPO="ione-stratification-framework" ;;
+            "devin/1774274321-rct-decomposition-paper") REPO="kotha-rct-decomposition" ;;
+            "devin/1774353301-icr-paper") REPO="linko-icr-paper" ;;
+            "devin/1774514189-medical-accident-its-analysis") REPO="medical-accident-its-analysis" ;;
+            "devin/1774578035-cetacean-acoustic-analysis") REPO="cetacean-acoustic-analysis" ;;
+            "devin/1774681647-yoshka-pkpd-package") REPO="yoshika-pkpd" ;;
+            "devin/1774686640-cryoanesthesia-scoping-review") REPO="cryoanesthesia-scoping-review" ;;
+            "devin/1774689702-bbb-bhb-research") REPO="bbb-bhb-research" ;;
+            "devin/1774689786-onishi-submission-strategy") REPO="onishi-submission-strategy" ;;
+            "devin/1774689807-tempo-effect-paper") REPO="tempo-effect-paper" ;;
+            "devin/1774689832-bja-zero-calibration-paper") REPO="bja-zero-calibration-paper" ;;
+            "devin/1774689833-bja-manuscript-initial") REPO="bja-initial-compartment-pk" ;;
+            "devin/1774689842-wada-tue-scoping-review") REPO="wada-tue-scoping-review" ;;
+            "devin/1774690226-reproducibility-crisis-commercial-software") REPO="reproducibility-crisis-commercial-software" ;;
+            "devin/1774690359-anesthesia-regional-variation-japan") REPO="anesthesia-regional-variation-japan" ;;
+            "devin/1774690362-vaporizer-price-study") REPO="vaporizer-price-study" ;;
+            "devin/1774690371-ndb-pain-regional-variation-japan") REPO="ndb-pain-regional-variation-japan" ;;
+            "scoping-review/hansens-disease-work-visa-screening") REPO="hansens-disease-work-visa-screening" ;;
+            "tasuki-electoral-model") REPO="tasuki-electoral-model" ;;
+            "devin/1772247034-mafb-analysis") REPO="mafb-population-projection" ;;
+            "devin/1772961348-fim-interactive-dashboard") REPO="fim-interactive-dashboard" ;;
+            "devin/1773039065-cluster-statistical-testing") REPO="cluster-statistical-testing" ;;
+            "devin/1773285176-takalith-arduboy-fx") REPO="takalith-arduboy-fx" ;;
+            "devin/1773295400-border-check-arduboy") REPO="border-check-arduboy" ;;
+            "devin/1773350746-starchart-constellation-fixes") REPO="starchart-arduboy" ;;
+            "devin/1773634645-nuitka-build") REPO="nuitka-build-tools" ;;
+            *) echo "Unknown branch: $BRANCH"; exit 1 ;;
+          esac
+
+          echo "repo=$REPO" >> $GITHUB_OUTPUT
+          echo "Syncing branch '$BRANCH' to repo 'bougtoir/$REPO'"
+
+      - name: Push to target repo
+        run: |
+          git remote add target "https://x-access-token:${{ secrets.SYNC_PAT }}@github.com/bougtoir/${{ steps.target.outputs.repo }}.git"
+          git push target "HEAD:refs/heads/main" --force
+        env:
+          GITHUB_TOKEN: ${{ secrets.SYNC_PAT }}
