@@ -344,3 +344,353 @@
 9. NDBオープンデータ: https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000177182.html
 10. DPCオープンデータ: https://www.e-stat.go.jp/ (DPC導入の影響評価に係る調査)
 11. 臨床疫学研究推進機構 NDBオープンデータ再集計: https://icer.tokyo/materials/ndb_opendata_replication/
+
+---
+
+# English Translation
+
+---
+
+# Regional differences in postoperative pain in Japan: Verifiability using open data and research design proposals
+
+## Introduction
+
+Although it is widely known that people in Tohoku are more patient, it has not been verified whether there are regional differences in postoperative pain reports and analgesic use. In this report, we limit ourselves to **open data in Japan** and organize (1) verifiability and (2) research design improvement proposals.
+
+---
+
+## 1. Related evidence in Japan
+
+### 1.1 Regional differences in opioid prescribing (already demonstrated)
+
+| Research | Data | Key findings |
+|------|---------|---------|
+| Matsuoka et al. (2025) Jpn J Clin Oncol | DeSC (Receipt DB) 119,850 cases | There are **clear regional differences** in opioid prescriptions in terminal cancer stages. Oxycodone injection: Tokai 16.4% vs. Shikoku 4.0% (4-fold difference). Fentanyl pasting: Kyushu/Okinawa 51.5% vs. Southern Kanto 25.4%. Opioid prescription OR in Kinki is 0.68 (South Kanto standard) |
+| Shoji & Akazawa (2025) | NDB Open Data (2015-2021) | Analysis of secular trends in strong and weak opioid prescription amounts by prefecture. **Proof that it is possible to compare prescription amounts by drug class and prefecture using NDB open data** |
+| Tamiya et al. (2025) J Opioid Manag | Ibaraki Prefecture NHI receipt 6,041 cases | Persistent opioid use rate after thoracic surgery 3.3%. Understand the actual state of postoperative opioid use on a prefectural basis |
+
+**Important Implications**: Regional differences within Japan have already been demonstrated in the field of cancer pain. Similar regional differences are likely to exist in the area of ​​postoperative pain.
+
+### 1.2 Current status of postoperative pain management in Japan
+
+| Research | Data | Key findings |
+|------|---------|---------|
+| Kaibori et al. (2025) J Clin Med | Multicenter prospective observation 21 facilities | Japan's first multicenter prospective survey on postoperative pain. We confirmed that postoperative analgesia was insufficient. **However, the facilities are mainly from Kanto to Kansai, and there are few facilities in Tohoku** |
+| Yabuki et al. (2025) Eur J Pain | DPC Minimally Invasive Surgery for Lung Cancer | Perioperative analgesia affects postoperative chronic analgesic prescription. **Tohoku University group is promoting post-operative pain research using DPC data** |
+| Amaya (2023) Journal of Kyoto Prefectural University of Medicine | Review | Importance of the Postoperative Pain Management Team (POPS). Postoperative pain management team addition will be newly established in 2022 |
+
+### 1.3 Evidence regarding “Tohoku’s patience”
+
+| Source | Contents |
+|--------|------|
+| Pfizer Japan Corporation Online Survey (2017, n=8,924) | "Would you put up with long-lasting pain?" → Tochigi answered the highest at 81.6%, and Kanagawa answered the lowest at 68.3%. **Tohoku is not particularly high, but northern Kanto and regional areas tend to be high** |
+| Institute of Statistical Mathematics "National Character Survey" | A high selection rate of around 60% in the Tohoku region for "persistent" as an advantage of Japanese people |
+| Takeda and Yarimizu (2016) National Institute for Japanese Language and Linguistics | Clear regional differences in the linguistic expression of pain, "uzuku." Frequently used in western Japan, limited in eastern Japan. **East and West differences in the way pain is expressed** |
+| Sankei Shimbun Introduction to Pain Studies (2025) | Dialects for pain: "Hiratsuku" (Akita, Toyama, Kyushu), "Seku" (Chushikoku), etc. Vocabulary to express pain differs depending on region, **potentially affecting pain communication with healthcare providers** |
+| Usui (2017) Niigata Seiryo University | Points out the social psychological mechanism by which the Japanese culture of "patience is a virtue" leads to underreporting of pain |
+
+---
+
+## 2. Available open data sources
+
+### 2.1 Fully open (anyone can download)
+
+#### A. NDB Open Data (Ministry of Health, Labor and Welfare) ⭐Most likely
+- **URL**: https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000177182.html
+- **Contents**: Aggregated values of receipt information (prescription amount by drug efficacy category, number of calculations by medical practice) are published by prefecture and age group.
+- **Variables associated with postoperative pain**:
+  - Prescription drugs: Prescription amount of analgesics (antipyretic analgesics, anti-inflammatory drugs, narcotic analgesics, etc.) by prefecture
+  - Medical practice: Calculation number of post-operative pain management team additions by prefecture
+  - Surgery: Number of operations performed by prefecture by K surgery code
+  - Injectable drugs: Usage amount of fentanyl, acetaminophen injection, etc. by prefecture
+- **Strengths**: Comprehensive (covers almost all the people), free of charge, available for immediate download, time series data from 1st to 10th (2014 to 2023)
+- **Limitations**: Only aggregated values (no individual data), cannot link surgery and analgesics, no pain score
+- **Verifiable hypothesis**: "There is a difference between prefectures in the amount of analgesics used per number of surgeries of the same type of surgery."
+
+#### B. DPC open data (Chuikyo/e-Stat)
+- **URL**: https://www.e-stat.go.jp/ → Survey on impact assessment of DPC introduction
+- **Contents**: The number of cases and length of hospital stay by disease and surgical method at approximately 1,700 DPC hospitals is disclosed by facility.
+- **Variables associated with postoperative pain**:
+  - Number of cases by surgical method (with/without surgery), length of hospital stay
+  - Facility location (prefecture)
+  - DPC classification code
+- **Strengths**: Facility level data, free of charge, detailed classification of surgical procedures
+- **Limitations**: No details on pain score/analgesic use. However, ** length of hospital stay is an indirect indicator of the quality of pain management **
+- **Testable hypothesis**: "There are regional differences in the length of stay for the same DPC classification" (as a proxy indicator of the quality of pain management)
+
+#### C. Basic Survey on National Living (Ministry of Health, Labor and Welfare/e-Stat)
+- **Contents**: Large scale survey every 3 years. Publishing the complaint rate for subjective symptoms (back pain, stiff shoulders, etc.) by prefecture
+- **Limitations**: Not specific for postoperative pain
+- **Auxiliary use**: As background data for "regional differences in pain complaint rate"
+
+### 2.2 Certification system (available upon application)
+
+#### D. NDB special extracted data (Ministry of Health, Labor and Welfare)
+- **Contents**: NDB individual data (anonymized). Possible to link surgical receipt and analgesic prescription
+- **Variables related to postoperative pain**: Surgery code + analgesic use during the same hospitalization (drug name, dose, number of days) + prefecture
+- **Access**: Application for use from universities and other research institutions to the Ministry of Health, Labor and Welfare. Examination required (several months to 1 year)
+- **Verifiability**: **Highest**. It is possible to directly verify regional differences in analgesic usage on a surgical-by-surgical basis.
+
+#### E. DPC data (individual sheet)
+- **Contents**: E/F file (hospitalization details record). Records medical treatment and drug use by day of hospitalization
+- **Access**: Owned by each hospital. The University of Tokyo, Kyoto University, etc. have built a large-scale DPC database (Professor Hideo Yasunaga group, etc.)
+- **Variables related to postoperative pain**: Analgesic use (drug name and dose) by number of days from the date of surgery, length of hospital stay, facility location
+- **Verifiability**: **Very High**. Yabuki et al. (2025) actually analyzed the relationship between perioperative analgesia and postoperative chronic analgesia using DPC data.
+- **Limitations**: Requires joint research agreement. However, there are several research groups with proven results (Tohoku University, Tokyo University, Kyoto University, etc.)
+
+### 2.3 Data source comparison list
+
+| Data | Access | Individual records | Linking surgery x analgesia | Prefecture | Pain Score | Immediate start |
+|---------|---------|------|------|---------|------------|---------|
+| NDB open data | Completely free | × | × | ○ | × | **○** |
+| DPC open data | Completely free | △Facility unit | × | ○ | × | **○** |
+| National Lifestyle Basic Survey | Completely free | × | × | ○ | × | ○ |
+| NDB special extraction | Application required | ○ | **○** | ○ | × | △ |
+| DPC individual ticket | Joint research | ○ | **○** | ○ | × | △ |
+| Prospective multicenter study | New implementation | ○ | ○ | ○ | **○** | × |
+
+---
+
+## 3. Research design proposal
+
+### 3.1 Biggest methodological challenge
+
+**Essential issues when examining "regional differences" in postoperative pain**:
+
+By focusing on Japan, we can eliminate ``differences in medical systems'' and ``differences in insurance systems,'' which are problems in international comparisons. However, the following confounds remain:
+
+1. **Differences in analgesic protocols between facilities**: Even with the same TKA, facility A uses epidural + NSAIDs and facility B uses iv-PCA + acetaminophen.
+2. **Regional differences in anesthesiologist allocation**: The density of anesthesiologists differs between urban and rural areas, which directly affects the quality of pain management.
+3. **Regional differences in patient background**: Aging rates and comorbidity composition differ by prefecture.
+4. **Difficulty quantifying "patience"**: It is difficult to distinguish between low pain scores due to "no pain" or "pain but not reporting it"
+
+### 3.2 Recommended design (3 stages)
+
+---
+
+#### Phase 1: Ecological research (immediate start, fully open data)
+
+**Purpose**: Exploratory verification of whether there are differences between prefectures in the amount of postoperative analgesics used.
+
+**Data**: NDB open data + DPC open data
+
+**Method**:
+````
+Unit of analysis: prefecture (n=47)
+
+Molecule: Prescription amount of analgesics by prefecture (NDB open data)
+  - Antipyretic analgesic anti-inflammatory agent (medicinal class 114)
+  - Narcotics (Acerio injection, Fentanyl injection, etc.)
+  - Postoperative pain management team addition calculation count
+
+Denominator: Number of surgeries by prefecture (DPC open data or NDB surgery code)
+  - Limited to standard surgeries (TKA: K0821, Caesarean section: K8982, laparoscopic cholecystectomy: K6721, etc.)
+
+Tuning variables:
+  - Population composition (percentage of people aged 65 and over)
+  - Anesthesiologist density (physician/dentist/pharmacist survey)
+  - DPC Hospital Density
+  - Medical costs per person
+
+Region block:
+  Tohoku (Aomori, Iwate, Miyagi, Akita, Yamagata, Fukushima)
+  vs Kanto vs Kansai vs Kyushu etc.
+
+Statistical methods:
+  - Map visualization of "amount of analgesics used per surgery" by prefecture
+  - Test for differences between regional blocks (Kruskal-Wallis)
+  - Multivariate regression (analgesic usage ~ regional block + adjustment variables)
+  - Detection of spatial autocorrelation by Moran's I etc.
+````
+
+**Expected results**:
+- If the amount of analgesics used per surgery in the Tohoku region is lower than in other regions → consistent with the "patience" hypothesis
+- However, because this is an ecological study, causal inference is not possible. Differences in analgesic protocols and patient complaints cannot be separated.
+**Required period**: 1-2 months (data download - analysis - publication)
+
+---
+
+#### Phase 2: Individual receipt research (NDB special extraction or DPC joint research)
+
+**Purpose**: Verify regional differences in analgesic usage by surgery (adjusting for individual-level confounding)
+
+**Data**: NDB special extracted data or university DPC database
+
+**Method**:
+````
+Study design: Retrospective cohort study
+
+Target: Adult patients undergoing standard surgery.
+  - Initial TKA (total knee arthroplasty) ← Recommended: High degree of surgical standardization
+  - Caesarean section
+  - Laparoscopic cholecystectomy
+  Limited to one surgical technique (eliminating heterogeneity between surgical techniques)
+
+Exposure: Prefecture where the facility is located (→region block)
+
+Main outcomes:
+  - Total analgesic consumption for 3 days after surgery (oral morphine equivalent mg)
+  - Presence and amount of acetaminophen/NSAIDs used for 3 days after surgery
+  - Days of postoperative opioid use
+  - Additional rescue analgesia times
+
+Secondary outcomes:
+  - Post-operative hospital stay
+  - 30-day readmission rate
+  - Postoperative complications (ileus, pneumonia, etc.)
+
+Confounding adjustment:
+  Level 1 (patient): age, gender, BMI, ASA-PS equivalent (Charlson comorbidity index),
+                    History of preoperative opioid use, history of preoperative NSAIDs use
+Level 2 (facility): Number of beds, DPC group (university hospital/specific/standard),
+                    Number of full-time anesthesiologists, presence or absence of additional notification for post-operative pain management team
+
+Statistical methods:
+  - 2-level multilevel model (patient → facility)
+  - ICC calculation: Percentage of variance explained by facility level/region level
+  - Introducing regional blocks as fixed effects at Level 2
+  - Sensitivity analysis: Changes in regional effects when excluding vs. including facility random effect
+````
+
+**Key points of this design**:
+- **Prefectural differences, not national differences**: Under Japan's universal health insurance system, there are no differences in insurance systems. It is possible to detect purely the effects of facilities, regions, and culture.
+- **DPC data does not include pain score**: → Use analgesic usage as a surrogate outcome. This is a ``prescription as a result of patients complaining of pain,'' and ``in areas where there are many patients who tolerate it, the incidence is low,'' so this is a direction that is consistent with the hypothesis.
+- **Limited to surgical technique**: Limiting to TKA completely eliminates confounding by surgical technique. TKA is performed over 100,000 times a year nationwide and has sufficient detection power.
+
+**Required period**: 6-12 months (application - data acquisition - analysis)
+
+---
+
+#### Phase 3: Prospective multicenter study (new data collection)
+
+**Purpose**: Directly measure pain score (NRS) and separate pain perception/report from pain medication use.
+**Data**: New forward-looking data
+
+**Method**:
+````
+Study design: Multicenter prospective observational study
+
+Facility selection (minimum 10 facilities):
+  Tohoku block: 2-3 facilities (Akita, Iwate, Miyagi, etc.)
+  Kanto block: 2-3 facilities (Tokyo, Kanagawa, etc.)
+  Kansai block: 2-3 facilities (Osaka, Kyoto, etc.)
+  Kyushu block: 2-3 facilities (Fukuoka, Kagoshima, etc.)
+  *Ideal composition is 1 university hospital + 1 community hospital in each block.
+
+Target: First-time TKA patients, consecutive case registration
+
+Measurement items:
+  [1] Primary outcome (patient report)
+    - Postoperative NRS (at rest/moving): 6h, 24h, 48h, 72h after surgery
+    - BPI-SF (Brief Pain Inventory Short Form) Japanese version
+    - Patient satisfaction (5 levels)
+    - “Reluctance to communicate pain to medical personnel” scale (newly developed or existing scale)
+    
+  [2] Analgesic usage (extracted from medical records)
+    - Total opioid usage in terms of oral morphine
+    - Acetaminophen/NSAIDs usage
+    - Number of rescues
+    - Epidural/nerve block performed or not
+    
+  [3] Cultural variables (★Uniqueness of this research)
+    - Place of birth (prefecture) *May be different from facility location
+    - Years of residence
+- Pain Catastrophizing Scale (PCS) Japanese version
+    - Pain Beliefs Questionnaire (Japanese version)
+    - “Patience is a virtue” scale (referring to the framework of Usui et al. 2017, newly developed)
+    - Family structure/social support
+    
+  [4] Facility variables
+    - Analgesic protocol content
+    - Presence of postoperative pain management team
+    - Anesthesiologist density
+
+Sample size:
+  ICC = 0.05 (intra-facility correlation), regional block difference NRS 0.5 points detected
+  → 50 cases per facility × 10 facilities = 500 cases (power 80%, α=0.05)
+
+Statistical methods:
+  - 3-level multilevel model (patient → facility → regional block)
+  - Mediation analysis:
+    Region → Pain Catastrophizing → NRS
+    Region → “Patience” scale → NRS
+    Region → Analgesic Protocol → NRS
+    → Break down what percentage of regional differences are explained by "cultural attitudes" and what percentage are explained by "protocol differences"
+````
+
+**The heart of this design**:
+- By measuring **NRS (pain score) and analgesic usage at the same time**, it is possible to distinguish between "Patients in Tohoku have lower NRS but less analgesics" → influence of patience vs. "NRS is the same but less analgesics" → protocol differences
+- By incorporating a scale that directly measures "patience", we verified the mediation effect of "regional differences → patience scale → NRS"
+- **Distinguish between place of birth and place of residence** to evaluate the cultural influence in the case of ``I am from Tohoku, but I had surgery at a hospital in Tokyo.''
+
+**Required period**: 2-3 years (ethics review, facility recruitment, data collection and analysis)
+
+---
+
+## 4. Summary of improvement proposals
+
+| Limitations of existing research | Suggestions for improvement |
+|--------------|---------|
+| Medical disparities are noise in international comparisons | Limit to **Japan** and eliminate differences in insurance systems |
+| No pain score data (receipt study) | In Phase 1-2, **analgesic usage was used as a surrogate outcome**, and in Phase 3, **NRS direct measurement** |
+| Facility differences and regional differences cannot be separated | Hierarchical decomposition of ICC using **multilevel model** (patient → facility → region) |
+| Confounding technique | **Limited to a single TKA technique** (high degree of standardization, sufficient number of cases nationwide) |
+| There is no quantification of "patience" | **Development and measurement of **Pain Catastrophizing Scale + new "patience" scale** |
+| Confounding of analgesic protocol | **adjusted as a facility-level variable** in Phase 2, **directly recorded** in Phase 3 |
+| Facilities in Tohoku are not included | **Explicitly recruit Tohoku block** (Tohoku University group has a track record) |
+| Regional differences in verbal expressions of pain are not taken into consideration | In Phase 3, **pain dialects and expression habits** will be measured and discrepancies with NRS reports will be analyzed |
+
+---
+
+## 5. Specific action plan
+
+### Immediate start (Phase 1): NDB open data analysis
+1. Download NDB Open Data Parts 1 to 10
+2. Extracting prescription amounts of analgesics (antipyretic, analgesic, anti-inflammatory drugs, narcotics) by prefecture
+3. Extracting the number of surgeries such as TKA and caesarean sections by prefecture from DPC open data
+4. Create a map of “analgesic usage per surgery” by prefecture
+5. Comparison of Tohoku block vs. other regions
+6. Publication of paper (including analysis code in Python can be published on GitHub)
+
+### Mid-term (Phase 2): DPC data joint research
+- Joint research proposal to Tohoku University (Yamauchi/Fujimori group: DPC data utilization experience)
+- Application for use of NDB special extraction (Ministry of Health, Labor and Welfare)
+- Retrospective cohort design limited to TKA
+### Long-term (Phase 3): Prospective multicenter study
+- UMIN-CTR pre-registration
+- Development and validation of the “Patience” scale
+- Recruiting 10 facilities (2-3 facilities each in Tohoku, Kanto, Kansai, and Kyushu)
+- Application for Grants-in-Aid for Scientific Research (Basic B or C)
+
+---
+
+## 6. Conclusion
+
+**Q1: Can it be verified using Japanese open data? → YES (step by step)**
+- **Phase 1 (immediate)**: With NDB open data + DPC open data, "prefectural differences in the amount of analgesics used per surgery" can be verified immediately with completely open data
+- **Phase 2 (six months or more)**: NDB special extraction or DPC individual data can be used to verify "regional differences in individual-level analgesic usage" with adjustment for confounding.
+- **Phase 3 (2-3 years)**: Directly measure pain score and "patience" scale in a prospective study and verify the mediating effect of cultural factors
+
+**Q2: The core of design improvement proposals**
+1. **Limited to Japan** to eliminate differences in the medical system (points of this revision)
+2. **Limited to a single standard surgery such as TKA** to eliminate surgical type confounding
+3. Hierarchical decomposition of ICC using **multilevel model** (patient → facility → region)
+4. **Direct measurement of “patience”** (Pain Catastrophizing Scale + new scale) is the most unique
+5. **Discrepancy between analgesic usage and pain score** is an indicator of “cultural pain reporting bias”
+6. **Explicitly recruit facilities in Tohoku** (insufficient in existing research)
+
+---
+
+## References
+
+1. Matsuoka Y et al. (2025) Population-based claims study of regional and hospital function differences in opioid prescribing for cancer patients who died in hospital in Japan. *Jpn J Clin Oncol* hyaf149.
+2. Shoji T & Akazawa M (2025) Trends of Strong and Weak Opioid Prescriptions in Japan: A Cross-Sectional Study Based on Open Data from the National Database. CiNii.
+3. Kaibori M et al. (2025) Prospective Survey of Postoperative Pain in Japan: A Multicenter, Observational Study. *J Clin Med* 14(4):1130.
+4. Yabuki S et al. (2025) Exploring the impact of perioperative analgesia on postoperative chronic analgesic prescriptions in patients with lung cancer. *Eur J Pain* 29:e4774.
+5. Tamiya N et al. (2025) Prevalence and risk factors for persistent opioid use after thoracic surgery in a prefecture of Japan. *J Opioid Manag*.
+6. Amaya Fumimasa (2023) Postoperative pain management team. *Kyoto Prefecture Medical University Journal* 132(12):833-841.
+7. Akiko Takeda and Kanetaka Yarimizu (2016) Regional differences in the linguistic expression uzuku expressing pain. National Institute for Japanese Language and Linguistics.
+8. Masashi Usui (2017) “Patience is a virtue” among Japanese people as seen from social psychology. Seminar co-sponsored by Pfizer and Eisai.
+9. NDB open data: https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000177182.html
+10. DPC Open Data: https://www.e-stat.go.jp/ (Survey related to impact assessment of DPC introduction)
+11. Japan Institute for Clinical Epidemiology Research NDB open data re-aggregation: https://icer.tokyo/materials/ndb_opendata_replication/

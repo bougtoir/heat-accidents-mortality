@@ -214,3 +214,224 @@ PAIN OUT 10カ国研究(2022)が示したように、「国」変数が説明す
 10. PAIN OUT website: https://www.pain-out.eu/
 11. MIMIC-IV: https://physionet.org/content/mimiciv/
 12. GBD 2021: https://ghdx.healthdata.org/gbd-2021/data-input-sources
+
+---
+
+# English Translation
+
+---
+
+# Regional and cultural differences in postoperative pain: Verifiability using open data and research design proposals
+
+## Introduction
+
+It is widely accepted that there are regional and cultural differences in the expression and perception of pain. In this report, we will examine whether there are regional differences in postoperative pain per surgery (1) whether it can be verified using open data, and (2) what the research design should be.
+
+---
+
+## 1. Overview of existing evidence
+
+### 1.1 Previous research on international comparison of postoperative pain
+
+| Research | Data source | Subject | Main findings |
+|------|-------------|------|---------|
+| Zaslansky et al. (2018) BJA | PAIN OUT | Orthopedic surgery, US vs. international | US patients have higher worst pain intensity and use more opioids. Significant difference in international comparison |
+| PAIN OUT 10 countries study (2022) Eur J Pain | PAIN OUT | 10,415 people from 10 countries | Only about 12% of the variance can be explained by country and surgical department, and 88% is due to inter-facility/individual variation |
+| Huang et al. (2025) Glob Health Res Policy | PAIN OUT (7 Asian regions) | 5,093 people | Confirmed differences in network structure in pain outcomes and opioid usage even within the Asian region |
+| Macchia et al. (2025) Commun Med | Gallup World Poll, etc. | 202,898 people from 22 countries | Large differences between countries in the prevalence of general pain (60% in Egypt vs. 25% in Israel) |
+| Zimmer et al. (2022) Pain | WHO WHS, etc. | 52 countries | Country-level contextual factors (GDP, medical expenses, etc.) are associated with pain prevalence |
+| Al-Hashimi et al. (2015) Br J Pain | Single center (UK) | By ethnicity (white, South Asian, black) | South Asian patients have higher postoperative NRS pain scores and fewer opioid prescriptions |
+| Rogger et al. (2023) Curr Pain Headache Rep | Review | Cultural framework and acute pain | Cultural and ethnic backgrounds strongly influence pain perception, expression, and management |
+| Jones et al. (2025) J Clin Anesth | Meta-analysis | Postoperative pain management by race/ethnicity | Non-white patients are 18% less likely to receive regional anesthesia |
+**Key Point**: There is strong evidence of regional and cultural differences in postoperative pain scores and pain management. However, ``regional differences'' include (a) differences in pain perception and expression, (b) differences in analgesic protocols, and (c) differences in facility-level quality, making it difficult to isolate pure ``cultural differences in pain perception.''
+
+---
+
+## 2. Verifiability through open data
+
+### 2.1 List of candidate data sources
+
+| Data Source | Access | International Comparison | Postoperative Pain Score | Surgery Type | Race/Ethnicity/Country | Rating |
+|-------------|---------|---------|------|---------|------------|------|
+| **PAIN OUT** (Jena University) | Collaborative research agreement required (not completely open) | More than 40 countries | NRS (IPO-Q) | By surgical department | Country/facility | **Optimal** |
+| **MIMIC-IV** (PhysioNet) | Certification system (free after completing CITI) | Single facility in the United States | Pain score records | Surgery codes available | Race/ethnicity available | **Next best** |
+| **eICU-CRD** (PhysioNet) | Certification system | US multi-center | Limited | ICU patient-centered | Race-based | Ancillary |
+| **INSPIRE** (Korea) | Via PhysioNet | Single facility in Korea | Vitals only | With surgery code | Single country | Limited |
+| **NIS/HCUP** (AHRQ) | Paid license | Nationwide | No pain score | ICD procedure code | Ethnicity | Unsuitable |
+| **ACS-NSQIP** | Participating facilities only | US + some parts of Canada | No pain score | By procedure | With race | Not suitable |
+| **GBD 2021** (IHME) | Free download | 204 countries | Chronic pain DALYs | Non-specific postoperatively | By country | Indirect |
+| **Gallup World Poll** | Paid license | Over 140 countries | "physical pain yesterday" | Non-specific after surgery | By country | Indirect |
+| **QUIPS** (Germany) | Joint research in Germany | Domestic Germany | NRS | By surgical procedure | Limited | Limited to Germany |
+
+### 2.2 Detailed evaluation of each data source
+
+#### A. PAIN OUT registry (most likely)
+- **Overview**: International Postoperative Pain Registry (NCT02083835) operated by Jena University. Started in 2009 with goal of 200,000 cases and will continue until 2030.
+- **Variables**: Multidimensional pain outcomes (worst pain, time in severe pain, functional impairment, satisfaction, etc.) by IPO-Q (International Pain Outcomes Questionnaire), analgesic usage amount, patient background
+- **Region**: Validated in 40+ countries and 20+ languages
+- **Access**: Not completely open data. Collaborative research proposals should be submitted to the Jena University PAIN OUT team (ruth.zaslansky@med.uni-jena.de). However, many external collaborative research papers have already been published, and the hurdles to access are relatively low.
+- **Verifiability**: **High**. Using country/region as an independent variable and surgical method as a stratification factor, regional differences in postoperative pain scores can be verified using a multilevel model.
+
+#### B. MIMIC-IV (Can be verified independently)
+- **Summary**: EHR of Beth Israel Deaconess Medical Center (Boston, USA), approximately 130,000 hospitalizations, including ICU
+- **Variables**: pain score (in chartevents), surgery code, race/ethnicity, age, gender, various clinical data
+- **Limitations**: "Regional differences" cannot be directly verified due to single facility and single country. However, **racial/ethnic differences within the same facility** can be verified.
+- **Access**: PhysioNet credentialed access (free after completing CITI Human Subjects Research course)
+- **Verifiability**: **Moderate**. This can be partially verified as ``interethnic differences in the same medical environment'' rather than ``regional differences.'' By looking at the differences under the same analgesic protocol, it is possible to understand cultural differences in pain perception.
+
+#### C. GBD 2021 + Gallup World Poll (as an ecological study)
+- **Summary**: International comparative data on country-level pain burden (DALYs) and pain prevalence
+- **Limitations**: Not specific for postoperative pain. Mainly chronic pain (lower back pain, neck pain, osteoarthritis, etc.).
+- **Verifiability**: **Low (indirect)**. Although it is not suitable for verifying ``postoperative pain per surgery,'' it is useful as supplementary data that shows regional differences in national pain sensitivity as a background.
+
+### 2.3 Overall Judgment
+
+| Verification level | Feasibility | Recommended data |
+|------------|------------|------------|
+| International comparison (favorite) | Joint research agreement required | PAIN OUT |
+| Comparison between ethnic groups within the same facility | Ready to start | MIMIC-IV |
+| Country-level ecological correlates | Ready to start | GBD 2021 + surgery volume data |
+**Conclusion: Verification is possible to some extent with open data, but the most appropriate data (PAIN OUT) is not completely open and requires a collaborative research agreement. Ethnic comparisons using MIMIC-IV can be performed immediately. **
+
+---
+
+## 3. Research design proposal
+
+### 3.1 Why simple international comparisons are not enough
+
+As shown in the PAIN OUT 10 Country Study (2022), the “country” variable explains only a few percent of the total variance, and the variation between facilities and individuals is overwhelmingly large. This is due to the following confounding factors:
+
+- **Institutional differences in analgesic protocols** (biggest confound)
+- **Differences in surgical composition between countries**
+- **Systematic differences in patient demographics** (age, BMI, comorbidities)
+- **Differences in healthcare systems and access**
+- **Linguistic equivalence of pain rating scales**
+
+### 3.2 Recommended design
+
+#### Design proposal A: Multi-level cross-sectional research (PAIN OUT utilization/favorite)
+
+````
+Research structure (3-level nested structure):
+  Level 3: Country/Region (Cultural Area)
+  Level 2: Facility (hospital)
+  Level 1: Patient (individual)
+````
+
+**Methodology**:
+- **Purpose**: Divide the variance in postoperative pain outcomes into “country,” “facility,” and “individual,” and estimate country-level effect sizes.
+- **Statistical model**: 3-level random intercept model (multilevel model / hierarchical linear model)
+  - Outcome: worst pain NRS, % time in severe pain, functional impairment, satisfaction
+  - Level 1 covariates: age, gender, BMI, ASA-PS, surgical method, anesthesia method, comorbidities
+  - Level 2 covariates: hospital size, pain management system (APS, etc.), whether it is a teaching hospital or not
+  - Level 3 covariates: country (cultural proxy), HDI, medical expenditure to GDP ratio, opioid regulation level
+- **Sample size**: At least 15 countries at Level 3 (for stability of ICC estimation), 50-100 cases per site
+- **Main analysis**: Decomposition of ICC (intraclass correlation coefficient) → If the country-level ICC is significant, it suggests the existence of regional differences
+- **Sensitivity analysis**: Stratify by surgical procedure (e.g. TKA, caesarean section, abdominal surgery) to remove surgical confounding
+
+**Advantages**: Hierarchical control of confounding possible, leveraging existing PAIN OUT infrastructure
+**Challenge**: Need to negotiate PAIN OUT data access
+
+#### Design proposal B: Comparison between ethnic groups within the same facility (MIMIC-IV, immediate implementation possible)
+
+````
+Study structure: retrospective cohort
+  Target: Surgical patients in MIMIC-IV
+Exposure: Race/Ethnicity (White, Black, Asian, Hispanic, Other)
+  Outcome: Time series of postoperative pain score (NRS)
+````
+
+**Methodology**:
+- **Purpose**: Are there differences in postoperative pain scores between racial/ethnic groups at the same facility and under the same analgesic environment?
+- **Statistical Model**:
+  - Mixed effects model (repeated measurements: pain score trajectory from 0-72h postoperatively)
+  - Adjust surgical method and background factors using propensity score matching or IPTW (inverse probability of treatment weighting)
+- **Strengths**: Can completely eliminate facility differences and protocol differences (because it is a single facility)
+- **Confounding control**: age, gender, BMI, ASA-PS, surgical method (CPT code), anesthesia method, intraoperative opioid usage, comorbidities (Elixhauser/Charlson)
+- **Additional Analysis**: Ethnic differences in opioid consumption (comparing not only pain scores but also analgesic demand)
+- **Sample Size**: There were approximately 130,000 hospitalizations in MIMIC-IV, a significant proportion of which were surgical patients. We can expect sufficient samples by race (White ~68%, Black ~8%, Asian ~3%, Hispanic ~3%)
+**Advantages**: Completely open data allows immediate start, completely eliminating confounding by facility differences.
+**Challenges**: Single institution (Boston) limits generalizability. Examination of ``ethnic differences'' rather than ``regional differences.''
+
+#### Design proposal C: Ecological study (GBD + surgery volume data)
+
+````
+Research structure: National ecological cross-sectional study
+  Unit: Country
+  Exposure: Culture/Region/SDI
+  Outcome: Ratio of pain-related DALYs/number of surgeries
+````
+
+**Methodology**:
+- Combine chronic pain DALYs data (by country) from GBD 2021 with surgery volume estimates from the Lancet Commission on Global Surgery
+- **Limitations**: Not specific to postoperative pain, high risk of ecological fallacy
+
+### 3.3 Summary of improvement proposals
+
+| Current issues | Improvement proposals |
+|------------|---------|
+| Country and facility effects cannot be separated | Adopting a three-level multilevel model and hierarchically decomposing the ICC |
+| Confounding surgical procedure composition | Stratification of surgical procedures (limited to standard surgeries such as TKA, C-section, etc.) |
+| Institutional differences in analgesic protocols | Including analgesic management system as a Level 2 covariate or MIMIC-IV type single-institution design |
+| NRS linguistic equivalence is unclear | Check IPO-Q language validation paper + Add DIF (Differential Item Functioning) analysis |
+| The operational definition of "culture" is ambiguous | Hofstede's cultural dimensions (individualism vs. collectivism, etc.) and WVS (World Values Survey) data are used as Level 3 covariates |
+| Regions with insufficient sample size | Prioritize recruitment to facilities in Asia, Africa, and South America (PAIN OUT expansion) |
+| Limitations of cross-sectional studies | Prospective design with additional preoperative pain threshold measurement (QST: quantitative sensory testing) in the same patient if possible |
+
+---
+
+## 4. Specific action plan
+
+### Phase 1: Immediate implementation (0-3 months) — MIMIC-IV analysis
+1. Obtained PhysioNet certification (CITI course completion)
+2. Extraction of surgical patient cohort within MIMIC-IV
+3. Check availability and completeness of pain score data
+4. Postoperative pain score comparison by race/ethnicity (adjusted)
+5. Preprint release
+
+### Phase 2: Start of joint research (3-6 months) — PAIN OUT
+1. Submit a research proposal to the PAIN OUT team (Professor Zaslansky, Jena University)
+2. Conclusion of data usage agreement
+3. Formulation of analysis plan for 3-level multilevel model
+4. Pre-registration of SAP (Statistical Analysis Plan) (PROSPERO or OSF)
+
+### Phase 3: Prospective study (6-24 months) — New data collection
+1. Facility recruitment in 3-5 countries (e.g. Japan, Germany, Brazil, Nigeria, USA)
+2. Limited to standard surgery (TKA or Caesarean section)
+3. Uniform protocol for IPO-Q + QST (preoperative pain threshold) + cultural variables (language, beliefs, pain belief scale)
+4. Pre-registration (ClinicalTrials.gov)
+5. This paper
+
+---
+
+## 5. Conclusion
+
+**Q1: Can it be verified using open data? → Partially YES**
+- "Ethnic differences within the same facility" using MIMIC-IV can be verified immediately (completely open)
+- The PAIN OUT registry, which is the favorite for international comparisons, is not completely open, but it is relatively easy to access through a joint research agreement.
+- Completely open data such as GBD is not specific to postoperative pain and remains indirect evidence.
+
+**Q2: Design improvement proposal**
+- **The biggest challenge is separating "national differences" and "facility differences"**. 3-level multilevel model required
+- **Standardization of surgical procedures** (limited to TKA, C-section, etc.) eliminates surgical confounds
+- **Cultural validity of pain assessment** (DIF analysis) should be incorporated
+- Utilize Hofstede cultural dimensions and WVS data for **operational definition of culture**
+- The most powerful design is a **prospective unified protocol study of standard surgery patients in multiple countries + QST**
+
+---
+
+## References (main)
+
+1. Zaslansky R et al. (2018) Pain after orthopedic surgery: differences in patient reported outcomes in the United States vs internationally. *Br J Anaesth* 120(4):790-797.
+2. PAIN OUT Research Group (2022) Status quo of pain-related PROs and perioperative pain management in 10,415 patients from 10 countries. *Eur J Pain* 26:2120-2140.
+3. Huang Y et al. (2025) Differentiating network structures and sex differences of pain-related outcomes in seven Asian regions. *Glob Health Res Policy* 10:51.
+4. Macchia L et al. (2025) Demographic variation in pain across 22 countries. *Commun Med* 5:154.
+5. Rogger R et al. (2023) Cultural Framing and the Impact on Acute Pain and Pain Services. *Curr Pain Headache Rep* 27:429-436.
+6. Al-Hashimi M et al. (2015) Influence of ethnicity on the perception and treatment of early post-operative pain. *Br J Pain* 9(3):167-172.
+7. Jones A et al. (2025) Racial and ethnic differences in acute post-operative pain management: Systematic review and meta-analysis. *J Clin Anesth.*
+8. Zimmer Z et al. (2022) A global study of pain prevalence across 52 countries. *Pain* 163(9):1740-1750.
+9. Shah N et al. (2024) Unraveling the Tapestry of Pain: Ethnic Variations, Cultural Influences, and Physiological Mechanisms. *Cureus* 16(5):e60692.
+10. PAIN OUT website: https://www.pain-out.eu/
+11. MIMIC-IV: https://physionet.org/content/mimiciv/
+12. GBD 2021: https://ghdx.healthdata.org/gbd-2021/data-input-sources
+

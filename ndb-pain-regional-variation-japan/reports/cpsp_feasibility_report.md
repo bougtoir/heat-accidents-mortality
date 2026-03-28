@@ -101,3 +101,111 @@ NDB第10回の麻酔（L区分）に外来の神経ブロック算定回数が�
 1. **即座に実行可能**: デザインA〜Cを追加解析としてPhase 1論文に補足（Supplementary Analysis）
 2. **論文のDiscussionで**: 「本研究の急性期鎮痛薬指標に加え、外来神経障害性疼痛薬をCPSPプロキシとして検討したが、疾患特異性の限界がある」と記載
 3. **Phase 2への橋渡し**: NDBサンプリングデータセット（臨床疫学研究推進機構が公開）を用いて、手術後の神経障害性疼痛薬新規処方を同一患者で追跡する研究を提案
+
+---
+
+# English Translation
+
+---
+
+# Can “prolonged postoperative pain (CPSP)” be detected using NDB open data?
+
+## Conclusion: Cannot be picked up directly, but can be considered indirectly using proxy indicators
+
+---
+
+## 1. Reasons why direct capture is not possible
+
+NDB open data does not include **medical disease classification (ICD diagnosis name)**.
+
+- Only dental injuries and diseases (caries and periodontal disease) are published.
+- Direct search is not possible with ICD-10 code G89.28 (Other chronic postprocedural pain) etc.
+- Therefore, it is **impossible** to directly aggregate the diagnosis of "prolonged postoperative pain" by prefecture.
+
+## 2. Available proxy indicators
+
+### 2A. Neuropathic pain treatment drug (outpatient prescription)★Most promising
+
+The following are listed in NDB 10th open data outpatient prescription drugs (outside the hospital) by prefecture:
+
+| Drug groups | Main items | Total number of outpatient prescriptions | Number of items |
+|---------|---------|-------------|---------|
+| Pregabalin series | Lyrica, Pregabalin OD tablets (many GE) | Approximately 1 billion tablets | 60+ |
+| Mirogabalin | Tarige | Approximately 400 million tablets | 10+ |
+| Duloxetine | Cymbalta, Duloxetine CAP/OD tablets | Approximately 350 million tablets scale | 30+ |
+| Tramadol | Tramset, Tramadol OD tablets | Approximately 110 million tablets | 3 |
+| Neurotropin | Neurotropin Tablets | Approximately 460 million units | 1 |
+
+**Strengths**: Data by prefecture is available → By dividing by the number of surgeries, it is possible to calculate "outpatient prescriptions for neuropathic pain drugs per surgery"
+
+**Limits**:
+- Pregabalin is also used in diabetic neuropathy, postherpetic neuralgia, and fibromyalgia.
+- Duloxetine is also used for depression and anxiety disorders
+- **Not specific for persistent postoperative pain**
+
+### 2B. Nerve block procedure (outpatient)★Possible
+
+The number of outpatient nerve block calculations listed in NDB 10th Anesthesia (L category) by prefecture:
+
+| Procedure | Calculated number of outpatient visits (nationwide) |
+|------|-------|
+| Sacral epidural block | 1,162,351 |
+| Cervicothoracic lumbar paravertebral nerve block | 1,050,591 |
+| Lumbar epidural block | 722,614 |
+| Suprascapular nerve block | 510,018 |
+| Stellate ganglion block | 377,671 |
+| Trigger point injection | 74,738 |
+| Continuous nerve block injection | 86,793 |
+
+**Strengths**: Outpatient nerve blocks are more likely to reflect chronic pain management
+**Limitations**: Includes chronic pain other than CPSP (lower back pain, CRPS, postherpetic neuralgia, etc.)
+
+### 2C. Spinal cord stimulator implantation (K190)
+
+- Last resort for intractable chronic pain
+- Data by prefecture for both inpatient and outpatient care
+- **Specificity for CPSP is relatively high**, but the number of cases is small and statistical power is limited
+
+## 3. Viable design ideas
+
+### Design A: Regional differences in outpatient neuropathic pain medicine/surgery ratio (immediately actionable)
+
+````
+Indicator = Σ (pregabalin + mirogabalin + duloxetine) outpatient prescription quantity / Σ number of surgeries
+````
+
+- Calculated by prefecture and compared between regional blocks
+- **Outpatient chronic pain proxy** to complement Phase 1 “inpatient analgesics/surgery”
+- Indirectly detect areas where neuropathic pain drugs are used frequently in outpatient settings after surgery
+
+**Interpretation Note**: This indicator is “all chronic neuropathic pain/all surgeries” and is not limited to CPSP. Confounded by aging rate, diabetes prevalence, etc.
+
+### Design B: Regional differences in outpatient nerve block/surgery ratio (immediately possible)
+
+````
+Index = Σ(calculated number of outpatient nerve blocks) / Σnumber of surgeries
+````
+
+- Outpatient nerve blocks strongly suggest chronic pain management
+- Separable from acute nerve block during hospitalization (accounted for outpatients only)
+
+### Design C: Integrated analysis with Phase 1
+- Phase 1 “hospital analgesics/surgery” (acute phase pain proxy)
+- Design A/B “outpatient chronic pain medicine/surgery” (prolonged pain proxy)
+- Examining the correlation and divergence between both indicators by region
+- ** “Regions where many analgesics are used in the acute phase, but few drugs for neuropathic pain are used in the chronic phase” **=Is acute phase pain management good and CPSP transition suppressed?
+
+## 4. Data needed to truly capture CPSP
+
+| Level | Data Source | What You Can Do |
+|--------|-------------|-------------|
+| Level 1 (current) | NDB open data | Only the above proxy indicators |
+| Level 2 | NDB sampling dataset | New prescription of pregabalin 3 months after surgery can be tracked in the same patient |
+| Level 3 | NDB special extraction | Linkage of surgical receipt + subsequent outpatient receipt with injury/disease name. Direct identification with G89.28 etc. |
+| Level 4 | DPC individual data | Precise estimation of CPSP incidence by surgical procedure and facility |
+
+## 5. Recommended
+
+1. **Ready to execute**: Designs A to C are supplementary analyzes to the Phase 1 paper (Supplementary Analysis)
+2. **Discussion of the paper**: ``In addition to the acute analgesic index in this study, outpatient neuropathic pain medications were examined as a proxy for CPSP, but there are limitations in disease specificity.''
+3. **Bridge to Phase 2**: Propose a study to track new prescriptions for neuropathic pain drugs after surgery in the same patient using the NDB sampling dataset (published by the Japan Clinical Epidemiology Research Promotion Agency)
