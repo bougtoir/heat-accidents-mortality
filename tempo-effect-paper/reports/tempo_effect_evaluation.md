@@ -205,3 +205,215 @@ Lancet Correspondenceとしては、**テンポ効果という人口学的概念
 18. Yoo SH, Sobotka T. Ultra-low fertility in South Korea: the role of the tempo effect. *Demographic Research*. 2018;38(22):549-576.
 19. GBD 2021 Fertility and Forecasting Collaborators. Global fertility in 204 countries and territories, 1950–2021, with forecasts to 2100. *The Lancet*. 2024;403(10440):2057-2099.
 20. Sobotka T et al. A concentration of reproduction to later ages? A worldwide assessment of trends in fertility timing. *Population and Development Review*. 2026.
+
+---
+
+# English Translation
+
+---
+
+# “Reconsidering the tempo effect” paper idea evaluation report
+
+## 1. Outline of the idea
+
+| Item | Contents |
+|------|------|
+| **Title** | Tempo effects revisited: reporting simultaneously living population for policy relevance |
+| **Submit to** | The Lancet (Correspondence, up to 400 words) |
+| **Core Claim** | Translating the tempo effect (shift in age at first birth AFB) into a stock indicator called "simultaneously living population" to provide policy makers with intuitive numbers |
+| **Model** | Endogenous update model + Gompertz survival, AFB=20/25/30, σ (variance) narrow/baseline/wide |
+| **Target countries** | China (low birth rate, long life expectancy) vs Democratic Republic of Congo (DRC, high birth rate, short life expectancy) |
+| **Main results** | China: Approximately 1.08 times after 100 years (difference ≈ 62 million people), DRC: Approximately 0.76 times after 100 years (difference ≈ 100 million people) |
+
+---
+
+## 2. Prior literature mapping
+
+### 2.1 Basic theory of tempo effects (Rate measures)
+
+| Literature | Contents | Relationship with this idea |
+|------|------|-------------------|
+| **Bongaarts & Feeney (1998)** "On the Quantum and Tempo of Fertility" *Population and Development Review* | Proposed tempo-adjusted TFR to remove tempo distortion from period TFR. Formulating the phenomenon in which shifts in birth timing distort period indicators | **Direct starting point**. However, BF only corrects the birth rate index and does not translate it into population stock (number of live population).
+| **Bongaarts & Feeney (2006)** "The Quantum and Tempo of Life-Cycle Events" *Vienna Yearbook of Population Research* | Generalizes the concept of tempo distortion to all life cycle events such as birth, death, and marriage | Shows the generality of tempo effects, but still focuses on correction of flow (rate) indicators |
+| **Sobotka (2004)** *Postponement of Childbearing and Low Fertility in Europe* | Comprehensive analysis of the relationship between childbearing postponement and lower TFR across Europe. Perform period-cohort comparison and tempo-quantum decomposition | Key literature showing the empirical importance of tempo effects. However, it does not deal with translation to population size |
+| **Yoo & Sobotka (2018)** "Ultra-low fertility in South Korea" *Demographic Research* | Explaining South Korea's TFR<1.3 using the tempo effect. Applying tempo-parity adjusted TFR (TFRp*) | A precedent example that explains the extremely low birth rate in East Asia using tempo. This idea is close to the context of China analysis, but does not deal with population size |
+| **Mazzuco & Zanotto (2025)** "Tempo effects in period TFR" *Demographic Research* | The latest method to decompose tempo distortion into variance/skewness changes from a cohort perspective | The latest tempo research. Partially in line with this idea of varying the dispersion parameter σ |
+
+### 2.2 Connection between tempo effects and population size (Stock measures) — **Most competitive prior research group**
+| Literature | Contents | Relationship with this idea |
+|------|------|-------------------|
+| **Goldstein, Lutz, & Scherbov (2003)** "Long-Term Population Decline in Europe: The Relative Importance of Tempo Effects and Generational Length" *Population and Development Review* 29(4):699-707 | **Most important prior research that directly connects tempo effects to population size**. The impact of changes in birth timing on the population is broken down into three factors: (a) tempo effect (temporary), (b) generation length effect (effect on long-term growth rate), and (c) tempo-quantum interaction. Numerical simulations were conducted in 15 EU countries. Conclusion: Tempo effect overwhelms generation length effect for 200 years | **Biggest competing literature**. We have already implemented the core transition of this idea from tempo to population size. However, (1) the indicator is population size (ratio of births) and is not explicitly framed as "co-resident population", (2) it targets only the EU, and (3) the anchor is MAC rather than AFB.
+| **Lutz, O'Neill, & Scherbov (2003)** "Europe's Population at a Turning Point" *Science* 299:1991-1992 | Demonstrates Europe's negative population momentum and quantifies how continued tempo effects accelerate population decline and aging. Expressing policy implications as **additional working-age population x person-years** | A pioneering paper that emphasizes the "policy relevance of tempo effects." We are proposing a policy indicator called person-years, which is an attempt at policy translation similar to the "co-resident population" of this idea.
+| **Chen, I-Chun (2020)** "Population Growth Due to Earlier Childbearing" *Modern Economy* 11:1966-1975 | **Directly modeling the impact of earlier childbearing on the total population using the OLG model**. Three pathways were identified: tempo effect, baby boom effect, and echo effect. Clarifying the mechanism by which the population increases due to "many generations living at the same time". Numerical application to Japan | **Previous research that is conceptually closest**. The concept of "simultaneous existence of multiple generations = simultaneous living population" has already been presented in almost the same form. However, (1) a journal with low academic influence (SCIRP), (2) analysis only in Japan, and (3) no elaboration of Gompertz survival or σ band.
+
+### 2.3 Classical theory of population momentum and overlapping generations
+
+| Literature | Contents | Relationship with this idea |
+|------|------|-------------------|
+| **Keyfitz (1971)** "On the Momentum of Population Growth" *Demography* 8(1):71-80 | Formulates the inertia (momentum) of population growth inherent in the age structure. Even if the birth rate immediately reaches the replacement level, the population will continue to grow | This idea deals with the theoretical basis of ``changes in population size due to overlapping generations.'' However, Keyfitz focuses on changes in fertility levels and does not directly deal with changes in timing |
+| **Ryder (1964, 1975)** Translation formula | Formula for "translating" cohort and period birth rates. Formulating the relationship between generation length and growth rate | Classical theoretical basis. The model of this idea is an extension of Ryder's translation formula |
+| **Goldstein (2002)** "Population momentum for gradual demographic transitions" *Demography* | Reformulating momentum under gradual fertility transitions | Complementary theory. Methodologically related to this idea of ​​dealing with gradual changes in AFB |
+| **Feichtinger, Rau, & Novak (2025)** "On the momentum of pseudostable populations" *Demographic Research* | Extending classical momentum theory to pseudostable populations | Latest advances in momentum theory. There is a theoretical connection with the model of this idea |
+
+### 2.4 Global trends in birth timing and WPP predictions
+
+| Literature | Contents | Relationship with this idea |
+|------|------|-------------------|
+| **Sobotka et al. (2026)** "A Concentration of Reproduction to Later Ages?" *Population and Development Review* | Comprehensive assessment of the global trend toward later birth timing using WPP 2024 | Latest literature supporting the motivation behind this idea |
+| **GBD 2021 / Lancet (2024)** "Global fertility in 204 countries" | Forecast based on CCF50 (cohort completed birth rate at age 50). Based on cohort indicators rather than period TFR | Fertility prediction published in Lancet. A different approach than WPP, but it does not explicitly deal with tempo effects |
+| **Rodriguez (2006)** "Demographic translation and tempo effects" *Demographic Research* | Integrating the Ryder and BF frameworks with an accelerated failure time model | Theoretical bridge. This idea provides a theoretical basis for the renewal model |
+
+---
+
+## 3. Evaluation of current position (Positioning)
+
+### 3.1 Positioning in the knowledge space
+
+````
+The concept of tempo effects (BF 1998)
+    │
+    ├── Rate measures (TFR correction) ────── Mature research area
+    │ Sobotka, Yoo, Kohler & Ortega, Luy, Mazzuco...
+    │
+    ├── Stock measures (translation to population size)
+    │ │
+│ ├── Goldstein, Lutz, Scherbov (2003) ── EU/analytical decomposition
+    │ ├── Lutz et al. (2003, Science) ── EU・person-years
+    │ ├── Chen (2020) ── Japan, OLG model, generation overlap
+    │ │
+    │ └── ★ This idea ── China/DRC comparison/AFB anchor/
+    │ Gompertz survival/policy framing of “co-resident population”
+    │
+    └── Connection with WPP prediction ─ This idea claims that “absence of tempo is a factor in forecast correction”
+````
+
+### 3.2 Differences from previous research
+
+| Difference dimension | Goldstein et al. (2003) | Chen (2020) | **Book idea** |
+|-----------|------------------------|-------------|---------------|
+| **Target area** | 15 EU countries | Japan | **China vs DRC** (contrasting demographic transition stages) |
+| **Anchor indicator** | MAC (average age at birth) | Age at birth d | **AFB (age at first birth)** |
+| **Model** | Stable population + numerical simulation | OLG model (discrete) | **Update model + Gompertz survival (continuous)** |
+| **Output indicators** | Birth rate/population ratio | Total population | **“Simultaneous population” multiplier** |
+| **Dispersion treatment** | None | None | **σ narrow/baseline/wide band** |
+| **Policy framing** | Temporal effects of fertility policies | Preterm birth policies | **Proposal for a policy indicator called "co-resident population"** |
+| **Journal** | PDR (Top Journal) | Modern Economy (Low IF) | **Lancet (Highest IF Medical Journal)** |
+
+---
+
+## 4. Evaluation of novelty
+
+### 4.1 Elements that are recognized as novel
+
+1. **Framing “simultaneously living population”**
+   - Previous studies have not systematically attempted to explicitly name or propose population stock indicators as the "translation target" of the tempo effect.
+   - An indicator of “how many people are alive at the same time” that policy makers can intuitively understand is more accessible than TFR or NRR.
+   - **Rating: Moderate Novelty** (The concept itself implicitly exists in previous studies, but the explicit framing is new)
+2. **AFB (age at first birth) used as anchor**
+   - WPP uses MAC and BF is also MAC-based, while AFB is adopted as a policy anchor
+   - AFB is directly linked to decision-making for first births and has clear connections to policy interventions (childcare support, infertility treatment subsidies, etc.)
+   - **Rating: Small to Moderate Novelty** (Technically a special case of MAC, but a meaningful choice from a policy perspective)
+
+3. **Contrastive comparison of China vs DRC**
+   - Shows that the direction and magnitude of the tempo effect are asymmetric between periods of population growth (DRC) and population decline (China)
+   - Previous studies have mainly focused on Europe, Japan, and South Korea, and there is little comparison with sub-Saharan Africa.
+   - **Rating: Moderate Novelty** (Valuable as a step-by-step expansion with geographic and demographic transitions)
+
+4. **Sensitivity analysis of σ (variance)**
+   - Visualize the range of uncertainty by varying the variance of birth age by narrow/baseline/wide
+   - In line with Mazzuco & Zanotto (2025) showing the importance of σ from a cohort perspective.
+   - **Evaluation: Minor novelty** (valid as a method for sensitivity analysis, but not methodological innovation)
+
+### 4.2 Concerns about novelty
+
+1. **Overlap with Goldstein et al. (2003)**
+- The core logic of tempo effect → population size has already been announced in PDR
+   - This idea does not perform analytical decomposition (tempo x generation length x quantum interaction) and is inferior in theoretical depth.
+   - **Countermeasure**: Explicitly cite Goldstein et al. and emphasize that this paper is a contribution as "policy translation"
+
+2. **Conceptual proximity with Chen (2020)**
+   - The mechanism of "population increasing due to simultaneous survival of multiple generations" is conceptually almost the same.
+   - However, Chen's paper has limited academic influence in SCIRP journals and has only a few citations.
+   - **Countermeasure**: Citing Chen, this paper shows that it has been refined with continuous models, Gompertz survival, and comparative analysis.
+
+3. **Isn't "co-resident population" basically another way of saying "total population"?**
+   - For demographers, the number of living people at a certain point in time = total population, and it may not be recognized as a new concept.
+   - **Proposed countermeasure**: Clarify that the analytical framework of counterfactual comparison of tempo effects (multipliers when AFB changes and when it does not) is the core of this paper.
+
+### 4.3 Overall evaluation
+
+| Evaluation items | Evaluation |
+|---------|------|
+| **Theoretical novelty** | **Low to moderate** — The basic mechanism has been established in previous studies |
+| **Methodological novelty** | **Medium** — The combination of AFB anchor + Gompertz + σ band is new |
+| **Empirical novelty** | **Medium to high** — China vs. RDC comparison is not found in previous studies |
+| **Policy Novelty** | **Medium to High** — “Co-resident population” framing is a new policy translation |
+| **Suitability as a Lancet Correspondence** | **Medium to High** — Appropriate for conveying policy messages in short form |
+
+---
+
+## 5. Recommendations
+
+### 5.1 Strengthening points for publication in papers
+
+1. **Clarify the differences from previous documents**
+   - Be sure to cite Goldstein et al. (2003) and Chen (2020) and clearly state the added value of this paper (AFB anchor, China/DRC comparison, policy framing)
+   - An effective problem setting is that ``tempo effects have been studied as rate measures, but there is a lack of a framework for reporting them to policy makers as stock measures.''
+
+2. **Stricter definition of “co-resident population”**
+   - Clarified in the definition that it is not just "total population" but "population multiplier based on AFB counterfactual comparison"
+- Example: "The simultaneously living population ratio (SLPR) is defined as the ratio of total living population under a given AFB scenario to that under a reference AFB scenario, at time t"
+
+3. **Indicate connection with WPP with data**
+   - It will be more persuasive if you can show the correspondence between the WPP 2022 → 2024 revision direction (downward in China, upward in the DRC base year) and the AFB trend.
+   - However, it is difficult to meet the character limit of Correspondence (400 words, 1 figure), so it will be published in a detailed version (Lancet Public Health)
+
+4. **Making policy implications concrete**
+   - "Differences in the number of people living at the same time are directly linked to the temporal allocation of care demands (nursing care, education, medical care)"
+   - China: Late birth → short-term population increase (1.08 times) → front-loading demand for care
+   - DRC: Preterm birth → Short-term population decline (0.76 times) → Postponed demand for care
+
+### 5.2 Posting Strategy
+
+| Strategy | Details |
+|------|------|
+| **Lancet Correspondence** | Appropriate for breaking policy messages. However, there is a high possibility that reviewers will ask about the differences with Goldstein et al. |
+| **Alternative submission destination (in case of rejection)** | Lancet Public Health (detailed version), Population and Development Review (home of tempo discussion), Demographic Research (open access, with accumulation of tempo research) |
+| **Differentiation Strategy** | Position it as a ``translation for policy makers'' rather than a ``method paper for demographers.'' The tempo effect itself is new information for Lancet readers (physicians and public health experts) |
+
+---
+
+## 6. Conclusion
+
+This idea aims to contribute to the mature field of tempo effect research from a relatively new angle: ``Rate→Stock policy translation.'' The core mechanism was previously demonstrated by Goldstein et al. (2003) and Chen (2020), but it can be differentiated in the following points:
+
+- **Intuitive policy framing with AFB as an anchor**
+- **Contrastive comparison of China vs. DRC (asymmetry between population growth and decline phases)**
+- **Visualization of uncertainty by σ band**
+As a Lancet Correspondence, there is value in ``translating'' the demographic concept of tempo effect to medical and public health readers, and the rationality of the submission is acknowledged. However, **Differences from previous literature must be clearly stated within 300 words**, so we strongly recommend including a reference to Goldstein et al. (2003) at the beginning of the text.
+
+---
+
+## List of references (main)
+
+1. Bongaarts J, Feeney G. On the quantum and tempo of fertility. *Population and Development Review*. 1998;24(2):271-291.
+2. Bongaarts J, Feeney G. The quantum and tempo of life-cycle events. *Vienna Yearbook of Population Research*. 2006;4:115-151.
+3. Bongaarts J, Sobotka T. A demographic explanation for the recent rise in European fertility. *Population and Development Review*. 2012;38(1):83-120.
+4. Chen IC. Population growth due to earlier childbearing. *Modern Economy*. 2020;11(11):1966-1975.
+5. Feichtinger G, Rau R, Novak AJ. On the momentum of pseudostable populations. *Demographic Research*. 2025;52(15):445-478.
+6. Goldstein JR. Population momentum for gradual demographic transitions. *Demography*. 2002;39(1):65-73.
+7. Goldstein JR, Lutz W, Scherbov S. Long-term population decline in Europe: the relative importance of tempo effects and generational length. *Population and Development Review*. 2003;29(4):699-707.
+8. Keyfitz N. On the momentum of population growth. *Demography*. 1971;8(1):71-80.
+9. Kohler HP, Ortega JA. Tempo-adjusted period parity progression measures, fertility postponement and completed cohort fertility. *Demographic Research*. 2002;6(6):91-144.
+10. Lutz W, O'Neill BC, Scherbov S. Europe's population at a turning point. *Science*. 2003;299(5615):1991-1992.
+11. Luy M. Tempo effects and their relevance in demographic analysis. *Comparative Population Studies*. 2010;35(3):523-548.
+12. Mazzuco S, Zanotto L. Tempo effects in period TFR: inspecting the role of shape and scale variations in a cohort model. *Demographic Research*. 2025;52(19):559-588.
+13. Ní Bhrolcháin M. Tempo and the TFR. *Demography*. 2011;48(3):841-861.
+14. Rodriguez G. Demographic translation and tempo effects: an accelerated failure time perspective. *Demographic Research*. 2006;14(6):85-110.
+15. Ryder NB. Notes on stationary populations. *Population Index*. 1975;41(1):3-28.
+16. Schoen R. Fertility quantum and tempo with cubic age-specific birth rates. *Demographic Research*. 2024;51(42):1351-1370.
+17. Sobotka T. *Postponement of Childbearing and Low Fertility in Europe*. Amsterdam: Dutch University Press; 2004.
+18. Yoo SH, Sobotka T. Ultra-low fertility in South Korea: the role of the tempo effect. *Demographic Research*. 2018;38(22):549-576.
+19. GBD 2021 Fertility and Forecasting Collaborators. Global fertility in 204 countries and territories, 1950–2021, with forecasts to 2100. *The Lancet*. 2024;403(10440):2057-2099.
+20. Sobotka T et al. A concentration of reproduction to later ages? A worldwide assessment of trends in fertility timing. *Population and Development Review*. 2026.
+
