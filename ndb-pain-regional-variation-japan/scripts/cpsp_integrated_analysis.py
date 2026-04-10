@@ -354,7 +354,11 @@ print(f"  Non-Tohoku mean = {np.mean(Y_neuro[is_tohoku==0]):.1f}")
 # T-test Tohoku vs others
 from scipy import stats
 t_unadj, p_unadj = stats.ttest_ind(Y_neuro[is_tohoku==1], Y_neuro[is_tohoku==0])
-d_unadj = (np.mean(Y_neuro[is_tohoku==1]) - np.mean(Y_neuro[is_tohoku==0])) / np.std(Y_neuro)
+# Pooled within-group SD for Cohen's d
+_tohoku_vals = Y_neuro[is_tohoku==1]
+_rest_vals = Y_neuro[is_tohoku==0]
+_pooled_std = np.sqrt(((len(_tohoku_vals)-1)*np.var(_tohoku_vals, ddof=1) + (len(_rest_vals)-1)*np.var(_rest_vals, ddof=1)) / (len(_tohoku_vals)+len(_rest_vals)-2))
+d_unadj = (np.mean(_tohoku_vals) - np.mean(_rest_vals)) / _pooled_std
 print(f"  T-test: t={t_unadj:.3f}, p={p_unadj:.4f}, Cohen's d={d_unadj:.3f}")
 
 # --- Model 2: Adjusted for confounders ---
@@ -416,7 +420,11 @@ for region in sorted(region_adj.keys(), key=lambda x: np.mean(region_adj[x])):
 print(f"\n  Tohoku adjusted mean: {np.mean(adjusted_cpsp[is_tohoku==1]):+.1f}")
 print(f"  Non-Tohoku adjusted mean: {np.mean(adjusted_cpsp[is_tohoku==0]):+.1f}")
 t_adj, p_adj = stats.ttest_ind(adjusted_cpsp[is_tohoku==1], adjusted_cpsp[is_tohoku==0])
-d_adj = (np.mean(adjusted_cpsp[is_tohoku==1]) - np.mean(adjusted_cpsp[is_tohoku==0])) / np.std(adjusted_cpsp)
+# Pooled within-group SD for Cohen's d
+_tohoku_adj = adjusted_cpsp[is_tohoku==1]
+_rest_adj = adjusted_cpsp[is_tohoku==0]
+_pooled_std_adj = np.sqrt(((len(_tohoku_adj)-1)*np.var(_tohoku_adj, ddof=1) + (len(_rest_adj)-1)*np.var(_rest_adj, ddof=1)) / (len(_tohoku_adj)+len(_rest_adj)-2))
+d_adj = (np.mean(_tohoku_adj) - np.mean(_rest_adj)) / _pooled_std_adj
 print(f"  T-test (adjusted): t={t_adj:.3f}, p={p_adj:.4f}, Cohen's d={d_adj:.3f}")
 
 # ============================================================

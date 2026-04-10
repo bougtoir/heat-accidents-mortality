@@ -321,8 +321,9 @@ for i in range(len(table_data)-1):
         else:
             cell.set_facecolor('#ccffcc')
     # Header
-    table[0, j].set_facecolor('#4472C4')
-    table[0, j].set_text_props(color='white', fontweight='bold')
+    for j in range(len(table_data[0])):
+        table[0, j].set_facecolor('#4472C4')
+        table[0, j].set_text_props(color='white', fontweight='bold')
 
 ax.set_title('Figure 6. 東北地方のCPSP指標：交絡疾患調整前後の比較\n*** p<0.001, ns = not significant', 
              fontsize=13, fontweight='bold', pad=20)
