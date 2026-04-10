@@ -223,7 +223,7 @@ doc.add_page_break()
 
 add_heading_text('薬効分類別サブグループ解析', level=2)
 doc.add_paragraph('東北の鎮痛薬使用量が高いパターンは、すべての薬効分類で一貫していた：')
-doc.add_paragraph('NSAIDs・アセトアミノフェン（薬効分類114）：東北平均37.90（SD 2.99）vs 他37.66（SD 5.49）；Mann-Whitney U=186, P=0.044', style='List Bullet')
+doc.add_paragraph('NSAIDs・アセトアミノフェン（薬効分類114）：東北平均37.90（SD 2.99）vs 他33.66（SD 5.49）；Mann-Whitney U=186, P=0.044', style='List Bullet')
 doc.add_paragraph('あへんアルカロイド系麻薬（薬効分類811）：東北平均1.91（SD 0.35）vs 他1.43（SD 0.27）；Mann-Whitney U=211, P=0.003', style='List Bullet')
 doc.add_paragraph('合成麻薬（薬効分類821）：東北平均0.16（SD 0.06）vs 他0.09（SD 0.04）；Mann-Whitney U=217, P=0.001', style='List Bullet')
 doc.add_paragraph('東北地方は他の日本と比較して、手術あたりのあへんアルカロイド系麻薬が34%多く、合成麻薬が86%多く処方されていた。')
