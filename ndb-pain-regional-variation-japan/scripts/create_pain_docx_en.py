@@ -509,6 +509,17 @@ add_figure(OUTPUT_DIR + 'fig5_phase1_vs_phase2_en.png',
     '(b) Confounder-adjusted: attenuated correlation (r = 0.29, P = 0.052). '
     'Tohoku prefectures (red borders) cluster in the upper-right quadrant.')
 
+doc.add_paragraph(
+    'A comprehensive Z-score heatmap of all per-surgery indices by prefecture '
+    'confirmed the heterogeneous multi-variable pattern across regions (Supplementary Fig. 1).')
+
+add_figure(OUTPUT_DIR + 'sfig1_heatmap_en.png',
+    'Supplementary Fig. 1. Z-score heatmap of all indices by prefecture. '
+    'Each row represents a variable; each column represents a prefecture, '
+    'sorted by neuropathic pain prescribing. Red = above average; blue = below average. '
+    'Tohoku prefectures are marked with red vertical lines. '
+    'The adjusted CPSP index shows a different pattern from the raw neuropathic index.')
+
 doc.add_page_break()
 
 # ============================================================
@@ -641,7 +652,52 @@ doc.add_paragraph(
     'by confounding disease proxies. '
     'Diabetes drug prescribing alone correlated at r = 0.87 with neuropathic pain prescribing, '
     'reflecting the known high prevalence of diabetic neuropathy requiring gabapentinoids. '
-    'After adjustment, the Tohoku effect was attenuated by 62% and became nonsignificant.')
+    'After adjustment, the Tohoku effect was attenuated by 62% and became nonsignificant '
+    '(Table 3).')
+
+# Table 3 - Summary of regression models (cited above)
+add_bold_paragraph('Table 3. ', 'Summary of regression models: the Tohoku effect on neuropathic pain prescribing '
+    'before and after confounder adjustment.')
+table3 = doc.add_table(rows=7, cols=5)
+table3.alignment = WD_TABLE_ALIGNMENT.CENTER
+set_table_borders(table3)
+for i, h in enumerate(['Model', 'Dependent variable', 'Tohoku coeff. / effect size', 'P value', 'Result']):
+    cell = table3.rows[0].cells[i]
+    cell.text = h
+    for paragraph in cell.paragraphs:
+        for run in paragraph.runs:
+            run.bold = True
+t3_data = [
+    ['Model 1', 'Neuropathic pain drugs / surgery (unadjusted)',
+     f'd = {reg["model1_unadjusted"]["cohens_d"]:.3f}',
+     f'{reg["model1_unadjusted"]["p_value"]:.4f}', '***'],
+    ['Model 2', 'Neuropathic pain drugs / surgery (fully adjusted)',
+     f'\u03b2 = {reg["model2_adjusted"]["tohoku_coef"]:.1f}',
+     f'{reg["model2_adjusted"]["tohoku_p"]:.4f}', 'ns'],
+    ['Model 3', 'Core neuropathic drugs (PGB+MGB) (fully adjusted)',
+     f'\u03b2 = {reg["model3_core_neuropathic"]["tohoku_coef"]:.1f}',
+     f'{reg["model3_core_neuropathic"]["tohoku_p"]:.4f}', 'ns'],
+    ['Model 4', 'Nerve blocks / surgery (fully adjusted)',
+     f'\u03b2 = {reg["model4_nerve_blocks"]["tohoku_coef"]:.2f}',
+     f'{reg["model4_nerve_blocks"]["tohoku_p"]:.4f}', 'ns'],
+    ['Model 5', 'Neuropathic pain drugs (acute + confounder adj.)',
+     f'\u03b2 = {reg["model5_integrated"]["tohoku_coef"]:.1f}',
+     f'{reg["model5_integrated"]["tohoku_p"]:.4f}', 'ns'],
+    ['Adj CPSP', 'Confounder-removed residual',
+     f'd = {reg["adjusted_cpsp_test"]["cohens_d"]:.3f}',
+     f'{reg["adjusted_cpsp_test"]["p_value"]:.4f}', 'ns'],
+]
+for r, row_data in enumerate(t3_data):
+    for c, val in enumerate(row_data):
+        table3.rows[r+1].cells[c].text = val
+# Bold the significant row (Model 1)
+for cell in table3.rows[1].cells:
+    for paragraph in cell.paragraphs:
+        for run in paragraph.runs:
+            run.bold = True
+p_note = doc.add_paragraph('*** p < 0.001; ns = not significant')
+p_note.runs[0].font.size = Pt(9)
+p_note.runs[0].font.italic = True
 
 doc.add_paragraph(
     'This has important implications for ecological pain research. '
@@ -745,63 +801,6 @@ doc.add_paragraph(
     'The NDB Open Data used in this study are publicly available from the Ministry of Health, '
     'Labour and Welfare website (https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000177221_00016.html). '
     'Analysis code is available at https://github.com/bougtoir/wip/tree/main/ndb-pain-regional-variation-japan.')
-
-doc.add_page_break()
-
-# ============================================================
-# FIGURES (remaining)
-# ============================================================
-# Table 3 (formerly Fig. 6) - Summary of regression models
-add_bold_paragraph('Table 3. ', 'Summary of regression models: the Tohoku effect on neuropathic pain prescribing '
-    'before and after confounder adjustment.')
-table3 = doc.add_table(rows=7, cols=5)
-table3.alignment = WD_TABLE_ALIGNMENT.CENTER
-set_table_borders(table3)
-for i, h in enumerate(['Model', 'Dependent variable', 'Tohoku coeff. / effect size', 'P value', 'Result']):
-    cell = table3.rows[0].cells[i]
-    cell.text = h
-    for paragraph in cell.paragraphs:
-        for run in paragraph.runs:
-            run.bold = True
-t3_data = [
-    ['Model 1', 'Neuropathic pain drugs / surgery (unadjusted)',
-     f'd = {reg["model1_unadjusted"]["cohens_d"]:.3f}',
-     f'{reg["model1_unadjusted"]["p_value"]:.4f}', '***'],
-    ['Model 2', 'Neuropathic pain drugs / surgery (fully adjusted)',
-     f'\u03b2 = {reg["model2_adjusted"]["tohoku_coef"]:.1f}',
-     f'{reg["model2_adjusted"]["tohoku_p"]:.4f}', 'ns'],
-    ['Model 3', 'Core neuropathic drugs (PGB+MGB) (fully adjusted)',
-     f'\u03b2 = {reg["model3_core_neuropathic"]["tohoku_coef"]:.1f}',
-     f'{reg["model3_core_neuropathic"]["tohoku_p"]:.4f}', 'ns'],
-    ['Model 4', 'Nerve blocks / surgery (fully adjusted)',
-     f'\u03b2 = {reg["model4_nerve_blocks"]["tohoku_coef"]:.2f}',
-     f'{reg["model4_nerve_blocks"]["tohoku_p"]:.4f}', 'ns'],
-    ['Model 5', 'Neuropathic pain drugs (acute + confounder adj.)',
-     f'\u03b2 = {reg["model5_integrated"]["tohoku_coef"]:.1f}',
-     f'{reg["model5_integrated"]["tohoku_p"]:.4f}', 'ns'],
-    ['Adj CPSP', 'Confounder-removed residual',
-     f'd = {reg["adjusted_cpsp_test"]["cohens_d"]:.3f}',
-     f'{reg["adjusted_cpsp_test"]["p_value"]:.4f}', 'ns'],
-]
-for r, row_data in enumerate(t3_data):
-    for c, val in enumerate(row_data):
-        table3.rows[r+1].cells[c].text = val
-# Bold the significant row (Model 1)
-for cell in table3.rows[1].cells:
-    for paragraph in cell.paragraphs:
-        for run in paragraph.runs:
-            run.bold = True
-p_note = doc.add_paragraph('*** p < 0.001; ns = not significant')
-p_note.runs[0].font.size = Pt(9)
-p_note.runs[0].font.italic = True
-
-doc.add_page_break()
-add_figure(OUTPUT_DIR + 'sfig1_heatmap_en.png',
-    'Supplementary Fig. 1. Z-score heatmap of all indices by prefecture. '
-    'Each row represents a variable; each column represents a prefecture, '
-    'sorted by neuropathic pain prescribing. Red = above average; blue = below average. '
-    'Tohoku prefectures are marked with red vertical lines. '
-    'The adjusted CPSP index shows a different pattern from the raw neuropathic index.')
 
 # ============================================================
 # REFERENCES - Updated for new narrative
