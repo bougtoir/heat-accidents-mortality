@@ -382,7 +382,7 @@ doc.add_paragraph(
     f'P < 0.001; Cohen\u2019s d = {reg["model1_unadjusted"]["cohens_d"]:.2f}), '
     'with Iwate (566.7), Aomori (519.3), and Akita (461.1) occupying the top three positions nationally (Fig. 1).')
 
-add_figure(OUTPUT_DIR + 'fig1_neuropathic_unadjusted.png',
+add_figure(OUTPUT_DIR + 'fig1_neuropathic_unadjusted_en.png',
     'Fig. 1. Outpatient neuropathic pain drug prescribing per surgery by prefecture (unadjusted). '
     'Bars represent total neuropathic pain prescriptions (pregabalin + mirogabalin + duloxetine + tramadol + neurotropin) '
     'divided by inpatient surgical procedure count. Tohoku prefectures (red bars with red borders) '
@@ -399,7 +399,7 @@ doc.add_paragraph(
     'These confounders collectively explained 80.4% of the variance in neuropathic pain prescribing '
     f'(R\u00b2 = {reg["model2_adjusted"]["R2"]:.3f} in Model 2; Fig. 2).')
 
-add_figure(OUTPUT_DIR + 'fig2_confounder_correlations.png',
+add_figure(OUTPUT_DIR + 'fig2_confounder_correlations_en.png',
     'Fig. 2. Correlation between outpatient neuropathic pain drug prescribing and confounder disease proxies. '
     'Each dot represents one prefecture. Tohoku prefectures are marked with red borders. '
     'Diabetes drugs show the strongest correlation (r = 0.87).')
@@ -428,7 +428,7 @@ doc.add_paragraph(
     'The Chugoku region emerged as having the highest adjusted CPSP index, '
     'while Tokai had the lowest (Fig. 4).')
 
-add_figure(OUTPUT_DIR + 'fig3_adjusted_cpsp_index.png',
+add_figure(OUTPUT_DIR + 'fig3_adjusted_cpsp_index_en.png',
     'Fig. 3. Confounder-adjusted CPSP index by prefecture. '
     'Residuals from regressing neuropathic pain prescribing on diabetes drugs, herpes antivirals, '
     'antidepressants, and anxiolytics. Positive values indicate higher neuropathic pain prescribing '
@@ -462,7 +462,7 @@ for cell in table2.rows[1].cells:
 
 doc.add_paragraph()
 
-add_figure(OUTPUT_DIR + 'fig4_region_unadj_vs_adj.png',
+add_figure(OUTPUT_DIR + 'fig4_region_unadj_vs_adj_en.png',
     'Fig. 4. Regional comparison of neuropathic pain prescribing: (a) unadjusted and (b) after confounder adjustment. '
     'Tohoku (red border) shifts from the highest region to mid-range after adjustment. '
     'Error bars represent standard deviation.')
@@ -481,7 +481,7 @@ doc.add_paragraph(
     f'while the Tohoku effect remained nonsignificant '
     f'(\u03b2 = {reg["model5_integrated"]["tohoku_coef"]:.1f}, P = {reg["model5_integrated"]["tohoku_p"]:.3f}).')
 
-add_figure(OUTPUT_DIR + 'fig5_phase1_vs_phase2.png',
+add_figure(OUTPUT_DIR + 'fig5_phase1_vs_phase2_en.png',
     'Fig. 5. Integration of Phase 1 (acute perioperative analgesic prescribing) and Phase 2 '
     '(outpatient neuropathic pain prescribing as CPSP proxy). '
     '(a) Unadjusted: positive correlation (r = 0.38, P = 0.008). '
@@ -730,13 +730,13 @@ doc.add_page_break()
 # ============================================================
 # FIGURES (remaining)
 # ============================================================
-add_figure(OUTPUT_DIR + 'fig6_model_comparison_table.png',
+add_figure(OUTPUT_DIR + 'fig6_model_comparison_table_en.png',
     'Fig. 6. Summary of regression models: the Tohoku effect on neuropathic pain prescribing '
     'before and after confounder adjustment. Model 1 (unadjusted) shows a highly significant excess; '
     'all adjusted models show nonsignificant results, indicating confounders explain the regional difference.')
 
 doc.add_page_break()
-add_figure(OUTPUT_DIR + 'sfig1_heatmap.png',
+add_figure(OUTPUT_DIR + 'sfig1_heatmap_en.png',
     'Supplementary Fig. 1. Z-score heatmap of all indices by prefecture. '
     'Each row represents a variable; each column represents a prefecture, '
     'sorted by neuropathic pain prescribing. Red = above average; blue = below average. '
