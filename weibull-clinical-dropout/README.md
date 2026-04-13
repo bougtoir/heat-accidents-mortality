@@ -7,7 +7,7 @@ Five-domain comparative study applying reliability engineering's Weibull distrib
 | Domain | Datasets | Total N | Mean k (range) |
 |--------|----------|---------|----------------|
 | HIV/ART Treatment Discontinuation | 5 regions (IeDEA) | 516,000 | 0.597 (0.582–0.627) |
-| Antipsychotic Discontinuation (Schizophrenia) | 6 (CATIE, EUFEST, Finland) | 63,682 | 0.856 (0.683–0.958) |
+| Antipsychotic Discontinuation (Schizophrenia) | 6 (CATIE, EUFEST, Finland) | 63,682 | 0.857 (0.683–0.958) |
 | Substance Use Disorder Treatment | 6 substance types | 75,000 | 0.639 (0.511–0.733) |
 | Cardiac Rehabilitation | 5 phases/indications | 34,200 | 0.689 (0.613–0.775) |
 | Clinical Trial Dropout | 5 therapeutic areas | 99,000 | 0.708 (0.679–0.742) |
