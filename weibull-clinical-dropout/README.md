@@ -12,7 +12,7 @@ Five-domain comparative study applying reliability engineering's Weibull distrib
 | Cardiac Rehabilitation | 5 phases/indications | 34,200 | 0.689 (0.613–0.775) |
 | Clinical Trial Dropout | 5 therapeutic areas | 99,000 | 0.708 (0.679–0.742) |
 
-**Key finding:** All 28 datasets across all 5 domains yielded k < 1, demonstrating a **universal decreasing failure rate (DFR) pattern** — dropout risk is highest in the early treatment period and decreases monotonically over time.
+**Key finding:** All 27 datasets across all 5 domains yielded k < 1, demonstrating a **universal decreasing failure rate (DFR) pattern** — dropout risk is highest in the early treatment period and decreases monotonically over time.
 
 ## Structure
 

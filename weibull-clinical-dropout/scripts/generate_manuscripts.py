@@ -177,7 +177,7 @@ def generate_comprehensive_manuscript_en():
     
     p = doc.add_paragraph()
     add_text_with_citations(p,
-        'Results: All 28 datasets across all five domains yielded k < 1 (range: 0.511-0.958), '
+        'Results: All 27 datasets across all five domains yielded k < 1 (range: 0.511-0.958), '
         'demonstrating a universal decreasing failure rate pattern. The Weibull model showed '
         'excellent fit (median R\u00b2 = 0.9970, range: 0.9807-0.9997). Domain-level mean k values '
         'were: HIV/ART 0.597 (0.582-0.627), antipsychotic 0.856 (0.683-0.958), substance use '
@@ -374,7 +374,7 @@ def generate_comprehensive_manuscript_en():
     doc.add_heading('3.1 Overall Findings', level=2)
     p = doc.add_paragraph()
     add_text_with_citations(p,
-        'All 28 datasets across all five clinical domains yielded Weibull shape parameter '
+        'All 27 datasets across all five clinical domains yielded Weibull shape parameter '
         'k < 1, indicating a universal decreasing failure rate (DFR) pattern (Table 1). '
         'The overall range of k was 0.511 to 0.958, with a median of 0.689. The Weibull '
         'model demonstrated excellent fit across all datasets, with R\u00b2 values ranging from '
@@ -426,7 +426,7 @@ def generate_comprehensive_manuscript_en():
     run.bold = True
     p.add_run('Cross-domain comparison of Weibull shape parameters (k) with 95% bootstrap '
               'confidence intervals. The red dashed line indicates k = 1 (constant hazard). '
-              'All 28 datasets fall in the k < 1 region, indicating decreasing failure rate '
+              'All 27 datasets fall in the k < 1 region, indicating decreasing failure rate '
               '(early dropout dominant).')
     set_paragraph_spacing(p, space_after=12)
     
@@ -569,7 +569,7 @@ def generate_comprehensive_manuscript_en():
     p = doc.add_paragraph()
     add_text_with_citations(p,
         'The most striking finding of this study is the universality of the DFR pattern '
-        '(k < 1) across all five clinical domains, all 28 datasets, and a combined sample '
+        '(k < 1) across all five clinical domains, all 27 datasets, and a combined sample '
         'exceeding 787,000 patients and trial participants. This consistency is remarkable '
         'given the diversity of conditions, treatments, populations, healthcare settings, and '
         'geographic regions represented. The DFR pattern indicates that dropout risk is highest '
@@ -649,7 +649,7 @@ def generate_comprehensive_manuscript_en():
     add_text_with_citations(p,
         'This five-domain comparative study demonstrates that clinical treatment dropout follows '
         'a universal decreasing failure rate (DFR) pattern when modelled with the Weibull '
-        'distribution. All 28 datasets spanning HIV/ART, antipsychotic medication, substance '
+        'distribution. All 27 datasets spanning HIV/ART, antipsychotic medication, substance '
         'use disorder, cardiac rehabilitation, and clinical trials yielded shape parameter '
         'k < 1, with domain-specific signatures providing clinically interpretable hazard '
         'profiles. The reliability engineering framework offers a quantitative foundation for '
@@ -778,7 +778,7 @@ def generate_comprehensive_manuscript_ja():
     
     p = doc.add_paragraph()
     add_text_with_citations(p,
-        '結果: 全5領域・全28データセットでk < 1が得られ（範囲: 0.511-0.958）、普遍的なDFR'
+        '結果: 全5領域・全27データセットでk < 1が得られ（範囲: 0.511-0.958）、普遍的なDFR'
         'パターンが示された。ワイブルモデルは優れた適合を示した（R\u00b2中央値=0.9970）。'
         '領域別平均k値: HIV/ART 0.597、抗精神病薬 0.856、物質使用 0.639、心臓リハ 0.689、'
         '臨床試験 0.708。')
@@ -849,7 +849,7 @@ def generate_comprehensive_manuscript_ja():
     
     p = doc.add_paragraph()
     add_text_with_citations(p,
-        '全5領域・全28データセットにおいてk < 1が得られ（範囲: 0.511-0.958、中央値: 0.689）、'
+        '全5領域・全27データセットにおいてk < 1が得られ（範囲: 0.511-0.958、中央値: 0.689）、'
         '普遍的なDFRパターンが確認された（表1）。R\u00b2中央値は0.9970であった。')
     set_paragraph_spacing(p, space_after=6)
     
@@ -895,7 +895,7 @@ def generate_comprehensive_manuscript_ja():
     run = p.add_run('図1. ')
     run.bold = True
     p.add_run('ワイブル形状パラメータ(k)の領域横断比較。赤破線はk=1（一定ハザード）を示す。'
-              '全28データセットがk < 1領域に位置し、DFR（初期脱落優勢）パターンを示す。')
+              '全27データセットがk < 1領域に位置し、DFR（初期脱落優勢）パターンを示す。')
     set_paragraph_spacing(p, space_after=12)
     
     fig_path = os.path.join(FIG_DIR, 'fig12_hazard_taxonomy.png')
@@ -915,7 +915,7 @@ def generate_comprehensive_manuscript_ja():
     
     p = doc.add_paragraph()
     add_text_with_citations(p,
-        '本研究の最も顕著な発見は、全5臨床領域・全28データセット・合計787,000人以上の患者・'
+        '本研究の最も顕著な発見は、全5臨床領域・全27データセット・合計787,000人以上の患者・'
         '試験参加者にわたるDFRパターンの普遍性である。この一貫性は、疾患、治療、集団、'
         '医療環境、地理的地域の多様性を考慮すると注目に値する。DFRパターンは、脱落リスクが'
         '治療初期に最も高く時間とともに単調に減少することを示す――信頼性工学における'
@@ -938,7 +938,7 @@ def generate_comprehensive_manuscript_ja():
     p = doc.add_paragraph()
     add_text_with_citations(p,
         '本5領域横断比較研究は、臨床治療脱落がワイブル分布による普遍的DFRパターンに'
-        '従うことを実証した。全28データセットでk < 1が得られ、脱落リスクは治療初期に最も高い。'
+        '従うことを実証した。全27データセットでk < 1が得られ、脱落リスクは治療初期に最も高い。'
         'この知見は、初期治療フェーズへの維持介入資源の前倒し集中配分を支持する。'
         '信頼性工学フレームワークは、フェーズ特異的維持戦略設計の定量的基盤を提供する。')
     set_paragraph_spacing(p, space_after=12)
@@ -962,7 +962,7 @@ def generate_figure_pptx():
     figures = [
         ('fig11_cross_domain_k_comparison.png', 
          'Fig. 1: Cross-Domain k Comparison',
-         'Weibull shape parameters (k) with 95% CI across all 28 datasets and 5 domains.'),
+         'Weibull shape parameters (k) with 95% CI across all 27 datasets and 5 domains.'),
         ('fig12_hazard_taxonomy.png',
          'Fig. 12: Hazard Pattern Taxonomy',
          'Domain-specific hazard functions and summary comparison.'),

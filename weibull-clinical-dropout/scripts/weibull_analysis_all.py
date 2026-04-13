@@ -447,7 +447,7 @@ def analyse_domain(domain_name, datasets, time_unit='months'):
     results = {}
     for name, data in datasets.items():
         fit = fit_weibull_from_survival(data['times'], data['retention'])
-        k_ci, lam_ci = bootstrap_weibull_ci(data['times'], data['retention'], n_boot=500)
+        k_ci, lam_ci = bootstrap_weibull_ci(data['times'], data['retention'], n_boot=1000)
         results[name] = {
             **fit,
             'n': data['n'],
