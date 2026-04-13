@@ -546,97 +546,192 @@ disc_parts = []
 
 d1 = (
     f'This study is the first to map perioperative and chronic pain-related prescribing across '
-    f'all 47 prefectures of Japan using NDB Open Data. Three principal findings emerged.'
+    f'all 47 prefectures of Japan, leveraging freely available NDB Open Data. '
+    f'Three principal findings emerged from this exploratory analysis.'
 )
 doc.add_paragraph(d1)
 disc_parts.append(d1)
 
 add_heading_text('Regional variation within a stoic culture', level=2)
 d2 = (
-    f'Despite Japan\u2019s well-documented cultural stoicism {cite("Hobara","Feng")}, '
-    f'we found a 1.97-fold variation in acute perioperative prescribing and significant differences '
-    f'across regional blocks. This parallels Cohen and Nisbett\u2019s finding that '
-    f'within-country cultural norms produce measurably different behavioral outcomes {cite("Cohen")}. '
-    f'Japan\u2019s pain culture is not monolithic; regional demographics, healthcare infrastructure, '
-    f'and local clinical practices generate heterogeneity beneath a nationally shared norm.'
+    f'Despite Japan\u2019s well-documented cultural stoicism toward pain {cite("Hobara","Feng")}, '
+    f'we found a 1.97-fold variation in acute perioperative analgesic prescribing across prefectures '
+    f'and significant differences across regional blocks. '
+    f'This parallels findings from other domains: Cohen and Nisbett\u2019s work on the \u201cculture of honor\u201d '
+    f'in the United States demonstrated that even within a single nation, regional cultural norms '
+    f'produce measurably different behavioral outcomes {cite("Cohen")}. '
+    f'Our finding suggests that Japan\u2019s pain culture is not monolithic; '
+    f'regional demographics, healthcare infrastructure, and local clinical practices '
+    f'generate heterogeneity beneath the surface of a nationally shared cultural norm.'
 )
 doc.add_paragraph(d2)
 disc_parts.append(d2)
 
-add_heading_text('Clinical implications of monolithic stereotypes', level=2)
+add_heading_text('Clinical implications: the danger of monolithic cultural stereotypes', level=2)
 d3 = (
-    f'The within-Japan variation has direct clinical relevance. Anderson et al. showed that '
-    f'ethnic minorities in the United States consistently receive less adequate pain management '
+    f'The 1.97-fold within-Japan variation documented here has direct clinical relevance '
+    f'beyond the domestic context. A large body of evidence demonstrates that ethnic and cultural '
+    f'stereotypes influence clinician pain assessment and analgesic prescribing. '
+    f'Anderson et al. showed that racial and ethnic minorities in the United States consistently '
+    f'receive less adequate pain management across acute, chronic, cancer, and palliative settings '
     f'{cite("Anderson")}. Campbell and Edwards identified that clinician expectations about '
-    f'cultural pain behavior lead to systematic under- or over-treatment {cite("Campbell")}. '
-    f'Rogger et al. emphasized that cultural framing affects both reporting and management '
-    f'{cite("Rogger")}. If a 1.97-fold difference exists within Japan, the international '
-    f'label \u201cJapanese patient = stoic\u201d is an oversimplification that risks inadequate analgesia '
-    f'for Japanese patients treated abroad.'
+    f'a patient\u2019s cultural pain behavior can lead to systematic under- or over-treatment '
+    f'{cite("Campbell")}. Rogger et al. emphasized that cultural framing affects not only '
+    f'patient reporting but also how clinicians interpret and respond to pain cues {cite("Rogger")}.'
 )
 doc.add_paragraph(d3)
 disc_parts.append(d3)
 
-d4 = (
-    f'The homogeneity myth reinforces this risk. Befu\u2019s analysis of nihonjinron ideology '
-    f'{cite("Befu")} and Burgess\u2019s critique of the \u201cillusion\u201d of homogeneous Japan '
-    f'{cite("Burgess")} reveal that internal diversity is systematically underappreciated. '
-    f'Our data provide empirical support: there is no monolithic \u201cJapanese patient\u201d\u2014'
-    f'there are 47 prefectures with distinct prescribing patterns. '
-    f'This principle extends to every cultural label applied to any patient population '
-    f'{cite("Raja")}; pain is an individual experience that defies categorical treatment.'
+d3b = (
+    f'This risk is compounded by the widespread perception of Japan as a culturally and ethnically '
+    f'homogeneous society. The nihonjinron discourse (theories of Japanese uniqueness) '
+    f'has long promoted the notion that Japanese people constitute a uniform population '
+    f'sharing a single set of behavioral norms {cite("Befu")}. '
+    f'Yet this \u201chegemony of homogeneity,\u201d as Befu termed it, is an ideological construct '
+    f'rather than an empirical fact. '
+    f'Burgess showed that this \u201cillusion\u201d of a homogeneous Japan '
+    f'has tangible consequences for social policy and public perception {cite("Burgess")}. '
+    f'In the clinical context, the combination of two stereotypes\u2014\u201cJapanese are stoic\u201d '
+    f'and \u201cJapanese are homogeneous\u201d\u2014creates a doubly misleading assumption: '
+    f'that all Japanese patients will tolerate pain equally and require less analgesia. '
+    f'Our finding of 1.97-fold within-Japan variation in analgesic prescribing '
+    f'directly refutes this assumption.'
 )
-doc.add_paragraph(d4)
-disc_parts.append(d4)
+doc.add_paragraph(d3b)
+disc_parts.append(d3b)
+
+d3c = (
+    f'Put simply, there is no such entity as \u201cthe Japanese patient\u201d '
+    f'whose pain behavior can be predicted from nationality alone\u2014'
+    f'there are only individual patients from 47 diverse prefectures, '
+    f'each with distinct demographic profiles, clinical environments, '
+    f'and pain-related prescribing cultures. '
+    f'For Japanese patients treated outside Japan, clinicians may be operating under '
+    f'a dual misapprehension: that Japanese culture is uniformly stoic, '
+    f'and that this stoicism translates into lower analgesic need. '
+    f'Our data challenge both premises.'
+)
+doc.add_paragraph(d3c)
+disc_parts.append(d3c)
+
+d3d = (
+    f'We therefore argue that the monolithic characterization of any national population\u2019s '
+    f'pain behavior carries a risk of clinical harm\u2014and this argument extends well beyond Japan. '
+    f'Whenever clinicians allow cultural stereotypes to narrow the range of treatment options '
+    f'considered for a patient, the patient is placed at a therapeutic disadvantage {cite("Raja")}. '
+    f'The aspiration behind this study is that fewer patients, regardless of nationality or ethnicity, '
+    f'should suffer the disadvantage of having their treatment options constrained by cultural stereotypes. '
+    f'Individualized pain assessment, rather than culturally stereotyped assumptions, '
+    f'remains the cornerstone of equitable perioperative care.'
+)
+doc.add_paragraph(d3d)
+disc_parts.append(d3d)
+
+add_heading_text('Pain as an individual experience', level=2)
+d3e = (
+    f'Fundamentally, pain is a personal experience. The revised IASP definition '
+    f'describes pain as \u201can unpleasant sensory and emotional experience associated with, '
+    f'or resembling that associated with, actual or potential tissue damage\u201d\u2014'
+    f'a definition that is inherently subjective {cite("Raja")}. '
+    f'Our ecological data illustrate this principle at the population level: '
+    f'even within a single nation sharing the same language, insurance system, '
+    f'and broad cultural heritage, pain-related prescribing varies nearly twofold. '
+    f'No cultural label can substitute for direct measurement of a patient\u2019s nociceptive state. '
+    f'Objective nociception monitoring, such as normalized pulse volume as a culture-independent '
+    f'indicator of the nociception\u2013anti-nociception balance {cite("Onishi")}, '
+    f'may help standardize perioperative assessment regardless of cultural background.'
+)
+doc.add_paragraph(d3e)
+disc_parts.append(d3e)
 
 add_heading_text('Confounders explain Tohoku\u2019s apparent excess', level=2)
 d5 = (
-    f'The dramatic regional variation in neuropathic pain prescribing '
-    f'(unadjusted d = {reg["model1_unadjusted"]["cohens_d"]:.2f}) was largely explained '
-    f'by confounding diseases. Diabetes prescribing alone correlated at r = 0.87 with neuropathic '
-    f'pain prescribing, reflecting high prevalence of diabetic neuropathy requiring gabapentinoids. '
-    f'This has important implications for ecological pain research: studies using neuropathic pain '
-    f'drug prescribing as a CPSP proxy must account for confounding diseases. '
-    f'The within-database adjustment demonstrated here provides a replicable framework.'
+    f'The most methodologically important finding is that the dramatic regional variation in '
+    f'neuropathic pain prescribing '
+    f'(unadjusted d = {reg["model1_unadjusted"]["cohens_d"]:.2f} for Tohoku vs rest) was largely explained '
+    f'by confounding disease proxies. '
+    f'Diabetes drug prescribing alone correlated at r = 0.87 with neuropathic pain prescribing, '
+    f'reflecting the known high prevalence of diabetic neuropathy requiring gabapentinoids. '
+    f'After adjustment, the Tohoku effect was attenuated by 62% and became nonsignificant (Table 3). '
+    f'This has important implications for ecological pain research: '
+    f'studies using neuropathic pain drug prescribing as a population-level CPSP proxy must account for '
+    f'confounding diseases. Without such adjustment, regional differences in diabetes prevalence '
+    f'could be misinterpreted as differences in CPSP. '
+    f'The within-database confounder adjustment demonstrated here\u2014using disease-specific drug proxies '
+    f'from the same data source\u2014provides a replicable framework.'
 )
 doc.add_paragraph(d5)
 disc_parts.append(d5)
 
 add_heading_text('A population-level acute\u2013chronic pain continuum', level=2)
 d6 = (
-    f'The positive correlation between Phase 1 and adjusted Phase 2 indices '
-    f'(r = 0.29, P = 0.052) suggests a modest link between acute management intensity '
-    f'and chronic pain-related prescribing, consistent with individual-level evidence that '
-    f'acute pain intensity is a risk factor for CPSP {cite("Kehlet")}. '
-    f'Objective nociception monitoring may help standardize perioperative assessment '
-    f'regardless of cultural background {cite("Onishi")}.'
+    f'The positive correlation between Phase 1 (acute) and Phase 2 (chronic, adjusted) indices '
+    f'(r = 0.29, P = 0.052) suggests a modest link between regional acute pain management intensity '
+    f'and subsequent chronic pain-related prescribing. While ecological correlations cannot establish '
+    f'causation, this finding is consistent with individual-level evidence that '
+    f'the intensity of acute postoperative pain is a risk factor for CPSP {cite("Kehlet")}. '
+    f'Prefectures with relatively low acute analgesic use but high adjusted CPSP indices '
+    f'may warrant investigation for potential under-treatment of acute pain leading to chronification.'
 )
 doc.add_paragraph(d6)
 disc_parts.append(d6)
 
 add_heading_text('Strengths and limitations', level=2)
 d7 = (
-    f'Strengths include population-complete data covering all insurance-reimbursed healthcare in Japan, '
-    f'the integration of acute and chronic pain proxies, transparent confounder adjustment, and '
-    f'the perioperative focus that neutralizes access-to-care heterogeneity. '
-    f'Limitations include the ecological design (prefecture-level, not individual-level analysis; '
-    f'ecological fallacy cannot be excluded), absence of diagnosis codes in NDB Open Data, '
-    f'inability to capture fibromyalgia separately, cross-sectional design precluding temporal '
-    f'sequence inference, and unmeasured confounders such as age distribution, surgical case mix, '
-    f'and prescribing culture.'
+    f'Strengths of this study include the use of population-complete data covering all insurance-reimbursed healthcare '
+    f'in Japan, the novel integration of acute and chronic pain proxies, the transparent confounder-adjustment methodology, '
+    f'and the exploratory rather than confirmatory design that allows hypothesis generation. '
+    f'A further strength specific to the perioperative focus is that healthcare access does not confound '
+    f'the analgesic prescribing data: all patients in Phase 1 are inpatients by definition, '
+    f'eliminating the access-to-care heterogeneity that limits community-based pain studies.'
 )
 doc.add_paragraph(d7)
 disc_parts.append(d7)
 
+d7b = (
+    f'The main limitations are inherent to the ecological design. '
+    f'The unit of analysis is the prefecture, not the individual patient; '
+    f'ecological correlations may not reflect individual-level associations (ecological fallacy). '
+    f'NDB Open Data do not contain diagnosis codes, so CPSP cannot be directly identified; '
+    f'the neuropathic pain drug proxy captures all indications, not CPSP specifically. '
+    f'Drug prescribing proxies may not capture disease prevalence accurately '
+    f'(e.g., fibromyalgia has no specific drug proxy and shares pregabalin as first-line treatment). '
+    f'The cross-sectional design cannot distinguish temporal sequences (surgery \u2192 acute pain \u2192 CPSP), '
+    f'and unmeasured confounders such as age distribution, surgical case mix, '
+    f'and prescribing culture may contribute to residual regional variation.'
+)
+doc.add_paragraph(d7b)
+disc_parts.append(d7b)
+
+add_heading_text('Implications and future directions', level=2)
+d7c = (
+    f'This exploratory study demonstrates that Japan\u2019s NDB Open Data can serve as '
+    f'a hypothesis-generating platform for population-level pain research. '
+    f'Future studies using the NDB sampling dataset (Level 3 access) could enable '
+    f'individual-level longitudinal tracking from surgery to new neuropathic pain prescriptions, '
+    f'providing a direct CPSP measure. Procedure-specific analyses (e.g., total knee arthroplasty, mastectomy) '
+    f'would reduce surgical case-mix confounding. '
+    f'From an international perspective, prospective studies examining how cultural '
+    f'stereotypes influence analgesic prescribing for Japanese patients in multicultural clinical '
+    f'settings would directly test whether the \u201cstoic Japanese\u201d label translates into therapeutic disadvantage. '
+    f'Such research is increasingly urgent as global migration and medical tourism expose more '
+    f'patients to healthcare systems unfamiliar with their cultural background.'
+)
+doc.add_paragraph(d7c)
+disc_parts.append(d7c)
+
 add_heading_text('Conclusion', level=2)
 d8 = (
-    f'Despite Japan\u2019s norm of pain endurance, perioperative and chronic pain-related prescribing '
-    f'varies up to 1.97-fold across prefectures. Confounding diseases substantially modify '
-    f'the apparent regional pattern. These findings demonstrate that Japan\u2019s pain culture is not '
-    f'monolithic. Treating \u201cJapanese\u201d as a uniform category for pain behavior risks '
-    f'inadequate analgesia\u2014and the same principle applies to every cultural label '
-    f'applied to any patient population. Individualized pain assessment should replace '
-    f'culturally stereotyped assumptions to ensure equitable perioperative care.'
+    f'Despite Japan\u2019s culturally ingrained norm of pain endurance (gaman), '
+    f'perioperative and chronic pain-related prescribing varies up to 1.97-fold across prefectures. '
+    f'Confounding diseases, particularly diabetes, substantially modify the apparent regional pattern '
+    f'of neuropathic pain prescribing. '
+    f'These findings demonstrate that Japan\u2019s pain culture is not monolithic. '
+    f'Treating \u201cJapanese\u201d as a uniform category for pain behavior risks inadequate analgesia '
+    f'for Japanese patients treated abroad\u2014and the same principle applies to every cultural label '
+    f'applied to any patient population. '
+    f'Individualized pain assessment should replace culturally stereotyped assumptions '
+    f'to ensure equitable perioperative care across all clinical settings.'
 )
 doc.add_paragraph(d8)
 disc_parts.append(d8)
