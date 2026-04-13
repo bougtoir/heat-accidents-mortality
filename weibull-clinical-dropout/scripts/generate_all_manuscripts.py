@@ -222,7 +222,7 @@ TB_RESULTS = {
 
 FIVE_DOMAIN_RESULTS = {
     'HIV/ART': {'mean_k': 0.597, 'range': '0.582-0.627', 'n_datasets': 5, 'total_n': '516,000'},
-    'Antipsychotic': {'mean_k': 0.856, 'range': '0.683-0.958', 'n_datasets': 6, 'total_n': '63,682'},
+    'Antipsychotic': {'mean_k': 0.857, 'range': '0.683-0.958', 'n_datasets': 6, 'total_n': '63,682'},
     'Substance Use': {'mean_k': 0.639, 'range': '0.511-0.733', 'n_datasets': 6, 'total_n': '75,000'},
     'Cardiac Rehab': {'mean_k': 0.689, 'range': '0.613-0.775', 'n_datasets': 5, 'total_n': '34,200'},
     'Clinical Trial': {'mean_k': 0.708, 'range': '0.679-0.742', 'n_datasets': 5, 'total_n': '99,000'},
@@ -384,7 +384,7 @@ DOMAIN_CONTENT = {
             'Methods: We applied Weibull distribution fitting to discontinuation data from the CATIE trial (N=934, '
             '3 arms),{2} EUFEST trial (N=498),{3} and Finnish nationwide cohort (N=62,250, LAI vs oral).{4} '
             'Bootstrap 95% CIs from 1,000 resamples.\n\n'
-            'Results: All six datasets yielded k < 1 (range: 0.683-0.958, mean 0.856). CATIE trial arms showed '
+            'Results: All six datasets yielded k < 1 (range: 0.683-0.958, mean 0.857). CATIE trial arms showed '
             'near-constant hazard (k=0.916-0.958), while real-world Finnish data showed lower k for both LAI (0.737) '
             'and oral (0.683). LAI formulations showed higher k than oral, consistent with reduced early discontinuation. '
             'R\u00b2 range: 0.9938-0.9991.\n\n'
@@ -395,7 +395,7 @@ DOMAIN_CONTENT = {
             '背景: 統合失調症における抗精神病薬の中断は再発の主要因であるが、中断ハザードの時間的動態は十分に理解されていない。\n\n'
             '方法: CATIE試験(N=934、3群)、EUFEST試験(N=498)、フィンランド全国コホート(N=62,250、LAI vs 経口)の'
             '中断データにワイブル分布を適合させた。\n\n'
-            '結果: 全6データセットでk < 1（範囲: 0.683-0.958、平均0.856）。CATIE試験群はk≈0.92（ほぼ一定ハザード）、'
+            '結果: 全6データセットでk < 1（範囲: 0.683-0.958、平均0.857）。CATIE試験群はk≈0.92（ほぼ一定ハザード）、'
             'フィンランド実臨床データはLAI 0.737、経口 0.683と低値。LAIは経口より高kで初期中断減少と一致。\n\n'
             '結論: 抗精神病薬中断はDFRパターンに従うが、臨床領域中最も一定ハザードに近い。'
         ),
@@ -412,7 +412,7 @@ DOMAIN_CONTENT = {
             'and a Finnish nationwide real-world cohort.'
         ),
         'discussion_en': (
-            'Antipsychotic discontinuation showed the highest k values (mean 0.856) among all clinical domains we have '
+            'Antipsychotic discontinuation showed the highest k values (mean 0.857) among all clinical domains we have '
             'studied, approaching but not reaching constant hazard (k=1). This suggests that the hazard of discontinuation '
             'remains relatively stable over the treatment course compared to other clinical domains.{2,4}\n\n'
             'The distinction between trial settings (CATIE, EUFEST: k\u22480.92) and real-world cohorts (Finland: k\u22480.71) '
@@ -869,7 +869,7 @@ def generate_integrated_6domain_en():
         'IFR (k = 1.22-1.31): dropout risk increases over time. All five open-ended treatment domains '
         'showed universal DFR (k = 0.511-0.958): dropout risk is highest early and decreases monotonically. '
         'R\u00b2 range: 0.9807-0.9997. Domain-level mean k values: TB 1.26 (IFR), HIV/ART 0.597, antipsychotic '
-        '0.856, substance use 0.639, cardiac rehab 0.689, clinical trials 0.708 (all DFR).')
+        '0.857, substance use 0.639, cardiac rehab 0.689, clinical trials 0.708 (all DFR).')
     set_ps(p, after=6)
 
     p = doc.add_paragraph()
@@ -927,7 +927,7 @@ def generate_integrated_6domain_en():
     rows = [
         ('Tuberculosis', 'Fixed (6 months)', '5', '139,470', '1.26 (1.22-1.31)', 'IFR (increasing)'),
         ('HIV/ART', 'Open-ended', '5', '516,000', '0.597 (0.582-0.627)', 'DFR (decreasing)'),
-        ('Antipsychotic', 'Open-ended', '6', '63,682', '0.856 (0.683-0.958)', 'DFR (decreasing)'),
+        ('Antipsychotic', 'Open-ended', '6', '63,682', '0.857 (0.683-0.958)', 'DFR (decreasing)'),
         ('Substance Use', 'Open-ended', '6', '75,000', '0.639 (0.511-0.733)', 'DFR (decreasing)'),
         ('Cardiac Rehab', 'Open-ended', '5', '34,200', '0.689 (0.613-0.775)', 'DFR (decreasing)'),
         ('Clinical Trial', 'Open-ended', '5', '99,000', '0.708 (0.679-0.742)', 'DFR (decreasing)'),
@@ -966,7 +966,7 @@ def generate_integrated_6domain_en():
     p = doc.add_paragraph()
     add_text_with_citations(p,
         'Within the DFR domains, k varies meaningfully. Antipsychotic treatment shows the highest k '
-        '(mean 0.856), approaching constant hazard, possibly reflecting the chronic relapsing nature '
+        '(mean 0.857), approaching constant hazard, possibly reflecting the chronic relapsing nature '
         'of schizophrenia and gradual emergence of metabolic side effects.{7} HIV/ART (0.597) and '
         'substance use (0.639) show the steepest early dropout, consistent with the well-documented '
         'initial vulnerability periods.{8,9}')
@@ -1058,7 +1058,7 @@ def generate_integrated_6domain_ja():
     rows = [
         ('結核', '固定（6か月）', '5', '139,470', '1.26 (1.22-1.31)', 'IFR（増加型）'),
         ('HIV/ART', 'オープンエンド', '5', '516,000', '0.597 (0.582-0.627)', 'DFR（減少型）'),
-        ('抗精神病薬', 'オープンエンド', '6', '63,682', '0.856 (0.683-0.958)', 'DFR（減少型）'),
+        ('抗精神病薬', 'オープンエンド', '6', '63,682', '0.857 (0.683-0.958)', 'DFR（減少型）'),
         ('物質使用障害', 'オープンエンド', '6', '75,000', '0.639 (0.511-0.733)', 'DFR（減少型）'),
         ('心臓リハビリ', 'オープンエンド', '5', '34,200', '0.689 (0.613-0.775)', 'DFR（減少型）'),
         ('臨床試験', 'オープンエンド', '5', '99,000', '0.708 (0.679-0.742)', 'DFR（減少型）'),
@@ -1132,7 +1132,7 @@ def generate_5domain_comparison_en():
     add_text_with_citations(p,
         'Results: All 27 datasets yielded k < 1 (range: 0.511-0.958, median 0.689), confirming '
         'universal DFR. Model fit was excellent (R\u00b2 median 0.9970). Domain-level mean k: HIV/ART 0.597, '
-        'antipsychotic 0.856, substance use 0.639, cardiac rehab 0.689, clinical trials 0.708.')
+        'antipsychotic 0.857, substance use 0.639, cardiac rehab 0.689, clinical trials 0.708.')
     set_ps(p, after=6)
     p = doc.add_paragraph()
     add_text_with_citations(p,
@@ -1181,7 +1181,7 @@ def generate_5domain_comparison_en():
     headers = ['Domain', 'No. datasets', 'Total N', 'Mean k (range)', 'Median R\u00b2']
     rows = [
         ('HIV/ART', '5', '516,000', '0.597 (0.582-0.627)', '0.9989'),
-        ('Antipsychotic', '6', '63,682', '0.856 (0.683-0.958)', '0.9969'),
+        ('Antipsychotic', '6', '63,682', '0.857 (0.683-0.958)', '0.9969'),
         ('Substance Use', '6', '75,000', '0.639 (0.511-0.733)', '0.9956'),
         ('Cardiac Rehab', '5', '34,200', '0.689 (0.613-0.775)', '0.9905'),
         ('Clinical Trial', '5', '99,000', '0.708 (0.679-0.742)', '0.9983'),
@@ -1263,7 +1263,7 @@ def generate_5domain_comparison_ja():
     headers_ja = ['領域', 'データセット数', '合計N', '平均k（範囲）', 'R\u00b2中央値']
     rows = [
         ('HIV/ART', '5', '516,000', '0.597 (0.582-0.627)', '0.9989'),
-        ('抗精神病薬', '6', '63,682', '0.856 (0.683-0.958)', '0.9969'),
+        ('抗精神病薬', '6', '63,682', '0.857 (0.683-0.958)', '0.9969'),
         ('物質使用障害', '6', '75,000', '0.639 (0.511-0.733)', '0.9956'),
         ('心臓リハビリ', '5', '34,200', '0.689 (0.613-0.775)', '0.9905'),
         ('臨床試験', '5', '99,000', '0.708 (0.679-0.742)', '0.9983'),

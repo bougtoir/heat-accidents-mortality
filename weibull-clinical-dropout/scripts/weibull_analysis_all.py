@@ -136,8 +136,12 @@ def bootstrap_weibull_ci(times, survival_probs, n_boot=1000, ci=0.95):
             pass
     
     alpha = (1 - ci) / 2
-    k_ci = (np.percentile(k_boots, 100 * alpha), np.percentile(k_boots, 100 * (1 - alpha)))
-    lam_ci = (np.percentile(lam_boots, 100 * alpha), np.percentile(lam_boots, 100 * (1 - alpha)))
+    if len(k_boots) < 2:
+        k_ci = (np.nan, np.nan)
+        lam_ci = (np.nan, np.nan)
+    else:
+        k_ci = (np.percentile(k_boots, 100 * alpha), np.percentile(k_boots, 100 * (1 - alpha)))
+        lam_ci = (np.percentile(lam_boots, 100 * alpha), np.percentile(lam_boots, 100 * (1 - alpha)))
     return k_ci, lam_ci
 
 

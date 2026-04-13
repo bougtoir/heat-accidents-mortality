@@ -180,7 +180,7 @@ def generate_comprehensive_manuscript_en():
         'Results: All 27 datasets across all five domains yielded k < 1 (range: 0.511-0.958), '
         'demonstrating a universal decreasing failure rate pattern. The Weibull model showed '
         'excellent fit (median R\u00b2 = 0.9970, range: 0.9807-0.9997). Domain-level mean k values '
-        'were: HIV/ART 0.597 (0.582-0.627), antipsychotic 0.856 (0.683-0.958), substance use '
+        'were: HIV/ART 0.597 (0.582-0.627), antipsychotic 0.857 (0.683-0.958), substance use '
         '0.639 (0.511-0.733), cardiac rehabilitation 0.689 (0.613-0.775), and clinical trials '
         '0.708 (0.679-0.742). Antipsychotics showed the highest k values (nearest to constant '
         'hazard), while HIV/ART and substance use showed the lowest (steepest early dropout).')
@@ -402,7 +402,7 @@ def generate_comprehensive_manuscript_en():
     
     domain_data = [
         ('HIV/ART', 5, '516,000', '0.597 (0.582-0.627)', '0.9989'),
-        ('Antipsychotic', 6, '63,682', '0.856 (0.683-0.958)', '0.9969'),
+        ('Antipsychotic', 6, '63,682', '0.857 (0.683-0.958)', '0.9969'),
         ('Substance Use', 6, '75,000', '0.639 (0.511-0.733)', '0.9956'),
         ('Cardiac Rehab', 5, '34,200', '0.689 (0.613-0.775)', '0.9905'),
         ('Clinical Trial', 5, '99,000', '0.708 (0.679-0.742)', '0.9983'),
@@ -455,7 +455,7 @@ def generate_comprehensive_manuscript_en():
             'fig_num_surv': 4, 'fig_num_prob': 5,
             'text': (
                 'Antipsychotic discontinuation showed the highest k values among all five domains '
-                '(mean = 0.856, range 0.683-0.958), approaching but not exceeding k = 1 (Fig. 4). '
+                '(mean = 0.857, range 0.683-0.958), approaching but not exceeding k = 1 (Fig. 4). '
                 'The CATIE trial drugs showed near-constant hazard (k = 0.916-0.958), while '
                 'the Finnish nationwide cohort showed lower k for both LAI (0.737) and oral (0.683) '
                 'formulations (Fig. 5). The distinction between trial settings (CATIE, EUFEST: '
@@ -591,7 +591,7 @@ def generate_comprehensive_manuscript_en():
     p = doc.add_paragraph()
     add_text_with_citations(p,
         'Despite the universal DFR pattern, the magnitude of k varies meaningfully across domains. '
-        'Antipsychotic medication showed the highest k values (mean 0.856), approaching constant '
+        'Antipsychotic medication showed the highest k values (mean 0.857), approaching constant '
         'hazard. This may reflect the chronic, relapsing nature of schizophrenia and the gradual '
         'emergence of side effects (e.g., metabolic syndrome, akathisia) that maintain ongoing '
         'dropout risk beyond the initial period.{18,20} In contrast, HIV/ART and substance use '
@@ -780,7 +780,7 @@ def generate_comprehensive_manuscript_ja():
     add_text_with_citations(p,
         '結果: 全5領域・全27データセットでk < 1が得られ（範囲: 0.511-0.958）、普遍的なDFR'
         'パターンが示された。ワイブルモデルは優れた適合を示した（R\u00b2中央値=0.9970）。'
-        '領域別平均k値: HIV/ART 0.597、抗精神病薬 0.856、物質使用 0.639、心臓リハ 0.689、'
+        '領域別平均k値: HIV/ART 0.597、抗精神病薬 0.857、物質使用 0.639、心臓リハ 0.689、'
         '臨床試験 0.708。')
     set_paragraph_spacing(p, space_after=6)
     
@@ -874,7 +874,7 @@ def generate_comprehensive_manuscript_ja():
     
     domain_data_ja = [
         ('HIV/ART', '5', '516,000', '0.597 (0.582-0.627)', '0.9989'),
-        ('抗精神病薬', '6', '63,682', '0.856 (0.683-0.958)', '0.9969'),
+        ('抗精神病薬', '6', '63,682', '0.857 (0.683-0.958)', '0.9969'),
         ('物質使用障害', '6', '75,000', '0.639 (0.511-0.733)', '0.9956'),
         ('心臓リハビリ', '5', '34,200', '0.689 (0.613-0.775)', '0.9905'),
         ('臨床試験', '5', '99,000', '0.708 (0.679-0.742)', '0.9983'),
