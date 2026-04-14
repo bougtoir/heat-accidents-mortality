@@ -515,11 +515,11 @@ tbl_c1.style = 'Light Shading Accent 1'
 for i, h in enumerate(['Year', 'Synthetic E+W (M)', 'Observed (M)', 'Deviation (%)']):
     tbl_c1.rows[0].cells[i].text = h
 c1_data = [
-    ['1990', '76.5', '79.4', '\u22123.7'],
+    ['1990', '76.5', '79.4', '\u22123.6'],
     ['2000', '75.3', '82.2', '\u22128.4'],
-    ['2010', '73.6', '81.8', '\u221210.0'],
-    ['2020', '70.8', '83.2', '\u221214.9'],
-    ['2023', '69.8', '83.3', '\u221216.2'],
+    ['2010', '73.7', '81.8', '\u22129.9'],
+    ['2020', '71.0', '83.2', '\u221214.6'],
+    ['2023', '70.1', '83.3', '\u221215.8'],
 ]
 for i, rd in enumerate(c1_data):
     for j, val in enumerate(rd):
@@ -527,12 +527,12 @@ for i, rd in enumerate(c1_data):
 add_para(doc, "", size=6, space_after=6)
 
 add_para(doc,
-"The synthetic trajectory underestimates observed population by 3.7% at reunification (1990), "
-"growing to 16.2% by 2023. This widening gap reflects three compounding processes absent from the "
+"The synthetic trajectory underestimates observed population by 3.6% at reunification (1990), "
+"growing to 15.8% by 2023. This widening gap reflects three compounding processes absent from the "
 "closed model: (a) net immigration to unified Germany averaging ~300,000\u2013400,000 persons per year; "
 "(b) internal East-to-West migration altering regional demographic dynamics; and (c) convergence of "
 "East German fertility and mortality toward Western levels, which our separate-regime model does not "
-"capture post-1990. The overall MAPE of 6.6% for the synthetic East+West model confirms that "
+"capture post-1990. The overall MAPE of 6.4% for the synthetic East+West model confirms that "
 "Germany\u2019s relatively poor fit in the main analysis (Table 1) is attributable primarily to "
 "reunification\u2019s migration effects rather than to structural model failure.",
     size=11, space_after=6)
@@ -550,7 +550,7 @@ add_para(doc,
 "The peaceful dissolution of Czechoslovakia on 1 January 1993 created two independent states\u2014"
 "Czechia and Slovakia\u2014with relatively limited cross-border migration. This case represents a "
 "relatively clean natural experiment: a state partition with minimal population redistribution. Our model "
-"achieves MAPE of 6.3% for Czechia and 10.1% for Slovakia over the full 1970\u20132023 period. "
+"achieves MAPE of 6.3% for Czechia and 9.9% for Slovakia over the full 1970\u20132023 period. "
 "Slovakia\u2019s higher error reflects emigration to Czechia and Western Europe following EU accession "
 "(2004), which the closed model cannot capture.",
     size=11, space_after=12)
@@ -561,10 +561,10 @@ add_para(doc,
 "The breakup of Yugoslavia involved armed conflict, ethnic cleansing, and massive refugee flows "
 "affecting all successor states. This represents the most extreme migration shock in our sample. "
 "Model performance varies substantially across successors: Croatia (MAPE 4.1%) and North Macedonia "
-"(6.1%) show reasonable fit, reflecting relatively stable post-conflict demographics. Bosnia and "
-"Herzegovina (7.7%) and Slovenia (12.3%) show larger errors\u2014Bosnia due to war-related population "
+"(6.4%) show reasonable fit, reflecting relatively stable post-conflict demographics. Bosnia and "
+"Herzegovina (8.1%) and Slovenia (12.2%) show larger errors\u2014Bosnia due to war-related population "
 "loss and displacement, Slovenia due to immigration-driven growth as a small EU member state. "
-"Serbia (7.2%) and Montenegro (8.4%) fall in between. The range of model performance across "
+"Serbia (7.1%) and Montenegro (8.1%) fall in between. The range of model performance across "
 "Yugoslav successor states illustrates how conflict-driven migration creates heterogeneous "
 "deviations from the endogenous renewal baseline.",
     size=11, space_after=12)
@@ -574,7 +574,7 @@ add_heading_styled(doc, "C.4 Baltic States: USSR Dissolution and Emigration (199
 add_para(doc,
 "Estonia, Latvia, and Lithuania gained independence in 1991 from the Soviet Union, followed by "
 "significant emigration of ethnic Russians and outmigration to Western Europe (especially after "
-"EU accession in 2004). Model MAPE ranges from 4.9% (Estonia) to 7.1% (Lithuania), reflecting "
+"EU accession in 2004). Model MAPE ranges from 4.8% (Estonia) to 7.1% (Lithuania), reflecting "
 "the persistent emigration that the closed model does not account for. These cases demonstrate that "
 "even moderate but sustained net emigration (\u22480.5\u20131.0% of population annually) accumulates over "
 "three decades to produce substantial model-observation divergence.",
@@ -584,9 +584,9 @@ add_para(doc,
 add_heading_styled(doc, "C.5 Ethiopia and Eritrea: Separation (1993)", level=3)
 add_para(doc,
 "Eritrean independence (1993) separated two populations in the midst of high-fertility demographic "
-"transition. Model performance differs markedly: Ethiopia (MAPE 16.7%) shows substantial "
+"transition. Model performance differs markedly: Ethiopia (MAPE 16.5%) shows substantial "
 "overprojection, reflecting within-decade fertility decline faster than captured by decadal "
-"parameter updates. Eritrea (MAPE 37.9%) shows the largest error in our natural experiments "
+"parameter updates. Eritrea (MAPE 37.8%) shows the largest error in our natural experiments "
 "sample, driven by prolonged military conscription, conflict-related emigration, and highly "
 "uncertain baseline demographic data. These cases highlight the model\u2019s limitations in conflict-"
 "affected, data-sparse settings where rapid demographic change co-occurs with large-scale "
@@ -611,20 +611,20 @@ tbl_c2.style = 'Light Shading Accent 1'
 for i, h in enumerate(['Country', 'Event (Year)', 'MAPE (%)', 'Primary source of misfit']):
     tbl_c2.rows[0].cells[i].text = h
 c2_data = [
-    ['Germany (synthetic E+W)', 'Reunification (1990)', '6.6', 'Immigration + internal migration'],
+    ['Germany (synthetic E+W)', 'Reunification (1990)', '6.4', 'Immigration + internal migration'],
     ['Czechia', 'Velvet Divorce (1993)', '6.3', 'Post-EU emigration (moderate)'],
-    ['Slovakia', 'Velvet Divorce (1993)', '10.1', 'Emigration to EU/West'],
+    ['Slovakia', 'Velvet Divorce (1993)', '9.9', 'Emigration to EU/West'],
     ['Croatia', 'Yugoslav breakup (1991)', '4.1', 'Post-conflict stabilisation'],
-    ['Slovenia', 'Yugoslav breakup (1991)', '12.3', 'Immigration (EU member)'],
-    ['Bosnia & Herz.', 'Yugoslav breakup (1991)', '7.7', 'War-related displacement'],
-    ['Serbia', 'Yugoslav breakup (1991)', '7.2', 'Refugee flows, emigration'],
-    ['N. Macedonia', 'Yugoslav breakup (1991)', '6.1', 'Modest migration effects'],
-    ['Montenegro', 'Yugoslav breakup (1991)', '8.4', 'Small state, volatile flows'],
-    ['Estonia', 'USSR dissolution (1991)', '4.9', 'Ethnic Russian emigration'],
+    ['Slovenia', 'Yugoslav breakup (1991)', '12.2', 'Immigration (EU member)'],
+    ['Bosnia & Herz.', 'Yugoslav breakup (1991)', '8.1', 'War-related displacement'],
+    ['Serbia', 'Yugoslav breakup (1991)', '7.1', 'Refugee flows, emigration'],
+    ['N. Macedonia', 'Yugoslav breakup (1991)', '6.4', 'Modest migration effects'],
+    ['Montenegro', 'Yugoslav breakup (1991)', '8.1', 'Small state, volatile flows'],
+    ['Estonia', 'USSR dissolution (1991)', '4.8', 'Ethnic Russian emigration'],
     ['Latvia', 'USSR dissolution (1991)', '6.6', 'Emigration (ethnic + EU)'],
     ['Lithuania', 'USSR dissolution (1991)', '7.1', 'Sustained emigration'],
-    ['Ethiopia', 'Eritrean indep. (1993)', '16.7', 'Rapid fertility decline'],
-    ['Eritrea', 'Eritrean indep. (1993)', '37.9', 'Conflict, conscription, emigration'],
+    ['Ethiopia', 'Eritrean indep. (1993)', '16.5', 'Rapid fertility decline'],
+    ['Eritrea', 'Eritrean indep. (1993)', '37.8', 'Conflict, conscription, emigration'],
 ]
 for i, rd in enumerate(c2_data):
     for j, val in enumerate(rd):
@@ -637,17 +637,17 @@ add_para(doc,
 add_para(doc,
 "First, the model performs reasonably well (MAPE < 8%) even for countries that experienced major "
 "political upheaval, provided that post-event migration was moderate and demographic data are "
-"reliable. Croatia (4.1%), Estonia (4.9%), and Czechia (6.3%) all fall within this range, "
+"reliable. Croatia (4.1%), Estonia (4.8%), and Czechia (6.3%) all fall within this range, "
 "demonstrating that the quantum\u2013tempo\u2013survival mechanism captures the bulk of population dynamics "
 "even in contexts of political discontinuity.\n\n"
 "Second, the magnitude of model-observation divergence provides a direct estimate of the migration "
-"component. Germany\u2019s 16.2% synthetic-observed gap by 2023 implies that immigration added "
+"component. Germany\u2019s 15.8% synthetic-observed gap by 2023 implies that immigration added "
 "approximately 13.5 million persons\u2014equivalent to one-sixth of the total population\u2014beyond "
 "what natural increase alone would have produced. This quantification is only possible because "
 "the closed model isolates natural demographic dynamics.\n\n"
 "Third, the model\u2019s limitations are most acute in conflict-affected, data-sparse settings "
-"(Eritrea: 37.9%) and where sustained emigration removes a large fraction of the population "
-"(Slovenia: 12.3%, Slovakia: 10.1%). These cases identify the boundary conditions for the "
+"(Eritrea: 37.8%) and where sustained emigration removes a large fraction of the population "
+"(Slovenia: 12.2%, Slovakia: 9.9%). These cases identify the boundary conditions for the "
 "endogenous renewal framework and reinforce the importance of migration modelling for countries "
 "experiencing sustained population flows.",
     size=11, space_after=12)

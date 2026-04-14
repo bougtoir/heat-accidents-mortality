@@ -101,7 +101,7 @@ def run_model_dynamic(init_pop_total, params_by_decade, start_year, end_year,
         # Find which decade's parameters to use
         decade = sorted_decades[0]
         for d in sorted_decades:
-            if current_year >= d:
+            if current_year > d:
                 decade = d
         params = params_by_decade[decade]
 

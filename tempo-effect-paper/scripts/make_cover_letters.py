@@ -79,7 +79,7 @@ pdr_en = [
      "increase reduces simultaneously living population by ~1/6 independent of TFR \u2014 offers "
      "a novel perspective for the PDR readership.",
      {'space_after': 8}),
-    ("The manuscript is approximately 6,500 words with 7 figures, 3 tables, and 3 appendices "
+    ("The manuscript is approximately 6,500 words with 7 figures, 4 tables, and 3 appendices "
      "(including a comparative table of national population projection methodologies for 15 "
      "countries/agencies, and a natural experiments analysis examining countries with major "
      "political/border changes as exogenous shocks). It follows GATHER reporting guidelines. "
