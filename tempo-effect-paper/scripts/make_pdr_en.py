@@ -4,7 +4,10 @@ from docx import Document
 from docx.shared import Inches, Pt, Cm, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 
-FIG_DIR = '/home/ubuntu/figures'
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+FIG_DIR = os.path.join(os.path.dirname(SCRIPT_DIR), 'figures')
+OUT_DIR = os.path.join(os.path.dirname(SCRIPT_DIR), 'manuscripts')
+os.makedirs(OUT_DIR, exist_ok=True)
 
 def add_para(doc, text, bold=False, italic=False, size=11, align=None, space_after=6):
     p = doc.add_paragraph()
@@ -466,5 +469,200 @@ add_para(doc,
 "full-parameterisation national models that include migration.",
     size=11, space_after=12)
 
-doc.save('/home/ubuntu/PDR_Research_Note_EN.docx')
-print("OK: PDR_Research_Note_EN.docx")
+# ============================================================
+# Appendix C: Natural Experiments — Political/Border Changes
+# ============================================================
+doc.add_page_break()
+add_heading_styled(doc, "Appendix C: Natural Experiments \u2014 Political and Border Changes as "
+                   "Exogenous Shocks", level=2)
+
+add_para(doc,
+"Our model deliberately excludes migration. This design choice enables isolation of the pure "
+"quantum\u2013tempo\u2013survival mechanism, but raises an important question: how does the model perform "
+"when large-scale population redistribution occurs as a result of political events? Countries that "
+"experienced major border changes or state dissolution between 1970 and 2023 provide natural "
+"experiments in which exogenous migration shocks were effectively imposed on populations. "
+"In this appendix, we analyse five such cases to assess the robustness and limitations of the "
+"endogenous renewal framework.",
+    size=11, space_after=12)
+
+# --- C.1 Germany ---
+add_heading_styled(doc, "C.1 Germany: Reunification as a Migration Shock (1990)", level=3)
+add_para(doc,
+"German reunification on 3 October 1990 merged two populations that had evolved under sharply "
+"different demographic regimes for 41 years. East Germany (German Democratic Republic, GDR) had "
+"lower life expectancy (~74.5 years versus ~76.0 in the West in 1990), earlier childbearing "
+"(MAC \u2248 25.1 vs. 28.3), and higher but declining TFR (1.52 vs. 1.45). The immediate aftermath "
+"of reunification saw massive East-to-West migration (~1.9 million between 1989 and 1992) and "
+"a dramatic fertility collapse in the East (TFR fell to 0.77 in 1994; Witte and Wagner 1995).",
+    size=11, space_after=6)
+
+add_para(doc,
+"We model East and West Germany separately using their distinct demographic parameters, run both "
+"forward from 1970, and construct a synthetic combined trajectory by summing the two modelled "
+"populations. This synthetic trajectory represents the counterfactual: what would Germany\u2019s "
+"population have looked like had the two regions remained demographically separate (i.e., with no "
+"cross-border migration)? Comparing this with observed unified Germany reveals the cumulative "
+"impact of reunification-related migration and integration effects.",
+    size=11, space_after=6)
+
+add_para(doc,
+"Table C1. Germany reunification: synthetic East+West versus observed unified trajectory.",
+    bold=True, italic=True, size=10, space_after=4)
+
+tbl_c1 = doc.add_table(rows=6, cols=4)
+tbl_c1.style = 'Light Shading Accent 1'
+for i, h in enumerate(['Year', 'Synthetic E+W (M)', 'Observed (M)', 'Deviation (%)']):
+    tbl_c1.rows[0].cells[i].text = h
+c1_data = [
+    ['1990', '76.5', '79.4', '\u22123.7'],
+    ['2000', '75.3', '82.2', '\u22128.4'],
+    ['2010', '73.6', '81.8', '\u221210.0'],
+    ['2020', '70.8', '83.2', '\u221214.9'],
+    ['2023', '69.8', '83.3', '\u221216.2'],
+]
+for i, rd in enumerate(c1_data):
+    for j, val in enumerate(rd):
+        tbl_c1.rows[i+1].cells[j].text = val
+add_para(doc, "", size=6, space_after=6)
+
+add_para(doc,
+"The synthetic trajectory underestimates observed population by 3.7% at reunification (1990), "
+"growing to 16.2% by 2023. This widening gap reflects three compounding processes absent from the "
+"closed model: (a) net immigration to unified Germany averaging ~300,000\u2013400,000 persons per year; "
+"(b) internal East-to-West migration altering regional demographic dynamics; and (c) convergence of "
+"East German fertility and mortality toward Western levels, which our separate-regime model does not "
+"capture post-1990. The overall MAPE of 6.6% for the synthetic East+West model confirms that "
+"Germany\u2019s relatively poor fit in the main analysis (Table 1) is attributable primarily to "
+"reunification\u2019s migration effects rather than to structural model failure.",
+    size=11, space_after=6)
+
+add_figure(doc, os.path.join(FIG_DIR, 'fig_germany_reunification.png'),
+    "Figure 6. Germany reunification analysis. (A) Modelled East and West Germany populations with "
+    "synthetic combined trajectory versus observed unified Germany. (B) Percentage deviation of "
+    "synthetic and unified models from observed trajectory. The widening gap after 1990 quantifies "
+    "the cumulative migration and integration effects of reunification.",
+    width=6.5)
+
+# --- C.2 Czechoslovakia ---
+add_heading_styled(doc, "C.2 Czechoslovakia: The Velvet Divorce (1993)", level=3)
+add_para(doc,
+"The peaceful dissolution of Czechoslovakia on 1 January 1993 created two independent states\u2014"
+"Czechia and Slovakia\u2014with relatively limited cross-border migration. This case represents a "
+"relatively clean natural experiment: a state partition with minimal population redistribution. Our model "
+"achieves MAPE of 6.3% for Czechia and 10.1% for Slovakia over the full 1970\u20132023 period. "
+"Slovakia\u2019s higher error reflects emigration to Czechia and Western Europe following EU accession "
+"(2004), which the closed model cannot capture.",
+    size=11, space_after=12)
+
+# --- C.3 Yugoslavia ---
+add_heading_styled(doc, "C.3 Yugoslavia: Dissolution and Conflict (1991\u20132001)", level=3)
+add_para(doc,
+"The breakup of Yugoslavia involved armed conflict, ethnic cleansing, and massive refugee flows "
+"affecting all successor states. This represents the most extreme migration shock in our sample. "
+"Model performance varies substantially across successors: Croatia (MAPE 4.1%) and North Macedonia "
+"(6.1%) show reasonable fit, reflecting relatively stable post-conflict demographics. Bosnia and "
+"Herzegovina (7.7%) and Slovenia (12.3%) show larger errors\u2014Bosnia due to war-related population "
+"loss and displacement, Slovenia due to immigration-driven growth as a small EU member state. "
+"Serbia (7.2%) and Montenegro (8.4%) fall in between. The range of model performance across "
+"Yugoslav successor states illustrates how conflict-driven migration creates heterogeneous "
+"deviations from the endogenous renewal baseline.",
+    size=11, space_after=12)
+
+# --- C.4 Baltic States ---
+add_heading_styled(doc, "C.4 Baltic States: USSR Dissolution and Emigration (1991)", level=3)
+add_para(doc,
+"Estonia, Latvia, and Lithuania gained independence in 1991 from the Soviet Union, followed by "
+"significant emigration of ethnic Russians and outmigration to Western Europe (especially after "
+"EU accession in 2004). Model MAPE ranges from 4.9% (Estonia) to 7.1% (Lithuania), reflecting "
+"the persistent emigration that the closed model does not account for. These cases demonstrate that "
+"even moderate but sustained net emigration (\u22480.5\u20131.0% of population annually) accumulates over "
+"three decades to produce substantial model-observation divergence.",
+    size=11, space_after=12)
+
+# --- C.5 Ethiopia/Eritrea ---
+add_heading_styled(doc, "C.5 Ethiopia and Eritrea: Separation (1993)", level=3)
+add_para(doc,
+"Eritrean independence (1993) separated two populations in the midst of high-fertility demographic "
+"transition. Model performance differs markedly: Ethiopia (MAPE 16.7%) shows substantial "
+"overprojection, reflecting within-decade fertility decline faster than captured by decadal "
+"parameter updates. Eritrea (MAPE 37.9%) shows the largest error in our natural experiments "
+"sample, driven by prolonged military conscription, conflict-related emigration, and highly "
+"uncertain baseline demographic data. These cases highlight the model\u2019s limitations in conflict-"
+"affected, data-sparse settings where rapid demographic change co-occurs with large-scale "
+"displacement.",
+    size=11, space_after=6)
+
+add_figure(doc, os.path.join(FIG_DIR, 'fig_natural_experiments_summary.png'),
+    "Figure 7. Natural experiments summary. Population trajectories for five cases of major "
+    "political/border change. Dashed green lines show synthetic sums of successor-state models; "
+    "solid black lines show observed (pre-split) trajectories; coloured lines show individual "
+    "successor states. Red vertical lines mark the year of political change.",
+    width=6.5)
+
+# --- C.6 Summary ---
+add_heading_styled(doc, "C.6 Synthesis: What Natural Experiments Reveal", level=3)
+add_para(doc,
+"Table C2 summarises model performance across all natural experiment cases.",
+    bold=True, italic=True, size=10, space_after=4)
+
+tbl_c2 = doc.add_table(rows=14, cols=4)
+tbl_c2.style = 'Light Shading Accent 1'
+for i, h in enumerate(['Country', 'Event (Year)', 'MAPE (%)', 'Primary source of misfit']):
+    tbl_c2.rows[0].cells[i].text = h
+c2_data = [
+    ['Germany (synthetic E+W)', 'Reunification (1990)', '6.6', 'Immigration + internal migration'],
+    ['Czechia', 'Velvet Divorce (1993)', '6.3', 'Post-EU emigration (moderate)'],
+    ['Slovakia', 'Velvet Divorce (1993)', '10.1', 'Emigration to EU/West'],
+    ['Croatia', 'Yugoslav breakup (1991)', '4.1', 'Post-conflict stabilisation'],
+    ['Slovenia', 'Yugoslav breakup (1991)', '12.3', 'Immigration (EU member)'],
+    ['Bosnia & Herz.', 'Yugoslav breakup (1991)', '7.7', 'War-related displacement'],
+    ['Serbia', 'Yugoslav breakup (1991)', '7.2', 'Refugee flows, emigration'],
+    ['N. Macedonia', 'Yugoslav breakup (1991)', '6.1', 'Modest migration effects'],
+    ['Montenegro', 'Yugoslav breakup (1991)', '8.4', 'Small state, volatile flows'],
+    ['Estonia', 'USSR dissolution (1991)', '4.9', 'Ethnic Russian emigration'],
+    ['Latvia', 'USSR dissolution (1991)', '6.6', 'Emigration (ethnic + EU)'],
+    ['Lithuania', 'USSR dissolution (1991)', '7.1', 'Sustained emigration'],
+    ['Ethiopia', 'Eritrean indep. (1993)', '16.7', 'Rapid fertility decline'],
+]
+for i, rd in enumerate(c2_data):
+    for j, val in enumerate(rd):
+        tbl_c2.rows[i+1].cells[j].text = val
+add_para(doc, "", size=6, space_after=6)
+
+add_para(doc,
+"These natural experiments yield three key insights for the endogenous renewal model:",
+    size=11, space_after=4)
+add_para(doc,
+"First, the model performs reasonably well (MAPE < 8%) even for countries that experienced major "
+"political upheaval, provided that post-event migration was moderate and demographic data are "
+"reliable. Croatia (4.1%), Estonia (4.9%), and Czechia (6.3%) all fall within this range, "
+"demonstrating that the quantum\u2013tempo\u2013survival mechanism captures the bulk of population dynamics "
+"even in contexts of political discontinuity.\n\n"
+"Second, the magnitude of model-observation divergence provides a direct estimate of the migration "
+"component. Germany\u2019s 16.2% synthetic-observed gap by 2023 implies that immigration added "
+"approximately 13.5 million persons\u2014equivalent to one-sixth of the total population\u2014beyond "
+"what natural increase alone would have produced. This quantification is only possible because "
+"the closed model isolates natural demographic dynamics.\n\n"
+"Third, the model\u2019s limitations are most acute in conflict-affected, data-sparse settings "
+"(Eritrea: 37.9%) and where sustained emigration removes a large fraction of the population "
+"(Slovenia: 12.3%, Slovakia: 10.1%). These cases identify the boundary conditions for the "
+"endogenous renewal framework and reinforce the importance of migration modelling for countries "
+"experiencing sustained population flows.",
+    size=11, space_after=12)
+
+add_para(doc,
+"The Germany case is particularly instructive for interpreting the main analysis results. "
+"Germany\u2019s dynamic MAPE in the 40-country validation reflects not a failure of the "
+"quantum\u2013tempo\u2013survival framework but rather the quantitative footprint of reunification "
+"as a massive, exogenous migration event. The model\u2019s \u2018error\u2019 is, in fact, the signal: "
+"it measures the demographic impact of a political transformation that functioned as "
+"the equivalent of absorbing 1.9 million internal migrants in three years, followed by "
+"three decades of sustained international immigration. That our parsimonious model can "
+"separate this migration signal from the underlying demographic dynamics validates the "
+"decomposition approach.",
+    size=11, space_after=12)
+
+outpath = os.path.join(OUT_DIR, 'PDR_Research_Note_EN.docx')
+doc.save(outpath)
+print(f'OK: {outpath}')
