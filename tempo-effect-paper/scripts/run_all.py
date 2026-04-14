@@ -179,8 +179,8 @@ for i,cn in enumerate(showcase):
     ax.set_title(cn,fontsize=14,fontweight='bold')
     ax.set_xlabel('Year'); ax.set_ylabel('Pop (M)'); ax.legend(fontsize=8); ax.grid(True,alpha=0.3)
     ax.set_ylim(bottom=0)
-plt.suptitle('Endogenous Renewal + Gompertz vs UN WPP 2024 (1970-2023)',fontsize=16,fontweight='bold')
-plt.tight_layout(); plt.savefig('/home/ubuntu/figures/fig1_showcase.png',dpi=150,bbox_inches='tight'); plt.close()
+fig.suptitle('Endogenous Renewal + Gompertz vs UN WPP 2024 (1970-2023)',fontsize=16,fontweight='bold',y=0.99)
+fig.tight_layout(rect=[0, 0, 1, 0.95]); fig.savefig('/home/ubuntu/figures/fig1_showcase.png',dpi=150,bbox_inches='tight'); plt.close()
 print("  Fig1 done", flush=True)
 
 # Fig 2: All 40 countries
@@ -197,8 +197,8 @@ for i,cn in enumerate(sorted(country_ids.keys())):
                 bbox=dict(boxstyle='round,pad=0.2',facecolor='lightyellow',alpha=0.8))
     ax.set_title(cn,fontsize=9,fontweight='bold'); ax.tick_params(labelsize=7); ax.grid(True,alpha=0.2)
     ax.set_ylim(bottom=0)
-plt.suptitle('All Countries: Dynamic(blue) Static(red) vs Actual(black) 1970-2023',fontsize=14,fontweight='bold')
-plt.tight_layout(); plt.savefig('/home/ubuntu/figures/fig2_all_countries.png',dpi=120,bbox_inches='tight'); plt.close()
+fig.suptitle('All Countries: Dynamic(blue) Static(red) vs Actual(black) 1970-2023',fontsize=14,fontweight='bold',y=0.995)
+fig.tight_layout(rect=[0, 0, 1, 0.98]); fig.savefig('/home/ubuntu/figures/fig2_all_countries.png',dpi=120,bbox_inches='tight'); plt.close()
 print("  Fig2 done", flush=True)
 
 # Fig 3: MAPE heatmap from static results CSV
