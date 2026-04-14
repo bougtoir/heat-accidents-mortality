@@ -59,7 +59,7 @@ add_para(doc,
     bold=True, size=14, align=WD_ALIGN_PARAGRAPH.CENTER, space_after=18)
 add_para(doc, "[Author names removed for double-anonymised review]",
          italic=True, size=12, align=WD_ALIGN_PARAGRAPH.CENTER, space_after=6)
-add_para(doc, "Word count: approximately 5,500 words",
+add_para(doc, "Word count: approximately 6,500 words",
          italic=True, size=10, align=WD_ALIGN_PARAGRAPH.CENTER, space_after=24)
 
 # Abstract

@@ -636,10 +636,15 @@ if __name__ == '__main__':
     )
 
     # --- E. Ethiopia/Eritrea (1993) ---
+    # Note: predecessor_code uses a non-existent code to skip the pre-split
+    # comparison, because WB 'ETH' data uses current borders (excluding Eritrea)
+    # for all years.  Using ETH as both predecessor and successor would create
+    # an invalid self-referential comparison.  Individual successor MAPEs for
+    # Ethiopia and Eritrea are still computed correctly against their own data.
     ethiopia_eritrea = analyse_country_split(
         pop_df, tfr_df, le_df,
         name="Ethiopia/Eritrea separation",
-        predecessor_code="ETH",
+        predecessor_code="ETH_ERI_COMBINED",  # no WB entry → skips pre-split comparison
         successor_codes={'ETH': 'Ethiopia', 'ERI': 'Eritrea'},
         split_year=1993,
     )

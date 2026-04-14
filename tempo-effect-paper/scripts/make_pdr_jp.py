@@ -55,7 +55,7 @@ add_para(doc, "NOTES AND COMMENTARY", bold=True, size=10, align=WD_ALIGN_PARAGRA
 add_para(doc, "忘れられたテンポ効果：出産の遅延、同時在生人口、\nそしてOECD諸国における社会適応速度の制御",
          bold=True, size=14, align=WD_ALIGN_PARAGRAPH.CENTER, space_after=18)
 add_para(doc, "[匿名査読のため著者名を削除]", italic=True, size=12, align=WD_ALIGN_PARAGRAPH.CENTER, space_after=6)
-add_para(doc, "語数：約5,500語", italic=True, size=10, align=WD_ALIGN_PARAGRAPH.CENTER, space_after=24)
+add_para(doc, "語数：約6,500語", italic=True, size=10, align=WD_ALIGN_PARAGRAPH.CENTER, space_after=24)
 
 # Abstract
 add_heading_styled(doc, "要旨", level=2)
