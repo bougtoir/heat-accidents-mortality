@@ -489,6 +489,7 @@ def plot_germany(data, save_path):
     ax.set_title('A. Germany: Synthetic East+West vs Observed', fontsize=13, fontweight='bold')
     ax.legend(fontsize=9, loc='upper left')
     ax.set_xlim(1970, 2023)
+    ax.set_ylim(bottom=0)
     ax.grid(True, alpha=0.3)
 
     # Panel B: Percentage deviation from observed
@@ -539,6 +540,7 @@ def plot_natural_experiments_summary(germany_data, split_results, save_path):
     ax.axvline(x=1990, color='red', linestyle=':', alpha=0.7)
     ax.set_title('Germany (reunification 1990)', fontsize=11, fontweight='bold')
     ax.set_ylabel('Population (millions)', fontsize=10)
+    ax.set_ylim(bottom=0)
     ax.legend(fontsize=8)
     ax.grid(True, alpha=0.3)
 
@@ -573,6 +575,7 @@ def plot_natural_experiments_summary(germany_data, split_results, save_path):
         ax.axvline(x=res['split_year'], color='red', linestyle=':', alpha=0.7)
         ax.set_title(f"{res['name']} ({res['split_year']})", fontsize=11, fontweight='bold')
         ax.set_ylabel('Population (millions)', fontsize=10)
+        ax.set_ylim(bottom=0)
         ax.legend(fontsize=7, loc='best')
         ax.grid(True, alpha=0.3)
 
