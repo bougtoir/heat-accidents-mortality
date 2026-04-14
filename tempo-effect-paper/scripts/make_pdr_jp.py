@@ -478,7 +478,7 @@ add_para(doc,
     "表C2. 全自然実験ケースのモデル性能の要約。",
     bold=True, italic=True, size=10, space_after=4)
 
-tbl_c2 = doc.add_table(rows=14, cols=4)
+tbl_c2 = doc.add_table(rows=15, cols=4)
 tbl_c2.style = 'Light Shading Accent 1'
 for i, h in enumerate(['国', '事象（年）', 'MAPE（%）', '不適合の主因']):
     tbl_c2.rows[0].cells[i].text = h
@@ -496,6 +496,7 @@ c2_data = [
     ['ラトビア', 'ソ連解体（1991）', '6.6', '移民流出（民族＋EU）'],
     ['リトアニア', 'ソ連解体（1991）', '7.1', '持続的な移民流出'],
     ['エチオピア', 'エリトリア独立（1993）', '16.7', '急速な出生率低下'],
+    ['エリトリア', 'エリトリア独立（1993）', '37.9', '紛争、徴兵、移民流出'],
 ]
 for i, rd in enumerate(c2_data):
     for j, val in enumerate(rd):
