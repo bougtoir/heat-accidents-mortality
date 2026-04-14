@@ -583,11 +583,11 @@ def plot_natural_experiments_summary(germany_data, split_results, save_path):
     for ax in axes[:n_cases]:
         ax.set_xlabel('Year', fontsize=10)
 
-    plt.suptitle('Natural Experiments: Political/Border Changes as Exogenous Shocks\n'
-                 'to the Endogenous Renewal Model',
-                 fontsize=14, fontweight='bold', y=1.02)
-    plt.tight_layout()
-    plt.savefig(save_path, dpi=300, bbox_inches='tight')
+    fig.suptitle('Natural Experiments: Political/Border Changes as Exogenous Shocks\n'
+                  'to the Endogenous Renewal Model',
+                  fontsize=14, fontweight='bold')
+    fig.tight_layout(rect=[0, 0, 1, 0.93])
+    fig.savefig(save_path, dpi=300, bbox_inches='tight')
     plt.close()
     print(f"\nSaved: {save_path}")
 
@@ -627,10 +627,14 @@ if __name__ == '__main__':
     )
 
     # --- D. Baltic States (USSR dissolution 1991) ---
+    # Note: predecessor_code uses a non-existent code to skip the pre-split
+    # comparison, because WB 'RUS' is Russia only (~130M), not the USSR.
+    # Comparing ~7M (Baltic total) vs ~130M (Russia) is meaningless.
+    # Individual successor MAPEs for each Baltic state are still correct.
     baltics = analyse_country_split(
         pop_df, tfr_df, le_df,
         name="Baltic states (USSR dissolution)",
-        predecessor_code="RUS",  # USSR doesn't exist; use sum of parts
+        predecessor_code="SUN",  # no WB entry for USSR → skips pre-split comparison
         successor_codes={'EST': 'Estonia', 'LVA': 'Latvia', 'LTU': 'Lithuania'},
         split_year=1991,
     )
