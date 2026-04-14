@@ -517,6 +517,12 @@ def plot_germany(data, save_path):
     ax.set_title('B. Model deviation from observed trajectory', fontsize=13, fontweight='bold')
     ax.legend(fontsize=9, loc='best')
     ax.set_xlim(1970, 2023)
+    # Keep auto y-range but ensure 0 is included as a tick
+    ymin, ymax = ax.get_ylim()
+    if ymax < 0:
+        ax.set_ylim(top=0)
+    import matplotlib.ticker as mticker
+    ax.yaxis.set_major_locator(mticker.MaxNLocator(nbins='auto', steps=[1, 2, 5, 10]))
     ax.grid(True, alpha=0.3)
 
     plt.tight_layout()
@@ -609,10 +615,14 @@ if __name__ == '__main__':
     plot_germany(germany_data, os.path.join(FIG_DIR, 'fig_germany_reunification.png'))
 
     # --- B. Czechoslovakia (1993 Velvet Divorce) ---
+    # Note: WB 'CZE' is Czechia only (~10M), not Czechoslovakia (~15M).
+    # Using CZE as predecessor while CZE+SVK are successors creates a
+    # scale mismatch (sum ~15M vs predecessor ~10M). No WB code exists
+    # for Czechoslovakia (CSK), so we skip the pre-split comparison.
     czechoslovakia = analyse_country_split(
         pop_df, tfr_df, le_df,
         name="Czechoslovakia → Czechia + Slovakia",
-        predecessor_code="CZE",  # WB has Czechia with retrospective data
+        predecessor_code="CSK",  # no WB entry for Czechoslovakia → skips pre-split comparison
         successor_codes={'CZE': 'Czechia', 'SVK': 'Slovakia'},
         split_year=1993,
     )
