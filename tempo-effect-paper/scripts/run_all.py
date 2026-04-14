@@ -178,6 +178,7 @@ for i,cn in enumerate(showcase):
     if r['sy'] is not None: ax.plot(r['sy'],r['sp']/1e6,'r:',lw=1.5,label='Static (1970)')
     ax.set_title(cn,fontsize=14,fontweight='bold')
     ax.set_xlabel('Year'); ax.set_ylabel('Pop (M)'); ax.legend(fontsize=8); ax.grid(True,alpha=0.3)
+    ax.set_ylim(bottom=0)
 plt.suptitle('Endogenous Renewal + Gompertz vs UN WPP 2024 (1970-2023)',fontsize=16,fontweight='bold')
 plt.tight_layout(); plt.savefig('/home/ubuntu/figures/fig1_showcase.png',dpi=150,bbox_inches='tight'); plt.close()
 print("  Fig1 done", flush=True)
@@ -195,6 +196,7 @@ for i,cn in enumerate(sorted(country_ids.keys())):
         ax.text(0.95,0.95,f'MAPE={dr.iloc[0]["mape_index"]:.1f}%',transform=ax.transAxes,fontsize=7,va='top',ha='right',
                 bbox=dict(boxstyle='round,pad=0.2',facecolor='lightyellow',alpha=0.8))
     ax.set_title(cn,fontsize=9,fontweight='bold'); ax.tick_params(labelsize=7); ax.grid(True,alpha=0.2)
+    ax.set_ylim(bottom=0)
 plt.suptitle('All Countries: Dynamic(blue) Static(red) vs Actual(black) 1970-2023',fontsize=14,fontweight='bold')
 plt.tight_layout(); plt.savefig('/home/ubuntu/figures/fig2_all_countries.png',dpi=120,bbox_inches='tight'); plt.close()
 print("  Fig2 done", flush=True)
