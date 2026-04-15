@@ -70,7 +70,11 @@ def fetch_indicator(ind_name, ind_id, extra_params=None):
             page += 1
             time.sleep(0.3)
         except Exception as e:
-            print(f"  Error on page {page}: {e}")
+            retries = retries + 1 if 'retries' in dir() else 1
+            print(f"  Error on page {page} (attempt {retries}): {e}")
+            if retries >= 5:
+                print(f"  Max retries reached on page {page}, skipping.")
+                break
             time.sleep(2)
             continue
     

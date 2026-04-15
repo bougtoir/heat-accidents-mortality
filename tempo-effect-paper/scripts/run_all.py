@@ -105,7 +105,7 @@ def run_dynamic(loc_id, start=1970, end=2023):
         py = start+((t-1)//10)*10
         if py not in cache:
             p = make_params(loc_id, py)
-            if p is None: break
+            if p is None: return None, None
             cache[py] = p
         p = cache[py]
         births = np.sum(pop[t-1,15:50]*p['fem']*p['asfr'][15:50])
