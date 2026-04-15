@@ -51,6 +51,7 @@ def fetch_indicator(ind_name, ind_id, extra_params=None):
     if extra_params:
         params.update(extra_params)
     
+    retries = 0
     while True:
         params["page"] = page
         try:
@@ -63,6 +64,7 @@ def fetch_indicator(ind_name, ind_id, extra_params=None):
             if not items:
                 break
             all_data.extend(items)
+            retries = 0
             total_pages = result.get("pages", 1)
             print(f"  {ind_name}: page {page}/{total_pages}, got {len(items)} records (total so far: {len(all_data)})")
             if page >= total_pages:
@@ -70,7 +72,7 @@ def fetch_indicator(ind_name, ind_id, extra_params=None):
             page += 1
             time.sleep(0.3)
         except Exception as e:
-            retries = retries + 1 if 'retries' in dir() else 1
+            retries += 1
             print(f"  Error on page {page} (attempt {retries}): {e}")
             if retries >= 5:
                 print(f"  Max retries reached on page {page}, skipping.")
