@@ -107,7 +107,7 @@ ax.axhline(y=np.mean(vals), color='black', linestyle='--', linewidth=1, alpha=0.
 ax.set_xticks(range(len(names)))
 ax.set_xticklabels(names, rotation=90, fontsize=7)
 ax.set_ylabel('Outpatient neuropathic pain drug prescriptions / surgical cases', fontsize=11)
-ax.set_title('Figure 1. Outpatient neuropathic pain drug prescriptions per surgery by prefecture: unadjusted', fontsize=13, fontweight='bold')
+# Title removed per Pain submission guidelines (legends in manuscript text only)
 
 # Legend
 handles = [mpatches.Patch(color=REGION_COLORS[r], label=region_en(r)) for r in REGION_ORDER]
@@ -116,7 +116,7 @@ ax.legend(handles=handles, loc='upper left', fontsize=8, ncol=2)
 ax.set_xlim(-0.5, len(names)-0.5)
 
 plt.tight_layout()
-plt.savefig(OUTPUT_DIR + 'fig1_neuropathic_unadjusted_en.png', dpi=300, bbox_inches='tight')
+plt.savefig(OUTPUT_DIR + 'fig1_neuropathic_unadjusted_en.png', dpi=600, bbox_inches='tight')
 plt.close()
 print("Saved fig1_neuropathic_unadjusted_en.png")
 
@@ -151,11 +151,11 @@ for conf_key, conf_label, ax in confounders:
     ax.set_title(f'r = {r_val:.3f}, p = {p_val:.4f}', fontsize=10)
     ax.grid(True, alpha=0.3)
 
-fig.suptitle('Figure 2. Correlation between neuropathic pain drug prescriptions and confounder proxies', fontsize=13, fontweight='bold', y=1.01)
+# Title removed per Pain submission guidelines (legends in manuscript text only)
 handles = [mpatches.Patch(color=REGION_COLORS[r], label=region_en(r)) for r in REGION_ORDER]
 fig.legend(handles=handles, loc='lower center', ncol=5, fontsize=8, bbox_to_anchor=(0.5, -0.02))
 plt.tight_layout()
-plt.savefig(OUTPUT_DIR + 'fig2_confounder_correlations_en.png', dpi=300, bbox_inches='tight')
+plt.savefig(OUTPUT_DIR + 'fig2_confounder_correlations_en.png', dpi=600, bbox_inches='tight')
 plt.close()
 print("Saved fig2_confounder_correlations_en.png")
 
@@ -180,14 +180,14 @@ ax.axhline(y=0, color='black', linestyle='-', linewidth=1, alpha=0.5)
 ax.set_xticks(range(len(names_adj)))
 ax.set_xticklabels(names_adj, rotation=90, fontsize=7)
 ax.set_ylabel('Adjusted CPSP index (residual)', fontsize=11)
-ax.set_title('Figure 3. Confounder-adjusted CPSP index by prefecture\n(adjusted for diabetes, herpes zoster, antidepressant, and anxiolytic drugs)', fontsize=13, fontweight='bold')
+# Title removed per Pain submission guidelines (legends in manuscript text only)
 
 handles = [mpatches.Patch(color=REGION_COLORS[r], label=region_en(r)) for r in REGION_ORDER]
 ax.legend(handles=handles, loc='upper left', fontsize=8, ncol=2)
 ax.set_xlim(-0.5, len(names_adj)-0.5)
 
 plt.tight_layout()
-plt.savefig(OUTPUT_DIR + 'fig3_adjusted_cpsp_index_en.png', dpi=300, bbox_inches='tight')
+plt.savefig(OUTPUT_DIR + 'fig3_adjusted_cpsp_index_en.png', dpi=600, bbox_inches='tight')
 plt.close()
 print("Saved fig3_adjusted_cpsp_index_en.png")
 
@@ -242,9 +242,9 @@ for i, (bar, rname) in enumerate(zip(bars, region_order_sorted)):
         bar.set_edgecolor('#d62728')
         bar.set_linewidth(2)
 
-fig.suptitle('Figure 4. Neuropathic pain drug prescriptions by region: unadjusted vs confounder-adjusted', fontsize=13, fontweight='bold')
+# Title removed per Pain submission guidelines (legends in manuscript text only)
 plt.tight_layout()
-plt.savefig(OUTPUT_DIR + 'fig4_region_unadj_vs_adj_en.png', dpi=300, bbox_inches='tight')
+plt.savefig(OUTPUT_DIR + 'fig4_region_unadj_vs_adj_en.png', dpi=600, bbox_inches='tight')
 plt.close()
 print("Saved fig4_region_unadj_vs_adj_en.png")
 
@@ -294,11 +294,11 @@ ax.set_title(f'(B) Confounder-adjusted  r={r_val2:.3f}, p={p_val2:.4f}', fontsiz
 ax.grid(True, alpha=0.3)
 ax.axhline(y=0, color='gray', linestyle='-', alpha=0.3)
 
-fig.suptitle('Figure 5. Phase 1 (acute pain) vs Phase 2 (persistent pain proxy): integrated view', fontsize=13, fontweight='bold')
+# Title removed per Pain submission guidelines (legends in manuscript text only)
 handles = [mpatches.Patch(color=REGION_COLORS[r], label=region_en(r)) for r in REGION_ORDER]
 fig.legend(handles=handles, loc='lower center', ncol=5, fontsize=8, bbox_to_anchor=(0.5, -0.03))
 plt.tight_layout()
-plt.savefig(OUTPUT_DIR + 'fig5_phase1_vs_phase2_en.png', dpi=300, bbox_inches='tight')
+plt.savefig(OUTPUT_DIR + 'fig5_phase1_vs_phase2_en.png', dpi=600, bbox_inches='tight')
 plt.close()
 print("Saved fig5_phase1_vs_phase2_en.png")
 
@@ -362,11 +362,10 @@ for i in range(len(table_data)-1):
         table[0, j].set_facecolor('#4472C4')
         table[0, j].set_text_props(color='white', fontweight='bold')
 
-ax.set_title('Figure 6. Tohoku CPSP indicators: before and after confounder adjustment\n*** p<0.001, ns = not significant', 
-             fontsize=13, fontweight='bold', pad=20)
+# Title removed per Pain submission guidelines (legends in manuscript text only)
 
 plt.tight_layout()
-plt.savefig(OUTPUT_DIR + 'fig6_model_comparison_table_en.png', dpi=300, bbox_inches='tight')
+plt.savefig(OUTPUT_DIR + 'fig6_model_comparison_table_en.png', dpi=600, bbox_inches='tight')
 plt.close()
 print("Saved fig6_model_comparison_table_en.png")
 
@@ -419,10 +418,9 @@ for i in sorted_idx:
         ax.axvline(x=pos+0.5, color='red', linewidth=0.5, alpha=0.5)
 
 plt.colorbar(im, ax=ax, label='Z-score', shrink=0.8)
-ax.set_title('Supplementary Figure 1. Z-score heatmap of per-surgery indices by prefecture\n(red borders = Tohoku region)', 
-             fontsize=13, fontweight='bold')
+# Title removed per Pain submission guidelines (legends in manuscript text only)
 plt.tight_layout()
-plt.savefig(OUTPUT_DIR + 'sfig1_heatmap_en.png', dpi=300, bbox_inches='tight')
+plt.savefig(OUTPUT_DIR + 'sfig1_heatmap_en.png', dpi=600, bbox_inches='tight')
 plt.close()
 print("Saved sfig1_heatmap_en.png")
 
