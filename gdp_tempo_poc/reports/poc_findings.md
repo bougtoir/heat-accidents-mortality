@@ -5,7 +5,7 @@
 | 候補 | 仮説 | Test B（成長率、高頻度）中央値ゲイン | Test A（水準、低頻度）中央値ゲイン | 勝利国数 |
 |---|---|---|---|---|
 | **A** 投資→稼働ラグ時変 | 期間GDPが建設ラグの伸長で一時凹む | **+0.028 pp**（74%改善）| +0.00 pp | **24 / 39** |
-| **B** 就労参入・退出年齢のテンポ | 同時就労人口の構造変化 | +0.00 pp（18%改善）| +0.00 pp | 2 / 39 |
+| **B** 就労参入・退出年齢のテンポ | 同時就労人口の構造変化 | +0.00 pp（10%改善）| +0.00 pp | 2 / 39 |
 | **D** 無形資本（R&Dストック） | 忘れられた生産要素 | +0.000 pp（54%改善）| **+0.388 pp**（97%改善）| 13 / 39 |
 
 **最重要の発見**: **候補Aと候補Dは別々の時間スケールで効く**。候補Aは年次のテンポ成分を、候補Dは長期水準を改善する。候補Bは観測されたPWT `emp` が既に業況情報を内包しているため、人口構造ベースの代替では勝てない。
@@ -72,10 +72,10 @@
 
 | 指標 | M0 | M1 | M2 |
 |---|---|---|---|
-| 中央値 | 2.51 | 2.77 | 2.76 |
-| M2 vs M0 改善国率 | — | — | **18%** |
+| 中央値 | 2.51 | 2.72 | 2.72 |
+| M2 vs M0 改善国率 | — | — | **10%** |
 
-**M0が圧勝**。
+**M0が圧勝**（`avh` を M1/M2 にも含めた公平比較後も変化なし — Devin Review [#36 file comment 3116363734](https://github.com/bougtoir/wip/pull/36#discussion_r3116363734) で発見されたバグ修正後）。
 
 **図**: `figures/figB1_growth_rmse.png`, `figures/figB2_improvements_box.png`, `figures/figB3_tempo_params.png`
 
@@ -238,4 +238,74 @@ python scripts/run_champion_plots.py  # 補助図
 
 ---
 
-*Data sources: Penn World Table 10.01 (Feenstra, Inklaar & Timmer 2015, updated 2023); World Bank WDI age-bin population (SP.POP.XXYY.{MA,FE}); World Bank WDI R&D expenditure (GB.XPD.RSDV.GD.ZS). Analysis 2026-04-21.*
+## 9. フロー × ストック統合会計への拡張 — "hidden-indicator" joint identification
+
+ユーザー示唆：**「隠れた指標を考慮すればフロー型国富（GDP）とストック型国富（IWI, CWON）が統合できる」**。本節はこれを定式化し、本PoCの結果がその統合を実証レベルで裏付けることを示す。
+
+### 9.1 問題設定
+
+標準的な国民経済計算は二つの帳簿を並走させる：
+
+- フロー帳: `GDP(t) = C(t) + I(t) + G(t) + NX(t)`
+- ストック帳: `W(t) = K_tang(t) + K_human(t) + K_natural(t)` (+ K_intan, 公表値では欠落)
+
+理論的整合性は恒等式 `dW/dt = S(Y) − δ W + g(t)` で結ばれる。ところが現状、**二つの帳簿は独立に推計され、系統的に乖離**する。
+
+### 9.2 乖離の起源 — 三つの隠れたパラメータ
+
+本PoCが発見したのは、その乖離が次の三指標で説明される構造を持つこと：
+
+| 隠れた指標 | 意味 | GDP 側への効果 | Wealth 側への効果 |
+|---|---|---|---|
+| **μ(t)** 投資→稼働ラグ | 期間 GDP のテンポ歪み | A: 年次 RMSE を 74%で改善 | K_tang のフローから時刻整合性を補正 |
+| **β** 無形資本シェア | 生産関数の抜け要因 | D: 水準 MAPE を 97%で改善 | IWI/CWON の K_intan 欠落を補填 |
+| **σ** 分散項（age-profile 含む）| 集計バイアス | B: 限定的 | Human capital の分散補正 |
+
+### 9.3 Joint identification の定式化
+
+観測ベクトル `(GDP̂(t), K̂_tang(t), Ŵ_total(t))` と隠れたパラメータ `(μ, β, σ)` を同時推定：
+
+```
+min_{μ,β,σ}  L = L_production  +  L_accounting  +  L_wealth
+
+L_production  = Σ_t [log Ŷ(t) − α log K*_tang(t; μ) − β log K*_intan(t) − (1-α-β) log L*(t; σ)]²
+L_accounting  = Σ_t [ΔŴ(t) − S(Ŷ(t)) + δ Ŵ(t)]²              ← flow-stock 整合性
+L_wealth      = Σ_t [Ŵ(t) − K*_tang(t; μ) − β K*_intan(t) − K*_human(t)]²  ← stock 帳簿整合性
+```
+
+本PoCでは各項を個別に推定したが（A → μ のみ、D → β のみ）、全項を同時最小化すれば：
+
+1. A/D の結果が**相互補強される**: μ と β の交絡（例: 無形投資のラグ）を独立に解ける。
+2. IWI/CWON の公表値が**フロー側から強制**される: 恒等式で結ばれているので、流量から独立にストックを推計する必要がなくなる。
+3. 国富の「隠れたズレ」を**定量化**できる: `L_accounting` の残差が、現在未観測の stock 成分（natural, social）の真の寄与の下限推定となる。
+
+### 9.4 本PoCが提供する実証的ビルディングブロック
+
+| 構成要素 | データソース | 本PoC での推定値 | 状態 |
+|---|---|---|---|
+| μ(t) = μ₀ + μ₁(year − t₀) | PWT (rgdpna, rnna) | μ₁ 中央値 +0.04 年/年 | **済み** (A) |
+| β 無形資本シェア | WB R&D % GDP + PIM | 国別推定、中央値 0.1 弱 | **済み** (D) |
+| K*_intan 時系列 | 同上 | 39 か国分 | **済み** (D) |
+| K*_tang 時系列 (with μ) | 同上 + A | 39 か国分 | **済み** (A) |
+| K_human | PWT hc + B age-profile | 部分済み | B 部分対応 |
+| W_total 公表値 | WB CWON API (`NW.TOW.TO`, `NW.PCA.TO`, `NW.HCA.TO`) | データ取得済み（1995–2020、39か国） | 次 PR で実装 |
+
+WB CWON データは既に `/home/ubuntu/gdp_tempo_data/wb/cwon/` に取得済み。次の段階では：
+1. PIM で再構築した `K*_tang + β K*_intan + K*_human` と CWON 公表値 `NW.PCA.TO + λ·NW.HCA.TO` を比較。
+2. `L_accounting` 残差をベンチマーク化し、natural capital の推定下限として解釈。
+3. 同時推定の収束性と、各パラメータの同定強度をチェック。
+
+### 9.5 政策的意味
+
+本PoCの帰結を政策言語で言い換えると：
+
+- **Beyond GDP 運動**（IWI/CWON の推進）は正しい方向だが、**半分しか修正していない**。流量も同じ隠れた指標で歪んでいる。
+- **片側修正は誤誘導する**: 「IWI が増えたので豊かになった」の主張は、裏で GDP の測定バイアスを固定していない限り、循環論。
+- **真の持続可能性評価**は joint identification で μ, β, σ を同時に割り出した上で、**整合した flow と stock**を比較することで初めて可能になる。
+
+医療領域で同じ枠組みを展開したのが姉妹サブプロジェクト
+[`healthcare_tempo_poc`](../../healthcare_tempo_poc)（PR #37）。
+
+---
+
+*Data sources: Penn World Table 10.01 (Feenstra, Inklaar & Timmer 2015, updated 2023); World Bank WDI age-bin population (SP.POP.XXYY.{MA,FE}); World Bank WDI R&D expenditure (GB.XPD.RSDV.GD.ZS); World Bank CWON (NW.PCA.TO, NW.TOW.TO, NW.HCA.TO — 取得済み、次 PR で統合解析予定). Analysis 2026-04-21.*

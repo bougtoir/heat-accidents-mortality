@@ -152,20 +152,20 @@ def test_A_levels(logY, logK, logL, alpha):
             "dw": dw(resid)}
 
 
-def fit_static(N_bins, years, logY, logK, hc, alpha, ages_lo, ages_hi):
+def fit_static(N_bins, years, logY, logK, avh, hc, alpha, ages_lo, ages_hi):
     best = None
     for mu_E in np.arange(14, 25, 1.0):
         for mu_X in np.arange(55, 72, 1.0):
             Lpop = _eff_labor(N_bins, ages_lo, ages_hi, mu_E, mu_X)
             if np.any(Lpop <= 0): continue
-            L = Lpop * hc
+            L = Lpop * avh * hc
             r = test_B_growth(logY, logK, np.log(L), alpha)
             if best is None or r["rmse_pp"] < best[0]:
                 best = (r["rmse_pp"], mu_E, mu_X)
     return best[1], best[2]
 
 
-def fit_tempo(N_bins, years, logY, logK, hc, alpha, ages_lo, ages_hi):
+def fit_tempo(N_bins, years, logY, logK, avh, hc, alpha, ages_lo, ages_hi):
     t0 = years[0]
     best = None
     for mu_E0 in np.arange(14, 24, 2.0):
@@ -181,7 +181,7 @@ def fit_tempo(N_bins, years, logY, logK, hc, alpha, ages_lo, ages_hi):
                         pi = participation_profile(ages_lo, ages_hi, muE, muX)
                         Lpop[ti] = N_bins[ti] @ pi
                     if bad or np.any(Lpop <= 0): continue
-                    L = Lpop * hc
+                    L = Lpop * avh * hc
                     r = test_B_growth(logY, logK, np.log(L), alpha)
                     if best is None or r["rmse_pp"] < best[0]:
                         best = (r["rmse_pp"], mu_E0, mu_E1, mu_X0, mu_X1)
@@ -253,18 +253,18 @@ def main():
             print(f"  skip {country} (WB bins missing)"); continue
 
         # Find country-specific constant ages M1
-        mu_E_s, mu_X_s = fit_static(N_bins, years, np.log(Y), np.log(K), hc, alpha, ages_lo, ages_hi)
+        mu_E_s, mu_X_s = fit_static(N_bins, years, np.log(Y), np.log(K), avh, hc, alpha, ages_lo, ages_hi)
         Lpop_M1 = _eff_labor(N_bins, ages_lo, ages_hi, mu_E_s, mu_X_s)
-        L1 = Lpop_M1 * hc
+        L1 = Lpop_M1 * avh * hc
 
         # Fit tempo M2
-        mu_E0, mu_E1, mu_X0, mu_X1 = fit_tempo(N_bins, years, np.log(Y), np.log(K), hc, alpha, ages_lo, ages_hi)
+        mu_E0, mu_E1, mu_X0, mu_X1 = fit_tempo(N_bins, years, np.log(Y), np.log(K), avh, hc, alpha, ages_lo, ages_hi)
         t0 = years[0]
         Lpop_M2 = np.array([N_bins[ti] @ participation_profile(ages_lo, ages_hi,
                                                                mu_E0 + mu_E1*(y-t0),
                                                                mu_X0 + mu_X1*(y-t0))
                             for ti,y in enumerate(years)])
-        L2 = Lpop_M2 * hc
+        L2 = Lpop_M2 * avh * hc
 
         out = {"country": country, "n": len(years),
                "y_start": int(years[0]), "y_end": int(years[-1]),
