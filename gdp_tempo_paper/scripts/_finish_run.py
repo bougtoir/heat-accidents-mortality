@@ -7,10 +7,10 @@ from run_paper_analyses import (DATA, FIG, prepare_countries,
                                 run_gamma_price, make_figures)
 
 countries = prepare_countries()
-gamma = run_gamma_price(countries)
+fair = pd.read_csv(os.path.join(DATA, "fair_eval.csv"))
+gamma = run_gamma_price(countries, fair)
 gamma.to_csv(os.path.join(DATA, "gamma_price.csv"), index=False)
 
-fair = pd.read_csv(os.path.join(DATA, "fair_eval.csv"))
 oos = pd.read_csv(os.path.join(DATA, "oos.csv"))
 boot = pd.read_csv(os.path.join(DATA, "bootstrap_ci.csv"))
 make_figures(fair, oos, boot, gamma)

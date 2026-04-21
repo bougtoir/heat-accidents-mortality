@@ -386,8 +386,9 @@ def run_fair_eval(countries: list[Country]) -> pd.DataFrame:
         K_intan_p = np.where(K_intan > 0, K_intan, 1e-6)
         logI = np.log(K_intan_p)
 
+        K_M3_tang = pim_lagged(c.I, c.delta, c.K0, 0.0)
         for name, Ktang, beta in [("M0", K_M0, 0.0), ("M1", K_M1, 0.0),
-                                  ("M2", K_M2, 0.0), ("M3", K_M0, beta_M3),
+                                  ("M2", K_M2, 0.0), ("M3", K_M3_tang, beta_M3),
                                   ("M4", K_M4, beta_j)]:
             if Ktang is None:
                 out[f"{name}_B_rmse"] = np.nan
@@ -585,17 +586,18 @@ def run_bootstrap(countries: list[Country], n_boot: int = 120,
 
 
 # ----- Analysis 5: gamma_price sensitivity -----
-def run_gamma_price(countries: list[Country],
+def run_gamma_price(countries: list[Country], fair: pd.DataFrame,
                     gammas=(-0.04, -0.02, 0.0, 0.02, 0.04)) -> pd.DataFrame:
     """For each country and each gamma, re-compute log(W_PIM / CWON_PCA_adj)
     where CWON_PCA_adj(t) = CWON_PCA(t) * exp(gamma * (t - 2010)).
     gamma > 0 = CWON prices revalued upward through time (quantity down).
-    Report the change in log-ratio median and in Japan specifically."""
-    poc_data = "/home/ubuntu/repos/wip/gdp_tempo_poc/data"
-    a_df = pd.read_csv(os.path.join(poc_data, "poc_results.csv"))
-    d_df = pd.read_csv(os.path.join(poc_data, "poc_D_results.csv"))
-    mu_by = dict(zip(a_df["country"], a_df["mu_star"]))
-    beta_by = dict(zip(d_df["country"], d_df["beta2"]))
+    Report the change in log-ratio median and in Japan specifically.
+
+    Uses the manuscript's own M4 joint-identification estimates (mu_M4, beta_M4)
+    from run_fair_eval so that the sensitivity is consistent with the rest of
+    the paper."""
+    mu_by = dict(zip(fair["country"], fair["mu_M4"]))
+    beta_by = dict(zip(fair["country"], fair["beta_M4"]))
     rows = []
     for c in countries:
         mu = float(mu_by.get(c.country, np.nan))
@@ -751,7 +753,7 @@ def main():
     boot.to_csv(os.path.join(DATA, "bootstrap_ci.csv"), index=False)
 
     print("\n--- Analysis 5: gamma_price sensitivity ---", flush=True)
-    gamma = run_gamma_price(countries)
+    gamma = run_gamma_price(countries, fair)
     gamma.to_csv(os.path.join(DATA, "gamma_price.csv"), index=False)
 
     print("\n--- Figures ---", flush=True)
