@@ -278,13 +278,18 @@ def main():
         alpha = 1 - labsh
         logY = np.log(Y); logL = np.log(L)
 
-        for mu in np.linspace(0.05, 5.0, 20):
+        # Grid matches the per-candidate PoCs:
+        #   mu bounds (0.01, 6.0) as in gdp_tempo_poc/scripts/run_poc.py
+        #   beta range [0.0, 0.34] as in gdp_tempo_poc/scripts/run_poc_D.py
+        # so the joint estimate has access to the same parameter space the
+        # production-only fits used (no floor artefact).
+        for mu in np.linspace(0.01, 6.0, 25):
             K_m = pim_lagged_const(I, delta, K0, mu)
             K_m = np.where(K_m > 0, K_m, 1e-6)
             aligned_m_tang = np.array([
                 K_m[ii] if ii is not None else np.nan for ii in ki
             ])
-            for beta in np.linspace(0.02, 0.30, 15):
+            for beta in np.linspace(0.0, 0.34, 18):
                 if alpha + beta >= 0.95:
                     continue
                 W = K_m + beta * K_intan
