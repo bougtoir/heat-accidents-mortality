@@ -389,7 +389,7 @@ def main():
              label=f"slope={slope:+.3f}, R$^2$={r2:.2f}")
     plt.axhline(0, c="k", lw=0.5)
     plt.xlabel("R&D intensity (% of GDP, country mean)")
-    plt.ylabel(r"$\log(\hat{K}_{tang} + \beta\hat{K}_{intan} / \mathrm{CWON\ PCA})$")
+    plt.ylabel(r"$\log((\hat{K}_{tang} + \beta\hat{K}_{intan}) / \mathrm{CWON\ PCA})$")
     plt.title(f"Fig C1. CWON gap vs R&D intensity ({len(good)} countries)")
     plt.legend()
     plt.tight_layout()
