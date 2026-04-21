@@ -1,50 +1,72 @@
-# GDP tempo-effect PoC
+# GDP tempo-effect PoC (candidates A / B / D)
 
-This directory contains a proof-of-concept test of the hypothesis:
+This directory contains a proof-of-concept testing whether the mechanisms that
+matter for period-versus-cohort fertility indicators (tempo shift + forgotten
+dispersion parameter) have analogues that improve GDP models.
 
-> *Just as adding a tempo effect (shifting mean age at birth) or a forgotten
-> parameter (dispersion of the fertility schedule) improves the fit of period
-> demographic indicators, the same logic might improve GDP models.*
+Three candidates are implemented in parallel and compared on the same
+39-country benchmark (OECD + China, D.R. Congo dropped for insufficient data):
 
-The PoC operationalises the hypothesis as **time-varying time-to-build** in the
-perpetual inventory method, and compares it against instant PIM and constant-lag
-PIM on 39 countries (OECD + China + DR Congo) using Penn World Table 10.01.
+| Candidate | Analogue to population paper | Mechanism |
+|---|---|---|
+| **A** | AFB shift (tempo) | Investment-to-output time-to-build lag μ(t) drifts |
+| **B** | Same-living population | Mean labour entry/exit ages shift → effective L |
+| **D** | σ (forgotten parameter) | Intangible capital as additional factor |
 
-See [`reports/poc_findings.md`](reports/poc_findings.md) for the main writeup.
+See [`reports/poc_findings.md`](reports/poc_findings.md) for the full writeup
+including per-candidate results, the A/B/D comparison, and discussion of the
+implications for Beyond-GDP indicators (IWI, CWON, HDI).
 
 ## Reproduce
 
-1. Download Penn World Table 10.01 (`.dta`) to `/home/ubuntu/gdp_tempo_data/pwt1001.dta`:
+1. Download Penn World Table 10.01 (`.dta`) to
+   `/home/ubuntu/gdp_tempo_data/pwt1001.dta`:
    ```bash
    mkdir -p /home/ubuntu/gdp_tempo_data
    curl -sL "https://dataverse.nl/api/access/datafile/354098" \
      -o /home/ubuntu/gdp_tempo_data/pwt1001.dta
    ```
-2. Run:
+2. Pull World Bank data for candidates B and D (5-year age population bins,
+   R&D-to-GDP share). Script `scripts/fetch_wb.py` may be added if not present;
+   for now the API calls used in this PoC are documented in
+   `reports/poc_findings.md` §8.
+3. Run the PoCs:
    ```bash
    cd gdp_tempo_poc
-   python scripts/run_poc.py
-   python scripts/run_champion_plots.py
+   python scripts/run_poc.py         # Candidate A   (~1 min)
+   python scripts/run_poc_B.py       # Candidate B   (~10 min)
+   python scripts/run_poc_D.py       # Candidate D   (~30 s)
+   python scripts/compare_ABD.py     # A/B/D comparison
+   python scripts/run_champion_plots.py  # A time-series overlays
    ```
 
 ## Files
 
-- `scripts/run_poc.py` — three PIM constructions × three evaluation tests across 39 countries.
-- `scripts/run_champion_plots.py` — time-series overlay for the six countries with the largest M0→M2 gain.
-- `data/poc_results.csv` — per-country results.
-- `data/poc_summary.json` — aggregate statistics.
-- `figures/fig1_growth_rmse.png` — RMSE bar chart by country (Test B).
-- `figures/fig2_rmse_improvements_box.png` — pairwise RMSE improvement boxplot.
-- `figures/fig3_K_direct_rmse.png` — direct K vs PWT's `rnna` comparison (Test C).
-- `figures/fig4_mu1_scatter.png` — μ₁ drift vs RMSE reduction scatter.
-- `figures/fig5_champions.png` — six "champion" countries' growth-rate fits.
-- `reports/poc_findings.md` — writeup with conclusion and next steps.
+- `scripts/run_poc.py` — Candidate A: three PIM constructions × three tests.
+- `scripts/run_poc_B.py` — Candidate B: age-profile labour with tempo drift.
+- `scripts/run_poc_D.py` — Candidate D: Cobb-Douglas with intangible K.
+- `scripts/compare_ABD.py` — cross-candidate comparison figures and summary.
+- `scripts/run_champion_plots.py` — time-series overlay for top-6 A-countries.
+- `data/poc_results.csv` + `_B` + `_D` — per-country results for each PoC.
+- `data/compare_ABD.csv` — merged comparison table.
+- `data/*_summary.json` — aggregate statistics per candidate.
+- `figures/fig1–5*.png` — Candidate A plots (growth RMSE, improvements,
+  K direct, μ₁ scatter, champion countries).
+- `figures/figB1–3*.png` — Candidate B plots.
+- `figures/figD1–3*.png` — Candidate D plots.
+- `figures/figCompare1–2*.png` — A vs B vs D comparison.
+- `reports/poc_findings.md` — full writeup with Beyond-GDP discussion.
 
-## Headline result
+## Headline results
 
-- **M2 beats M0** on growth-rate RMSE for **74%** of the 39 countries.
-- **Median improvement**: +0.028 pp on a baseline ~3.1 pp — directionally consistent
-  but economically small. The tempo-effect channel in investment-to-output lag is
-  about **1–2 orders of magnitude weaker** than the analogous fertility tempo effect.
-- Largest gains are concentrated in transition economies (Baltic, Slovakia, Czech
-  Republic) and small open economies (New Zealand, Luxembourg).
+| Candidate | Test B (growth-RMSE, pp) median gain | Test A (levels-MAPE, pp) median gain | Countries improved |
+|---|---|---|---|
+| A | **+0.028** (74% of countries) | ≈0 | 24 / 39 |
+| B | ≈0 (18%) | ≈0 (38%) | 2 / 39 |
+| D | +0.0003 (54%) | **+0.39** (97%) | 13 / 39 |
+
+**Key finding**: A and D operate on different timescales — A tightens
+year-to-year growth dynamics; D tightens long-run level trends. Together they
+form a natural two-component generalisation of the population paper's
+"tempo + forgotten parameter" structure. Candidate B does not help at annual
+frequency because PWT's observed `emp` already encodes business-cycle signal.

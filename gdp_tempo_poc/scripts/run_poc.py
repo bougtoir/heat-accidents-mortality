@@ -281,7 +281,7 @@ def main():
     ax.boxplot([d10, d20, d21], tick_labels=["M0-M1", "M0-M2", "M1-M2"])
     ax.axhline(0, color="red", lw=1)
     ax.set_ylabel("Growth RMSE reduction (pp)")
-    ax.set_title("Pairwise RMSE improvements, 40 countries")
+    ax.set_title(f"Pairwise RMSE improvements, {len(rdf)} countries")
     ax.grid(alpha=0.3)
     fig.tight_layout()
     fig.savefig(os.path.join(FIG, "fig2_rmse_improvements_box.png"), dpi=140)
