@@ -299,10 +299,15 @@ def fit_tempo(I, delta, K0, logY, logLH, alpha, years) -> tuple[float, float]:
     return best[1], best[2]
 
 
-def fit_beta_given_mu(I, delta, K0, mu, K_intan, logY, logL, alpha):
-    """Fit beta for M3 (intangible) or M4 (given mu_joint)."""
-    logK_tang = np.log(np.where(
-        pim_lagged(I, delta, K0, mu) > 0, pim_lagged(I, delta, K0, mu), 1e-6))
+def fit_beta_given_K(K_tang, K_intan, logY, logL, alpha):
+    """Fit beta given a tangible-capital stock (supplied by caller).
+
+    The caller is responsible for choosing the tangible construction
+    (e.g. pim_instant for M3, pim_lagged(mu_joint) for M4). This avoids
+    train/eval mismatches where the fitted beta is evaluated against a
+    different tangible stock than the one it was optimized against.
+    """
+    logK_tang = np.log(np.where(K_tang > 0, K_tang, 1e-6))
     logK_intan = np.log(np.where(K_intan > 0, K_intan, 1e-6))
     best = (np.inf, 0.0)
     for beta in np.linspace(0.0, 0.34, 18):
@@ -367,9 +372,8 @@ def run_fair_eval(countries: list[Country]) -> pd.DataFrame:
         # M2 (tempo lag)
         mu0, mu1 = fit_tempo(c.I, c.delta, c.K0, logY, logLH, alpha, c.years)
         K_M2 = pim_lagged_tempo(c.I, c.delta, c.K0, mu0, mu1, c.years)
-        # M3: beta added on top of M0 tangible
-        beta_M3 = fit_beta_given_mu(c.I, c.delta, c.K0, 0.0, K_intan,
-                                    logY, logL, alpha)
+        # M3: beta added on top of M0 tangible (pim_instant)
+        beta_M3 = fit_beta_given_K(K_M0, K_intan, logY, logL, alpha)
         # M4: joint identification using CWON
         idx_map = {int(y): ii for ii, y in enumerate(c.years)}
         ki = [idx_map.get(int(y), None) for y in c.cwon_years]
@@ -386,9 +390,8 @@ def run_fair_eval(countries: list[Country]) -> pd.DataFrame:
         K_intan_p = np.where(K_intan > 0, K_intan, 1e-6)
         logI = np.log(K_intan_p)
 
-        K_M3_tang = pim_lagged(c.I, c.delta, c.K0, 0.0)
         for name, Ktang, beta in [("M0", K_M0, 0.0), ("M1", K_M1, 0.0),
-                                  ("M2", K_M2, 0.0), ("M3", K_M3_tang, beta_M3),
+                                  ("M2", K_M2, 0.0), ("M3", K_M0, beta_M3),
                                   ("M4", K_M4, beta_j)]:
             if Ktang is None:
                 out[f"{name}_B_rmse"] = np.nan
@@ -446,9 +449,9 @@ def run_oos(countries: list[Country]) -> pd.DataFrame:
                               logLH_train, alpha)
         mu0_tr, mu1e_tr = fit_tempo(I_train, delta_train, K0, logY_train,
                                     logLH_train, alpha, years_train)
-        beta3_tr = fit_beta_given_mu(I_train, delta_train, K0, 0.0,
-                                     K_intan_train, logY_train, logL_train,
-                                     alpha)
+        K_M3_train = pim_instant(I_train, delta_train, K0)
+        beta3_tr = fit_beta_given_K(K_M3_train, K_intan_train,
+                                    logY_train, logL_train, alpha)
         # joint fit: uses CWON which starts 1995 -> training window 1995..2014
         idx_map = {int(y): ii for ii, y in enumerate(c.years)}
         ki = []
