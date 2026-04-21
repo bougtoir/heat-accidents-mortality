@@ -43,6 +43,7 @@ Outputs:
 """
 import os
 import json
+import math
 import numpy as np
 import pandas as pd
 import matplotlib
@@ -150,6 +151,23 @@ def load_rnd():
 
 
 # ---- Evaluation ----
+def sanitize_for_json(obj):
+    """Recursively replace NaN with None so the output is strict JSON.
+
+    Python's `json` encoder serialises `float('nan')` as the literal `NaN`,
+    which is invalid per RFC 7159. The `default` hook of `json.dump` is only
+    invoked for objects that are not natively serialisable, so it never sees
+    NaN floats -- we have to strip them out up front.
+    """
+    if isinstance(obj, float) and math.isnan(obj):
+        return None
+    if isinstance(obj, dict):
+        return {k: sanitize_for_json(v) for k, v in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        return [sanitize_for_json(v) for v in obj]
+    return obj
+
+
 def demean_logratio(y_hat, y_obs):
     """Compare demeaned log trajectories (unit/base-year invariant)."""
     mask = np.isfinite(y_hat) & np.isfinite(y_obs) & (y_hat > 0) & (y_obs > 0)
@@ -329,7 +347,7 @@ def main():
     df = pd.DataFrame(rows)
     df.to_csv(os.path.join(DATA, "cwon_integration.csv"), index=False)
     with open(os.path.join(DATA, "cwon_integration_ts.json"), "w") as fh:
-        json.dump(per_country_ts, fh, indent=2, default=lambda x: None if (isinstance(x, float) and np.isnan(x)) else x)
+        json.dump(sanitize_for_json(per_country_ts), fh, indent=2, allow_nan=False)
 
     # --------------- Cross-country analysis -----------------
     good = df.dropna(subset=["log_scale_ratio", "rnd_pct_gdp_mean"]).copy()
