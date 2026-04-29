@@ -33,10 +33,74 @@ def load_data():
     df = df.dropna()
     clinical_vars = ['age', 'trestbps', 'chol', 'thalach', 'oldpeak']
     labels = ['Age', 'RestBP', 'Chol', 'MaxHR', 'STDep']
-    X = df[clinical_vars].astype(float).values
+    X_raw = df[clinical_vars].astype(float).values
     scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X)
-    return X_scaled, labels, clinical_vars
+    X_scaled = scaler.fit_transform(X_raw)
+    return X_scaled, X_raw, labels, clinical_vars
+
+
+def compute_dpi(X_scaled, X_raw):
+    """Compute Directional Predictability Index (asymmetric data component)."""
+    n = X_scaled.shape[1]
+    corr_base = np.abs(np.corrcoef(X_scaled.T))
+    np.fill_diagonal(corr_base, 0)
+    
+    # Regression on raw data
+    M_reg = np.zeros((n, n))
+    for i in range(n):
+        for j in range(n):
+            if i != j:
+                cov_ij = np.cov(X_raw[:, i], X_raw[:, j])[0, 1]
+                var_i = np.var(X_raw[:, i], ddof=1)
+                M_reg[i, j] = abs(cov_ij / (var_i + 1e-10))
+    
+    # ANM (HSIC)
+    def median_bw(x):
+        x = x.reshape(-1, 1)
+        dists = np.abs(x - x.T)
+        return max(np.median(dists[dists > 0]), 1e-5)
+    def neg_hsic(x, y):
+        m = len(x)
+        sx, sy = median_bw(x), median_bw(y)
+        x, y = x.reshape(-1, 1), y.reshape(-1, 1)
+        K = np.exp(-(x - x.T)**2 / (2 * sx**2))
+        L = np.exp(-(y - y.T)**2 / (2 * sy**2))
+        H = np.eye(m) - np.ones((m, m)) / m
+        return -np.trace(K @ H @ L @ H) / (m - 1)**2
+    M_anm = np.zeros((n, n))
+    for i in range(n):
+        for j in range(n):
+            if i != j:
+                beta = np.dot(X_scaled[:, i], X_scaled[:, j]) / (np.dot(X_scaled[:, i], X_scaled[:, i]) + 1e-10)
+                res = X_scaled[:, j] - beta * X_scaled[:, i]
+                M_anm[i, j] = neg_hsic(X_scaled[:, i], res)
+    
+    # Conditional entropy
+    def knn_ent(x, k=5):
+        x = np.sort(x)
+        dists = np.array([np.sort(np.abs(x - x[idx]))[min(k, len(x)-1)] for idx in range(len(x))])
+        dists = dists[dists > 0]
+        return np.mean(np.log(dists + 1e-10))
+    M_ent = np.zeros((n, n))
+    for i in range(n):
+        for j in range(n):
+            if i != j:
+                beta = np.dot(X_scaled[:, i], X_scaled[:, j]) / (np.dot(X_scaled[:, i], X_scaled[:, i]) + 1e-10)
+                res = X_scaled[:, j] - beta * X_scaled[:, i]
+                M_ent[i, j] = max(0, knn_ent(X_scaled[:, j]) - knn_ent(res))
+    
+    def normalize_asym(M):
+        A = M - M.T
+        mx = np.max(np.abs(A))
+        return A / (mx + 1e-10)
+    A_combined = (normalize_asym(M_reg) + normalize_asym(M_anm) + normalize_asym(M_ent)) / 3.0
+    gamma = 1.0
+    DPI = np.zeros((n, n))
+    for i in range(n):
+        for j in range(n):
+            if i != j:
+                DPI[i, j] = corr_base[i, j] * (1 + gamma * A_combined[i, j])
+    return DPI
 
 
 def build_magnetic_laplacian(W, direction_matrix, q=0.25):
@@ -98,7 +162,7 @@ def compute_scd_matrix(W, asymmetry, q=0.25):
     return SCD, eigenvalues
 
 
-def run_sweep(X_scaled, alphas, lingam_directions):
+def run_sweep(X_scaled, alphas, lingam_directions, DPI=None):
     n = X_scaled.shape[1]
     clinical_influence = np.array([
         [0.0, 0.6, 0.4, 0.5, 0.3],
@@ -107,12 +171,15 @@ def run_sweep(X_scaled, alphas, lingam_directions):
         [0.1, 0.2, 0.1, 0.0, 0.5],
         [0.0, 0.1, 0.0, 0.2, 0.0],
     ])
-    data_corr = np.abs(np.corrcoef(X_scaled.T))
-    np.fill_diagonal(data_corr, 0)
+    if DPI is None:
+        data_component = np.abs(np.corrcoef(X_scaled.T))
+        np.fill_diagonal(data_component, 0)
+    else:
+        data_component = DPI
 
     results = []
     for alpha in alphas:
-        utility_matrix = alpha * clinical_influence + (1 - alpha) * data_corr
+        utility_matrix = alpha * clinical_influence + (1 - alpha) * data_component
         asymmetry = utility_matrix - utility_matrix.T
 
         # Hodge decomposition
@@ -166,13 +233,18 @@ def run_sweep(X_scaled, alphas, lingam_directions):
 
 
 def main():
-    X_scaled, labels, clinical_vars = load_data()
+    X_scaled, X_raw, labels, clinical_vars = load_data()
     n = len(labels)
 
     # LiNGAM baseline
     model = lingam.DirectLiNGAM()
     model.fit(X_scaled)
     B = model.adjacency_matrix_
+
+    # Compute DPI
+    print("Computing DPI...")
+    DPI = compute_dpi(X_scaled, X_raw)
+    print(f"  DPI asymmetry norm: {np.linalg.norm(DPI - DPI.T, 'fro'):.4f}")
 
     # LiNGAM directions for comparison
     lingam_directions = {}
@@ -185,9 +257,9 @@ def main():
                 else:
                     lingam_directions[(dst, src)] = -1  # dst -> src (i.e., reversed)
 
-    # Sweep alpha from 0 to 1
+    # Sweep alpha from 0 to 1 (using DPI)
     alphas = np.linspace(0, 1, 101)
-    df = run_sweep(X_scaled, alphas, lingam_directions)
+    df = run_sweep(X_scaled, alphas, lingam_directions, DPI=DPI)
 
     # Print key values
     print("=" * 80)
