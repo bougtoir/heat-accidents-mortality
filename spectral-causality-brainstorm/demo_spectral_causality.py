@@ -165,8 +165,8 @@ def build_magnetic_laplacian(W, direction_matrix, q=0.25):
     D = np.diag(np.real(np.sum(np.abs(H), axis=1)))
     D_inv_sqrt = np.diag(1.0 / np.sqrt(np.diag(D) + 1e-10))
     
-    # Magnetic Laplacian
-    L_mag = D - D_inv_sqrt @ H @ D_inv_sqrt
+    # Normalized Magnetic Laplacian: L = I - D^{-1/2} H D^{-1/2}
+    L_mag = np.eye(n) - D_inv_sqrt @ H @ D_inv_sqrt
     return L_mag, H
 
 q_values = [0, 0.10, 0.25]
