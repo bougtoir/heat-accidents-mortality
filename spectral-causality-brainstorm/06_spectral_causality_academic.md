@@ -30,10 +30,10 @@
 
 因果推論（causal inference）の中心的な問い — 「$X$ は $Y$ の原因か？」— に対して、様々なアプローチが提案されてきた。代表的なものとして：
 
-- **構造方程式モデル（SEM）と do-calculus** (Pearl, 2009): 介入に基づく反事実的定義
-- **潜在結果モデル** (Rubin, 1974): 処置群と対照群の潜在結果の差
-- **LiNGAM** (Shimizu et al., 2006): データの非ガウス性を利用した因果方向の同定
-- **Granger因果** (Granger, 1969): 時系列における予測改善に基づく因果性
+- **構造方程式モデル（SEM）と do-calculus** [1]: 介入に基づく反事実的定義
+- **潜在結果モデル** [2]: 処置群と対照群の潜在結果の差
+- **LiNGAM** [3]: データの非ガウス性を利用した因果方向の同定
+- **Granger因果** [4]: 時系列における予測改善に基づく因果性
 
 本稿では、これらとは異なる原理 — **グラフのスペクトル構造（固有値・固有ベクトル）から因果的方向性を読み取る** — に基づく手法を定式化する。この手法を**スペクトル因果性（spectral causality）**と呼ぶ。
 
@@ -45,7 +45,7 @@
 
 ![図1: DirectLiNGAMによる推定因果DAG（UCI心疾患データ, n=297）](figures/fig6_causal_dag.png)
 
-*図1: DirectLiNGAM (Shimizu et al., 2011) により推定された因果DAG。UCI心疾患データ（Cleveland subset, n=297）の5つの臨床変数に対して適用。上流（原因側）から下流（結果側）へ因果的フローが流れる。青線は正の因果効果、赤線は負の因果効果を示す。LiNGAMはDAG仮定を置くため循環は許容されないが、スペクトル因果性ではHodge分解によりフィードバック（循環成分）も定量化可能である。*
+*図1: DirectLiNGAM [5] により推定された因果DAG。UCI心疾患データ（Cleveland subset, n=297）の5つの臨床変数に対して適用。上流（原因側）から下流（結果側）へ因果的フローが流れる。青線は正の因果効果、赤線は負の因果効果を示す。LiNGAMはDAG仮定を置くため循環は許容されないが、スペクトル因果性ではHodge分解によりフィードバック（循環成分）も定量化可能である。*
 
 特に、**磁気ラプラシアン（magnetic Laplacian）**と呼ばれるエルミート行列を用いると、エッジの方向性が固有ベクトルの**複素位相（complex phase）**として符号化され、因果方向の推定が可能になる。
 
@@ -89,7 +89,7 @@ $\mathcal{L}$ のスペクトル分解 $\mathcal{L} = U \Lambda U^\top$（$U = [
 - **$\lambda_k$** = 第 $k$ モードの「周波数」（大きいほど高周波 = 局所変動）
 - **$u_2$**（第2固有ベクトル, Fiedler vector）は**グラフの最適2分割**を与える
 
-この枠組みは、信号処理における**フーリエ変換のグラフ上への一般化**（Graph Signal Processing; GSP）の基礎となっている (Shuman et al., 2013)。
+この枠組みは、信号処理における**フーリエ変換のグラフ上への一般化**（Graph Signal Processing; GSP）の基礎となっている [6]。
 
 ### 2.3 問題：無向ラプラシアンは方向性を失う
 
@@ -107,7 +107,7 @@ $L = D - W$ は**対称行列**であるため、エッジの方向性 $i \to j$
 
 ### 3.2 定義
 
-**定義 3.1**（磁気ラプラシアン; de Resende & da Costa, 2020; Zhang et al., 2021）
+**定義 3.1**（磁気ラプラシアン [7, 8]）
 重み付き有向グラフ $G = (V, E, w)$ と**電荷パラメータ** $q \in [0, 0.5]$ に対して、**エルミート隣接行列** $H^{(q)} \in \mathbb{C}^{n \times n}$ を以下で定義する：
 
 $$H^{(q)}_{ij} = w_{ij} \cdot \exp\bigl(i \cdot 2\pi q \cdot \sigma_{ij}\bigr)$$
@@ -282,7 +282,7 @@ $$s(i) = \sum_{j \neq i} \mathrm{SCD}(i, j)$$
 
 ### 5.2 Hodge分解定理
 
-**定理 5.1**（グラフ上の Hodge 分解; Jiang et al., 2011）
+**定理 5.1**（グラフ上の Hodge 分解; Jiang et al. [9]）
 任意の 1-コチェイン（エッジフロー）$\omega \in C^1$ は、以下のように直交分解される：
 
 $$\omega = \underbrace{\delta_0 \phi}_{\text{勾配成分}} + \underbrace{\delta_1^* \psi}_{\text{カール成分}} + \underbrace{h}_{\text{調和成分}}$$
@@ -337,13 +337,13 @@ $$\mathbf{x} = B\mathbf{x} + \mathbf{e}, \qquad \mathbf{e} \sim \text{非ガウ�
 | **仮定** | 線形, 非ガウス, DAG, 共通原因なし | ユーティリティ非対称性が因果方向を反映 |
 | **出力** | 因果効果行列 $B$（変数ペアの効果量） | SCD行列 $S$（方向性スコア）+ 因果ポテンシャル $\phi$ |
 | **フィードバック** | 不可（DAG仮定） | Hodge分解のカール成分で定量化 |
-| **識別可能性** | 理論的保証あり (Shimizu et al., 2006) | 理論的保証なし（仮説段階） |
+| **識別可能性** | 理論的保証あり [3] | 理論的保証なし（仮説段階） |
 
 **重要な相違点**：LiNGAMはデータの**統計的性質**（分布の形状）のみから因果方向を推定するのに対し、スペクトル因果性はユーティリティ関数を通じて**ドメイン知識**を注入する。これは利点でもあり、限界でもある — ユーティリティ関数の品質に結果が依存するためである。
 
 ### 6.2 Granger因果との比較
 
-Granger因果 (Granger, 1969) は時系列データに対して、「$X$ の過去の値が $Y$ の予測を（$Y$ の過去だけのモデルを超えて）改善するか」で因果方向を定義する。
+Granger因果 [4] は時系列データに対して、「$X$ の過去の値が $Y$ の予測を（$Y$ の過去だけのモデルを超えて）改善するか」で因果方向を定義する。
 
 スペクトル因果性との主な違いは：
 
@@ -352,7 +352,7 @@ Granger因果 (Granger, 1969) は時系列データに対して、「$X$ の過�
 
 ### 6.3 因果の梯子における位置づけ
 
-Pearl (2009) が提唱した「因果の梯子（Ladder of Causation）」に照らすと：
+Pearl [1] が提唱した「因果の梯子（Ladder of Causation）」に照らすと：
 
 | レベル | 問い | 代表手法 |
 |---|---|---|
@@ -365,7 +365,7 @@ Pearl (2009) が提唱した「因果の梯子（Ladder of Causation）」に照
 
 ### 6.4 Hill の9基準とスペクトル因果性
 
-疫学における因果判断の古典的枠組みである Hill の9基準 (Hill, 1965) に照らすと、スペクトル因果性は従来手法がカバーしていなかった基準に貢献する：
+疫学における因果判断の古典的枠組みである Hill の9基準 [10] に照らすと、スペクトル因果性は従来手法がカバーしていなかった基準に貢献する：
 
 | Hill 基準 | 従来手法のカバー状況 | スペクトル因果性の貢献 |
 |---|---|---|
@@ -395,25 +395,25 @@ Pearl (2009) が提唱した「因果の梯子（Ladder of Causation）」に照
 
 #### 7.1.1 磁気ラプラシアンの有向グラフへの応用
 
-磁気ラプラシアンは元来、量子力学における磁場中の荷電粒子のハミルトニアンに由来するが、ネットワーク科学への応用は Fanuel & Suykens (2017a) が先駆的である。彼らはラプラシアンの「変形（deformation）」としてパラメータ付きラプラシアン族を構築し、有向ネットワークにおけるスペクトルランキングを実現した。最小固有値に対応する固有ベクトルのエントリがノードのランキングスコアを直接与え、変形パラメータにより top-$k$ 要素の強調が可能であることを示した。この手法はグラフ同期問題（group synchronization problem）として定式化され、PageRank ランダムウォークとの理論的接続も明らかにされている。
+磁気ラプラシアンは元来、量子力学における磁場中の荷電粒子のハミルトニアンに由来するが、ネットワーク科学への応用は Fanuel & Suykens [11] が先駆的である。彼らはラプラシアンの「変形（deformation）」としてパラメータ付きラプラシアン族を構築し、有向ネットワークにおけるスペクトルランキングを実現した。最小固有値に対応する固有ベクトルのエントリがノードのランキングスコアを直接与え、変形パラメータにより top-$k$ 要素の強調が可能であることを示した。この手法はグラフ同期問題（group synchronization problem）として定式化され、PageRank ランダムウォークとの理論的接続も明らかにされている。
 
-同グループは磁気ラプラシアンの固有マップ（magnetic eigenmaps）を有向ネットワークのコミュニティ検出に適用し (Fanuel, Alaíz & Suykens, 2017b)、Aharonov-Bohm 位相に基づく方向性符号化が、ランダムウォークベースの既存手法を上回る性能を発揮することを実証した。特に、有限温度での「フラックスコミュニティ」概念は、本稿の電荷パラメータ $q$ による方向性感度の制御と理論的に対応する。
+同グループは磁気ラプラシアンの固有マップ（magnetic eigenmaps）を有向ネットワークのコミュニティ検出に適用し [12]、Aharonov-Bohm 位相に基づく方向性符号化が、ランダムウォークベースの既存手法を上回る性能を発揮することを実証した。特に、有限温度での「フラックスコミュニティ」概念は、本稿の電荷パラメータ $q$ による方向性感度の制御と理論的に対応する。
 
-de Resende & da Costa (2020) は磁気ラプラシアンのスペクトルを大規模有向ネットワーク（$10^4$–$10^5$ ノード）の特性化に適用し、電荷パラメータ $q$ がネットワークの巡回構造（cyclic structure）を段階的に捕捉することを示した。本稿の§4における $q$ の解釈（方向性感度パラメータ）はこの知見に基づく。
+de Resende & da Costa [7] は磁気ラプラシアンのスペクトルを大規模有向ネットワーク（$10^4$–$10^5$ ノード）の特性化に適用し、電荷パラメータ $q$ がネットワークの巡回構造（cyclic structure）を段階的に捕捉することを示した。本稿の§4における $q$ の解釈（方向性感度パラメータ）はこの知見に基づく。
 
-Zhang et al. (2021) は MagNet として磁気ラプラシアンベースのグラフニューラルネットワーク（GNN）を提案し、有向グラフのノード分類・リンク予測において既存 GNN を凌駕する性能を示した。本稿は学習ベースのアプローチではなく因果推論への転用であるが、磁気ラプラシアンの方向性符号化能力の実証として重要な先行研究である。
+Zhang et al. [8] は MagNet として磁気ラプラシアンベースのグラフニューラルネットワーク（GNN）を提案し、有向グラフのノード分類・リンク予測において既存 GNN を凌駕する性能を示した。本稿は学習ベースのアプローチではなく因果推論への転用であるが、磁気ラプラシアンの方向性符号化能力の実証として重要な先行研究である。
 
 #### 7.1.2 Hodge分解：ランキングからフロー解析へ
 
-Hodge 分解のネットワーク科学への応用は Jiang et al. (2011) による統計的ランキングへの適用が出発点である。彼らは不完全なペアワイズ比較データ（映画評価、スポーツ対戦等）から、Hodge 分解の勾配成分で大域的ランキングを、カール成分でランキングの非整合性（intransitivity）を定量化した。本稿の因果ポテンシャル $\phi$（§5, 定義 5.2）はこの枠組みの因果推論への拡張である。
+Hodge 分解のネットワーク科学への応用は Jiang et al. [9] による統計的ランキングへの適用が出発点である。彼らは不完全なペアワイズ比較データ（映画評価、スポーツ対戦等）から、Hodge 分解の勾配成分で大域的ランキングを、カール成分でランキングの非整合性（intransitivity）を定量化した。本稿の因果ポテンシャル $\phi$（§5, 定義 5.2）はこの枠組みの因果推論への拡張である。
 
-Maehara & Ohkawa は単一細胞 RNA シーケンシングデータに Hodge 分解を適用した ddHodge を提案した (2019)。同手法は2025年に Nature Communications に掲載され (Maehara & Ohkawa, 2025)、高次元遺伝子発現動態を低次元データ多様体上で再構築し、勾配・カール・ダイバージェンスの全基本成分を正確に復元した。特に、マウス胚発生の scRNA-seq データへの適用により、発生過程の遺伝子発現動態が**ポテンシャルランドスケープ**に支配される勾配系であることを実データで初めて検証した点は、因果ポテンシャルの生物学的妥当性を裏付ける。本稿のアプローチと最も直接的に関連する先行研究である。
+Maehara & Ohkawa は単一細胞 RNA シーケンシングデータに Hodge 分解を適用した ddHodge を提案した [13]。同手法は2025年に Nature Communications に掲載され [14]、高次元遺伝子発現動態を低次元データ多様体上で再構築し、勾配・カール・ダイバージェンスの全基本成分を正確に復元した。特に、マウス胚発生の scRNA-seq データへの適用により、発生過程の遺伝子発現動態が**ポテンシャルランドスケープ**に支配される勾配系であることを実データで初めて検証した点は、因果ポテンシャルの生物学的妥当性を裏付ける。本稿のアプローチと最も直接的に関連する先行研究である。
 
 #### 7.1.3 DAG上のグラフ信号処理
 
-Shuman et al. (2013) が確立したグラフ信号処理（GSP）はグラフラプラシアンの固有分解をフーリエ変換のアナロジーとして用いるが、主に無向グラフを対象としていた。
+Shuman et al. [6] が確立したグラフ信号処理（GSP）はグラフラプラシアンの固有分解をフーリエ変換のアナロジーとして用いるが、主に無向グラフを対象としていた。
 
-Seifert, Wendler & Püschel (2023) は DAG 上の因果フーリエ解析を定義し、「原因が少数（few causes）」というフーリエスパース性仮定の下で因果信号の復元を理論的に保証した。Misiakos, Mihal & Püschel (2024) はこの枠組みを時系列グラフデータに拡張し、時間展開 DAG 上での構造方程式モデルからの信号とグラフの同時学習を ICASSP 2024 で報告した。また、Stanković et al. (2024) は DAG の隣接行列の固有値が全てゼロとなる本質的問題（通常のスペクトル解析が適用不可）に対し、グラフゼロパディング手法を提案して DAG 上のフーリエ変換を可能にした。
+Seifert, Wendler & Püschel [15] は DAG 上の因果フーリエ解析を定義し、「原因が少数（few causes）」というフーリエスパース性仮定の下で因果信号の復元を理論的に保証した。Misiakos, Mihal & Püschel [16] はこの枠組みを時系列グラフデータに拡張し、時間展開 DAG 上での構造方程式モデルからの信号とグラフの同時学習を ICASSP 2024 で報告した。また、Stanković et al. [17] は DAG の隣接行列の固有値が全てゼロとなる本質的問題（通常のスペクトル解析が適用不可）に対し、グラフゼロパディング手法を提案して DAG 上のフーリエ変換を可能にした。
 
 本稿のスペクトル因果性はこれらの手法と相補的である：DAG 上のフーリエ解析が「DAG 構造が既知」の場面で信号を復元するのに対し、本手法はスペクトル構造から因果的方向性を「推定」するアプローチをとる。
 
@@ -421,43 +421,43 @@ Seifert, Wendler & Püschel (2023) は DAG 上の因果フーリエ解析を定�
 
 #### 7.2.1 連続最適化によるDAG学習
 
-Zheng et al. (2018) は NOTEARS において、DAG の非巡回制約を $\operatorname{tr}(e^{W \circ W}) - d = 0$ という連続関数として表現し、因果構造学習を連続最適化問題に変換した。これにより、$O(d! \cdot 2^{d^2})$ の離散的探索空間が通常の連続最適化に帰着された。Ng, Ghassami & Zhang (2020) は GOLEM として NOTEARS の最適化効率を改善し、スパース性制約と DAG 制約の役割を理論的に分離した。
+Zheng et al. [18] は NOTEARS において、DAG の非巡回制約を $\operatorname{tr}(e^{W \circ W}) - d = 0$ という連続関数として表現し、因果構造学習を連続最適化問題に変換した。これにより、$O(d! \cdot 2^{d^2})$ の離散的探索空間が通常の連続最適化に帰着された。Ng, Ghassami & Zhang [19] は GOLEM として NOTEARS の最適化効率を改善し、スパース性制約と DAG 制約の役割を理論的に分離した。
 
-M'Charrak et al. (2025) は科学的実践において観測変数が「同一因果システムに属する」という暗黙の仮定を形式化し、グラフラプラシアンの Fiedler 固有値 $\lambda_2(\mathcal{L})$ による**連結性制約**を DAG 学習に導入した。本稿のスペクトル因果性が磁気ラプラシアンの「位相」で方向性を符号化するのに対し、M'Charrak らは通常のラプラシアンの「最小非零固有値」で因果グラフの連結性を保証する — グラフスペクトル理論の因果推論への応用という共通の方向性を持つ。
+M'Charrak et al. [20] は科学的実践において観測変数が「同一因果システムに属する」という暗黙の仮定を形式化し、グラフラプラシアンの Fiedler 固有値 $\lambda_2(\mathcal{L})$ による**連結性制約**を DAG 学習に導入した。本稿のスペクトル因果性が磁気ラプラシアンの「位相」で方向性を符号化するのに対し、M'Charrak らは通常のラプラシアンの「最小非零固有値」で因果グラフの連結性を保証する — グラフスペクトル理論の因果推論への応用という共通の方向性を持つ。
 
 #### 7.2.2 情報理論的因果推論
 
-Schreiber (2000) が提案した**転送エントロピー（Transfer Entropy, TE）**は、時系列における情報フローの方向性と大きさを非パラメトリックに定量化する。共通入力や共有履歴からの情報を条件付きで除外する点で、単純な相互情報量を超える因果的解釈が可能である。
+Schreiber [21] が提案した**転送エントロピー（Transfer Entropy, TE）**は、時系列における情報フローの方向性と大きさを非パラメトリックに定量化する。共通入力や共有履歴からの情報を条件付きで除外する点で、単純な相互情報量を超える因果的解釈が可能である。
 
-Sugihara et al. (2012) の**収束交差マッピング（Convergent Cross Mapping, CCM）**は、Takens の埋め込み定理に基づき、弱結合非線形力学系における因果方向を推定する。時系列長の増加に伴いクロスマッピング精度が**収束**するか否かで因果関係を判断する点がユニークであり、生態系・気候データで広く適用されている。
+Sugihara et al. [22] の**収束交差マッピング（Convergent Cross Mapping, CCM）**は、Takens の埋め込み定理に基づき、弱結合非線形力学系における因果方向を推定する。時系列長の増加に伴いクロスマッピング精度が**収束**するか否かで因果関係を判断する点がユニークであり、生態系・気候データで広く適用されている。
 
 TE も CCM も時系列データを前提とする点で、横断スナップショットにも適用可能なスペクトル因果性とは原理的に異なる。ただし、TE の「条件付き情報フロー」概念は、本稿のユーティリティ非対称性（「$X_i$ を知ると $X_j$ について何が分かるか」）と本質的に類似しており、スペクトル因果性を情報理論的因果推論の**静的（横断的）アナロジー**として位置づけることも可能である。
 
 #### 7.2.3 LiNGAMの拡張と医療データ応用
 
-Shimizu et al. (2011) の DirectLiNGAM は逐次的な非ガウス性テストにより因果順序を直接推定する手法であり、§8以降の実データ解析のベースラインとして用いている。
+Shimizu et al. [5] の DirectLiNGAM は逐次的な非ガウス性テストにより因果順序を直接推定する手法であり、§8以降の実データ解析のベースラインとして用いている。
 
-Kotoku et al. (2020) は大阪府特定健診データ（約10万人、2012–2017年度）に DirectLiNGAM を適用し、健診指標間の因果構造を推定した。年齢が最上流に位置し、BMI・血圧・脂質指標の因果連鎖を同定した結果は、本稿の UCI 心疾患データでの知見（Age → MaxHR → STDep）と整合する。
+Kotoku et al. [23] は大阪府特定健診データ（約10万人、2012–2017年度）に DirectLiNGAM を適用し、健診指標間の因果構造を推定した。年齢が最上流に位置し、BMI・血圧・脂質指標の因果連鎖を同定した結果は、本稿の UCI 心疾患データでの知見（Age → MaxHR → STDep）と整合する。
 
-Okuda et al. (2025) は日本の健診コホート（$n > 10^5$）においてワークフロー制約付き Longitudinal LiNGAM を提案し、検査の物理的時間順序を事前知識として因果学習に導入した。「ワークフロー制約 = 物理的に可能な因果」という発想は、本稿の「ユーティリティ制約 = 臨床的にもっともらしい因果」と対応し、ドメイン知識を構造制約として因果探索に注入するという共通の戦略を採る。
+Okuda et al. [24] は日本の健診コホート（$n > 10^5$）においてワークフロー制約付き Longitudinal LiNGAM を提案し、検査の物理的時間順序を事前知識として因果学習に導入した。「ワークフロー制約 = 物理的に可能な因果」という発想は、本稿の「ユーティリティ制約 = 臨床的にもっともらしい因果」と対応し、ドメイン知識を構造制約として因果探索に注入するという共通の戦略を採る。
 
 ### 7.3 周辺調査：新たな潮流
 
 #### 7.3.1 大規模言語モデルと因果推論
 
-大規模言語モデル（LLM）の因果推論能力は急速に注目を集めている。Le, Xia & Chen (2024) は複数の LLM エージェントが議論を通じて統計的因果探索手法を選択し、発見された因果グラフをさらに精錬する MAC（Multi-Agent Causal discovery）フレームワークを提案した。LLM が持つメタデータ（変数名・ドメイン知識）と統計的手法を組み合わせるアプローチは、本稿のユーティリティ関数構成（§13.2参照）に LLM を活用する構想と方向性が一致する。
+大規模言語モデル（LLM）の因果推論能力は急速に注目を集めている。Le, Xia & Chen [25] は複数の LLM エージェントが議論を通じて統計的因果探索手法を選択し、発見された因果グラフをさらに精錬する MAC（Multi-Agent Causal discovery）フレームワークを提案した。LLM が持つメタデータ（変数名・ドメイン知識）と統計的手法を組み合わせるアプローチは、本稿のユーティリティ関数構成（§13.2参照）に LLM を活用する構想と方向性が一致する。
 
-Sheth, Fatemi & Fritz (2025) は CausalGraph2LLM において、LLM の因果クエリ（因果構造の推論、介入効果の推定等）に対する体系的評価を行い、LLM が因果グラフの構造理解で一定の能力を持つ一方、推移的因果関係の推論に弱点があることを示した。この知見はユーティリティ関数の LLM ベース構成の限界を理解する上で重要である。
+Sheth, Fatemi & Fritz [26] は CausalGraph2LLM において、LLM の因果クエリ（因果構造の推論、介入効果の推定等）に対する体系的評価を行い、LLM が因果グラフの構造理解で一定の能力を持つ一方、推移的因果関係の推論に弱点があることを示した。この知見はユーティリティ関数の LLM ベース構成の限界を理解する上で重要である。
 
 #### 7.3.2 生物学的ネットワークの有向グラフ解析
 
-Wein et al. (2021) はグラフニューラルネットワーク（GNN）を用いた脳ネットワークの因果推論フレームワークを提案し、構造的結合（DTI）と機能的活動（fMRI）のマルチモーダル統合を実現した。GNN が長期依存性を捕捉し、Granger 因果ベースの VAR モデルを上回る性能を示した点は、グラフ構造を明示的に利用する因果推論の有効性を支持する。
+Wein et al. [27] はグラフニューラルネットワーク（GNN）を用いた脳ネットワークの因果推論フレームワークを提案し、構造的結合（DTI）と機能的活動（fMRI）のマルチモーダル統合を実現した。GNN が長期依存性を捕捉し、Granger 因果ベースの VAR モデルを上回る性能を示した点は、グラフ構造を明示的に利用する因果推論の有効性を支持する。
 
-Bernal-González et al. (2025) はブール論理に基づく「論理有向グラフ（logical digraph）」を提案し、生物学的制御ネットワークにおける同期的調節関係の表現と解析を可能にした。因果グラフの構造的性質（極限周期、アトラクタ）を直接解析できる点で、本稿のスペクトル的アプローチとは相補的な視点を提供する。
+Bernal-González et al. [28] はブール論理に基づく「論理有向グラフ（logical digraph）」を提案し、生物学的制御ネットワークにおける同期的調節関係の表現と解析を可能にした。因果グラフの構造的性質（極限周期、アトラクタ）を直接解析できる点で、本稿のスペクトル的アプローチとは相補的な視点を提供する。
 
 #### 7.3.3 医療データ因果探索の体系的レビュー
 
-Liu et al. (2026) は観察医学研究における因果探索のスコーピングレビューを行い、制約ベース（PC, FCI）、スコアベース（GES, NOTEARS）、関数ベース（LiNGAM）の三大カテゴリを整理した。医療分野特有の課題として、(a) 高次元・低サンプル設定、(b) 混合データ型（連続・離散・打ち切り）、(c) 時変交絡、(d) 欠測データを挙げている。スペクトル因果性は (a) にスペクトル分解の次元圧縮特性で、(b) にユーティリティ関数の柔軟性で、(d) にグラフ構造の頑健性でそれぞれ対応しうる。
+Liu et al. [29] は観察医学研究における因果探索のスコーピングレビューを行い、制約ベース（PC, FCI）、スコアベース（GES, NOTEARS）、関数ベース（LiNGAM）の三大カテゴリを整理した。医療分野特有の課題として、(a) 高次元・低サンプル設定、(b) 混合データ型（連続・離散・打ち切り）、(c) 時変交絡、(d) 欠測データを挙げている。スペクトル因果性は (a) にスペクトル分解の次元圧縮特性で、(b) にユーティリティ関数の柔軟性で、(d) にグラフ構造の頑健性でそれぞれ対応しうる。
 
 ### 7.4 本研究の位置づけ：統合的見取り図
 
@@ -465,15 +465,15 @@ Liu et al. (2026) は観察医学研究における因果探索のスコーピ�
 
 | 研究潮流 | 代表的研究 | 本研究との関係 |
 |---|---|---|
-| **磁気ラプラシアン** | Fanuel & Suykens (2017a,b); de Resende & da Costa (2020); Zhang et al. (2021) | 直接的な数理的基盤。方向性の複素位相符号化を因果推論に転用 |
-| **Hodge分解** | Jiang et al. (2011); Maehara & Ohkawa (2019, 2025) | ランキング・フロー解析の枠組みを因果ポテンシャルに拡張 |
-| **DAGスペクトル解析** | Seifert et al. (2023); Misiakos et al. (2024); Stanković et al. (2024) | 相補的：DAG既知→信号復元 vs. 本研究：スペクトル→因果方向推定 |
-| **連続DAG学習** | NOTEARS (Zheng et al., 2018); GOLEM (Ng et al., 2020); M'Charrak et al. (2025) | 共通のスペクトル正則化思想。本研究は因果方向の直接的読み取り |
-| **情報理論的因果** | TE (Schreiber, 2000); CCM (Sugihara et al., 2012) | 時系列対象 vs. 横断データ対応。ユーティリティ非対称性はTEの静的アナロジー |
-| **LiNGAM医療応用** | Kotoku et al. (2020); Okuda et al. (2025) | ECDアンサンブルの主要構成要素。ドメイン知識注入の共通戦略 |
-| **LLM × 因果** | Le et al. (2024); Sheth et al. (2025) | ユーティリティ関数のLLMベース構成の理論的根拠 |
-| **生物ネットワーク** | Wein et al. (2021); Bernal-González et al. (2025) | GNN・ブール論理による相補的アプローチ |
-| **医療因果レビュー** | Liu et al. (2026) | 医療分野固有の課題に対するスペクトル因果性の適合性を確認 |
+| **磁気ラプラシアン** | Fanuel & Suykens [11, 12]; de Resende & da Costa [7]; Zhang et al. [8] | 直接的な数理的基盤。方向性の複素位相符号化を因果推論に転用 |
+| **Hodge分解** | Jiang et al. [9]; Maehara & Ohkawa [13, 14] | ランキング・フロー解析の枠組みを因果ポテンシャルに拡張 |
+| **DAGスペクトル解析** | Seifert et al. [15]; Misiakos et al. [16]; Stanković et al. [17] | 相補的：DAG既知→信号復元 vs. 本研究：スペクトル→因果方向推定 |
+| **連続DAG学習** | NOTEARS [18]; GOLEM [19]; M'Charrak et al. [20] | 共通のスペクトル正則化思想。本研究は因果方向の直接的読み取り |
+| **情報理論的因果** | TE [21]; CCM [22] | 時系列対象 vs. 横断データ対応。ユーティリティ非対称性はTEの静的アナロジー |
+| **LiNGAM医療応用** | Kotoku et al. [23]; Okuda et al. [24] | ECDアンサンブルの主要構成要素。ドメイン知識注入の共通戦略 |
+| **LLM × 因果** | Le et al. [25]; Sheth et al. [26] | ユーティリティ関数のLLMベース構成の理論的根拠 |
+| **生物ネットワーク** | Wein et al. [27]; Bernal-González et al. [28] | GNN・ブール論理による相補的アプローチ |
+| **医療因果レビュー** | Liu et al. [29] | 医療分野固有の課題に対するスペクトル因果性の適合性を確認 |
 
 スペクトル因果性の独自性は、(1) 磁気ラプラシアンの方向性符号化を**因果推論**に直接転用した最初の試み、(2) Hodge 分解による**フィードバック（循環成分）の定量化**を因果推論に組み込んだ点、(3) Hill 9基準のうち既存の計算的手法が空白としてきた **H6（妥当性）・H7（整合性）・H9（類似性）への対応**（§6.4参照）、の3点に集約される。
 
@@ -483,7 +483,7 @@ Liu et al. (2026) は観察医学研究における因果探索のスコーピ�
 
 ### 8.1 データと変数
 
-UCI Heart Disease Dataset (Cleveland subset; Detrano et al., 1989) の連続変数5つを用いた：
+UCI Heart Disease Dataset (Cleveland subset; Detrano et al. [30]) の連続変数5つを用いた：
 
 $$\mathbf{X} = \bigl(X_1, X_2, X_3, X_4, X_5\bigr) = \bigl(\text{Age}, \text{RestingBP}, \text{Cholesterol}, \text{MaxHR}, \text{STDepression}\bigr)$$
 
@@ -491,7 +491,7 @@ $$\mathbf{X} = \bigl(X_1, X_2, X_3, X_4, X_5\bigr) = \bigl(\text{Age}, \text{Res
 
 ### 8.2 LiNGAM による因果順序（ベースライン）
 
-DirectLiNGAM (Shimizu et al., 2011) を適用し、因果順序と因果効果行列 $B$ を推定した：
+DirectLiNGAM [5] を適用し、因果順序と因果効果行列 $B$ を推定した：
 
 **推定因果順序**: $X_1 \prec X_4 \prec X_5 \prec X_2 \prec X_3$（Age → MaxHR → STDep → RestBP → Chol）
 
@@ -922,7 +922,7 @@ $q$ の値は結果に大きく影響する。$q$ の選択基準として：
 ### 13.5 今後の方向性
 
 1. **識別可能性の理論構築**: 特殊ケース（ツリーDAG + 線形SEM）での SCD と因果方向の一致証明
-2. **ECDパイプラインの検証**: MIMIC-IV、日本健診コホート（$n > 10^5$; Okuda et al., 2025）での再現性評価
+2. **ECDパイプラインの検証**: MIMIC-IV、日本健診コホート（$n > 10^5$; Okuda et al. [24]）での再現性評価
 3. **経時データへの拡張**: 時間的ユーティリティグラフの構築と Eigentrajectories の抽出
 4. **$p_{\text{flip}}$ の自動推定**: LiNGAMとの因果方向一致率からドメイン知識品質を推定するメタ手法（§11.2の$p_{\text{flip}}^*$を実データ上で自動算出）
 5. **プルーニング閾値の自動化**: フィードバック率のブートストラップ信頼区間に基づく統計的閾値設定（§12.3）
@@ -961,32 +961,32 @@ $q$ の値は結果に大きく影響する。$q$ の選択基準として：
 ## 参考文献
 
 1. Pearl, J. (2009). *Causality: Models, Reasoning, and Inference* (2nd ed.). Cambridge University Press.
-2. Shimizu, S., Hoyer, P.O., Hyvärinen, A. & Kerminen, A. (2006). A linear non-Gaussian acyclic model for causal discovery. *Journal of Machine Learning Research*, 7, 2003–2030.
-3. Shimizu, S., Inazumi, T., Sogawa, Y., Hyvärinen, A., Kawahara, Y., Washio, T., Hoyer, P.O. & Bollen, K. (2011). DirectLiNGAM: A direct method for learning a linear non-Gaussian structural equation model. *Journal of Machine Learning Research*, 12, 1225–1248.
-4. Hill, A.B. (1965). The environment and disease: Association or causation? *Proceedings of the Royal Society of Medicine*, 58, 295–300.
-5. Granger, C.W.J. (1969). Investigating causal relations by econometric models and cross-spectral methods. *Econometrica*, 37(3), 424–438.
+2. Rubin, D.B. (1974). Estimating causal effects of treatments in randomized and nonrandomized studies. *Journal of Educational Psychology*, 66(5), 688–701.
+3. Shimizu, S., Hoyer, P.O., Hyvärinen, A. & Kerminen, A. (2006). A linear non-Gaussian acyclic model for causal discovery. *Journal of Machine Learning Research*, 7, 2003–2030.
+4. Granger, C.W.J. (1969). Investigating causal relations by econometric models and cross-spectral methods. *Econometrica*, 37(3), 424–438.
+5. Shimizu, S., Inazumi, T., Sogawa, Y., Hyvärinen, A., Kawahara, Y., Washio, T., Hoyer, P.O. & Bollen, K. (2011). DirectLiNGAM: A direct method for learning a linear non-Gaussian structural equation model. *Journal of Machine Learning Research*, 12, 1225–1248.
 6. Shuman, D.I., Narang, S.K., Frossard, P., Ortega, A. & Vandergheynst, P. (2013). The emerging field of signal processing on graphs. *IEEE Signal Processing Magazine*, 30(3), 83–98.
-7. Zhang, X., He, Y., Bruber, N., Hooi, B. & Zhu, L. (2022). MagNet: A neural network for directed graphs. In *Advances in Neural Information Processing Systems* (NeurIPS 2021).
-8. de Resende, B.M.F. & da Costa, L.F. (2020). Characterization and comparison of large directed networks through the spectra of the magnetic Laplacian. *Chaos*, 30(7), 073141.
-9. Seifert, B., Wendler, C. & Püschel, M. (2023). Causal Fourier analysis on directed acyclic graphs and posets. *IEEE Transactions on Signal Processing*, 71, 3516–3530.
-10. Jiang, X., Lim, L.H., Yao, Y. & Ye, Y. (2011). Statistical ranking and combinatorial Hodge theory. *Mathematical Programming*, 127, 203–244.
-11. Maehara, K. & Ohkawa, Y. (2019). Modeling latent flows on single-cell data using the Hodge decomposition. *bioRxiv*.
-12. Kotoku, J. et al. (2020). Causal relations of health indices inferred statistically using the DirectLiNGAM algorithm from a cross-sectional study. *PLOS ONE*, 15(12), e0243229.
-13. Okuda, S. et al. (2025). Operationalizing longitudinal causal discovery under real-world workflow constraints. *arXiv:2602.23800*.
-14. Detrano, R. et al. (1989). International application of a new probability algorithm for the diagnosis of coronary artery disease. *American Journal of Cardiology*, 64, 304–310.
-15. Rubin, D.B. (1974). Estimating causal effects of treatments in randomized and nonrandomized studies. *Journal of Educational Psychology*, 66(5), 688–701.
-16. Fanuel, M. & Suykens, J.A.K. (2017a). Deformed Laplacians and spectral ranking in directed networks. *arXiv:1511.00492*.
-17. Fanuel, M., Alaíz, C.M. & Suykens, J.A.K. (2017b). Magnetic eigenmaps for community detection in directed networks. *Physical Review E*, 95, 022302.
-18. Maehara, K. & Ohkawa, Y. (2025). Geometry-preserving vector field reconstruction of high-dimensional cell-state dynamics using ddHodge. *Nature Communications*, 16, 11342.
-19. Misiakos, P., Mihal, V. & Püschel, M. (2024). Learning signals and graphs from time-series graph data with few causes. In *IEEE ICASSP 2024*.
-20. Stanković, L. et al. (2024). Fourier analysis of signals on directed acyclic graphs (DAG) using graph zero-padding. *arXiv:2311.01073*.
-21. Zheng, X., Aragam, B., Ravikumar, P. & Xing, E.P. (2018). DAGs with NO TEARS: Continuous optimization for structure learning. In *Advances in Neural Information Processing Systems* (NeurIPS 2018).
-22. Ng, I., Ghassami, A. & Zhang, K. (2020). On the role of sparsity and DAG constraints for learning linear DAGs. In *Advances in Neural Information Processing Systems* (NeurIPS 2020).
-23. M'Charrak, A., Lukasiewicz, T., Bronstein, M., Reddy, A.G. & Muandet, K. (2025). Connected causal graphs for real-world science. In *International Conference on Learning Representations* (ICLR 2025).
-24. Schreiber, T. (2000). Measuring information transfer. *Physical Review Letters*, 85(2), 461–464.
-25. Sugihara, G. et al. (2012). Detecting causality in complex ecosystems. *Science*, 338, 496–500.
-26. Le, H.D., Xia, X. & Chen, Z. (2024). Multi-agent causal discovery using large language models. *arXiv:2407.15073*.
-27. Sheth, I., Fatemi, B. & Fritz, M. (2025). CausalGraph2LLM: Evaluating LLMs for causal queries. In *Findings of NAACL 2025*, 2076–2098.
-28. Wein, S. et al. (2021). A graph neural network framework for causal inference in brain networks. *Scientific Reports*, 11, 8061.
-29. Bernal-González, S. et al. (2025). Directed graph theory for the analysis of biological regulatory networks. *Frontiers in Applied Mathematics and Statistics*, 11, 1644869.
-30. Liu, Z. et al. (2026). Causal discovery in observational medical research: Scoping review. *JMIR Medical Informatics*, 14, e82499.
+7. de Resende, B.M.F. & da Costa, L.F. (2020). Characterization and comparison of large directed networks through the spectra of the magnetic Laplacian. *Chaos*, 30(7), 073141.
+8. Zhang, X., He, Y., Bruber, N., Hooi, B. & Zhu, L. (2022). MagNet: A neural network for directed graphs. In *Advances in Neural Information Processing Systems* (NeurIPS 2021).
+9. Jiang, X., Lim, L.H., Yao, Y. & Ye, Y. (2011). Statistical ranking and combinatorial Hodge theory. *Mathematical Programming*, 127, 203–244.
+10. Hill, A.B. (1965). The environment and disease: Association or causation? *Proceedings of the Royal Society of Medicine*, 58, 295–300.
+11. Fanuel, M. & Suykens, J.A.K. (2017a). Deformed Laplacians and spectral ranking in directed networks. *arXiv:1511.00492*.
+12. Fanuel, M., Alaíz, C.M. & Suykens, J.A.K. (2017b). Magnetic eigenmaps for community detection in directed networks. *Physical Review E*, 95, 022302.
+13. Maehara, K. & Ohkawa, Y. (2019). Modeling latent flows on single-cell data using the Hodge decomposition. *bioRxiv*.
+14. Maehara, K. & Ohkawa, Y. (2025). Geometry-preserving vector field reconstruction of high-dimensional cell-state dynamics using ddHodge. *Nature Communications*, 16, 11342.
+15. Seifert, B., Wendler, C. & Püschel, M. (2023). Causal Fourier analysis on directed acyclic graphs and posets. *IEEE Transactions on Signal Processing*, 71, 3516–3530.
+16. Misiakos, P., Mihal, V. & Püschel, M. (2024). Learning signals and graphs from time-series graph data with few causes. In *IEEE ICASSP 2024*.
+17. Stanković, L. et al. (2024). Fourier analysis of signals on directed acyclic graphs (DAG) using graph zero-padding. *arXiv:2311.01073*.
+18. Zheng, X., Aragam, B., Ravikumar, P. & Xing, E.P. (2018). DAGs with NO TEARS: Continuous optimization for structure learning. In *Advances in Neural Information Processing Systems* (NeurIPS 2018).
+19. Ng, I., Ghassami, A. & Zhang, K. (2020). On the role of sparsity and DAG constraints for learning linear DAGs. In *Advances in Neural Information Processing Systems* (NeurIPS 2020).
+20. M'Charrak, A., Lukasiewicz, T., Bronstein, M., Reddy, A.G. & Muandet, K. (2025). Connected causal graphs for real-world science. In *International Conference on Learning Representations* (ICLR 2025).
+21. Schreiber, T. (2000). Measuring information transfer. *Physical Review Letters*, 85(2), 461–464.
+22. Sugihara, G. et al. (2012). Detecting causality in complex ecosystems. *Science*, 338, 496–500.
+23. Kotoku, J. et al. (2020). Causal relations of health indices inferred statistically using the DirectLiNGAM algorithm from a cross-sectional study. *PLOS ONE*, 15(12), e0243229.
+24. Okuda, S. et al. (2025). Operationalizing longitudinal causal discovery under real-world workflow constraints. *arXiv:2602.23800*.
+25. Le, H.D., Xia, X. & Chen, Z. (2024). Multi-agent causal discovery using large language models. *arXiv:2407.15073*.
+26. Sheth, I., Fatemi, B. & Fritz, M. (2025). CausalGraph2LLM: Evaluating LLMs for causal queries. In *Findings of NAACL 2025*, 2076–2098.
+27. Wein, S. et al. (2021). A graph neural network framework for causal inference in brain networks. *Scientific Reports*, 11, 8061.
+28. Bernal-González, S. et al. (2025). Directed graph theory for the analysis of biological regulatory networks. *Frontiers in Applied Mathematics and Statistics*, 11, 1644869.
+29. Liu, Z. et al. (2026). Causal discovery in observational medical research: Scoping review. *JMIR Medical Informatics*, 14, e82499.
+30. Detrano, R. et al. (1989). International application of a new probability algorithm for the diagnosis of coronary artery disease. *American Journal of Cardiology*, 64, 304–310.

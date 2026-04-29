@@ -326,6 +326,7 @@ def md_to_docx(md_path, docx_path, title):
     code_lines = []
     table_lines = []
     in_table = False
+    in_reference_section = False
 
     while i < len(lines):
         line = lines[i]
@@ -416,6 +417,11 @@ def md_to_docx(md_path, docx_path, title):
             heading_text = line.lstrip('#').strip()
             p = doc.add_heading('', level=1)
             add_formatted_text(p, heading_text)
+            # Track if we're in the reference section
+            if '参考文献' in heading_text:
+                in_reference_section = True
+            else:
+                in_reference_section = False
             i += 1
             continue
         elif line.startswith('### '):
@@ -483,9 +489,19 @@ def md_to_docx(md_path, docx_path, title):
         # ── Numbered list ──
         num_match = re.match(r'^(\d+)\.\s+(.+)', line.strip())
         if num_match:
+            num_str = num_match.group(1)
             text = num_match.group(2)
-            p = doc.add_paragraph(style='List Number')
-            add_formatted_text(p, text)
+            if in_reference_section:
+                # Use explicit numbering to prevent Word auto-numbering issues
+                p = doc.add_paragraph()
+                p.paragraph_format.left_indent = Cm(1.0)
+                p.paragraph_format.first_line_indent = Cm(-1.0)
+                run = p.add_run(f'{num_str}. ')
+                run.font.size = Pt(10)
+                add_formatted_text(p, text)
+            else:
+                p = doc.add_paragraph(style='List Number')
+                add_formatted_text(p, text)
             i += 1
             continue
 
