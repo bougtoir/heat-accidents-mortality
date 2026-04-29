@@ -53,7 +53,7 @@ def build_magnetic_laplacian(W, direction_matrix, q=0.25):
     for i in range(n):
         for j in range(n):
             if i != j:
-                d_ij = np.sign(direction_matrix[i, j])
+                d_ij = np.sign(direction_matrix[i, j]) if np.abs(direction_matrix[i, j]) > 1e-10 else 0.0
                 H[i, j] = W_sym[i, j] * np.exp(1j * 2 * np.pi * q * d_ij)
     D = np.diag(np.real(np.sum(np.abs(H), axis=1)))
     D_inv_sqrt = np.diag(1.0 / np.sqrt(np.diag(D) + 1e-10))

@@ -157,8 +157,8 @@ def build_magnetic_laplacian(W, direction_matrix, q=0.25):
     for i in range(n):
         for j in range(n):
             if i != j:
-                # direction sign from asymmetry
-                d_ij = np.sign(direction_matrix[i, j])
+                # direction sign from asymmetry (threshold to avoid noise amplification)
+                d_ij = np.sign(direction_matrix[i, j]) if np.abs(direction_matrix[i, j]) > 1e-10 else 0.0
                 H[i, j] = W_sym[i, j] * np.exp(1j * 2 * np.pi * q * d_ij)
     
     # Degree matrix
