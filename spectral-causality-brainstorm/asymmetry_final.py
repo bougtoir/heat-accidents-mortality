@@ -274,7 +274,7 @@ def full_eval(X, M, labels, B_lingam, lingam_order, name):
     agreement = n_agree / n_compared if n_compared > 0 else float('nan')
     
     # Hodge potential order
-    phi_order = np.argsort(phi)
+    phi_order = np.argsort(-phi)
     our_order = [labels[i] for i in phi_order]
     
     # Kendall tau with LiNGAM order
@@ -454,7 +454,7 @@ def main():
                         if d == lingam_dirs[pair]:
                             na_raw += 1
         
-        phi_ord = np.argsort(phi_g)
+        phi_ord = np.argsort(-phi_g)
         lingam_rank = {v: i for i, v in enumerate(lingam_order)}
         our_r = [lingam_rank[labels[idx]] for idx in phi_ord]
         tau_g, _ = stats.kendalltau(list(range(n)), our_r)
@@ -506,7 +506,7 @@ def main():
         phi_a, ge_a, ce_a, te_a = hodge(asym_a)
         rg_a = ge_a / te_a if te_a > 1e-12 else float('nan')
         
-        phi_ord = np.argsort(phi_a)
+        phi_ord = np.argsort(-phi_a)
         lingam_rank = {v: i for i, v in enumerate(lingam_order)}
         our_r = [lingam_rank[labels[idx]] for idx in phi_ord]
         tau_a, _ = stats.kendalltau(list(range(n)), our_r)
