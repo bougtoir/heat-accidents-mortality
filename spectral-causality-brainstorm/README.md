@@ -10,6 +10,9 @@ GEM-RAG（Graphical Eigen Memories for Retrieval Augmented Generation）のコ�
 | 02 | `02_lingam_x_utility_causality.md` | LiNGAMファミリーとの比較・統合アイデア。変数レベル因果 × テーマレベル因果の二段ロケット等。 |
 | 03 | `03_spectral_causality_deep_dive.md` | スペクトル因果性の深掘り。磁気ラプラシアン、Hodge分解、因果フーリエ解析との接続。数学的定式化。 |
 | 04 | `04_hill_criteria_mapping.md` | Hill の9基準 × 因果推論手法（40+手法）の包括的マッピング。既存手法のH6/H7/H9空白地帯と提案手法の位置づけ。 |
+| 05 | `05_spectral_causality_explainer.md` | **専門外向け解説**。音のたとえ・水流のたとえで概念を説明。UCI心疾患データ（297名）での実解析結果付き。因果の梯子・Hill基準の統合的議論。 |
+| — | `demo_spectral_causality.py` | 解析再現用Pythonスクリプト。LiNGAM・磁気ラプラシアン・Hodge分解・SCI/SCD計算・図生成を一括実行。 |
+| — | `figures/` | 解析結果の図（fig1〜fig5）。 |
 
 ## 起点記事
 
