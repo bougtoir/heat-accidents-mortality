@@ -145,7 +145,7 @@ print("=" * 60)
 
 def build_magnetic_laplacian(W, direction_matrix, q=0.25):
     """
-    Build the magnetic Laplacian L^(q) = D - D^{-1/2} H^(q) D^{-1/2}
+    Build the normalized magnetic Laplacian L^(q) = I - D^{-1/2} H^(q) D^{-1/2}
     where H^(q)_{ij} = W_{ij} * exp(i * 2*pi*q * direction(i,j))
     """
     n = W.shape[0]
