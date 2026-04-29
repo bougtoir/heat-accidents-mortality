@@ -141,8 +141,14 @@ def draw_graph(ax, labels, edges, title, subtitle, is_dag=True):
         # Sort by causal depth (edges go top to bottom)
         # Compute a simple depth based on edges
         depth = {i: 0 for i in range(n)}
-        for src, dst, w in edges:
-            depth[dst] = max(depth[dst], depth[src] + 1)
+        changed = True
+        while changed:
+            changed = False
+            for src, dst, w in edges:
+                new_depth = depth[src] + 1
+                if new_depth > depth[dst]:
+                    depth[dst] = new_depth
+                    changed = True
         max_depth = max(depth.values()) if depth else 1
 
         # Group by depth level
