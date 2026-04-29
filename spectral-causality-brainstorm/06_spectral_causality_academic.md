@@ -447,7 +447,7 @@ $r_{\text{gradient}} = 85.9\%$ は、このデータの変数間関係が概ねD
 | 4 | Max Heart Rate | -0.204 |
 | 5 | ST Depression | -0.324 |
 
-Age が最上流、ST Depression が最下流という結果は臨床的に妥当である（図4）。LiNGAM の因果順序（Age → MaxHR → ST → BP → Chol）とHodge因果ポテンシャル（Age → Chol → BP ≈ MaxHR → ST）の Kendall 順位相関は $\tau = 0.50$ であり、部分的一致を示す。
+Age が最上流、ST Depression が最下流という結果は臨床的に妥当である（図4）。LiNGAM の因果順序（Age → MaxHR → ST → BP → Chol）とHodge因果ポテンシャル（Age → Chol → BP ≈ MaxHR → ST）の Kendall 順位相関は $\tau = 0.00$ であり、Ageが最上流という点では一致するが、中間変数の順序は大きく異なる。これは両手法が因果を異なる観点（LiNGAM: 統計的非ガウス性、Hodge: ユーティリティ非対称性）から捉えていることを反映している。
 
 ![図4: Hodge分解による情報フローの直交分解](figures/fig3_hodge_decomposition.png)
 

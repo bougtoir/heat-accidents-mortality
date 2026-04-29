@@ -337,8 +337,9 @@ print(f"  Hodge potential order: {hodge_order_labels}")
 
 # Agreement analysis
 def rank_agreement(order1, order2, n):
-    """Kendall's tau-like agreement between two orderings"""
+    """Kendall's tau between two orderings"""
     concordant = 0
+    discordant = 0
     total = 0
     for i in range(n):
         for j in range(i+1, n):
@@ -348,11 +349,13 @@ def rank_agreement(order1, order2, n):
             pos2_j = list(order2).index(j)
             if (pos1_i - pos1_j) * (pos2_i - pos2_j) > 0:
                 concordant += 1
+            elif (pos1_i - pos1_j) * (pos2_i - pos2_j) < 0:
+                discordant += 1
             total += 1
-    return concordant / total
+    return (concordant - discordant) / total
 
 agreement = rank_agreement(causal_order, potential_order, n_vars)
-print(f"\n  Order agreement (Kendall concordance): {agreement:.2%}")
+print(f"\n  Order agreement (Kendall tau): {agreement:.2f}")
 
 # ============================================================
 # 8. Generate Figures
