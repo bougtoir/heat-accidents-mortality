@@ -9,6 +9,7 @@ GEM-RAG（Graphical Eigen Memories for Retrieval Augmented Generation）のコ�
 | 01 | `01_gem_rag_medical_application.md` | GEM-RAGの医療データ応用（横断的スナップショット + 経時データ）。「ユーティリティ因果性」の基本提案。 |
 | 02 | `02_lingam_x_utility_causality.md` | LiNGAMファミリーとの比較・統合アイデア。変数レベル因果 × テーマレベル因果の二段ロケット等。 |
 | 03 | `03_spectral_causality_deep_dive.md` | スペクトル因果性の深掘り。磁気ラプラシアン、Hodge分解、因果フーリエ解析との接続。数学的定式化。 |
+| 04 | `04_hill_criteria_mapping.md` | Hill の9基準 × 因果推論手法（40+手法）の包括的マッピング。既存手法のH6/H7/H9空白地帯と提案手法の位置づけ。 |
 
 ## 起点記事
 
