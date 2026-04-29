@@ -32,7 +32,7 @@
 de Resende & da Costa (2020), Zhang et al. (2021) が提案した磁気ラプラシアン:
 
 ```
-L^(q) = D - D^{-1/2} H^(q) D^{-1/2}
+L^(q) = I - D^{-1/2} H^(q) D^{-1/2}
 
 H^(q)_{ij} = W_{ij} · exp(i · 2πq · (1_{i→j} - 1_{j→i}))
 ```
@@ -121,7 +121,7 @@ d: E → {-1, 0, +1}（方向性符号）
 #### 定義2: ユーティリティ磁気ラプラシアン
 
 ```
-L^(q)_U = D - D^{-1/2} H^(q)_U D^{-1/2}
+L^(q)_U = I - D^{-1/2} H^(q)_U D^{-1/2}
 
 H^(q)_{U,ij} = w(i,j) · exp(i · 2πq · d(i,j))
 
@@ -133,10 +133,10 @@ q: 方向性感度パラメータ
 
 **利点**: エルミート行列なので実固有値を持ち、固有ベクトルの複素位相に方向性情報が符号化される。
 
-#### 定義3: スペクトル因果強度（Spectral Causal Intensity）
+#### 定義3: スペクトル因果結合度（Spectral Causal Coupling）
 
 ```
-SCI(i → j) = Σ_k f(λ_k) · |⟨u_k, e_i⟩| · |⟨u_k, e_j⟩| · cos(arg(⟨u_k, e_i⟩) - arg(⟨u_k, e_j⟩))
+SCC(i, j) = Σ_k f(λ_k) · |⟨u_k, e_i⟩| · |⟨u_k, e_j⟩| · cos(arg(⟨u_k, e_i⟩) - arg(⟨u_k, e_j⟩))
 
   u_k: k番目の固有ベクトル（複素数値）
   λ_k: 対応する固有値（実数、磁気ラプラシアンの場合）
@@ -147,26 +147,31 @@ SCI(i → j) = Σ_k f(λ_k) · |⟨u_k, e_i⟩| · |⟨u_k, e_j⟩| · cos(arg(�
 
 **直感的解釈**:
 - `|⟨u_k, e_i⟩| · |⟨u_k, e_j⟩|`: iとjが同じEigenthemeに強く荷重
-- `cos(arg差)`: 位相差が0に近い → **同じ方向的フロー上にある**（因果的に整合）
-- `cos(arg差)` が正 → i→jの方向が「自然な」因果方向
-- `cos(arg差)` が負 → j→iの方向が「自然な」因果方向
+- `cos(arg差)`: **対称関数** — cos(a-b) = cos(b-a) なので、SCC(i,j) = SCC(j,i)
+- → SCCは因果の**強度（方向なし）**を測る。方向は定義4のSCDで測る
 
 #### 定義4: スペクトル因果方向（Spectral Causal Direction）
 
+SCDはsinを用いて直接定義する。sin(a-b) = -sin(b-a) なので**反対称性**を持ち、因果方向を符号化できる:
+
 ```
-SCD(i, j) = SCI(i → j) - SCI(j → i)
+SCD(i, j) = Σ_k f(λ_k) · |⟨u_k, e_i⟩| · |⟨u_k, e_j⟩| · sin(arg(⟨u_k, e_i⟩) - arg(⟨u_k, e_j⟩))
 
   SCD > 0: iがjの（スペクトル的な）原因
   SCD < 0: jがiの（スペクトル的な）原因
   SCD ≈ 0: 因果方向不確定
+
+性質: SCD(i, j) = -SCD(j, i)（反対称性）
 ```
+
+**SCCとSCDの関係**: SCCは因果カップリングの強さ（方向不問）、SCDは因果の方向を定量化する。両者は同じ固有分解から得られるが、cos（対称）とsin（反対称）の使い分けが鍵。
 
 #### 定義5: Eigentheme因果強度（Eigentheme Causal Intensity）
 
 テーマレベルの因果性:
 
 ```
-ECI(Theme_a → Theme_b) = Σ_{i∈Theme_a} Σ_{j∈Theme_b} SCI(i → j) / (|Theme_a| · |Theme_b|)
+ECI(Theme_a → Theme_b) = Σ_{i∈Theme_a} Σ_{j∈Theme_b} SCD(i, j) / (|Theme_a| · |Theme_b|)
 
   Theme_a: Eigentheme aに強く荷重するノード集合
   Theme_b: Eigentheme bに強く荷重するノード集合
