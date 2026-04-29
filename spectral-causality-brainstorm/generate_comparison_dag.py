@@ -124,7 +124,9 @@ def run_spectral(X_scaled, alpha):
     SCD, SCC = compute_scd_matrix(eigenvectors, eigenvalues, n)
     phi, grad_e, curl_e, total_e = hodge_decomposition(asymmetry)
 
-    return SCD, SCC, phi, grad_e / total_e, curl_e / total_e
+    grad_ratio = grad_e / total_e if total_e > 1e-12 else 0.0
+    curl_ratio = curl_e / total_e if total_e > 1e-12 else 0.0
+    return SCD, SCC, phi, grad_ratio, curl_ratio
 
 
 def draw_graph(ax, labels, edges, title, subtitle, is_dag=True):
