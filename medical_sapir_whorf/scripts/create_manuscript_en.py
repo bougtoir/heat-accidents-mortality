@@ -269,16 +269,23 @@ def main():
         "\u201cobvious\u201d institutional effects (Figure 1)."
     )
 
-    # --- FIGURE 1 placeholder ---
-    p = doc.add_paragraph()
-    p.space_before = Pt(18)
-    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = p.add_run("[Figure 1: Disease\u2013Illness\u2013Sickness Feedback Model]")
-    run.italic = True
-    run.font.size = Pt(10)
+    # --- FIGURE 1 inline ---
+    fig1_path = os.path.join(OUT_DIR, "figure1_en.png")
+    if os.path.exists(fig1_path):
+        p = doc.add_paragraph()
+        p.space_before = Pt(18)
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        run = p.add_run()
+        run.add_picture(fig1_path, width=Inches(5.5))
+    else:
+        p = doc.add_paragraph()
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        run = p.add_run("[Figure 1: see figures_tables_en.pptx]")
+        run.italic = True
 
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p.space_before = Pt(12)
     run = p.add_run(
         "Figure 1. The Medical Sapir\u2013Whorf feedback loop. "
         "Nosological categories operate at the sickness level, shaping "
@@ -620,18 +627,23 @@ def main():
         "causal inference (Figure 2).{29}"
     )
 
-    # --- FIGURE 2 placeholder ---
-    p = doc.add_paragraph()
-    p.space_before = Pt(18)
-    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = p.add_run(
-        "[Figure 2: Proposed Interrupted Time-Series Study Design]"
-    )
-    run.italic = True
-    run.font.size = Pt(10)
+    # --- FIGURE 2 inline ---
+    fig2_path = os.path.join(OUT_DIR, "figure2_en.png")
+    if os.path.exists(fig2_path):
+        p = doc.add_paragraph()
+        p.space_before = Pt(18)
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        run = p.add_run()
+        run.add_picture(fig2_path, width=Inches(5.5))
+    else:
+        p = doc.add_paragraph()
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        run = p.add_run("[Figure 2: see figures_tables_en.pptx]")
+        run.italic = True
 
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p.space_before = Pt(12)
     run = p.add_run(
         "Figure 2. Proposed study design using ICD-11 adoption as "
         "a natural experiment. Staggered adoption across countries "
