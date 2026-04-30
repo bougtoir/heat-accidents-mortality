@@ -72,15 +72,15 @@ def calculate_partial_sofa(clinical_df, pwv_case_df):
         eph = row.get("intraop_eph", 0) or 0
         has_vasopressor = (epi > 0) or (phe > 0) or (eph > 0)
 
-        if map_val >= 70 and not has_vasopressor:
-            return 0
+        # Check vasopressor use first (higher severity) before MAP-only
+        if has_vasopressor and epi > 0.1:
+            return 3
+        elif has_vasopressor:
+            return 2
         elif map_val < 70:
             return 1
-        elif has_vasopressor and epi <= 0.1:
-            return 2
-        elif has_vasopressor:
-            return 3
-        return 0
+        else:
+            return 0
 
     # Coagulation SOFA
     def coag_sofa(plt_val):
