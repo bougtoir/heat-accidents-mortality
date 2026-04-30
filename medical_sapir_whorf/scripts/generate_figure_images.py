@@ -20,8 +20,8 @@ os.makedirs(OUT_DIR, exist_ok=True)
 
 for name, func in [
     ("figure1_en.png", create_figure1_en),
-    ("figure1_ja.png", create_figure1_ja),
     ("figure2_en.png", create_figure2_en),
+    ("figure1_ja.png", create_figure1_ja),
     ("figure2_ja.png", create_figure2_ja),
 ]:
     buf = func()
