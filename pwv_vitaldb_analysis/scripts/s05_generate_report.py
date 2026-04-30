@@ -23,6 +23,9 @@ from docx import Document
 from docx.shared import Inches, Pt, Cm, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.table import WD_TABLE_ALIGNMENT
+from pptx import Presentation
+from pptx.util import Inches as PptxInches, Pt as PptxPt, Emu
+from pptx.enum.text import PP_ALIGN
 
 warnings.filterwarnings("ignore")
 
@@ -104,8 +107,8 @@ def create_report():
         model_df = pd.read_csv(model_summary_path)
         results_text = "Results: "
 
-        sofa_row = model_df[model_df["Model"] == "sofa_only"]
-        sofa_pwv_row = model_df[model_df["Model"] == "sofa_plus_pwv"]
+        sofa_row = model_df[model_df["Model"] == "sofa_raw"]
+        sofa_pwv_row = model_df[model_df["Model"] == "sofa_raw_plus_pwv"]
 
         if len(sofa_row) > 0 and len(sofa_pwv_row) > 0:
             results_text += (
@@ -285,12 +288,13 @@ def create_report():
                 f"In-hospital mortality occurred in {clin_analyzed['death_inhosp'].sum()} patients "
                 f"({clin_analyzed['death_inhosp'].mean()*100:.2f}%), "
                 f"and {(clin_analyzed['icu_days'] > 0).sum()} patients "
-                f"({(clin_analyzed['icu_days'] > 0).mean()*100:.1f}%) required ICU admission."
+                f"({(clin_analyzed['icu_days'] > 0).mean()*100:.1f}%) required ICU admission "
+                f"(Table 1)."
             )
 
-            # Demographics table
-            doc.add_paragraph("")
+            # Demographics table - Table 1
             p_table_ref = doc.add_paragraph()
+            p_table_ref.paragraph_format.space_before = Pt(12)
             p_table_ref.add_run("Table 1. ").bold = True
             p_table_ref.add_run("Baseline Characteristics of the Study Population")
 
@@ -352,8 +356,14 @@ def create_report():
     if os.path.exists(corr_path):
         corr_df = pd.read_csv(corr_path)
 
-        doc.add_paragraph("")
+        doc.add_paragraph(
+            "Inter-individual correlations between PWV-derived parameters and "
+            "hemodynamic indicators are summarized in Table 2."
+        )
+
+        # Table 2
         p_t2_ref = doc.add_paragraph()
+        p_t2_ref.paragraph_format.space_before = Pt(12)
         p_t2_ref.add_run("Table 2. ").bold = True
         p_t2_ref.add_run("Correlation of PWV-Derived Parameters with Hemodynamic Indicators")
 
@@ -373,12 +383,18 @@ def create_report():
             row.cells[3].text = f"{row_data['spearman_rho']:.3f}"
             row.cells[4].text = f"{row_data['pearson_p']:.2e}"
 
-    # Insert correlation figure
+    # In-text citation for Figure 1
+    doc.add_paragraph(
+        "The scatter plots of inter-individual correlations and outcome-stratified "
+        "distributions are shown in Figure 1."
+    )
+
+    # Insert correlation figure - Figure 1
     corr_fig = os.path.join(FIGURE_DIR, "correlation_analysis.png")
     if os.path.exists(corr_fig):
-        doc.add_paragraph("")
         doc.add_picture(corr_fig, width=Inches(6.0))
         fig_caption = doc.add_paragraph()
+        fig_caption.paragraph_format.space_before = Pt(14)
         fig_caption.add_run("Figure 1. ").bold = True
         fig_caption.add_run(
             "Correlation analysis between PWV-derived parameters and hemodynamic indicators. "
@@ -391,8 +407,14 @@ def create_report():
     if os.path.exists(model_summary_path):
         model_df = pd.read_csv(model_summary_path)
 
-        doc.add_paragraph("")
+        doc.add_paragraph(
+            "The performance of mortality prediction models is compared in Table 3 "
+            "and the corresponding ROC and precision-recall curves are shown in Figure 2."
+        )
+
+        # Table 3
         p_t3_ref = doc.add_paragraph()
+        p_t3_ref.paragraph_format.space_before = Pt(12)
         p_t3_ref.add_run("Table 3. ").bold = True
         p_t3_ref.add_run("Comparison of Mortality Prediction Models")
 
@@ -412,24 +434,30 @@ def create_report():
             row.cells[3].text = str(row_data["AUPRC"])
             row.cells[4].text = str(row_data["Brier Score"])
 
-    # Insert ROC figure
+    # Insert ROC figure - Figure 2
     roc_fig = os.path.join(FIGURE_DIR, "model_comparison_roc.png")
     if os.path.exists(roc_fig):
-        doc.add_paragraph("")
         doc.add_picture(roc_fig, width=Inches(6.0))
         fig2_caption = doc.add_paragraph()
+        fig2_caption.paragraph_format.space_before = Pt(14)
         fig2_caption.add_run("Figure 2. ").bold = True
         fig2_caption.add_run(
             "ROC curves (left) and precision-recall curves (right) comparing "
             "mortality prediction models with and without PWV parameters."
         )
 
-    # Feature importance
+    # In-text citation for Figure 3
+    doc.add_paragraph(
+        "Feature importance analysis from the gradient boosting full model "
+        "is presented in Figure 3."
+    )
+
+    # Feature importance - Figure 3
     fi_fig = os.path.join(FIGURE_DIR, "feature_importance.png")
     if os.path.exists(fi_fig):
-        doc.add_paragraph("")
         doc.add_picture(fi_fig, width=Inches(5.0))
         fig3_caption = doc.add_paragraph()
+        fig3_caption.paragraph_format.space_before = Pt(14)
         fig3_caption.add_run("Figure 3. ").bold = True
         fig3_caption.add_run(
             "Feature importance in the gradient boosting full model, "
@@ -543,12 +571,97 @@ def create_report():
     return report_path
 
 
+def create_figures_pptx():
+    """Generate editable .pptx with one figure per slide (widescreen 13.333 x 7.5 inches)."""
+    prs = Presentation()
+    prs.slide_width = Emu(12192000)   # 13.333 inches
+    prs.slide_height = Emu(6858000)   # 7.5 inches
+
+    figures = [
+        {
+            "path": os.path.join(FIGURE_DIR, "correlation_analysis.png"),
+            "title": "Figure 1. Correlation Analysis",
+            "caption": (
+                "Correlation analysis between PWV-derived parameters and hemodynamic indicators. "
+                "Top row: case-level correlations of PAT with MAP, HR, and CVP. "
+                "Bottom row: window-level PTT correlation, PAT distribution and variability by outcome."
+            ),
+        },
+        {
+            "path": os.path.join(FIGURE_DIR, "model_comparison_roc.png"),
+            "title": "Figure 2. Model Comparison ROC/PR Curves",
+            "caption": (
+                "ROC curves (left) and precision-recall curves (right) comparing "
+                "mortality prediction models with and without PWV parameters."
+            ),
+        },
+        {
+            "path": os.path.join(FIGURE_DIR, "feature_importance.png"),
+            "title": "Figure 3. Feature Importance",
+            "caption": (
+                "Feature importance in the gradient boosting full model, "
+                "showing the relative contribution of PWV-derived and SOFA parameters."
+            ),
+        },
+    ]
+
+    blank_layout = prs.slide_layouts[6]  # blank slide
+
+    for fig_info in figures:
+        if not os.path.exists(fig_info["path"]):
+            continue
+
+        slide = prs.slides.add_slide(blank_layout)
+
+        # Title at top
+        title_box = slide.shapes.add_textbox(
+            PptxInches(0.5), PptxInches(0.2),
+            PptxInches(12.3), PptxInches(0.6)
+        )
+        tf = title_box.text_frame
+        tf.word_wrap = True
+        p = tf.paragraphs[0]
+        p.text = fig_info["title"]
+        p.font.size = PptxPt(20)
+        p.font.bold = True
+        p.alignment = PP_ALIGN.CENTER
+
+        # Image centered
+        slide.shapes.add_picture(
+            fig_info["path"],
+            PptxInches(0.8), PptxInches(1.0),
+            PptxInches(11.7), PptxInches(5.0)
+        )
+
+        # Caption at bottom
+        caption_box = slide.shapes.add_textbox(
+            PptxInches(0.5), PptxInches(6.2),
+            PptxInches(12.3), PptxInches(1.0)
+        )
+        tf_cap = caption_box.text_frame
+        tf_cap.word_wrap = True
+        p_cap = tf_cap.paragraphs[0]
+        p_cap.text = fig_info["caption"]
+        p_cap.font.size = PptxPt(11)
+        p_cap.font.italic = True
+        p_cap.alignment = PP_ALIGN.CENTER
+
+    pptx_path = os.path.join(OUTPUT_DIR, "pwv_vitaldb_figures.pptx")
+    prs.save(pptx_path)
+    print(f"Figures PPTX saved to {pptx_path}")
+    return pptx_path
+
+
 def main():
     print("=" * 70)
     print("Generating Analysis Report")
     print("=" * 70)
     report_path = create_report()
     print(f"\nReport generated: {report_path}")
+
+    pptx_path = create_figures_pptx()
+    print(f"Figures PPTX generated: {pptx_path}")
+
     return report_path
 
 
