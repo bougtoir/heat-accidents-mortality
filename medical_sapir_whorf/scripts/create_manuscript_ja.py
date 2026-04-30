@@ -232,16 +232,23 @@ def main():
         "「自明な」制度的効果の域を超えて高める（図1）。"
     )
 
-    # --- 図1プレースホルダー ---
-    p = doc.add_paragraph()
-    p.space_before = Pt(18)
-    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = p.add_run("[図1：疾患\u2013病い\u2013病人役割フィードバックモデル]")
-    run.italic = True
-    run.font.size = Pt(10)
+    # --- 図1 インライン ---
+    fig1_path = os.path.join(OUT_DIR, "figure1_ja.png")
+    if os.path.exists(fig1_path):
+        p = doc.add_paragraph()
+        p.space_before = Pt(18)
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        run = p.add_run()
+        run.add_picture(fig1_path, width=Inches(5.5))
+    else:
+        p = doc.add_paragraph()
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        run = p.add_run("[図1：figures_tables_ja.pptx参照]")
+        run.italic = True
 
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p.space_before = Pt(12)
     run = p.add_run(
         "図1. 医療版サピア＝ウォーフのフィードバックループ。疾病分類学的カテゴリーは"
         "病人役割レベルで作動し、制度的応答を形成する。この変化は疾患認識（変化した"
@@ -514,16 +521,23 @@ def main():
         "（図2）。{29}"
     )
 
-    # --- 図2プレースホルダー ---
-    p = doc.add_paragraph()
-    p.space_before = Pt(18)
-    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = p.add_run("[図2：提案する分断時系列研究デザイン]")
-    run.italic = True
-    run.font.size = Pt(10)
+    # --- 図2 インライン ---
+    fig2_path = os.path.join(OUT_DIR, "figure2_ja.png")
+    if os.path.exists(fig2_path):
+        p = doc.add_paragraph()
+        p.space_before = Pt(18)
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        run = p.add_run()
+        run.add_picture(fig2_path, width=Inches(5.5))
+    else:
+        p = doc.add_paragraph()
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        run = p.add_run("[図2：figures_tables_ja.pptx参照]")
+        run.italic = True
 
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p.space_before = Pt(12)
     run = p.add_run(
         "図2. ICD-11採用を自然実験として活用する提案研究デザイン。国家間の段階的"
         "採用が多重ベースラインデザインを可能にし、分類変更の臨床実践への効果に"
