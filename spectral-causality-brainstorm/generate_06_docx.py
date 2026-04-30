@@ -12,6 +12,7 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml.ns import qn, nsmap
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+FIG_DIR = os.path.join(BASE_DIR, 'figures')
 
 # ============================================================
 # Math XML helper: wrap LaTeX-like text as Word equation via OMML
@@ -46,6 +47,32 @@ def add_display_equation(doc, equation_text, label=None):
         tab_run = p.add_run(f'    ({label})')
         tab_run.font.size = Pt(10)
     return p
+
+
+def add_figure(doc, image_path, caption, width=Inches(5.5)):
+    """Add a figure with caption to the document, centered."""
+    if not os.path.exists(image_path):
+        # Fallback: add placeholder text
+        p = doc.add_paragraph()
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        run = p.add_run(f'[図: {caption} — 画像ファイルが見つかりません: {image_path}]')
+        run.italic = True
+        run.font.size = Pt(9)
+        return
+    # Image paragraph
+    p = doc.add_paragraph()
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p.paragraph_format.space_before = Pt(12)
+    run = p.add_run()
+    run.add_picture(image_path, width=width)
+    # Caption paragraph
+    cap_p = doc.add_paragraph()
+    cap_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    cap_p.paragraph_format.space_before = Pt(4)
+    cap_p.paragraph_format.space_after = Pt(12)
+    cap_run = cap_p.add_run(caption)
+    cap_run.font.size = Pt(9)
+    cap_run.italic = True
 
 
 def generate_docx():
@@ -120,6 +147,11 @@ def generate_docx():
         'エッジの方向性が固有ベクトルの複素位相（complex phase）として符号化され、'
         '因果方向の推定が可能になる。'
     )
+
+    add_figure(doc,
+        os.path.join(FIG_DIR, 'fig6_causal_dag.png'),
+        '図1: DirectLiNGAMによる推定因果DAG（UCI心疾患データ, n=297）。'
+        '辺の太さは効果量 |Bᵢⱼ| に比例。Age が因果的最上流に位置する。')
 
     doc.add_heading('1.3 本稿の構成', level=2)
     doc.add_paragraph(
@@ -348,6 +380,11 @@ def generate_docx():
         '因果の上流（原因側）のノードと下流（結果側）のノードは、'
         '固有ベクトル上で異なる位相角を持つ。'
     )
+
+    add_figure(doc,
+        os.path.join(FIG_DIR, 'fig2_magnetic_laplacian_q.png'),
+        '図3: 磁気ラプラシアン固有ベクトルの複素平面上の分布。'
+        '各ノードの位相角 θₖ(j) が因果的上流（左）から下流（右）へと回転する。')
 
     # ============================================================
     # 4. スペクトル因果性の定式化
@@ -639,6 +676,11 @@ def generate_docx():
                 for run in paragraph.runs:
                     run.font.size = Pt(10)
 
+    add_figure(doc,
+        os.path.join(FIG_DIR, 'fig3_hodge_decomposition.png'),
+        '図4: Hodge分解による情報フローの直交分解。'
+        '勾配成分（DAG的因果フロー）85.9%、カール成分（フィードバック）14.1%。')
+
     doc.add_heading('5.3 因果ポテンシャル', level=2)
 
     p = doc.add_paragraph()
@@ -816,6 +858,11 @@ def generate_docx():
         'ECDアンサンブルとして統合することで、単独手法では到達不可能な9基準の広範なカバレッジを実現する。'
     )
 
+    add_figure(doc,
+        os.path.join(FIG_DIR, 'fig5_hill_radar.png'),
+        '図2: Hill の9基準に対する各手法のカバレッジ。'
+        '単独手法ではカバーできない基準がECDアンサンブルにより網羅される。')
+
     doc.add_heading('6.5 増強拡張性のフレームワーク', level=2)
 
     doc.add_paragraph(
@@ -923,6 +970,21 @@ def generate_docx():
         'Age が最上流、ST Depression が最下流という結果は臨床的に妥当である。'
         'LiNGAM の因果順序との Kendall 順位相関は τ = 0.50。'
     )
+
+    add_figure(doc,
+        os.path.join(FIG_DIR, 'fig4_direction_comparison.png'),
+        '図5: 3手法（LiNGAM, スペクトル因果性, Granger）による因果方向の比較。'
+        'スペクトル因果性はLiNGAMと67%の方向一致を示す。')
+
+    add_figure(doc,
+        os.path.join(FIG_DIR, 'fig7_lingam_vs_spectral.png'),
+        '図6: LiNGAM DAG vs スペクトル因果性 DCG の3条件比較。'
+        '左: LiNGAM（DAG仮定）、中: スペクトル因果性（α=0.6）、右: スペクトル因果性（α=0, DPIのみ）。')
+
+    add_figure(doc,
+        os.path.join(FIG_DIR, 'fig9_ecd_pruning_analysis.png'),
+        '図7: ECDアンサンブルとプルーニング解析。'
+        '(A) 因果ポテンシャル比較、(B) フィードバック率別プルーニング、(C) 因果上流性 vs 介入可能性。')
 
     # ============================================================
     # 8. DAG転移点の解析：ドメイン知識はどこまで必要か
@@ -1041,6 +1103,12 @@ def generate_docx():
         'DPIのデータ駆動的方向性信号は「残留磁化」の役割を果たし、'
         '外部磁場 h = 0（α = 0）でも部分的な秩序状態を維持する。'
     )
+
+    add_figure(doc,
+        os.path.join(FIG_DIR, 'fig8_alpha_sweep.png'),
+        '図8: α掃引によるDAG転移解析。'
+        '(A) r_gradient は α=0 で 0.581 から始まり滑らかに 0.859 へ到達。'
+        '(B) 辺数とLiNGAM一致率。(C) 非対称ノルム。(D) 位相図。')
 
     # --- 8.2 知識の質 p_flip ---
     doc.add_heading('8.2 真の閾値：知識の「量」ではなく「質」', level=2)
