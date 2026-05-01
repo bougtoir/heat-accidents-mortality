@@ -11,6 +11,7 @@ from typing import Iterable
 
 import matplotlib.font_manager as fm
 import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator
 import pandas as pd
 
 from analyze_khmer_inscriptions import corpus_url, fetch, parse_distribution, plain_text
@@ -132,6 +133,7 @@ def plot_variant_line(distribution: pd.DataFrame, output_path: Path) -> None:
     ax.set_xlabel("世紀（西暦）", fontsize=10)
     ax.set_ylabel("検索ヒット数（1＝語の出現1回）", fontsize=10)
     ax.set_xticks(list(range(int(pivot.index.min()), int(pivot.index.max()) + 1)))
+    ax.yaxis.set_major_locator(MaxNLocator(integer=True))
     ax.grid(alpha=0.25)
     ax.legend(loc="upper left", fontsize=8, frameon=False)
     ax.text(
