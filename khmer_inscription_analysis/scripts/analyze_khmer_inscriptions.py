@@ -47,6 +47,11 @@ TERMS: tuple[dict[str, str], ...] = (
 )
 
 
+SUMMARY_COLUMNS = ["term", "group", "note", "hits", "dated_hits", "first_year", "last_year"]
+DISTRIBUTION_COLUMNS = ["term", "group", "year", "decade", "century", "count"]
+CONTEXT_COLUMNS = ["term", "inscription", "date", "start_year", "end_year", "mid_year", "context", "group"]
+
+
 class TextExtractor(HTMLParser):
     def __init__(self) -> None:
         super().__init__()
@@ -250,9 +255,9 @@ def build_frames(results: list[QueryResult]) -> tuple[pd.DataFrame, pd.DataFrame
             row["group"] = result.group
             context_rows.append(row)
     return (
-        pd.DataFrame(summary_rows),
-        pd.DataFrame(distribution_rows),
-        pd.DataFrame(context_rows),
+        pd.DataFrame(summary_rows, columns=SUMMARY_COLUMNS),
+        pd.DataFrame(distribution_rows, columns=DISTRIBUTION_COLUMNS),
+        pd.DataFrame(context_rows, columns=CONTEXT_COLUMNS),
     )
 
 
