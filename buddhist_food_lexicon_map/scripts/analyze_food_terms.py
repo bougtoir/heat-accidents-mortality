@@ -8,9 +8,6 @@ import io
 import json
 import math
 import re
-import sys
-import time
-import urllib.error
 import urllib.parse
 import urllib.request
 import zipfile
@@ -101,15 +98,15 @@ PALI_TERMS = [
     {"term": "madhu", "lemma_en": "honey", "category": "sweetener/medicine"},
     {"term": "odana", "lemma_en": "cooked rice/meal", "category": "grain/preparation"},
     {"term": "taṇḍula", "lemma_en": "rice", "category": "grain"},
-    {"term": "godhūma", "lemma_en": "wheat", "category": "grain"},
+    {"term": "godhūma", "lemma_en": "wheat/barley", "category": "grain"},
     {"term": "maṃsa", "lemma_en": "meat", "category": "animal food"},
     {"term": "maccha", "lemma_en": "fish", "category": "animal food"},
     {"term": "pūva", "lemma_en": "cake/bread", "category": "grain/preparation"},
     {"term": "tela", "lemma_en": "oil", "category": "fat/medicine"},
     {"term": "loṇa", "lemma_en": "salt", "category": "seasoning"},
     {"term": "siṅgivera", "lemma_en": "ginger", "category": "seasoning/medicine"},
-    {"term": "phāṇita", "lemma_en": "sugar/molasses", "category": "sweetener/medicine"},
-    {"term": "pāna", "lemma_en": "drink", "category": "drink"},
+    {"term": "phāṇita", "lemma_en": "sugar", "category": "sweetener/medicine"},
+    {"term": "pāna", "lemma_en": "drink/syrup", "category": "drink"},
 ]
 
 FOOD_COLOR = {
@@ -263,7 +260,6 @@ def bilara_raw_json(path: str) -> dict[str, str]:
 
 
 def count_pali_terms(paths: Iterable[str]) -> tuple[list[dict], WorkMetadata]:
-    term_meta = {item["term"].casefold(): item for item in PALI_TERMS}
     counts = {item["term"]: 0 for item in PALI_TERMS}
     samples = {item["term"]: ("", "") for item in PALI_TERMS}
     total_chars = 0
