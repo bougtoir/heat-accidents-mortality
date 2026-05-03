@@ -163,7 +163,7 @@ def build_slide1_en(prs):
                  'Figure 1. TATSUKI Conceptual Overview', font_size=20,
                  bold=True, color=C_DARK, alignment=PP_ALIGN.CENTER)
     add_text_box(slide, Inches(0.5), Inches(0.55), Inches(9), Inches(0.3),
-                 'Trust-Adjusted Scoring with Unified Knowledge Integration (襟) — 6-Phase Cycle',
+                 'Trust-Adjusted Transparent Scoring with Unified Knowledge Integration (襷) — 6-Phase Cycle',
                  font_size=12, italic=True, color=C_GRAY, alignment=PP_ALIGN.CENTER)
     add_text_box(slide, Inches(0.0), Inches(2.1), Inches(0.7), Inches(0.4),
                  'Next\nCycle', font_size=9, bold=True, color=C_TATSUKI,

@@ -89,7 +89,7 @@ doc.add_heading('要旨（Abstract）', level=1)
 doc.add_paragraph(
     '民主主義的選挙は代議士の説明責任を確保する主要なメカニズムであるが、選挙的制裁の二値的性質'
     '（再選か否か）は公約実現のインセンティブとして粗い手段に留まる。本論文では、候補者信任係数を'
-    '用いた動的実績連動型代議制（TATSUKI: Dynamic Retrospective Delegation with Candidate Trust）'
+    '用いた統合的知識に基づく透明性信頼調整型評価システム（TATSUKI: Trust-Adjusted Transparent Scoring with Unified Knowledge Integration）'
     'を提案する。TATSUKIでは、候補者が重み付き公約ポートフォリオを事前宣言し、任期終了時に第三者'
     '評価機関が実現度を査定し、その結果得られる説明責任得点を影響関数によって候補者レベルの信任'
     '係数に変換して次回選挙の有効得票数に反映する。ODDプロトコルに準拠したエージェントベースモデル'
@@ -138,8 +138,8 @@ doc.add_paragraph(
 )
 
 doc.add_paragraph(
-    '本論文では、非公式な回顧的投票と公式な制度設計の間のギャップを埋めるTATSUKI（Dynamic '
-    'Retrospective Delegation with Candidate Trust）を提案する。TATSUKIでは、候補者が選挙時に'
+    '本論文では、非公式な回顧的投票と公式な制度設計の間のギャップを埋めるTATSUKI（Trust-Adjusted '
+    'Transparent Scoring with Unified Knowledge Integration）を提案する。TATSUKIでは、候補者が選挙時に'
     '重み付きの公約ポートフォリオを事前宣言し、独立した評価機関が任期終了時に実現度を査定し、'
     'その結果得られる説明責任得点が影響関数を通じて信任係数に変換され、次回選挙での有効得票数に'
     '反映される。この調整を個々の有権者の票の重みではなく候補者レベルの信任係数として定式化する'
@@ -721,8 +721,8 @@ doc.add_paragraph(
 doc.add_heading('7. 結論（Conclusion）', level=1)
 doc.add_paragraph(
     '本論文では、計測された公約実現度に候補者の信任係数を連動させることで回顧的説明責任を'
-    '制度化する新しい選挙メカニズムであるTATSUKI（Dynamic Retrospective Delegation with Candidate '
-    'Trust）を導入した。Polimeterプロジェクトの実証的公約実現データおよびThomson et al.（2017）の'
+    '制度化する新しい選挙メカニズムであるTATSUKI（Trust-Adjusted Transparent Scoring with Unified '
+    'Knowledge Integration）を導入した。Polimeterプロジェクトの実証的公約実現データおよびThomson et al.（2017）の'
     '国際ベンチマークで較正したODD準拠のエージェントベースモデルにより、TATSUKIが説明責任水準を向上させ、'
     '誠実な候補者を選択し、敵対的攻略に対してロバスト性を示すことを実証した。カナダ連邦3議会期の'
     '実世界データを用いた反事実分析により、TATSUKIが観察された実現パターンと整合する安定的で'

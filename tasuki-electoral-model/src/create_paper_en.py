@@ -79,8 +79,8 @@ doc.add_heading('Abstract', level=1)
 doc.add_paragraph(
     'Democratic elections serve as the primary mechanism through which citizens hold representatives '
     'accountable, yet the binary nature of electoral sanctions (re-election versus removal) provides '
-    'only a coarse instrument for incentivizing policy fulfillment. We propose Dynamic Retrospective '
-    'Delegation with Candidate Trust (TATSUKI), a novel electoral mechanism in which candidates '
+    'only a coarse instrument for incentivizing policy fulfillment. We propose Trust-Adjusted Transparent '
+    'Scoring with Unified Knowledge Integration (TATSUKI), a novel electoral mechanism in which candidates '
     'pre-declare weighted policy pledges, third-party evaluators assess fulfillment at term end, '
     'and the resulting accountability score modulates a candidate-level trust coefficient that '
     'influences their effective electoral support in subsequent elections. Using an agent-based model '
@@ -142,7 +142,7 @@ doc.add_paragraph(
 )
 
 doc.add_paragraph(
-    'In this paper, we propose Dynamic Retrospective Delegation with Candidate Trust (TATSUKI), '
+    'In this paper, we propose Trust-Adjusted Transparent Scoring with Unified Knowledge Integration (TATSUKI), '
     'an electoral mechanism that bridges the gap between informal retrospective voting and formal '
     'institutional design. Under TATSUKI, candidates pre-declare a weighted portfolio of policy pledges '
     'at election time, an independent evaluation body assesses fulfillment at the end of the term, '
@@ -818,7 +818,7 @@ doc.add_paragraph(
 # ══════════════════════════════════════════════
 doc.add_heading('7. Conclusion', level=1)
 doc.add_paragraph(
-    'We have introduced Dynamic Retrospective Delegation with Candidate Trust (TATSUKI), a novel '
+    'We have introduced Trust-Adjusted Transparent Scoring with Unified Knowledge Integration (TATSUKI), a novel '
     'electoral mechanism that institutionalizes retrospective accountability by linking candidate '
     'trust coefficients to measured policy fulfillment. Through an ODD-compliant agent-based model '
     'calibrated with empirical pledge fulfillment data from the Polimeter project and cross-national '
