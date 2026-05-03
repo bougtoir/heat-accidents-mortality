@@ -230,7 +230,7 @@ def run_calibration():
     for ctype, p in original_params.items():
         print(f"    {ctype:12s}: Beta({p['alpha']}, {p['beta']})  mean={p['mean']:.3f}")
 
-    print("\n  Empirically Calibrated Parameters:")
+    print("\n  Polimeter-Derived Parameters (method of moments):")
     for ctype, p in calibrated_params.items():
         print(f"    {ctype:12s}: Beta({p['alpha']}, {p['beta']})  mean={p['mean']:.3f}")
 
@@ -242,6 +242,10 @@ def run_calibration():
         'populist':  {'alpha': 2.0, 'beta': 4.9, 'mean': round(2.0 / 6.9, 3)},
         'strategic': {'alpha': 4.2, 'beta': 2.8, 'mean': round(4.2 / 7.0, 3)},
     }
+
+    print("\n  Final Calibrated Parameters (target-based):")
+    for ctype, p in calibrated_params.items():
+        print(f"    {ctype:12s}: Beta({p['alpha']}, {p['beta']})  mean={p['mean']:.3f}")
 
     results['original_params'] = original_params
     results['calibrated_params'] = calibrated_params

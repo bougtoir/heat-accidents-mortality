@@ -10,6 +10,7 @@ import os
 
 FIGS = os.path.join(os.path.dirname(__file__), '..', 'output', 'figures')
 OUT = os.path.join(os.path.dirname(__file__), '..', 'output', 'docx', 'TATSUKI_Electoral_Studies_English.docx')
+os.makedirs(os.path.dirname(OUT), exist_ok=True)
 
 doc = Document()
 
