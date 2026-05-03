@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""Generate Japanese JASSS paper as .docx with embedded color figures."""
+"""Generate Japanese Electoral Studies paper as .docx with embedded color figures."""
 
 from docx import Document
 from docx.shared import Inches, Pt, Cm, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 import os
 
-FIGS = '/home/ubuntu/figures'
-OUT = '/home/ubuntu/TASUKI_JASSS_Japanese.docx'
+FIGS = os.path.join(os.path.dirname(__file__), '..', 'output', 'figures')
+OUT = os.path.join(os.path.dirname(__file__), '..', 'output', 'docx', 'TATSUKI_Electoral_Studies_Japanese.docx')
 
 doc = Document()
 
@@ -71,13 +71,13 @@ def add_figure(path, caption, width=5.5):
 # ══════════════════════════════════════════════
 add_para('', space_after=24)
 add_para(
-    '統合的知識に基づく信頼調整型評価システム（TASUKI 襟）：\n'
-    '説明責任駆動型選挙制度改革のエージェントベースモデル',
+    '統合的知識に基づく透明性信頼調整型評価システム（TATSUKI 襷）：\n'
+    '実証的較正を伴う説明責任駆動型選挙制度改革のエージェントベースモデル',
     bold=True, align=WD_ALIGN_PARAGRAPH.CENTER, size=18, space_after=12
 )
 add_para(
-    'Trust-Adjusted Scoring with Unified Knowledge Integration (TASUKI):\n'
-    'An Agent-Based Model of Accountability-Driven Electoral Reform',
+    'Trust-Adjusted Transparent Scoring with Unified Knowledge Integration (TATSUKI):\n'
+    'An Agent-Based Model of Accountability-Driven Electoral Reform with Empirical Calibration',
     italic=True, align=WD_ALIGN_PARAGRAPH.CENTER, size=12, space_after=12
 )
 add_para('[査読用匿名版 \u2014 著者名・所属機関非開示]',
@@ -88,19 +88,21 @@ doc.add_heading('要旨（Abstract）', level=1)
 doc.add_paragraph(
     '民主主義的選挙は代議士の説明責任を確保する主要なメカニズムであるが、選挙的制裁の二値的性質'
     '（再選か否か）は公約実現のインセンティブとして粗い手段に留まる。本論文では、候補者信任係数を'
-    '用いた動的実績連動型代議制（TASUKI: Dynamic Retrospective Delegation with Candidate Trust）'
-    'を提案する。TASUKIでは、候補者が重み付き公約ポートフォリオを事前宣言し、任期終了時に第三者'
+    '用いた動的実績連動型代議制（TATSUKI: Dynamic Retrospective Delegation with Candidate Trust）'
+    'を提案する。TATSUKIでは、候補者が重み付き公約ポートフォリオを事前宣言し、任期終了時に第三者'
     '評価機関が実現度を査定し、その結果得られる説明責任得点を影響関数によって候補者レベルの信任'
     '係数に変換して次回選挙の有効得票数に反映する。ODDプロトコルに準拠したエージェントベースモデル'
-    'により多世代選挙動態をシミュレーションした結果、TASUKIは(i)標準選挙と比較して平均説明責任'
-    '得点を有意に向上させ、(ii)誠実な候補者を有利とする進化的淘汰圧を生じさせ、(iii)遺伝的'
-    'アルゴリズム探索により発見された多様な敵対的戦略に対してロバスト性を示すことが確認された。'
+    'により多世代選挙動態をシミュレーションし、Polimeterプロジェクト（カナダ連邦3議会期の公約'
+    '1,050件）およびThomson et al.（2017）の国際データによる実証的較正を行った。TATSUKIは'
+    '(i)標準選挙と比較して平均説明責任得点を有意に向上させ、(ii)誠実な候補者を有利とする進化的'
+    '淘汰圧を生じさせ、(iii)敵対的戦略に対してロバスト性を示し、(iv)実世界データへの遡及的適用'
+    'において実証的実現パターンと整合する反事実的信任軌跡を生成することが確認された。'
     '感度分析の結果、凹関数およびシグモイド型影響関数がインセンティブ強度と操作耐性の最適な'
     'トレードオフを提供することが明らかになった。'
 )
 
 add_para('キーワード：選挙的説明責任、エージェントベースモデル、メカニズムデザイン、'
-         '回顧的投票、加重信任、公約実現度、ODDプロトコル',
+         '回顧的投票、加重信任、公約実現度、実証的較正、公約追跡',
          italic=True, size=10, space_after=18)
 
 # ══════════════════════════════════════════════
@@ -135,8 +137,8 @@ doc.add_paragraph(
 )
 
 doc.add_paragraph(
-    '本論文では、非公式な回顧的投票と公式な制度設計の間のギャップを埋めるTASUKI（Dynamic '
-    'Retrospective Delegation with Candidate Trust）を提案する。TASUKIでは、候補者が選挙時に'
+    '本論文では、非公式な回顧的投票と公式な制度設計の間のギャップを埋めるTATSUKI（Dynamic '
+    'Retrospective Delegation with Candidate Trust）を提案する。TATSUKIでは、候補者が選挙時に'
     '重み付きの公約ポートフォリオを事前宣言し、独立した評価機関が任期終了時に実現度を査定し、'
     'その結果得られる説明責任得点が影響関数を通じて信任係数に変換され、次回選挙での有効得票数に'
     '反映される。この調整を個々の有権者の票の重みではなく候補者レベルの信任係数として定式化する'
@@ -144,7 +146,7 @@ doc.add_paragraph(
 )
 
 doc.add_paragraph(
-    'TASUKIを影響関数ω(S)の選択によりパラメータ化されたメカニズム族として定式化し、エージェント'
+    'TATSUKIを影響関数ω(S)の選択によりパラメータ化されたメカニズム族として定式化し、エージェント'
     'ベースモデリング（ABM）を用いてシステムの動的特性を調査する。ODDプロトコル（Grimm et al., '
     '2020）に準拠し、異質な候補者タイプ（誠実型・ポピュリスト型・戦略的欺瞞型）間の多世代選挙'
     '競争をシミュレートし、均衡結果、進化動態、および遺伝的アルゴリズム探索による敵対的攻略耐性を'
@@ -153,14 +155,14 @@ doc.add_paragraph(
 
 contributions_ja = [
     '事前宣言された公約の重みと任期後の信任係数を結びつけることで、回顧的説明責任を制度化する'
-    '新たな選挙メカニズムTASUKIを導入する。',
+    '新たな選挙メカニズムTATSUKIを導入する。',
     '影響関数ω(S)の関数族を規定し、インセンティブ両立性条件および操作耐性を含む理論的性質を'
     '分析する。',
-    'TASUKI下の多世代選挙動態をシミュレーションするODD準拠エージェントベースモデルを提示し、'
+    'TATSUKI下の多世代選挙動態をシミュレーションするODD準拠エージェントベースモデルを提示し、'
     '誠実な候補者を選択する能力を実証する。',
     '遺伝的アルゴリズムを用いた敵対的ロバスト性分析を行い、各影響関数バリアントに対する最も'
     '効果的な攻略戦略を特定・分析する。',
-    'TASUKIと既存の選挙制度改革提案との体系的比較を行い、理論的位置づけを確立する。'
+    'TATSUKIと既存の選挙制度改革提案との体系的比較を行い、理論的位置づけを確立する。'
 ]
 for i, c in enumerate(contributions_ja, 1):
     doc.add_paragraph(f'{i}. {c}')
@@ -181,14 +183,14 @@ doc.add_paragraph(
     'Key（1966）に始まりFiorina（1981）が形式化した回顧的投票の伝統は、有権者が将来の政策公約'
     'よりも過去の実績に基づいて現職者を評価すると主張する。Healy and Malhotra（2013）は包括的な'
     'レビューを提供し、有権者はしばしば近視眼的で、直近のイベントを不均衡に重み付けし、無関係な'
-    '要因に影響されやすいと指摘する。TASUKIは、回顧的評価プロセスを制度化し、有権者の主観的評価を'
+    '要因に影響されやすいと指摘する。TATSUKIは、回顧的評価プロセスを制度化し、有権者の主観的評価を'
     '事前宣言された公約の構造化された第三者評価に置き換えることで、これらの限界に対処する。'
 )
 doc.add_paragraph(
     '選挙的説明責任の形式モデル、特にBarro（1973）とFerejohn（1986）は、有権者-政治家関係を'
     'プリンシパル・エージェント問題として定式化する。これらのモデルでは、有権者は閾値戦略を用いる：'
     '実績が留保効用を超えれば再選、そうでなければ除去。Besley（2006）はこの枠組みを拡張し、'
-    '選抜効果と規律付け効果を区別する。TASUKIはこれらモデルの二値的制裁を連続的な信任係数'
+    '選抜効果と規律付け効果を区別する。TATSUKIはこれらモデルの二値的制裁を連続的な信任係数'
     'τ = ω(S)に一般化し、公約実現のためのより精緻なインセンティブを提供する。'
 )
 
@@ -196,15 +198,15 @@ doc.add_heading('2.2 メカニズムデザインと社会的選択理論', level
 doc.add_paragraph(
     'Arrowの不可能性定理（Arrow, 1951）およびGibbard-Satterthwaiteの定理（Gibbard, 1973; '
     'Satterthwaite, 1975）は、順序付け型投票制度の根本的限界を確立している。Dasgupta and Maskin'
-    '（2020）は多数決の下での耐戦略性について最近の結果を提示している。TASUKIは選好集約規則'
+    '（2020）は多数決の下での耐戦略性について最近の結果を提示している。TATSUKIは選好集約規則'
     'そのものを修正するのではなく、集約ステップの上流で動作する動的信任加重という追加次元を導入する。'
-    'これによりTASUKIは古典的不可能性結果の直接的適用範囲外に位置するが、公約宣言段階および評価'
+    'これによりTATSUKIは古典的不可能性結果の直接的適用範囲外に位置するが、公約宣言段階および評価'
     '段階における新たな戦略的操作の問題を提起する。'
 )
 doc.add_paragraph(
     'Acemoglu, Golosov, and Tsyvinski（2008）はメカニズムの政治経済学を研究し、政治家に対する'
     '動的インセンティブ供与を分析している。彼らの枠組みは本論文の異時点間インセンティブの扱いに'
-    '示唆を与えるが、TASUKIはインセンティブ構造を公知の影響関数ω(S)を通じて透明かつパラメータ化'
+    '示唆を与えるが、TATSUKIはインセンティブ構造を公知の影響関数ω(S)を通じて透明かつパラメータ化'
     'されたものにする点で異なる。'
 )
 
@@ -212,14 +214,14 @@ doc.add_heading('2.3 代替的選挙制度改革', level=2)
 doc.add_paragraph(
     'Quadratic Voting（Lalley & Weyl, 2018; Posner & Weyl, 2018）は、票を二次コストで購入する'
     'ことで選好強度を表現可能にし、一定条件下で近似的な厚生最適を達成する。QVが投票行為そのものを'
-    '修正するのに対し、TASUKIは過去の投票結果の帰結を修正する。両メカニズムは形式的に補完的であり、'
+    '修正するのに対し、TATSUKIは過去の投票結果の帰結を修正する。両メカニズムは形式的に補完的であり、'
     '原理的には組み合わせが可能である。'
 )
 doc.add_paragraph(
     'Liquid Democracy（Brill et al., 2022; Christoff & Grossi, 2017; Kahng et al., 2021）は'
-    '投票権の推移的委任を可能にし、直接民主制と代議制民主制の境界を融解させる。対照的に、TASUKIは'
+    '投票権の推移的委任を可能にし、直接民主制と代議制民主制の境界を融解させる。対照的に、TATSUKIは'
     '代議制構造を維持しつつ、その中での説明責任を強化する。Futarchy（Hanson, 2013）は予測市場に'
-    '政策決定を委任し、価値と信念を分離する。TASUKIは異なる分離を実装する：選挙前の公約と選挙後の'
+    '政策決定を委任し、価値と信念を分離する。TATSUKIは異なる分離を実装する：選挙前の公約と選挙後の'
     '評価の分離である。'
 )
 
@@ -229,7 +231,7 @@ doc.add_paragraph(
     '超の公約を分析した。与党は公約の過半数を実現しており、単独政権が連立政権より高い実現率を示す。'
     'Naurin, Royed, and Thomson（2020）は国際的な変動をさらに文書化している。Bytzek et al.（2024）は'
     '公約実現の認知が政治的信頼に有意に影響することを示している。これらの知見は、公約実現度を体系的に'
-    '計測し制度的入力として使用できるというTASUKIの核心的前提に対する経験的基盤を提供する。'
+    '計測し制度的入力として使用できるというTATSUKIの核心的前提に対する経験的基盤を提供する。'
 )
 
 doc.add_heading('2.5 選挙システムのエージェントベースモデル', level=2)
@@ -238,31 +240,31 @@ doc.add_paragraph(
     '政党間競争をモデル化した。Mitra（2022）は社会的・地理的影響を取り入れた選挙区制選挙を'
     'シミュレートした。Tomlinson et al.（2024）はレプリケーター動学を用いて候補者の政策位置取りを'
     '研究し、単純な行動ヒューリスティクスからでも複雑な進化動態が生じることを発見した。'
-    '本ABMはこの伝統の上に、候補者戦略が進化する制度的文脈としてTASUKIメカニズムを導入する。'
+    '本ABMはこの伝統の上に、候補者戦略が進化する制度的文脈としてTATSUKIメカニズムを導入する。'
 )
 
 # Figure 6: Positioning
 add_figure(f'{FIGS}/fig6_positioning.png',
-           '図1. 既存の選挙制度改革提案に対するTASUKIの理論的位置づけ。'
+           '図1. 既存の選挙制度改革提案に対するTATSUKIの理論的位置づけ。'
            '横軸は一人一票からの乖離度、縦軸は時間的指向（回顧的〜展望的）を表す。',
            width=5.5)
 
 # ══════════════════════════════════════════════
-# 3. TASUKIモデル
+# 3. TATSUKIモデル
 # ══════════════════════════════════════════════
-doc.add_heading('3. TASUKIモデル（The TASUKI Model）', level=1)
+doc.add_heading('3. TATSUKIモデル（The TATSUKI Model）', level=1)
 
 doc.add_heading('3.1 モデル概要', level=2)
 doc.add_paragraph(
     't = 1, 2, 3, … で添字付けされた一連の選挙を考え、各選挙の後に固定長の任期が続く。'
     '各選挙において、候補者集合 C_t = {c₁, c₂, …, c_m} が公職を争い、有権者集合 '
-    'V = {v₁, v₂, …, v_n} が投票する。TASUKIメカニズムは標準的な選挙プロセスに以下の3つの'
+    'V = {v₁, v₂, …, v_n} が投票する。TATSUKIメカニズムは標準的な選挙プロセスに以下の3つの'
     '追加要素を付加する：(i) 公約宣言、(ii) 実現度評価、(iii) 信任係数更新。'
 )
 
 # Figure 1: Conceptual overview
 add_figure(f'{FIGS}/fig1_conceptual_overview.png',
-           '図2. TASUKIメカニズムの概念的概要。選挙サイクルの6つのフェーズを示す：'
+           '図2. TATSUKIメカニズムの概念的概要。選挙サイクルの6つのフェーズを示す：'
            '公約宣言→選挙→任期→実現度評価→説明責任得点算出→信任係数更新。',
            width=5.5)
 
@@ -272,7 +274,7 @@ doc.add_paragraph(
     'P_c = {(p₁, w₁), (p₂, w₂), …, (p_k, w_k)} を宣言する。ここで p_j は具体的な政策公約、'
     'w_j ∈ (0, 1] はその宣言された重要度であり、制約条件 Σ_j w_j = 1 に従う。重み宣言は公開され、'
     '一度提出されると撤回不能であり、候補者の優先順位に関する拘束的シグナルとして機能する。'
-    '明示的な重み付けを要求することで、TASUKIは曖昧な選挙レトリックを構造化された評価可能な'
+    '明示的な重み付けを要求することで、TATSUKIは曖昧な選挙レトリックを構造化された評価可能な'
     'コミットメントに変換する。'
 )
 
@@ -347,7 +349,7 @@ doc.add_paragraph(
 doc.add_heading('3.7 外的ショック調整', level=2)
 doc.add_paragraph(
     '外生的事象（自然災害、世界経済ショック、パンデミック）が候補者の努力とは無関係に公約実現'
-    '可能性に影響する懸念に対処するため、TASUKIはオプションのショック調整係数 δ ∈ [0, 1] を'
+    '可能性に影響する懸念に対処するため、TATSUKIはオプションのショック調整係数 δ ∈ [0, 1] を'
     '組み込む。これにより説明責任得点を S\'_c = δ · S_c + (1 − δ) · S_baseline とスケーリングする。'
     'ここで S_baseline は通常条件下の規範的ベンチマークを表す。δの決定は同じ評価機関または'
     '別の制度的メカニズムに委任できる。'
@@ -360,8 +362,8 @@ doc.add_heading('4. エージェントベースモデル記述（ODDプロトコ
 
 doc.add_heading('4.1 目的とパターン（Purpose and Patterns）', level=2)
 doc.add_paragraph(
-    'モデルの目的は、複数の選挙サイクルにわたるTASUKIの動的特性を以下の点に特に注意して調査する'
-    'ことである：(i) TASUKIが標準選挙と比較して均衡説明責任水準を引き上げるか、(ii) TASUKI下の'
+    'モデルの目的は、複数の選挙サイクルにわたるTATSUKIの動的特性を以下の点に特に注意して調査する'
+    'ことである：(i) TATSUKIが標準選挙と比較して均衡説明責任水準を引き上げるか、(ii) TATSUKI下の'
     '進化的淘汰により、どの候補者タイプ（誠実・ポピュリスト・戦略的欺瞞）が有利になるか、'
     '(iii) どの影響関数仕様がインセンティブ強度と操作耐性の最適なバランスを提供するか、'
     '(iv) システムが敵対的攻略戦略に対してどの程度ロバストか。モデルは理論分析で観察される漸進的な'
@@ -440,7 +442,12 @@ doc.add_paragraph(
 
 doc.add_heading('4.6 入力データ（Input Data）', level=2)
 doc.add_paragraph(
-    'モデルは外部入力データを使用しない。全ての動態は内生的に生成される。'
+    'ベースラインモデルは内生的に動態を生成するが、2つの外部データソースを用いた実証的較正を'
+    '補完的に実施する：(1) Polimeterプロジェクト（polimeter.org）—カナダ連邦政府の3議会期に'
+    'わたる公約実現度追跡（Justin Trudeau首相、2015\u20132025年、計1,050件の公約）、(2) Thomson '
+    'et al.（2017）による比較政党公約データベース—12カ国57選挙の20,000件超の公約に基づく国際的'
+    '実現率。これらのデータは候補者の実現行動を規定するBeta分布パラメータの再較正（第5.5節）'
+    'および実世界の政治的帰結に対するTATSUKIの予測効果の反事実分析に使用される。'
 )
 
 doc.add_heading('4.7 サブモデル（Submodels）', level=2)
@@ -468,7 +475,7 @@ doc.add_heading('5. シミュレーション実験と結果（Simulation Experim
 
 doc.add_heading('5.1 実験設計', level=2)
 doc.add_paragraph(
-    '4つの実験セットを実施する：(1) 30選挙サイクルにわたるTASUKIと標準選挙のベースライン比較、'
+    '4つの実験セットを実施する：(1) 30選挙サイクルにわたるTATSUKIと標準選挙のベースライン比較、'
     '(2) τ_min, τ_max, 影響関数タイプを変動させた感度分析、(3) 遺伝的アルゴリズムによる候補者'
     '攻略戦略探索を用いた敵対的ロバスト性テスト、(4) 候補者数と有権者数を変動させたスケーラビリティ'
     '分析。各実験は異なる乱数シードで50回反復される。'
@@ -479,26 +486,26 @@ doc.add_heading('5.2 ベースライン結果', level=2)
 # Figure 3: Simulation results
 add_figure(f'{FIGS}/fig3_simulation_results.png',
            '図4. 30選挙サイクルにわたるベースラインシミュレーション結果。'
-           '(a) TASUKI（凹関数ω）と標準選挙の平均説明責任得点推移。影付き領域は±1SD。'
-           '(b) TASUKI下の候補者タイプ比率の進化動態。'
+           '(a) TATSUKI（凹関数ω）と標準選挙の平均説明責任得点推移。影付き領域は±1SD。'
+           '(b) TATSUKI下の候補者タイプ比率の進化動態。'
            '(c) 初期（サイクル1-5）と後期（サイクル25-30）の信任係数分布。'
-           '(d) TASUKI・標準選挙・QVベースラインの平均有権者厚生比較。',
+           '(d) TATSUKI・標準選挙・QVベースラインの平均有権者厚生比較。',
            width=5.5)
 
 doc.add_paragraph(
     '図4は凹影響関数（ω(S) = τ_min + (τ_max − τ_min)·√S、τ_min = 0.5, τ_max = 1.5）を用いた'
-    'ベースライン結果を示す。パネル(a)では、TASUKI下の平均説明責任得点がサイクル1の約0.45から'
+    'ベースライン結果を示す。パネル(a)では、TATSUKI下の平均説明責任得点がサイクル1の約0.45から'
     'サイクル20までに約0.78の定常状態に上昇し、73%の改善を示している。対照的に、標準選挙は全期間を'
     '通じて0.45付近で変動を続ける。'
 )
 doc.add_paragraph(
     'パネル(b)はこの改善の基盤となる進化的メカニズムを示す。誠実な候補者の割合が30サイクルで'
-    '33%から約70%に増加し、ポピュリスト型と戦略的欺瞞型が減少する。これはTASUKIが真の公約実現を'
+    '33%から約70%に増加し、ポピュリスト型と戦略的欺瞞型が減少する。これはTATSUKIが真の公約実現を'
     '通じて高い信任係数を維持できる候補者を有利にする淘汰圧を生み出すことを実証している。'
 )
 doc.add_paragraph(
     'パネル(c)は信任係数分布が時間とともに右方にシフトし、高パフォーマンス候補者の増加を反映して'
-    'いることを示す。パネル(d)はシステム間の有権者厚生を比較し、TASUKIが最も高い厚生改善を達成し、'
+    'いることを示す。パネル(d)はシステム間の有権者厚生を比較し、TATSUKIが最も高い厚生改善を達成し、'
     'QVベースラインがそれに続き、標準選挙が最も少ない改善を示すことを報告している。'
 )
 
@@ -519,8 +526,8 @@ doc.add_paragraph(
     '強力な動機付けであることを示唆している。'
 )
 doc.add_paragraph(
-    '図5(b)はスケーラビリティを検討する。候補者数が増加すると収束は遅くなるが、TASUKIの'
-    '定性的な優位性は維持される。TASUKIはテストされた全ての候補者プールサイズにわたって、'
+    '図5(b)はスケーラビリティを検討する。候補者数が増加すると収束は遅くなるが、TATSUKIの'
+    '定性的な優位性は維持される。TATSUKIはテストされた全ての候補者プールサイズにわたって、'
     '標準選挙よりも一貫して高い均衡説明責任を達成する。'
 )
 
@@ -550,6 +557,78 @@ doc.add_paragraph(
     'その優れたロバスト性を確認している。'
 )
 
+# ──────────────────────────────────────────────
+# 5.5 実証的較正と反事実分析
+# ──────────────────────────────────────────────
+doc.add_heading('5.5 実証的較正と反事実分析', level=2)
+
+doc.add_paragraph(
+    'モデルを実証的現実に基礎づけるために、Polimeterプロジェクト（polimeter.org）と比較政党公約'
+    'データベース（Thomson et al., 2017）の2つのデータソースを用いて実現度分布パラメータを較正する。'
+)
+
+doc.add_heading('5.5.1 データソース', level=3)
+doc.add_paragraph(
+    'Polimeterプロジェクトは、ラヴァル大学の政治学者により開発され、比較政党公約グループ（Naurin, '
+    'Royed, & Thomson, 2020）の方法論を用いてカナダ連邦政府の公約実現度を体系的に追跡している。'
+    'Justin Trudeau首相について、第42議会（2015\u20132019年；N=353）、第43議会（2019\u20132021年；'
+    'N=345）、第44議会（2021\u20132025年；N=352）の3議会期にわたり計1,050件の公約をコーディング'
+    'した。各公約は「実現」「部分的実現」「未実現」に分類される。これを連続的実現スコアに変換した：'
+    '実現=1.0、部分的実現=0.5、未実現=0.0。'
+)
+doc.add_paragraph(
+    'Thomson et al.（2017）は12カ国57選挙の20,000件超の公約から集約的実現率を提供している。'
+    '単独政党多数派政権で72%、連立多数派で58%、少数派政権で61%の平均実現率が報告されている。'
+    '国際平均は約67%である。'
+)
+
+doc.add_heading('5.5.2 パラメータ再較正', level=3)
+doc.add_paragraph(
+    'Polimeterデータは3議会期にわたり平均実現スコア0.596を示し、Thomson et al.の少数派政権平均'
+    '0.61と近接している（差 = \u22120.014）。この収束はPolimeterのコーディング方法論の外的一貫性'
+    'を検証し、少数派またはわずかな多数派政権として運営されたTrudeau政権がこの政権タイプの国際的'
+    '規範と一致する実現パターンを示していることを確認する。'
+)
+doc.add_paragraph(
+    'これらの実証的ベンチマークを用いて各候補者タイプのBeta分布パラメータを再較正した。元の'
+    'パラメータ（誠実型：Beta(8,2)、平均=0.80；ポピュリスト型：Beta(2,5)、平均=0.29；戦略型：'
+    'Beta(5,3)、平均=0.63）をThomsonの単独政党多数派率（誠実型：Beta(5.8, 2.2)、平均=0.73）、'
+    '低実現プロファイル（ポピュリスト型：Beta(2.0, 4.9)、平均=0.29）、Polimeter少数派政権平均'
+    '（戦略型：Beta(4.2, 2.8)、平均=0.60）に合わせて調整した。図7(d)に元と較正後のBeta分布を'
+    '比較する。'
+)
+
+# Figure 7: 実証的較正
+add_figure(f'{FIGS}/fig7_empirical_calibration.png',
+           '図7. 実証的較正と反事実分析。(a) Polimeterプロジェクトの公約実現スコア分布（N=1,050）と'
+           'Thomson et al.（2017）の参照ベンチマーク。(b) 公約実現率の国際比較。(c) Trudeauの3議会期に'
+           'TATSUKIを適用した反事実的信任係数軌跡。(d) 候補者実現行動の元のBeta分布と較正後Beta分布の'
+           '比較。',
+           width=5.5)
+
+doc.add_heading('5.5.3 反事実分析', level=3)
+doc.add_paragraph(
+    'Polimeterデータに対してTATSUKIを遡及的に適用し、各影響関数バリアントの下でTrudeauの信任係数'
+    '軌跡がどうなったかを計算した。等しい公約重みを仮定すると（Polimeterの二値コーディングに重み'
+    '情報がないことを反映）、説明責任スコアはS₁ = 0.603（第42議会）、S₂ = 0.584（第43議会）、'
+    'S₃ = 0.601（第44議会）となった。'
+)
+doc.add_paragraph(
+    '凹型影響関数（τ_min=0.5, τ_max=1.5）の下で、信任係数は3議会期にわたり τ: 1.000 → 1.277 '
+    '→ 1.264 → 1.275 と推移した（図7c）。第43議会でのわずかな低下は、より短い少数派議会期間と'
+    '一致する若干低い実現度（0.584 vs 0.603）を反映している。線形関数ではより穏やかな効果'
+    '（τ: 1.000 → 1.103 → 1.084 → 1.101）、シグモイド関数では中間的な軌跡'
+    '（τ: 1.000 → 1.238 → 1.199 → 1.233）が観察された。'
+)
+doc.add_paragraph(
+    '反事実分析から3つの実質的知見が得られた。第一に、中程度の実現度（約60%）の政権は全ての'
+    '影響関数の下で正の信任ボーナスを受け、TATSUKIが完璧ではなく努力を報酬することを示唆する。'
+    '第二に、信任係数の議会期間にわたる安定性（Δτ < 0.02）は、実現パターンが比較的安定して'
+    'いる場合にTATSUKIが過度のボラティリティを生じさせないことを示す。第三に、凹関数が最も強い'
+    'インセンティブ差別化を提供し、中程度のパフォーマーへの報酬を増幅しながら天井付近の限界利益を'
+    '制限する。'
+)
+
 # ══════════════════════════════════════════════
 # 6. 議論
 # ══════════════════════════════════════════════
@@ -557,7 +636,7 @@ doc.add_heading('6. 議論（Discussion）', level=1)
 
 doc.add_heading('6.1 貢献と含意', level=2)
 doc.add_paragraph(
-    '結果は、TASUKIが標準選挙と比較して選挙的説明責任を有意に改善できることを示している。'
+    '結果は、TATSUKIが標準選挙と比較して選挙的説明責任を有意に改善できることを示している。'
     'メカニズムは2つのチャネルを通じて機能する：直接的インセンティブ効果（候補者が高い信任係数を'
     '維持するために行動を調整）と進化的淘汰効果（政治システムが真の実現能力を持つ候補者を選択）。'
     'これら2つのチャネルの組み合わせが、時間にわたる持続的な説明責任改善を生み出す。'
@@ -569,17 +648,17 @@ doc.add_paragraph(
 )
 doc.add_paragraph(
     '候補者中心の信任係数の定式化は主要な規範的懸念に対処する。信任調整を有権者ではなく候補者に'
-    '付随させることで、TASUKIは各有権者の投票の形式的平等を維持する。信任係数は、金融市場における'
+    '付随させることで、TATSUKIは各有権者の投票の形式的平等を維持する。信任係数は、金融市場における'
     '信用格付けに類似した、候補者の実証された政策実行能力に対する制度的信頼の指標として解釈できる。'
 )
 
 doc.add_heading('6.2 一人一票原則との関係', level=2)
 doc.add_paragraph(
-    '一人一票（OPOV）原則は民主的正統性の礎である。TASUKIの候補者中心の定式化は、各有権者が'
+    '一人一票（OPOV）原則は民主的正統性の礎である。TATSUKIの候補者中心の定式化は、各有権者が'
     '額面価値の等しい一票を投じることを保証する。信任係数は有権者の投票の重みではなく、候補者の'
     '選挙的乗数を調整する。これは選挙制度が既に選挙区定数、阻止条項、議席配分公式を通じて票を'
     '異なる重みで扱っていることと類似的である。Baharad, Nitzan, and Segal-Halevi（2022）は'
-    '加重投票が民主的原則と両立する条件を評価する形式的枠組みを提供しており、TASUKIの正統性評価に'
+    '加重投票が民主的原則と両立する条件を評価する形式的枠組みを提供しており、TATSUKIの正統性評価に'
     '拡張可能である。'
 )
 
@@ -592,15 +671,15 @@ doc.add_paragraph(
     '実装は制度設計と政治的独立性に関する問題を提起する。'
 )
 doc.add_paragraph(
-    '第三に、Gibbard-Satterthwaiteの精神に基づくTASUKIの完全な耐戦略性の特性評価は行っていない。'
-    '敵対的GA分析はロバスト性の経験的証拠を提供するが、TASUKIメカニズム族に対する完全な不可能性'
-    'または可能性の結果は重要な未解決問題として残る。第四に、TASUKIと既存の制度的特徴（連邦制、'
+    '第三に、Gibbard-Satterthwaiteの精神に基づくTATSUKIの完全な耐戦略性の特性評価は行っていない。'
+    '敵対的GA分析はロバスト性の経験的証拠を提供するが、TATSUKIメカニズム族に対する完全な不可能性'
+    'または可能性の結果は重要な未解決問題として残る。第四に、TATSUKIと既存の制度的特徴（連邦制、'
     '連立政権、任期制限）との相互作用はモデル化されておらず、追加的な複雑性を導入する可能性が高い。'
 )
 
 doc.add_heading('6.4 選挙参加奨励の非対称性', level=2)
 doc.add_paragraph(
-    'TASUKIの提案の背景にあるより広範な動機について明示的に述べる必要がある。多くの民主主義国家に'
+    'TATSUKIの提案の背景にあるより広範な動機について明示的に述べる必要がある。多くの民主主義国家に'
     'おいて、行政による選挙参加啓発キャンペーンは、市民に投票権（選挙権）の行使を促すことにほぼ'
     '専念している。一方で、立候補する権利（被選挙権）の行使を市民に奨励する制度的努力は驚くほど'
     '少ない。この非対称性は注目に値する。両者の権利はほとんどの民主主義体制において憲法上等しく'
@@ -615,22 +694,23 @@ doc.add_paragraph(
     'うちに位置づけている。'
 )
 doc.add_paragraph(
-    'TASUKIはこの問題に二つの方向から対処する。第一に、選挙で選ばれた公職者の公約実現度を任期を'
+    'TATSUKIはこの問題に二つの方向から対処する。第一に、選挙で選ばれた公職者の公約実現度を任期を'
     '通じて評価する継続的な説明責任ループを導入することで、民主的関与の時間的範囲を選挙日を超えて'
     '拡張する。投票時に表明された市民の選好は、パフォーマンスを測定する拘束的なベンチマークとして'
     '引き継がれ、選挙における声に永続的な制度的存在感を与える。第二に、信任係数メカニズムを通じて'
-    '立候補の帰結をより透明かつ構造化することで、TASUKIは立候補への参入障壁を低下させる可能性がある。'
+    '立候補の帰結をより透明かつ構造化することで、TATSUKIは立候補への参入障壁を低下させる可能性がある。'
     '選挙的説明責任を規律するルールが明示的かつパフォーマンスに基づくものである場合、公職に立候補する'
     '決断はより予測可能となり、現職者の優位性や政党のゲートキーピングへの依存度が低下する。この意味で、'
-    'TASUKIは被選挙権が選挙権と同等の制度的奨励に値するという規範的立場と整合する。'
+    'TATSUKIは被選挙権が選挙権と同等の制度的奨励に値するという規範的立場と整合する。'
 )
 
 doc.add_heading('6.5 今後の方向性', level=2)
 doc.add_paragraph(
     'いくつかの拡張が調査に値する。各影響関数クラスのインセンティブ両立性条件の形式的特性評価は'
     '理論的基盤を強化するだろう。Liquid DemocracyやQuadratic Votingとの統合は組み合わせメカニズム'
-    '設計を通じて探索可能である。現実の公約実現度データ（例：Thomson et al., 2017）を用いた経験的'
-    'キャリブレーションは外的妥当性を高めるだろう。最後に、評価プロセスに市民議会を組み込む熟議的'
+    '設計を通じて探索可能である。第5.5節で提示した実証的較正は、比較政党公約データベースの追加国に'
+    '拡張可能であり、国際比較シミュレーション実験が可能となる。市町村や組織の文脈での前向きフィールド'
+    '実験は、TATSUKIの行動予測を検証できる。最後に、評価プロセスに市民議会を組み込む熟議的'
     '拡張は、テクノクラート的査定への懸念に対処し得る。'
 )
 
@@ -640,11 +720,14 @@ doc.add_paragraph(
 doc.add_heading('7. 結論（Conclusion）', level=1)
 doc.add_paragraph(
     '本論文では、計測された公約実現度に候補者の信任係数を連動させることで回顧的説明責任を'
-    '制度化する新しい選挙メカニズムであるTASUKI（Dynamic Retrospective Delegation with Candidate '
-    'Trust）を導入した。ODD準拠のエージェントベースモデルにより、TASUKIが説明責任水準を向上させ、'
-    '誠実な候補者を選択し、敵対的攻略に対してロバスト性を示すことを実証した。メカニズムは影響関数'
+    '制度化する新しい選挙メカニズムであるTATSUKI（Dynamic Retrospective Delegation with Candidate '
+    'Trust）を導入した。Polimeterプロジェクトの実証的公約実現データおよびThomson et al.（2017）の'
+    '国際ベンチマークで較正したODD準拠のエージェントベースモデルにより、TATSUKIが説明責任水準を向上させ、'
+    '誠実な候補者を選択し、敵対的攻略に対してロバスト性を示すことを実証した。カナダ連邦3議会期の'
+    '実世界データを用いた反事実分析により、TATSUKIが観察された実現パターンと整合する安定的で'
+    '解釈可能な信任軌跡を生成することが確認された。メカニズムは影響関数'
     'の族によりパラメータ化され、凹関数とシグモイド仕様がインセンティブ強度と操作耐性の最良の'
-    'トレードオフを提供する。信任調整を有権者レベルではなく候補者レベルに定式化することで、TASUKIは'
+    'トレードオフを提供する。信任調整を有権者レベルではなく候補者レベルに定式化することで、TATSUKIは'
     '一人一票原則との整合性を維持しつつ、パフォーマンスに基づく選挙的影響力の原理的なメカニズムを'
     '導入するものである。'
 )
@@ -660,6 +743,7 @@ refs = [
     'Baharad, R., Nitzan, S., & Segal-Halevi, E. (2022). One person, one weight: when is weighted voting democratic? Social Choice and Welfare, 59, 467\u2013493.',
     'Barro, R. (1973). The control of politicians: an economic model. Public Choice, 14, 19\u201342.',
     'Besley, T. (2006). Principled Agents? The Political Economy of Good Government. Oxford University Press.',
+    'Birch, L., & P\u00e9try, F. (2019). Assessing Justin Trudeau\u2019s Liberal Government: 353 Promises and a Mandate for Change. Les Presses de l\u2019Universit\u00e9 Laval.',
     'Brill, M., Delemazure, T., George, A.-M., Lackner, M., & Schmidt-Kraepelin, U. (2022). Liquid Democracy with Ranked Delegations. In Proceedings of the AAAI Conference on Artificial Intelligence.',
     'Bytzek, E., Dupont, J. C., Steffens, M. C., Knab, N., & Schneider, F. M. (2024). Do Election Pledges Matter? Politische Vierteljahresschrift, 66(4), 785\u2013804.',
     'Christoff, Z., & Grossi, D. (2017). Binary Voting with Delegable Proxy. In Proceedings of TARK 2017.',
@@ -679,6 +763,7 @@ refs = [
     'Mitra, A. (2022). Agent-based Simulation of District-based Elections. arXiv:2205.14400.',
     'Naurin, E., Royed, T. J., & Thomson, R. (Eds.). (2020). Party Mandates and Democracy. University of Michigan Press.',
     'P\u00e9try, F., & Collette, B. (2009). Measuring How Political Parties Keep Their Promises. In Do They Walk Like They Talk? Springer.',
+    'P\u00e9try, F., & Fortier-Chouinard, A. (2024). Polimeter: An Independent Pledge Tracking Initiative. Centre for the Study of Democratic Citizenship, Universit\u00e9 Laval. https://polimeter.org',
     'Posner, E. A., & Weyl, E. G. (2018). Radical Markets: Uprooting Capitalism and Democracy for a Just Society. Princeton University Press.',
     'Satterthwaite, M. (1975). Strategy-proofness and Arrow\'s conditions. Journal of Economic Theory, 10, 187\u2013217.',
     'Thomson, R., Royed, T., Naurin, E., et al. (2017). The Fulfillment of Parties\' Election Pledges: A Comparative Study. American Journal of Political Science, 61(3), 527\u2013542.',
