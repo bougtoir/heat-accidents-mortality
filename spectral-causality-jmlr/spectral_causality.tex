@@ -802,7 +802,7 @@ $\omega(i,j)=w(i,j)\cdot\sigma(i,j)$:
     \quad\text{(curl = feedback loops)}.
 \end{align*}
 $r_{\mathrm{gradient}}=85.9\%$ indicates predominantly DAG-like
-structure.
+structure (Figure~\ref{fig:hodge}).
 
 The causal potential $\phi$ orders the variables as
 Age $>$ Chol $>$ RestBP $\approx$ MaxHR $>$ STDep
@@ -944,7 +944,7 @@ the antisymmetric component at $\alpha=0$ is nonzero, yielding
 $r_{\mathrm{gradient}}(0)=0.581>0$.  The transition from $\alpha=0$ to
 $\alpha=1$ is then \emph{smooth}---a second-order phase transition
 replacing the first-order (discontinuous) transition of the
-$|\hat\rho|$-based model.
+$|\hat\rho|$-based model (Figure~\ref{fig:alpha-sweep}).
 \end{remark}
 
 \subsection{Knowledge Quality vs.\ Quantity}
@@ -1097,22 +1097,22 @@ substantially broader coverage (Figure~\ref{fig:hill-radar}):
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.6\textwidth]{figures/fig5_hill_radar.png}
-\caption{Hill's nine criteria coverage.  LiNGAM covers H1 (strength)
-  and H3 (specificity) well but lacks H6/H7/H9.  Spectral causality
-  covers H6 (plausibility), H7 (coherence), H9 (analogy) via the
-  utility function.  The ECD ensemble integrates both, achieving near-complete coverage.}
-\label{fig:hill-radar}
-\end{figure}
-
-\begin{figure}[t]
-\centering
 \includegraphics[width=0.85\textwidth]{figures/fig9_ecd_pruning_analysis.png}
 \caption{ECD pipeline analysis.  (A) Hodge decomposition of ECD flow.
   (B) Causal potential $\phi$ vs.\ interventionability $\iota$.
   (C) Per-edge feedback ratio.  (D) U-shaped curve of
   $r_{\mathrm{gradient}}$ vs.\ knowledge quality $p_{\mathrm{flip}}$.}
 \label{fig:ecd}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.6\textwidth]{figures/fig5_hill_radar.png}
+\caption{Hill's nine criteria coverage.  LiNGAM covers H1 (strength)
+  and H3 (specificity) well but lacks H6/H7/H9.  Spectral causality
+  covers H6 (plausibility), H7 (coherence), H9 (analogy) via the
+  utility function.  The ECD ensemble integrates both, achieving near-complete coverage.}
+\label{fig:hill-radar}
 \end{figure}
 
 \subsection{Feedback Analysis and Pruning}
