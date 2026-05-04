@@ -251,6 +251,34 @@ def create_report():
         'Obes Surg. 2017;27(11):3031-3039.{5} '
         'メタアナリシスでは抜管時間に統計的有意差を認めたものの、その差は臨床的に意味のある閾値（数分）に過ぎず、'
         '退院時間やPACU滞在時間には差がないと結論。'
+        '出版バイアスが検出されている（Egger検定 p=0.02）。'
+    )
+
+    doc.add_heading('主要エンドポイントと多重比較検定の検証', level=2)
+    p = doc.add_paragraph()
+    run = p.add_run('La Colla 2007: ')
+    run.font.bold = True
+    p.add_run(
+        '【主要EP】明示的な主要エンドポイントの事前指定なし。wash-out時間、抜管時間、'
+        '覚醒時間等の複数アウトカムを報告しているが、いずれが主要エンドポイントかの記載がない。'
+        '【多重比較検定】複数アウトカムに対する多重比較補正は実施されていない。'
+    )
+    p = doc.add_paragraph()
+    run = p.add_run('Kaur 2013: ')
+    run.font.bold = True
+    p.add_run(
+        '【主要EP】明示的な主要エンドポイントの事前指定なし。血行動態と覚醒特性の両方を比較しているが、'
+        '主要アウトカムの指定がない。'
+        '【多重比較検定】n=20/群で複数アウトカムを比較しているが、多重比較補正は実施されていない。'
+    )
+    p = doc.add_paragraph()
+    run = p.add_run('Singh 2017（メタアナリシス）: ')
+    run.font.bold = True
+    p.add_run(
+        '【主要EP】開眼時間と抜管時間を主要アウトカムとして明記。ただし退院時間・PACU滞在時間等の'
+        '臨床的に重要なアウトカムは副次的扱い。'
+        '【多重比較検定】5つのRCTの統合解析で複数アウトカムを比較しているが、'
+        '個々のアウトカム間のBonferroni補正は実施されていない。'
     )
 
     doc.add_page_break()
@@ -353,6 +381,20 @@ def create_report():
         '後続の文献では原著の結論のみが引用され続けている。'
     )
 
+    doc.add_heading('主要エンドポイントと多重比較検定の検証', level=3)
+    p = doc.add_paragraph()
+    run = p.add_run('Tachibana 2015: ')
+    run.font.bold = True
+    p.add_run(
+        '【主要EP】明示的な主要エンドポイントの事前指定なし。パイロット研究と銘打っているが、'
+        'MMSE変化量、覚醒時間、抜管時間等の複数アウトカムを報告し、'
+        'いずれが主要エンドポイントかの記載がない。MMSE変化量が「有意」として強調されているが、'
+        '事前に主要アウトカムとして指定された形跡がない。'
+        '【多重比較検定】MMSE、覚醒時間、抜管時間等の複数アウトカムに対する'
+        '多重比較補正（Bonferroni等）は実施されていない。'
+        'p=0.048というぎりぎりの有意水準は、多重比較補正を行えば有意差が消失するレベル。'
+    )
+
     doc.add_page_break()
 
     # =====================================================
@@ -381,6 +423,17 @@ def create_report():
     ]
     for item in items:
         doc.add_paragraph(item, style='List Bullet')
+
+    doc.add_heading('主要エンドポイントと多重比較検定の検証', level=2)
+    p = doc.add_paragraph(
+        '長時間手術におけるデスフルラン優位性を検証した個々のRCTの多くは、'
+        '抜管時間を主要エンドポイントとして設定しているが、退院時間やPACU滞在時間は'
+        '副次的エンドポイントまたは未測定であることが多い。'
+        '覚醒時間（数分の差）を主要EPとすること自体が、臨床的に重要なアウトカムからの'
+        '逸脱であり、結果の臨床的意義を過大評価させる研究デザインとなっている。'
+        '多重比較補正については、複数の回復指標を同時に検定している研究が大半だが、'
+        'Bonferroni等の補正を明示している研究は見当たらない。'
+    )
 
     doc.add_page_break()
 
@@ -432,6 +485,27 @@ def create_report():
         'PMID: 40046703）でも、抜管時間の統計的差異はあるが臨床的転帰に差はないと結論。'
     )
 
+    doc.add_heading('主要エンドポイントと多重比較検定の検証', level=3)
+    p = doc.add_paragraph()
+    run = p.add_run('Dube 2015: ')
+    run.font.bold = True
+    p.add_run(
+        '【主要EP】明示的な主要エンドポイントの事前指定なし。'
+        '術中脳条件、血行動態、術後回復の3領域にわたる複数アウトカムを比較しているが、'
+        'いずれが主要エンドポイントかの記載がない。抜管時間の差のみが強調されている。'
+        '【多重比較検定】脳弛緩度、血行動態パラメータ、抜管時間、GCS回復時間、退室時間等の'
+        '多数のアウトカムを比較しているが、多重比較補正は実施されていない。'
+    )
+    p = doc.add_paragraph()
+    run = p.add_run('2025年メタアナリシス（PMID: 40046703）: ')
+    run.font.bold = True
+    p.add_run(
+        '【主要EP】抜管時間を主要アウトカムとしているが、臨床的に重要な転帰'
+        '（ICU滞在時間、退院時間、神経学的合併症率）は副次的扱い。'
+        '【多重比較検定】メタアナリシスの標準的手法に従っているが、'
+        '複数アウトカム間の多重比較に対するBonferroni補正は明示されていない。'
+    )
+
     doc.add_page_break()
 
     # =====================================================
@@ -450,11 +524,12 @@ def create_report():
     p = doc.add_paragraph()
     run = p.add_run('論文情報: ')
     run.font.bold = True
-    p.add_run(
+    add_superscript_text(
+        doc.add_paragraph(),
         'White PF, Tang J, Wender RH, et al. '
         '"Desflurane versus sevoflurane for maintenance of outpatient anesthesia: '
         'the effect on early versus late recovery and perioperative coughing." '
-        'Anesth Analg. 2009;109(2):387-393.'
+        'Anesth Analg. 2009;109(2):387-393.{12}'
     )
 
     items = [
@@ -472,8 +547,24 @@ def create_report():
         doc.add_paragraph(),
         'Gupta et al. "Comparison of Recovery Profile After Ambulatory Anesthesia with Propofol, '
         'Isoflurane, Sevoflurane and Desflurane: A Systematic Review." '
-        'Anesth Analg. 2004;98:632-641.{12} '
+        'Anesth Analg. 2004;98:632-641.{13} '
         '退院時間に有意差なし。'
+    )
+
+    doc.add_heading('主要エンドポイントと多重比較検定の検証', level=3)
+    p = doc.add_paragraph()
+    run = p.add_run('White 2009: ')
+    run.font.bold = True
+    p.add_run(
+        '【主要EP】明示的な単一の主要エンドポイントの事前指定なし。'
+        '「early vs late recovery」および「perioperative coughing」の両方を'
+        'タイトルに掲げ、開眼時間、指示動作までの時間、抜管時間、fast-track基準到達時間、'
+        '咳嗽発生率の少なくとも5つのアウトカムを報告。いずれが主要EPかの記載がない。'
+        '【多重比較検定】5つ以上のアウトカムを比較しているが、'
+        '多重比較補正（Bonferroni等）は実施されていない。'
+        'fast-track基準（実際の臨床的ボトルネック）で差がなく、'
+        '開眼時間等の代理エンドポイントでのみ差が出ている点は、'
+        '多重比較の文脈で特に問題がある。'
     )
 
     doc.add_page_break()
@@ -499,7 +590,7 @@ def create_report():
         'Lim BG, Lee IO, Ahn H, et al. '
         '"Comparison of the incidence of emergence agitation and emergence times between '
         'desflurane and sevoflurane anesthesia in children: A systematic review and meta-analysis." '
-        'Medicine. 2016;95(38):e4927.{13}'
+        'Medicine. 2016;95(38):e4927.{14}'
     )
 
     items = [
@@ -511,6 +602,17 @@ def create_report():
     ]
     for item in items:
         doc.add_paragraph(item, style='List Bullet')
+
+    doc.add_heading('主要エンドポイントと多重比較検定の検証', level=3)
+    p = doc.add_paragraph()
+    run = p.add_run('Lim 2016（メタアナリシス）: ')
+    run.font.bold = True
+    p.add_run(
+        '【主要EP】EA発生率と覚醒時間を主要アウトカムとして明記。'
+        'メタアナリシスとしては適切にアウトカムが定義されている。'
+        '【多重比較検定】メタアナリシスの標準的統計手法に従っており、'
+        '異質性のI²統計量も報告。ただし臨床的結論はデスフルランの優位性なし（EA発生率同等）。'
+    )
 
     doc.add_page_break()
 
@@ -535,7 +637,7 @@ def create_report():
         'Sivanna U, Joshi S, Babu B, Jagadeesh AM. '
         '"A comparative study of pharmacological myocardial protection between sevoflurane and desflurane '
         'at anaesthetic doses in patients undergoing off pump coronary artery bypass grafting surgery." '
-        'Indian J Anaesth. 2015;59(5):282-286.{14}'
+        'Indian J Anaesth. 2015;59(5):282-286.{15}'
     )
 
     items = [
@@ -549,6 +651,83 @@ def create_report():
     ]
     for item in items:
         doc.add_paragraph(item, style='List Bullet')
+
+    doc.add_heading('CABG試験における長期予後: De Hert 2009（VACMAN）', level=2)
+    p = doc.add_paragraph()
+    run = p.add_run('論文情報: ')
+    run.font.bold = True
+    add_superscript_text(
+        doc.add_paragraph(),
+        'De Hert SG, et al. '
+        '"A comparison of volatile and non volatile agents for cardioprotection '
+        'during on-pump coronary surgery." Anaesthesia. 2009;64(9):953-960.{16}'
+    )
+    p = doc.add_paragraph(
+        '多施設前向き研究（VACMAN: Volatile Anesthetics and Cardioprotection '
+        'Multicentre ANalysis）において、CABG患者の1年死亡率が報告された。'
+    )
+
+    # Mortality table
+    mort_table = doc.add_table(rows=4, cols=2)
+    mort_table.style = 'Table Grid'
+    mort_table.alignment = WD_TABLE_ALIGNMENT.CENTER
+    headers = ['麻酔法', '1年死亡率']
+    for i, h in enumerate(headers):
+        cell = mort_table.rows[0].cells[i]
+        cell.text = h
+        for paragraph in cell.paragraphs:
+            for run in paragraph.runs:
+                run.font.bold = True
+                run.font.size = Pt(9)
+        set_cell_shading(cell, '1A477A')
+        for paragraph in cell.paragraphs:
+            for run in paragraph.runs:
+                run.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
+    mort_data = [
+        ['デスフルラン', '6.9%'],
+        ['セボフルラン', '3.3%'],
+        ['TIVA（プロポフォール）', '12.3%'],
+    ]
+    for row_idx, row_data in enumerate(mort_data, start=1):
+        for col_idx, text in enumerate(row_data):
+            cell = mort_table.rows[row_idx].cells[col_idx]
+            cell.text = text
+            for paragraph in cell.paragraphs:
+                for run in paragraph.runs:
+                    run.font.size = Pt(9)
+
+    p = doc.add_paragraph()
+    p.space_before = Pt(6)
+    p = doc.add_paragraph(
+        'デスフルラン群の1年死亡率（6.9%）はセボフルラン群（3.3%）の約2倍であった。'
+        'TIVA群（12.3%）と比較すれば両揮発性麻酔薬とも良好だが、'
+        '揮発性麻酔薬間の比較ではデスフルランの方が予後不良であり、'
+        '「デスフルランが心臓手術で有利」という主張と明確に矛盾する。'
+    )
+    p = doc.add_paragraph(
+        'この結果は、心筋保護効果が揮発性麻酔薬のクラス効果であること、'
+        'さらにセボフルランが同クラス内でもデスフルランより優れている可能性を示唆する。'
+    )
+
+    doc.add_heading('主要エンドポイントと多重比較検定の検証', level=2)
+    p = doc.add_paragraph()
+    run = p.add_run('Sivanna 2015: ')
+    run.font.bold = True
+    p.add_run(
+        '【主要EP】トロポニンT値を主要アウトカムとして比較しているが、'
+        '明示的な「primary endpoint」の記載がない。血行動態指標等の複数アウトカムも同時に評価。'
+        '【多重比較検定】複数の血行動態パラメータとバイオマーカーを比較しているが、'
+        '多重比較補正は実施されていない。'
+    )
+    p = doc.add_paragraph()
+    run = p.add_run('De Hert 2009: ')
+    run.font.bold = True
+    p.add_run(
+        '【主要EP】多施設前向きコホート研究であり、1年死亡率が主要アウトカム。'
+        '事前登録された臨床試験としてのデザイン。'
+        '【多重比較検定】3群比較（デスフルラン、セボフルラン、TIVA）であるが、'
+        '多重比較補正の詳細は論文本文中で確認が必要。'
+    )
 
     doc.add_page_break()
 
@@ -581,7 +760,7 @@ def create_report():
     doc.add_heading('コホート研究', level=3)
     add_superscript_text(
         doc.add_paragraph(),
-        '日本全国DPCデータベース研究（2025）{15}: COPD 24,243例、喘息 16,199例の解析で、'
+        '日本全国DPCデータベース研究（2025）{17}: COPD 24,243例、喘息 16,199例の解析で、'
         'デスフルラン vs セボフルランの術後肺合併症に有意差なし'
         '（COPD: aRD −0.57%, 99%CI −1.8%〜+0.60%; 喘息: aRD −0.62%, 99%CI −1.8%〜+0.59%）。'
         'ただし本研究は後ろ向きコホート研究であり非劣性試験ではない。'
@@ -589,6 +768,19 @@ def create_report():
         'またデスフルランの優位性を示すものでもない。'
         'なお同論文Introductionでは、CABG試験における1年死亡率がデスフルラン群6.9%、'
         'セボフルラン群3.3%、TIVA群12.3%であったことが引用されている。'
+    )
+
+    doc.add_heading('主要エンドポイントと多重比較検定の検証', level=3)
+    p = doc.add_paragraph()
+    run = p.add_run('DPC研究 2025: ')
+    run.font.bold = True
+    p.add_run(
+        '【主要EP】術後肺合併症を主要アウトカムとして明記。'
+        '後ろ向きコホート研究としては適切にアウトカムが定義されている。'
+        '【多重比較検定】COPD群と喘息群の2つの解析を実施。'
+        '99%信頼区間（通常の95%ではなく）を採用しており、'
+        '多重比較に対する一定の配慮がなされている。'
+        'ただし非劣性マージンの事前設定はなく、「有意差なし」が「安全性の証明」と同義ではない。'
     )
 
     doc.add_page_break()
@@ -684,7 +876,7 @@ def create_report():
         ['4. 脳外科', 'Dube 2015', '抜管時間差あるが GCS回復・\n転帰に差なし', '優位性なし'],
         ['5. 日帰り手術', 'White 2009', '退院時間に差なし、\n咳嗽増加のデメリット', '優位性なし'],
         ['6. 小児', 'Lim 2016 MA', 'EA発生率同等、気道刺激で\nマスク導入不可', '優位性なし'],
-        ['7. 心臓手術', 'Sivanna 2015', '心筋保護は揮発性麻酔薬の\nクラス効果', '優位性なし'],
+        ['7. 心臓手術', 'Sivanna 2015\nDe Hert 2009', '心筋保護はクラス効果\nCABG 1年死亡率: D6.9% S3.3%', '優位性なし'],
         ['8. 呼吸器疾患', 'DPC研究 2025', 'TRPA1活性化による\n気道刺激が禁忌的', '劣位'],
         ['9. 肝腎障害', '理論的主張', 'Compound A毒性は\nヒトで未確認', '差なし'],
         ['10. 筋疾患', '症例報告のみ', 'MHトリガーは全VA共通\nTIVA推奨', '差なし'],
@@ -726,12 +918,20 @@ def create_report():
         '（例: Tachibana 2015は31回引用、批判レターDing 2015は2回引用、著者回答はほぼゼロ）。',
         '覚醒時間（抜管時間）を主要エンドポイントとし、退院時間、PACU滞在時間、'
         '患者報告アウトカム等の臨床的に重要なエンドポイントでは差が出ないことを軽視。',
+        '【主要エンドポイントの不在】本稿で検証した論文の大半（La Colla 2007、Kaur 2013、'
+        'Tachibana 2015、Dube 2015、White 2009、Sivanna 2015）において、'
+        '明示的な主要エンドポイントの事前指定がなされていない。'
+        '複数のアウトカムを測定した上で、都合の良い結果のみを強調する'
+        '「outcome reporting bias」の疑いがある。',
+        '【多重比較補正の系統的欠如】上記の全論文において、複数アウトカムに対する'
+        '多重比較補正（Bonferroni、FDR等）が実施されていない。'
+        'ぎりぎりの有意水準（p=0.04-0.05）で「有意差あり」と報告されている結果は、'
+        '多重比較補正を適用すれば有意差が消失するレベルである。',
         'FGF（フレッシュガスフロー）を報告しない、または臨床的でないハイフロー条件を使用。'
         'デスフルランの薬理学的特性が最大限に発揮される条件設計でバイアスを生む。',
         'BIS等の脳機能モニタリングによる麻酔深度の標準化が行われていない研究が多く、'
         '麻酔深度の不均衡が交絡因子となる。',
         'パイロット研究・少数例のRCTが多く、検出力不足のまま有意差を主張。',
-        '多重比較補正なしでp値がぎりぎり有意（p=0.04-0.05）の結果が多い。',
         'デスフルラン製造元（Baxter/現Hillrom）との利益相反が開示されていない研究がある。',
     ]
     for item in items:
@@ -744,23 +944,43 @@ def create_report():
     # =====================================================
     doc.add_heading('文献', level=1)
     references = [
+        # {1} Scenario 1: Obesity
         'La Colla L, Albertin A, La Colla G, Mangano A. Faster wash-out and recovery for desflurane vs sevoflurane in morbidly obese patients when no premedication is used. Br J Anaesth. 2007;99(3):353-358.',
+        # {2} Scenario 1: Obesity
         'Kaur A, Jain AK, Sehgal R, Sood J. Hemodynamics and early recovery characteristics of desflurane versus sevoflurane in bariatric surgery. J Anaesthesiol Clin Pharmacol. 2013;29(1):36-40.',
+        # {3} Scenario 1: Counter-evidence
         'Arain SR, Barth CD, Shankar H, Ebert TJ. Choice of volatile anesthetic for the morbidly obese patient: sevoflurane or desflurane. J Clin Anesth. 2005;17(6):413-419.',
+        # {4} Scenario 1: Editorial
         'Eger EI II, Shafer S. The complexity of recovery from anesthesia. J Clin Anesth. 2005;17(6):411-412.',
-        'Singh PM, Borle A, McGavin J, Trikha A, Sinha A. Comparison of the Recovery Profile between Desflurane and Sevoflurane in Patients Undergoing Bariatric Surgery—a Meta-Analysis of Randomized Controlled Trials. Obes Surg. 2017;27(11):3031-3039.',
+        # {5} Scenario 1: Meta-analysis
+        'Singh PM, Borle A, McGavin J, Trikha A, Sinha A. Comparison of the Recovery Profile between Desflurane and Sevoflurane in Patients Undergoing Bariatric Surgery\u2014a Meta-Analysis of Randomized Controlled Trials. Obes Surg. 2017;27(11):3031-3039.',
+        # {6} Scenario 2: Elderly POCD
         'Tachibana S, Hayase T, Osuda M, Kazuma S, Yamakage M. Recovery of postoperative cognitive function in elderly patients after a long duration of desflurane anesthesia: a pilot study. J Anesth. 2015;29:627-630.',
+        # {7} Scenario 2: Critical letter
         'Ding F, Zheng L, Luo T. Desflurane anesthesia and postoperative cognitive function. J Anesth. 2015. DOI: 10.1007/s00540-015-2002-3.',
+        # {8} Scenario 2: Author reply
         'Tachibana S, Hayase T, Yamakage M. In reply: Desflurane anesthesia and cognitive function. J Anesth. 2017;31:637.',
+        # {9} Scenario 3: Long duration
         'Eger EI II. New inhaled anesthetics. Anesthesiology. 1994;80(4):906-922.',
+        # {10} Scenario 4: Neurosurgery
         'Dube SK, Pandia MP, Chaturvedi A, Bithal P, Dash HH. Comparison of intraoperative brain condition, hemodynamics and postoperative recovery between desflurane and sevoflurane in patients undergoing supratentorial craniotomy. Saudi J Anaesth. 2015;9(2):167-173.',
-        'Comparison of desflurane and sevoflurane as maintenance inhalational anaesthetic agents for adult patients undergoing neurosurgeries: A systematic review and meta-analysis of randomised trials. 2025. PMID: 40046703.',
-        'Gupta A, Stierer T, Zuckerman R, Sakima N, Parker SD, Fleisher LA. Comparison of Recovery Profile After Ambulatory Anesthesia with Propofol, Isoflurane, Sevoflurane and Desflurane: A Systematic Review. Anesth Analg. 2004;98:632-641.',
-        'Lim BG, Lee IO, Ahn H, et al. Comparison of the incidence of emergence agitation and emergence times between desflurane and sevoflurane anesthesia in children: A systematic review and meta-analysis. Medicine. 2016;95(38):e4927.',
-        'Sivanna U, Joshi S, Babu B, Jagadeesh AM. A comparative study of pharmacological myocardial protection between sevoflurane and desflurane at anaesthetic doses in patients undergoing off pump coronary artery bypass grafting surgery. Indian J Anaesth. 2015;59(5):282-286.',
-        'Postoperative pulmonary complications of desflurane- versus sevoflurane-based general anesthesia in patients with COPD or asthma: a nationwide retrospective cohort study. J Anesth. 2026;40:59-68.',
+        # {11} Scenario 4: Neurosurgery meta-analysis
+        'Comparison of desflurane and sevoflurane as maintenance inhalational anaesthetic agents for adult patients undergoing neurosurgeries: A systematic review and meta-analysis of randomised trials. Indian J Anaesth. 2025. PMID: 40046703.',
+        # {12} Scenario 5: Ambulatory
         'White PF, Tang J, Wender RH, et al. Desflurane versus sevoflurane for maintenance of outpatient anesthesia: the effect on early versus late recovery and perioperative coughing. Anesth Analg. 2009;109(2):387-393.',
+        # {13} Scenario 5: Systematic review
+        'Gupta A, Stierer T, Zuckerman R, Sakima N, Parker SD, Fleisher LA. Comparison of Recovery Profile After Ambulatory Anesthesia with Propofol, Isoflurane, Sevoflurane and Desflurane: A Systematic Review. Anesth Analg. 2004;98:632-641.',
+        # {14} Scenario 6: Pediatric meta-analysis
+        'Lim BG, Lee IO, Ahn H, et al. Comparison of the incidence of emergence agitation and emergence times between desflurane and sevoflurane anesthesia in children: A systematic review and meta-analysis. Medicine. 2016;95(38):e4927.',
+        # {15} Scenario 7: Cardiac
+        'Sivanna U, Joshi S, Babu B, Jagadeesh AM. A comparative study of pharmacological myocardial protection between sevoflurane and desflurane at anaesthetic doses in patients undergoing off pump coronary artery bypass grafting surgery. Indian J Anaesth. 2015;59(5):282-286.',
+        # {16} Scenario 7: CABG mortality
+        'De Hert SG, et al. A comparison of volatile and non volatile agents for cardioprotection during on-pump coronary surgery. Anaesthesia. 2009;64(9):953-960.',
+        # {17} Scenario 8: Respiratory cohort
+        'Postoperative pulmonary complications of desflurane- versus sevoflurane-based general anesthesia in patients with COPD or asthma: a nationwide retrospective cohort study. J Anesth. 2026;40:59-68.',
+        # {18} Regulation
         'Regulation (EU) 2024/573 of the European Parliament and of the Council of 7 February 2024 on fluorinated greenhouse gases. Official Journal of the European Union.',
+        # {19} Guidance
         'NHS England. Guidance: Desflurane decommissioning and clinical use. 2024.',
     ]
     for i, ref in enumerate(references, 1):
