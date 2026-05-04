@@ -70,7 +70,9 @@ def convert_math(text):
             return ''.join(SUP_MAP.get(c, c) for c in m2.group(1))
         s = re.sub(r'\^\{([^}]+)\}', sup_repl, s)
         s = re.sub(r'\^([a-z0-9*])', lambda m2: SUP_MAP.get(m2.group(1), '^' + m2.group(1)), s)
+        s = s.replace('\\{', '\x00LB\x00').replace('\\}', '\x00RB\x00')
         s = s.replace('\\', '').replace('{', '').replace('}', '')
+        s = s.replace('\x00LB\x00', '{').replace('\x00RB\x00', '}')
         return s
     # Inline math
     text = re.sub(r'(?<!\$)\$(?!\$)(.+?)(?<!\$)\$(?!\$)', process, text)
