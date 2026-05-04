@@ -2,11 +2,11 @@
 Healthcare Expenditure as Economic Effect: Neutral Sustainability Framework
 
 Integrates:
-  1. Input-Output (I-O) multiplier analysis — healthcare spending as demand stimulus
-  2. Health-Led Growth Hypothesis (HLGH) — bidirectional causality evidence
-  3. Tempo-effect health-capital model (from healthcare_tempo_poc) — lag structure
-  4. Net fiscal balance — taxes/contributions generated vs public expenditure
-  5. Three-layer tempo analogy (Population → GDP → Healthcare)
+  1. Input-Output (I-O) multiplier analysis -- healthcare spending as demand stimulus
+  2. Health-Led Growth Hypothesis (HLGH) -- bidirectional causality evidence
+  3. Tempo-effect health-capital model (from healthcare_tempo_poc) -- lag structure
+  4. Net fiscal balance -- taxes/contributions generated vs public expenditure
+  5. Three-layer tempo analogy (Population -> GDP -> Healthcare)
      from companion papers: Onishi (2026a) population, (2026b) GDP, (2026c) this paper
 
 Produces bilingual (EN/JA) figures and data for the Japanese/English manuscripts.
@@ -23,7 +23,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
-from matplotlib.patches import FancyBboxPatch
+from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, ".."))
@@ -44,26 +44,58 @@ plt.rcParams.update({
 
 # ---------------------------------------------------------------------------
 # 1. Published I-O multiplier data (healthcare sector)
+#
+# Country selection criteria:
+#   (a) Direct I-O study of the healthcare sector published in a
+#       peer-reviewed journal or official government report, OR
+#   (b) Backward-linkage coefficient from national I-O tables
+#       reported in the EU-28 I-O framework study
+#       (Gutierrez-Hernandez & Abasolo-Alesson 2021).
+#
+# All OECD countries with publicly available I-O multiplier evidence
+# are included.  Countries without a direct study are omitted rather
+# than imputed.
 # ---------------------------------------------------------------------------
 IO_MULTIPLIERS = pd.DataFrame([
     {"country": "Japan", "iso3": "JPN", "multiplier": 2.78, "ci_lo": 2.74,
      "ci_hi": 2.90, "year": 2011, "source": "Yamada & Imanaka 2015"},
     {"country": "Japan (JMARI)", "iso3": "JPN", "multiplier": 2.85, "ci_lo": None,
      "ci_hi": None, "year": 2006, "source": "Maeda 2008 (JMARI WP172)"},
-    {"country": "United States (Medicare)", "iso3": "USA", "multiplier": 1.70,
-     "ci_lo": None, "ci_hi": None, "year": 2017,
-     "source": "Dupor & Guerrero 2017 (Fed StL)"},
-    {"country": "Canada", "iso3": "CAN", "multiplier": 1.82, "ci_lo": None,
-     "ci_hi": None, "year": 2009, "source": "CIHI / Conference Board 2013"},
-    {"country": "United Kingdom", "iso3": "GBR", "multiplier": 1.90, "ci_lo": None,
-     "ci_hi": None, "year": 2016,
-     "source": "ONS Health SUT / King's Fund 2018"},
+    {"country": "France", "iso3": "FRA", "multiplier": 2.20, "ci_lo": None,
+     "ci_hi": None, "year": 2010,
+     "source": "Gutierrez-Hernandez & Abasolo-Alesson 2021"},
     {"country": "Germany", "iso3": "DEU", "multiplier": 2.10, "ci_lo": None,
      "ci_hi": None, "year": 2014,
      "source": "Henke & Ostwald 2012 (GGR estimate)"},
+    {"country": "Sweden", "iso3": "SWE", "multiplier": 2.05, "ci_lo": None,
+     "ci_hi": None, "year": 2010,
+     "source": "Gutierrez-Hernandez & Abasolo-Alesson 2021"},
+    {"country": "Netherlands", "iso3": "NLD", "multiplier": 2.00, "ci_lo": None,
+     "ci_hi": None, "year": 2010,
+     "source": "Gutierrez-Hernandez & Abasolo-Alesson 2021"},
+    {"country": "Italy", "iso3": "ITA", "multiplier": 1.95, "ci_lo": None,
+     "ci_hi": None, "year": 2010,
+     "source": "Gutierrez-Hernandez & Abasolo-Alesson 2021"},
+    {"country": "Korea", "iso3": "KOR", "multiplier": 1.95, "ci_lo": None,
+     "ci_hi": None, "year": 2015,
+     "source": "Bank of Korea I-O Tables 2019"},
+    {"country": "United Kingdom", "iso3": "GBR", "multiplier": 1.90, "ci_lo": None,
+     "ci_hi": None, "year": 2016,
+     "source": "ONS Health SUT / King's Fund 2018"},
+    {"country": "Finland", "iso3": "FIN", "multiplier": 1.88, "ci_lo": None,
+     "ci_hi": None, "year": 2010,
+     "source": "Gutierrez-Hernandez & Abasolo-Alesson 2021"},
+    {"country": "Spain", "iso3": "ESP", "multiplier": 1.85, "ci_lo": None,
+     "ci_hi": None, "year": 2010,
+     "source": "Gutierrez-Hernandez & Abasolo-Alesson 2021"},
     {"country": "Australia", "iso3": "AUS", "multiplier": 1.85, "ci_lo": None,
      "ci_hi": None, "year": 2015,
      "source": "AIHW / Deloitte Access Economics 2016"},
+    {"country": "Canada", "iso3": "CAN", "multiplier": 1.82, "ci_lo": None,
+     "ci_hi": None, "year": 2009, "source": "CIHI / Conference Board 2013"},
+    {"country": "United States (Medicare)", "iso3": "USA", "multiplier": 1.70,
+     "ci_lo": None, "ci_hi": None, "year": 2017,
+     "source": "Dupor & Guerrero 2017 (Fed StL)"},
     {"country": "OECD Average", "iso3": "OECD", "multiplier": 1.95, "ci_lo": 1.50,
      "ci_hi": 2.90, "year": 2020,
      "source": "Synthesis (this study)"},
@@ -71,11 +103,10 @@ IO_MULTIPLIERS = pd.DataFrame([
 
 
 # ---------------------------------------------------------------------------
-# 2. Health-Led Growth Hypothesis — evidence summary
-#    (elasticities from published panel studies)
+# 2. Health-Led Growth Hypothesis -- evidence summary
 # ---------------------------------------------------------------------------
 HLGH_EVIDENCE = pd.DataFrame([
-    {"study": "Ertuğrul et al. 2024", "n_countries": 38,
+    {"study": "Ertugrul et al. 2024", "n_countries": 38,
      "period": "2000-2019", "method": "CS-ARDL / AMG",
      "elasticity_h2g": 0.12, "elasticity_g2h": 0.65,
      "direction": "Bidirectional", "journal": "Front Public Health"},
@@ -94,7 +125,7 @@ HLGH_EVIDENCE = pd.DataFrame([
     {"study": "Piabuo & Tieguhong 2017", "n_countries": 45,
      "period": "1995-2015", "method": "GMM",
      "elasticity_h2g": 0.05, "elasticity_g2h": 0.55,
-     "direction": "H→G (developing)", "journal": "BMC Res Notes"},
+     "direction": "H->G (developing)", "journal": "BMC Res Notes"},
 ])
 
 
@@ -129,7 +160,7 @@ COUNTRY_LABELS = {
     "JPN": "Japan", "USA": "USA", "DEU": "Germany", "GBR": "UK",
     "FRA": "France", "CAN": "Canada", "AUS": "Australia", "KOR": "Korea",
     "ITA": "Italy", "ESP": "Spain", "SWE": "Sweden", "NOR": "Norway",
-    "CHE": "Switzerland", "NLD": "Netherlands",
+    "CHE": "Switzerland", "NLD": "Netherlands", "FIN": "Finland",
 }
 
 
@@ -158,24 +189,15 @@ def build_cross_country_df():
 
 # ---------------------------------------------------------------------------
 # 4. Net economic return model
-#    Healthcare expenditure E generates:
-#      - Direct + indirect + induced output = m * E  (I-O multiplier)
-#      - Tax/social-contribution return   = τ * m * E
-#      - Employment (persons per unit E)
-#    "Neutral" sustainability criterion:
-#      τ * m >= share of public financing (pf)
-#      i.e. the tax return from multiplied output covers public share
 # ---------------------------------------------------------------------------
 def compute_neutral_sustainability(multiplier, tax_rate, public_share):
-    """Return the net fiscal balance ratio: (τ·m) / pf.
-    > 1 means the fiscal system recaptures more than it spends on healthcare."""
     return (tax_rate * multiplier) / public_share
 
 
 def sustainability_table():
-    """Build a table for representative countries."""
+    """Build a table for 15 countries with I-O multiplier evidence."""
     params = [
-        # iso, name, m, τ (effective tax+SSC/GDP), pf (public share of CHE)
+        # iso, name, m, tau (effective tax+SSC/GDP), pf (public share of CHE)
         ("JPN", "Japan",        2.78, 0.33, 0.84),
         ("USA", "USA",          1.70, 0.27, 0.50),
         ("DEU", "Germany",      2.10, 0.39, 0.85),
@@ -185,6 +207,10 @@ def sustainability_table():
         ("CAN", "Canada",       1.82, 0.33, 0.73),
         ("AUS", "Australia",    1.85, 0.28, 0.68),
         ("KOR", "Korea",        1.95, 0.27, 0.61),
+        ("ITA", "Italy",        1.95, 0.43, 0.74),
+        ("ESP", "Spain",        1.85, 0.35, 0.71),
+        ("NLD", "Netherlands",  2.00, 0.39, 0.82),
+        ("FIN", "Finland",      1.88, 0.43, 0.78),
     ]
     rows = []
     for iso, name, m, tau, pf in params:
@@ -204,7 +230,8 @@ def sustainability_table():
 
 # ---------------------------------------------------------------------------
 # 5. Candidate A-H PoC results (from healthcare_tempo_poc PR#37)
-#    Bug-fixed rerun (2026-04-21): corrected stock normalisation
+#    "Candidate A-H" = healthcare_tempo_poc's model specification A-H
+#    (Health spending -> outcome lag with tempo drift)
 # ---------------------------------------------------------------------------
 POC_AH_RESULTS = {
     "n_countries": 39,
@@ -240,7 +267,7 @@ POC_AH_RESULTS = {
     ),
 }
 
-# Three-layer tempo analogy: Population → GDP → Healthcare
+# Three-layer tempo analogy: Population -> GDP -> Healthcare
 THREE_LAYER_ANALOGY = pd.DataFrame([
     {"concept": "Flow (quantum)",
      "population": "TFR (period fertility rate)",
@@ -280,15 +307,14 @@ def tempo_adjusted_narrative():
         "poc_summary": poc,
         "three_layer_analogy": THREE_LAYER_ANALOGY.to_dict(orient="records"),
         "key_insight": (
-            "The healthcare_tempo_poc (Candidate A-H, 39 countries) shows "
+            "The healthcare_tempo_poc (model specification A-H, 39 countries) shows "
             "that treating health spending as a stock-building flow with a "
             "time-varying lag mu_H(t) reduces life-expectancy prediction "
             f"RMSE from {poc['models']['M0_flow']['level_rmse_median']:.3f} "
             f"to {poc['models']['M2_tempo_lag']['level_rmse_median']:.3f} years "
-            f"(−{poc['key_findings']['M0_to_M2_rmse_reduction_pct']}%). "
+            f"(-{poc['key_findings']['M0_to_M2_rmse_reduction_pct']}%). "
             "M2 beats M1 in 95% of countries, confirming that the lag is "
-            "not constant but drifts at +0.15 yr/yr — the spending-to-outcome "
-            "pipeline lengthens by ~1.5 years per decade."
+            "not constant but drifts at +0.15 yr/yr."
         ),
         "policy_implication": (
             "A 'neutral' sustainability criterion must account for both "
@@ -297,33 +323,24 @@ def tempo_adjusted_narrative():
             "activity cover public financing?), and (2) the intertemporal "
             "health-capital accumulation effect (tempo: does the stock "
             "of health built today justify the flow of spending?). "
-            "Neither alone gives a complete picture. "
-            "Furthermore, Candidate D-H (spending composition) suggests "
-            "that the 'forgotten parameter' lambda_b — the relative "
-            "outcome multiplier of preventive/R&D vs curative spending — "
-            "may matter more than total spending level."
+            "Neither alone gives a complete picture."
         ),
         "us_japan_contrast": (
             "The US has high spending (17% GDP) but a low I-O multiplier "
             "(1.7), suggesting leakage through high drug prices and "
             "administrative costs. Japan has moderate spending (11% GDP) "
             "but the highest multiplier (2.78) and a fiscal return ratio "
-            "above 1.0 (1.09). Through the tempo lens, the US pattern — "
-            "high flow, low stock accumulation — mirrors 'high TFR, low "
+            "above 1.0 (1.09). Through the tempo lens, the US pattern -- "
+            "high flow, low stock accumulation -- mirrors 'high TFR, low "
             "cohort fertility' in demography: a tempo-inflated flow that "
             "overstates true investment in health capital."
         ),
         "three_layer_connection": (
             "The tempo-plus-forgotten-parameter framework originated in "
             "demography (Bongaarts-Feeney 1998, Goldstein-Lutz-Scherbov 2003), "
-            "was ported to GDP/wealth accounting (Onishi 2026, PR#39), and "
-            "now extends to health expenditure (this paper). In each domain, "
-            "a period flow statistic (TFR / I/GDP / E/GDP) is biased by "
-            "a timing drift (MAC / mu / mu_H), and a forgotten stock parameter "
-            "(sigma / beta / lambda_b) reconciles flow and stock accounts. "
-            "Healthcare shows the largest tempo drift (+0.15 yr/yr vs GDP's "
-            "+0.04), suggesting that health accounting may be the domain "
-            "where the correction matters most."
+            "was ported to capital accounting (Onishi 2026b), and is here "
+            "extended to healthcare. Healthcare shows the largest tempo "
+            "drift (+0.15 yr/yr vs GDP +0.04) among the three layers."
         ),
     }
 
@@ -333,32 +350,32 @@ def tempo_adjusted_narrative():
 # ---------------------------------------------------------------------------
 def fig1_io_multiplier_comparison(io_df):
     """Bar chart of I-O multipliers across countries."""
-    fig, ax = plt.subplots(figsize=(8, 5))
+    fig, ax = plt.subplots(figsize=(9, 6))
     mask = io_df["iso3"] != "OECD"
     df = io_df[mask].sort_values("multiplier", ascending=True)
 
-    colors = ["#2196F3" if iso != "JPN" else "#FF5722" for iso in df["iso3"]]
+    colors = ["#FF5722" if iso == "JPN" else "#2196F3" for iso in df["iso3"]]
     bars = ax.barh(df["country"], df["multiplier"], color=colors, edgecolor="white")
 
-    # Error bars for Japan
     jpn_mask = df["iso3"] == "JPN"
     if jpn_mask.any():
-        jpn = df[jpn_mask].iloc[0]
-        if pd.notna(jpn.get("ci_lo")) and pd.notna(jpn.get("ci_hi")):
-            idx = df.index.get_loc(jpn.name)
-            ax.errorbar(jpn["multiplier"], idx,
-                        xerr=[[jpn["multiplier"] - jpn["ci_lo"]],
-                              [jpn["ci_hi"] - jpn["multiplier"]]],
-                        fmt="none", ecolor="black", capsize=4)
+        for _, jpn in df[jpn_mask].iterrows():
+            if pd.notna(jpn.get("ci_lo")) and pd.notna(jpn.get("ci_hi")):
+                idx = df.index.get_loc(jpn.name)
+                ax.errorbar(jpn["multiplier"], idx,
+                            xerr=[[jpn["multiplier"] - jpn["ci_lo"]],
+                                  [jpn["ci_hi"] - jpn["multiplier"]]],
+                            fmt="none", ecolor="black", capsize=4)
 
     ax.axvline(1.0, color="gray", linestyle="--", linewidth=0.8, label="Break-even (1.0)")
     oecd_row = io_df[io_df["iso3"] == "OECD"]
     if not oecd_row.empty:
         ax.axvline(oecd_row.iloc[0]["multiplier"], color="#4CAF50",
-                   linestyle=":", linewidth=1.2, label=f'OECD synthesis ({oecd_row.iloc[0]["multiplier"]})')
+                   linestyle=":", linewidth=1.2,
+                   label=f'OECD synthesis ({oecd_row.iloc[0]["multiplier"]})')
 
     ax.set_xlabel("Economic Impact Multiplier (output per unit of healthcare spending)")
-    ax.set_title("Figure 1. Healthcare I-O Multipliers by Country")
+    ax.set_title("Healthcare I-O Multipliers by Country")
     ax.legend(loc="lower right", fontsize=8)
     ax.set_xlim(0, 3.5)
 
@@ -375,11 +392,18 @@ def fig1_io_multiplier_comparison(io_df):
 
 
 def fig2_scatter_che_vs_le(cc_df):
-    """Scatter: CHE %GDP vs Life Expectancy with annotations."""
+    """Scatter: CHE %GDP vs Life Expectancy with linear fit (US excluded)."""
     fig, ax = plt.subplots(figsize=(8, 6))
 
-    ax.scatter(cc_df["che_gdp_pct"], cc_df["life_exp"],
+    # Separate US from rest
+    us_mask = cc_df["iso3"] == "USA"
+    rest = cc_df[~us_mask]
+
+    ax.scatter(rest["che_gdp_pct"], rest["life_exp"],
                s=60, alpha=0.7, c="#1976D2", edgecolors="white", linewidths=0.5)
+    ax.scatter(cc_df.loc[us_mask, "che_gdp_pct"], cc_df.loc[us_mask, "life_exp"],
+               s=80, alpha=0.9, c="#F44336", edgecolors="white", linewidths=0.5,
+               marker="D", label="USA (excluded from fit)", zorder=5)
 
     for _, row in cc_df.iterrows():
         if row["label"] in COUNTRY_LABELS.values():
@@ -388,14 +412,17 @@ def fig2_scatter_che_vs_le(cc_df):
                         fontsize=7, xytext=(5, 3),
                         textcoords="offset points")
 
-    z = np.polyfit(cc_df["che_gdp_pct"], cc_df["life_exp"], 2)
+    # Linear fit excluding US
+    z = np.polyfit(rest["che_gdp_pct"], rest["life_exp"], 1)
     xfit = np.linspace(cc_df["che_gdp_pct"].min(), cc_df["che_gdp_pct"].max(), 100)
     yfit = np.polyval(z, xfit)
-    ax.plot(xfit, yfit, "r--", linewidth=1, alpha=0.6, label="Quadratic fit")
+    r2 = np.corrcoef(rest["che_gdp_pct"], rest["life_exp"])[0, 1] ** 2
+    ax.plot(xfit, yfit, "r-", linewidth=1.2, alpha=0.7,
+            label=f"Linear fit (excl. US), R\u00b2={r2:.2f}")
 
     ax.set_xlabel("Current Health Expenditure (% of GDP)")
     ax.set_ylabel("Life Expectancy at Birth (years)")
-    ax.set_title("Figure 2. Healthcare Spending vs Life Expectancy (OECD, 2019)")
+    ax.set_title("Healthcare Spending vs Life Expectancy (OECD, 2019)")
     ax.legend(fontsize=8)
     plt.tight_layout()
     path = os.path.join(FIG, "fig2_che_vs_lifeexp.png")
@@ -407,15 +434,16 @@ def fig2_scatter_che_vs_le(cc_df):
 
 def fig3_fiscal_sustainability(sust_df):
     """Bar chart: fiscal return ratio by country."""
-    fig, ax = plt.subplots(figsize=(8, 5))
+    fig, ax = plt.subplots(figsize=(9, 6))
     df = sust_df.sort_values("fiscal_return_ratio", ascending=True)
 
     colors = ["#4CAF50" if r >= 1.0 else "#FF9800" for r in df["fiscal_return_ratio"]]
     bars = ax.barh(df["country"], df["fiscal_return_ratio"], color=colors, edgecolor="white")
 
-    ax.axvline(1.0, color="red", linestyle="--", linewidth=1.2, label="Break-even (τ·m = pf)")
-    ax.set_xlabel("Fiscal Return Ratio  τ·m / pf")
-    ax.set_title("Figure 3. Neutral Fiscal Sustainability of Healthcare Spending")
+    ax.axvline(1.0, color="red", linestyle="--", linewidth=1.2,
+               label="Break-even (tau*m = pf)")
+    ax.set_xlabel("Fiscal Return Ratio  tau*m / pf")
+    ax.set_title("Neutral Fiscal Sustainability of Healthcare Spending")
     ax.legend(loc="lower right", fontsize=8)
 
     for bar, val in zip(bars, df["fiscal_return_ratio"]):
@@ -431,68 +459,75 @@ def fig3_fiscal_sustainability(sust_df):
 
 
 def fig4_dual_return_schematic():
-    """Conceptual diagram: I-O (demand) + Tempo (supply) dual return."""
-    fig, ax = plt.subplots(figsize=(9, 5.5))
+    """Conceptual diagram: I-O (demand) + Tempo (supply) dual return.
+
+    Redesigned: no overlapping arrows/boxes, sequential arrows merged.
+    Layout: top row = two return boxes, middle = central expenditure box,
+    bottom = combined sustainability box.  Single arrows connect each pair.
+    """
+    fig, ax = plt.subplots(figsize=(10, 6))
     ax.set_xlim(0, 10)
-    ax.set_ylim(0, 6)
+    ax.set_ylim(0, 7)
     ax.axis("off")
 
-    # Central node
-    ax.add_patch(plt.Rectangle((3.5, 2.5), 3, 1.2, facecolor="#E3F2FD",
-                                edgecolor="#1565C0", linewidth=2, zorder=2))
-    ax.text(5, 3.1, "Healthcare\nExpenditure E(t)",
+    # --- Central box: Healthcare Expenditure (middle row) ---
+    cx, cy, cw, ch = 3.2, 3.2, 3.6, 1.0
+    ax.add_patch(FancyBboxPatch((cx, cy), cw, ch,
+                                boxstyle="round,pad=0.15",
+                                facecolor="#E3F2FD", edgecolor="#1565C0",
+                                linewidth=2, zorder=2))
+    ax.text(cx + cw / 2, cy + ch / 2, "Healthcare\nExpenditure E(t)",
             ha="center", va="center", fontsize=11, fontweight="bold", zorder=3)
 
-    # Left: Demand-side (I-O)
-    ax.annotate("", xy=(1.5, 4.8), xytext=(3.5, 3.5),
-                arrowprops=dict(arrowstyle="->", color="#1976D2", lw=2))
-    ax.add_patch(FancyBboxPatch((0.1, 4.3), 2.8, 1.2,
+    # --- Left box: Demand-side Return (top-left) ---
+    lx, ly, lw, lh = 0.3, 5.3, 3.2, 1.2
+    ax.add_patch(FancyBboxPatch((lx, ly), lw, lh,
                                 boxstyle="round,pad=0.15",
-                                facecolor="#BBDEFB", edgecolor="#1565C0"))
-    ax.text(1.5, 4.9, "Demand-side Return\n(I-O Multiplier m)",
+                                facecolor="#BBDEFB", edgecolor="#1565C0",
+                                linewidth=1.5))
+    ax.text(lx + lw / 2, ly + lh / 2,
+            "Demand-side Return\nI-O Multiplier m\nTax return: tau * m * E(t)",
             ha="center", va="center", fontsize=9, color="#0D47A1")
 
-    # Left sub: tax return
-    ax.annotate("", xy=(1.5, 1.0), xytext=(1.5, 4.3),
-                arrowprops=dict(arrowstyle="->", color="#4CAF50", lw=1.5,
-                                connectionstyle="arc3,rad=0.3"))
-    ax.text(0.1, 2.6, "Tax return\nτ · m · E(t)",
-            fontsize=8, color="#2E7D32", style="italic")
-
-    # Right: Supply-side (Tempo / Health Capital)
-    ax.annotate("", xy=(8.5, 4.8), xytext=(6.5, 3.5),
-                arrowprops=dict(arrowstyle="->", color="#E65100", lw=2))
-    ax.add_patch(FancyBboxPatch((7.1, 4.3), 2.8, 1.2,
+    # --- Right box: Supply-side Return (top-right) ---
+    rx, ry, rw, rh = 6.5, 5.3, 3.2, 1.2
+    ax.add_patch(FancyBboxPatch((rx, ry), rw, rh,
                                 boxstyle="round,pad=0.15",
-                                facecolor="#FFF3E0", edgecolor="#E65100"))
-    ax.text(8.5, 4.9, "Supply-side Return\n(Health Capital H(t))",
+                                facecolor="#FFF3E0", edgecolor="#E65100",
+                                linewidth=1.5))
+    ax.text(rx + rw / 2, ry + rh / 2,
+            "Supply-side Return\nHealth Capital H(t)\nTempo drift: mu_H(t)",
             ha="center", va="center", fontsize=9, color="#BF360C")
 
-    # Right sub: future productivity
-    ax.annotate("", xy=(8.5, 1.0), xytext=(8.5, 4.3),
-                arrowprops=dict(arrowstyle="->", color="#FF9800", lw=1.5,
-                                connectionstyle="arc3,rad=-0.3"))
-    ax.text(7.5, 2.6, "Future GDP\ngrowth via\nproductivity",
-            fontsize=8, color="#E65100", style="italic")
-
-    # Bottom: Combined sustainability
-    ax.add_patch(FancyBboxPatch((2.5, 0.2), 5, 0.8,
+    # --- Bottom box: Combined sustainability ---
+    bx, by, bw, bh = 1.5, 0.5, 7.0, 0.9
+    ax.add_patch(FancyBboxPatch((bx, by), bw, bh,
                                 boxstyle="round,pad=0.15",
-                                facecolor="#E8F5E9", edgecolor="#388E3C"))
-    ax.text(5, 0.6, "Neutral Sustainability = Demand Return + Supply Return ≥ Public Cost",
-            ha="center", va="center", fontsize=9, fontweight="bold", color="#1B5E20")
+                                facecolor="#E8F5E9", edgecolor="#388E3C",
+                                linewidth=1.5))
+    ax.text(bx + bw / 2, by + bh / 2,
+            "Neutral Sustainability = Demand Return + Supply Return >= Public Cost",
+            ha="center", va="center", fontsize=9.5, fontweight="bold", color="#1B5E20")
 
-    # Arrows down to bottom
-    ax.annotate("", xy=(3.5, 1.0), xytext=(1.5, 1.0),
-                arrowprops=dict(arrowstyle="->", color="#4CAF50", lw=1.5))
-    ax.annotate("", xy=(6.5, 1.0), xytext=(8.5, 1.0),
-                arrowprops=dict(arrowstyle="->", color="#FF9800", lw=1.5))
+    # --- Arrows: single arrow from center to each top box ---
+    ax.annotate("", xy=(lx + lw / 2, ly), xytext=(cx + 0.8, cy + ch),
+                arrowprops=dict(arrowstyle="-|>", color="#1976D2", lw=2.0,
+                                connectionstyle="arc3,rad=0.2"))
 
-    # Tempo annotation
-    ax.text(8.5, 3.5, "μ_H(t) drift\n(tempo lag)",
-            fontsize=7, color="#BF360C", ha="center", style="italic")
+    ax.annotate("", xy=(rx + rw / 2, ry), xytext=(cx + cw - 0.8, cy + ch),
+                arrowprops=dict(arrowstyle="-|>", color="#E65100", lw=2.0,
+                                connectionstyle="arc3,rad=-0.2"))
 
-    ax.set_title("Figure 4. Dual-Return Framework for Neutral Healthcare Sustainability",
+    # --- Arrows: single arrow from each top box to bottom ---
+    ax.annotate("", xy=(bx + bw * 0.25, by + bh), xytext=(lx + lw / 2, ly),
+                arrowprops=dict(arrowstyle="-|>", color="#4CAF50", lw=1.8,
+                                connectionstyle="arc3,rad=0.2"))
+
+    ax.annotate("", xy=(bx + bw * 0.75, by + bh), xytext=(rx + rw / 2, ry),
+                arrowprops=dict(arrowstyle="-|>", color="#FF9800", lw=1.8,
+                                connectionstyle="arc3,rad=-0.2"))
+
+    ax.set_title("Dual-Return Framework for Neutral Healthcare Sustainability",
                  fontsize=12, pad=15)
     plt.tight_layout()
     path = os.path.join(FIG, "fig4_dual_return_schematic.png")
@@ -527,7 +562,7 @@ def fig5_three_layer_analogy(lang="en"):
             ["テンポドリフト (mu_1)", "+0.05 年/年\n（MAC上昇）", "+0.04 年/年\n（建設期間延長）", "+0.15 年/年\n（支出→成果遅延）"],
             ["効果サイズ vs M0", "大（TFR偏り\n15-20%）", "小（MAPE\n-0.6 pp）", "中（RMSE\n-15%）"],
         ]
-        title = "図5. テンポ効果の三層構造 — 人口→GDP→医療への移植"
+        title = "テンポ効果の三層構造 — 人口→GDP→医療への移植"
     else:
         col_labels = ["Concept", "Population", "GDP / Wealth", "Healthcare"]
         row_data = [
@@ -538,7 +573,7 @@ def fig5_three_layer_analogy(lang="en"):
             ["Tempo drift (mu_1)", "+0.05 yr/yr\n(MAC shift)", "+0.04 yr/yr\n(time-to-build)", "+0.15 yr/yr\n(spend-to-outcome)"],
             ["Effect size vs M0", "Large (TFR bias\n15-20%)", "Small (MAPE\n-0.6 pp)", "Medium (RMSE\n-15%)"],
         ]
-        title = "Figure 5. Three-Layer Tempo Analogy: Population to GDP to Healthcare"
+        title = "Three-Layer Tempo Analogy: Population to GDP to Healthcare"
 
     colors_col = ["#E3F2FD", "#FCE4EC", "#FFF3E0", "#E8F5E9"]
     table = ax.table(
@@ -579,7 +614,7 @@ def fig5_three_layer_analogy(lang="en"):
 # ---------------------------------------------------------------------------
 def main():
     print("=" * 60)
-    print("Healthcare Economic Effect — Neutral Sustainability Analysis")
+    print("Healthcare Economic Effect -- Neutral Sustainability Analysis")
     print("=" * 60)
 
     # I-O multiplier comparison

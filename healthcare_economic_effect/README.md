@@ -20,15 +20,25 @@ This project integrates four analytical lenses:
 
 ## Key Results
 
-- The **fiscal return ratio** tau*m / pf exceeds 1.0 in 3 of 9 countries on the
-  demand side alone (Japan 1.09, France 1.18, Sweden 1.04), with the remaining
-  six recovering 76-96% of public costs.
+- The **fiscal return ratio** tau*m / pf exceeds 1.0 in 5 of 13 countries on the
+  demand side alone (France 1.18, Italy 1.13, Japan 1.09, Sweden 1.04, Finland 1.04),
+  with the remaining countries recovering 76-96% of public costs.
 - The **tempo model (M2)** outperforms the constant-lag model (M1) in **95% of
   39 countries** (mu_H1 = +0.15 yr/yr), confirming that flow-only evaluation
   systematically underestimates returns.
 - The **three-layer analogy** (Population -> GDP -> Healthcare) reveals that
   healthcare has the largest tempo drift among all three domains, making it
   the field where tempo correction matters most.
+
+## Country Selection
+
+Countries are included based on published I-O multiplier evidence:
+- **(a)** Direct I-O study of the healthcare sector in a peer-reviewed journal
+  or official government report.
+- **(b)** Backward-linkage coefficient from the EU-28 I-O framework study
+  (Gutierrez-Hernandez & Abasolo-Alesson 2021).
+
+13 countries with multiplier evidence + OECD synthesis average.
 
 ## Structure
 
@@ -68,13 +78,14 @@ This project integrates findings from three companion analyses:
 | **This paper** | `healthcare_economic_effect/` | I-O + tempo dual-return sustainability |
 
 The GDP paper's Section 6.4 previews the healthcare companion. The three-layer
-analogy (Figure 5) connects all four papers into a unified programme.
+analogy (Figure 2) connects all four papers into a unified programme.
 
 ## References
 
-Key sources (20 total in manuscripts):
+Key sources (21 total in manuscripts):
 - Yamada & Imanaka (2015) *Environ Health Prev Med* -- Japan I-O multiplier 2.78
 - Dupor & Guerrero (2021) *Econ Inq* -- US Medicare multiplier 1.7
+- Gutierrez-Hernandez & Abasolo-Alesson (2021) *Cost Eff Resour Alloc* -- EU-28 I-O framework
 - Ertugrul et al. (2024) *Front Public Health* -- HLGH in 38 OECD countries
 - Bongaarts & Feeney (1998) *Popul Dev Rev* -- Tempo effect origin
 - Goldstein, Lutz & Scherbov (2003) *Popul Dev Rev* -- Forgotten parameter sigma
