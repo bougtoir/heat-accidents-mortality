@@ -353,62 +353,103 @@ def generate_cover_letter():
     doc.add_paragraph('Dear Editors,')
     doc.add_paragraph('')
 
+    # Paragraph 1: What and why
     doc.add_paragraph(
-        'We are pleased to submit the above-titled manuscript for consideration as an '
-        'Original Research Article in the Journal of Biomedical Informatics. This manuscript '
-        'presents Ensemble Causal Discovery (ECD), a novel pipeline that integrates LiNGAM\u2019s '
-        'identifiability guarantees with spectral causality\u2019s feedback quantification to '
-        'enable clinically meaningful causal inference that accommodates feedback loops.'
+        'We are pleased to submit the above-titled manuscript (~5,000 words, 5 figures, '
+        '10 tables) for consideration as an Original Research Article in the Journal of '
+        'Biomedical Informatics. This manuscript presents Ensemble Causal Discovery (ECD), '
+        'a novel pipeline that integrates LiNGAM\u2019s identifiability guarantees with '
+        'spectral causality\u2019s Hodge decomposition to enable clinically meaningful causal '
+        'inference that accommodates feedback loops\u2014a ubiquitous feature of pathophysiology '
+        'that existing DAG-based methods systematically exclude.'
     )
 
+    # Paragraph 2: Scope fit
     doc.add_paragraph(
-        'We believe JBI is the ideal venue for this work because: (1) It directly addresses '
-        'the gap between causal discovery methods and clinical applicability\u2014a topic of '
-        'growing interest in biomedical informatics. (2) The ECD pipeline produces interventionability '
-        'scores that map graph-theoretic quantities to clinical actionability, providing a bridge '
-        'between mathematical methods and clinical decision support. (3) We provide a practical '
-        'deployment pipeline with bootstrap-based pruning that clinician-researchers can apply to '
-        'their own datasets.'
+        'We believe JBI is the ideal venue for this work for three reasons. First, it directly '
+        'addresses the gap between causal discovery methods and clinical applicability\u2014a '
+        'topic of growing interest in biomedical informatics, as highlighted by the recent '
+        'scoping review by Liu et al. (BMC MRM, 2024). Second, the ECD pipeline produces '
+        'interventionability scores that map graph-theoretic quantities (Hodge causal potential) '
+        'to clinical actionability (treatment target prioritization), providing a principled '
+        'bridge between mathematical methods and clinical decision support. Third, the manuscript '
+        'introduces the Directional Predictability Index (DPI), an ensemble of three asymmetric '
+        'statistics that enables causal direction estimation from cross-sectional data alone, '
+        'without requiring domain knowledge\u2014expanding the practical applicability of causal '
+        'discovery to settings where expert annotation is unavailable.'
     )
 
-    doc.add_paragraph('Key contributions include:')
+    # Paragraph 3: Novelty / key contributions
+    p = doc.add_paragraph()
+    p.add_run('Key contributions').bold = True
+    p.add_run(' of this manuscript include:')
     items = [
-        'A principled method for quantifying edge-level feedback rates in clinical causal graphs, '
-        'allowing clinicians to identify when the DAG assumption is appropriate and when it masks '
-        'important pathophysiological cycles.',
-        'An interventionability score linking Hodge causal potential to clinical actionability, '
-        'validated against established treatment guidelines (statins for cholesterol, antihypertensives '
-        'for blood pressure).',
+        'A Directional Predictability Index (DPI) that combines regression asymmetry, '
+        'additive noise model residual independence, and conditional entropy reduction '
+        'to estimate causal directions from data alone (\u03b1 = 0: 9 directed edges detected, '
+        '67% LiNGAM agreement; \u03b1 = 0.6 with domain knowledge: r_gradient = 0.859).',
+        'Edge-level feedback quantification via Hodge decomposition, revealing clinically '
+        'meaningful cycles (MaxHR \u2194 STDepression: 73% feedback rate) that the DAG assumption masks.',
+        'An interventionability score linking Hodge causal potential \u03c6 to clinical actionability, '
+        'validated against established treatment guidelines (statins for cholesterol, '
+        'antihypertensives for blood pressure).',
         'Broader coverage of Hill\u2019s nine epidemiological criteria than any single method alone, '
-        'with spectral causality contributing H6 (biological plausibility), H7 (coherence), and H9 (analogy).',
-        'A DAG transition analysis revealing that knowledge quality (p*_flip \u2248 0.15) '
-        'rather than quantity is the critical threshold for valid causal structure.',
+        'with spectral causality uniquely contributing H6 (biological plausibility), H7 (coherence), '
+        'and H9 (analogy).',
+        'A DAG transition analysis demonstrating that knowledge quality (p*_flip \u2248 0.15) '
+        'rather than quantity is the critical threshold, with clinical implications for '
+        'how much domain expertise is needed to produce valid causal structures.',
     ]
     for item in items:
         doc.add_paragraph(item, style='List Bullet')
 
+    # Paragraph 4: Relationship to companion paper
+    doc.add_paragraph('')
+    p = doc.add_paragraph()
+    p.add_run('Relationship to companion paper. ').bold = True
+    p.add_run(
+        'A companion paper presenting the full mathematical foundations, formal proofs, '
+        'and identifiability theory of spectral causality has been submitted separately '
+        'to a theoretical venue (Reference [7] in the manuscript). The present manuscript '
+        'is fully self-contained and focuses exclusively on the ensemble framework, '
+        'clinical interpretation, and practical deployment pipeline that are not covered '
+        'in the companion paper. The two manuscripts share no overlapping text; '
+        'theoretical results from the companion paper are cited but not reproduced.'
+    )
+
+    # Paragraph 5: Ethics / COI / simultaneous submission
     doc.add_paragraph('')
     doc.add_paragraph(
         'We confirm that this manuscript has not been previously published and is not under '
-        'simultaneous consideration elsewhere. A companion paper presenting the full mathematical '
-        'foundations and identifiability theory of spectral causality has been submitted separately '
-        'to a theoretical venue [Reference 7 in the manuscript]. The present manuscript focuses '
-        'exclusively on the ensemble framework, clinical interpretation, and practical deployment '
-        'aspects that are not covered in the companion paper. All authors have approved the '
-        'manuscript and agree with its submission. The authors declare no conflicts of interest.'
+        'simultaneous consideration elsewhere (except as noted above for the companion paper '
+        'targeting a different scope and audience). The study uses publicly available data '
+        '(UCI Heart Disease Dataset, Cleveland subset) and does not involve human subjects '
+        'research requiring ethical approval. All authors have approved the manuscript and '
+        'agree with its submission. The authors declare no conflicts of interest.'
     )
 
+    # Suggested reviewers
     doc.add_paragraph('')
     p = doc.add_paragraph()
     p.add_run('Suggested reviewers:').bold = True
     reviewers = [
-        'Prof. Markus P\u00fcschel (ETH Z\u00fcrich) \u2014 Graph signal processing and causal structure',
-        'Prof. Kun Zhang (Carnegie Mellon University) \u2014 Causal discovery and identifiability',
-        'Prof. Lucila Ohno-Machado (Yale University) \u2014 Biomedical informatics and clinical causal inference',
+        'Prof. Markus P\u00fcschel (ETH Z\u00fcrich, Switzerland) \u2014 Pioneer of '
+        'graph signal processing on DAGs and causal Fourier analysis; his group\u2019s '
+        'work on spectral methods for directed graphs (ICASSP 2024) is directly relevant.',
+        'Prof. Kun Zhang (Carnegie Mellon University, USA) \u2014 Leading expert on '
+        'causal discovery, non-linear causal models, and identifiability theory; '
+        'developer of key additive noise model results underlying our DPI.',
+        'Prof. Lucila Ohno-Machado (Yale University, USA) \u2014 Distinguished '
+        'researcher in biomedical informatics and clinical causal inference; '
+        'her perspective on clinical applicability is ideal for evaluating our pipeline.',
     ]
     for r in reviewers:
         doc.add_paragraph(r, style='List Bullet')
 
+    doc.add_paragraph('')
+    doc.add_paragraph(
+        'We thank you for your consideration and look forward to your response.'
+    )
     doc.add_paragraph('')
     doc.add_paragraph('Sincerely,')
     doc.add_paragraph('')
