@@ -769,7 +769,8 @@ def create_report():
         p.add_run(ref)
         p.paragraph_format.space_after = Pt(2)
         for run in p.runs:
-            run.font.size = Pt(9)
+            if not run.font.superscript:
+                run.font.size = Pt(9)
 
     # Save
     output_path = os.path.join(OUTPUT_DIR, 'desflurane_critical_appraisal_ja.docx')
