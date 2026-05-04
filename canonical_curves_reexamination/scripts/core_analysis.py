@@ -26,7 +26,7 @@ class CurveReexamination:
     """Framework for re-examining a single canonical curve."""
 
     def __init__(self, name, x, y, x_label="x", y_label="y",
-                 country_labels=None, category=""):
+                 country_labels=None, category="", x_is_logged=False):
         self.name = name
         self.x = np.array(x, dtype=float)
         self.y = np.array(y, dtype=float)
@@ -34,6 +34,7 @@ class CurveReexamination:
         self.y_label = y_label
         self.country_labels = country_labels
         self.category = category
+        self.x_is_logged = x_is_logged
         self.n = len(x)
         self.results = {}
 
@@ -115,8 +116,8 @@ class CurveReexamination:
         results['quadratic'] = {'aic': model_quad.aic, 'bic': model_quad.bic,
                                 'r2': model_quad.rsquared, 'r2_adj': model_quad.rsquared_adj}
 
-        # Log (if x > 0)
-        if np.all(x > 0):
+        # Log (if x > 0 and not already log-transformed)
+        if np.all(x > 0) and not self.x_is_logged:
             model_log = self.fit_log(x, y)
             results['log'] = {'aic': model_log.aic, 'bic': model_log.bic,
                               'r2': model_log.rsquared, 'r2_adj': model_log.rsquared_adj}

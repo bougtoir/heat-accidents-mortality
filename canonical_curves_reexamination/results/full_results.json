@@ -147,12 +147,6 @@
         "bic": 871.4000563262397,
         "r2": 0.0964503653462705,
         "r2_adj": 0.08222123724148733
-      },
-      "log": {
-        "aic": 864.0940688395417,
-        "bic": 869.8291377404529,
-        "r2": 0.07324463776983914,
-        "r2_adj": 0.06600436150241595
       }
     },
     "loocv": {
@@ -750,47 +744,41 @@
   {
     "name": "Preston Curve",
     "category": "Public Health",
-    "n": 247,
+    "n": 199,
     "x_label": "log\u2081\u2080(GDP per capita PPP, $)",
     "y_label": "Life expectancy (years)",
     "f_test": {
-      "f_stat": 0.029488172341027453,
-      "p_value": 0.8637990465002292
+      "f_stat": 0.0012709373019326126,
+      "p_value": 0.9715975551495434
     },
     "model_comparison": {
       "linear": {
-        "aic": 1354.2920393315603,
-        "bic": 1361.3108160048162,
-        "r2": 0.7503702144296638,
-        "r2_adj": 0.7493513173457031
+        "aic": 1109.7073276682713,
+        "bic": 1116.2939373177203,
+        "r2": 0.7399461802116716,
+        "r2_adj": 0.7386261100604619
       },
       "quadratic": {
-        "aic": 1356.2621904033554,
-        "bic": 1366.7903554132392,
-        "r2": 0.7504003793338869,
-        "r2_adj": 0.7483544808038368
-      },
-      "log": {
-        "aic": 1358.5035594051192,
-        "bic": 1365.522336078375,
-        "r2": 0.7460773606481218,
-        "r2_adj": 0.7450409417119916
+        "aic": 1111.706037282031,
+        "bic": 1121.5859517562046,
+        "r2": 0.739947866486962,
+        "r2_adj": 0.7372942732878494
       }
     },
     "loocv": {
-      "rmse_linear": 3.751573848518511,
-      "rmse_quadratic": 3.766814105349141
+      "rmse_linear": 3.929758979822502,
+      "rmse_quadratic": 3.9494577647948046
     },
     "cooks_distance": {
-      "max": 0.04903163537986218,
-      "mean": 0.0038832230563756814,
-      "n_influential": 14
+      "max": 0.057517686995993335,
+      "mean": 0.004704675127531353,
+      "n_influential": 10
     },
     "sensitivity": {
-      "f_full": 0.029488172341027453,
-      "p_full": 0.8637990465002292,
-      "f_clean": 0.12330186624124075,
-      "p_clean": 0.7257873538844395,
+      "f_full": 0.0012709373019326126,
+      "p_full": 0.9715975551495434,
+      "f_clean": 0.004721077676738981,
+      "p_clean": 0.9452915139141721,
       "removed_indices": [
         128,
         162,
@@ -801,12 +789,12 @@
         "Chad",
         "Nigeria"
       ],
-      "n_full": 247,
-      "n_clean": 244
+      "n_full": 199,
+      "n_clean": 196
     },
     "verdict": {
       "verdict": "NOT_SIGNIFICANT",
-      "explanation": "Nonlinear term not significant even with full data (p=0.864)",
+      "explanation": "Nonlinear term not significant even with full data (p=0.972)",
       "best_aic": "linear",
       "best_bic": "linear"
     },
@@ -1370,47 +1358,41 @@
   {
     "name": "Demographic Transition (TFR)",
     "category": "Demography",
-    "n": 247,
+    "n": 199,
     "x_label": "log\u2081\u2080(GDP per capita PPP, $)",
     "y_label": "Total fertility rate",
     "f_test": {
-      "f_stat": 42.9509533269118,
-      "p_value": 3.3092462103923026e-10
+      "f_stat": 38.21664201727299,
+      "p_value": 3.6048726226312056e-09
     },
     "model_comparison": {
       "linear": {
-        "aic": 557.5794214975685,
-        "bic": 564.5981981708245,
-        "r2": 0.6697010738357265,
-        "r2_adj": 0.6683529149534233
+        "aic": 462.8678278429119,
+        "bic": 469.45443749236085,
+        "r2": 0.6589341721359743,
+        "r2_adj": 0.6572028735173752
       },
       "quadratic": {
-        "aic": 519.5300803594112,
-        "bic": 530.058245369295,
-        "r2": 0.7191403720751316,
-        "r2_adj": 0.7168382439773868
-      },
-      "log": {
-        "aic": 541.9975331940866,
-        "bic": 549.0163098673426,
-        "r2": 0.689894205056718,
-        "r2_adj": 0.6886284671181739
+        "aic": 429.4195900100625,
+        "bic": 439.29950448423597,
+        "r2": 0.714585173429226,
+        "r2_adj": 0.7116727772397283
       }
     },
     "loocv": {
-      "rmse_linear": 0.7485348134883298,
-      "rmse_quadratic": 0.6929751136615145
+      "rmse_linear": 0.7748665241193561,
+      "rmse_quadratic": 0.7121352505061583
     },
     "cooks_distance": {
-      "max": 0.07170090948831911,
-      "mean": 0.004376171325530388,
-      "n_influential": 14
+      "max": 0.08752758077453443,
+      "mean": 0.005515903682337315,
+      "n_influential": 11
     },
     "sensitivity": {
-      "f_full": 42.9509533269118,
-      "p_full": 3.3092462103923026e-10,
-      "f_clean": 32.41441444992326,
-      "p_clean": 3.6073750542264804e-08,
+      "f_full": 38.21664201727299,
+      "p_full": 3.6048726226312056e-09,
+      "f_clean": 28.417884464133444,
+      "p_clean": 2.714324852659544e-07,
       "removed_indices": [
         162,
         36,
@@ -1421,8 +1403,8 @@
         "Somalia, Fed. Rep.",
         "Niger"
       ],
-      "n_full": 247,
-      "n_clean": 244
+      "n_full": 199,
+      "n_clean": 196
     },
     "verdict": {
       "verdict": "ROBUST_NONLINEAR",
@@ -1681,65 +1663,59 @@
   {
     "name": "Second Demographic Transition",
     "category": "Demography",
-    "n": 133,
+    "n": 109,
     "x_label": "log\u2081\u2080(GDP per capita PPP, $)",
     "y_label": "Total fertility rate",
     "f_test": {
-      "f_stat": 0.3298354080706356,
-      "p_value": 0.5667484565641124
+      "f_stat": 0.2285015868306288,
+      "p_value": 0.6336214609886263
     },
     "model_comparison": {
       "linear": {
-        "aic": 195.38651864844317,
-        "bic": 201.1672169048867,
-        "r2": 0.13800321051199194,
-        "r2_adj": 0.1314230823479614
+        "aic": 173.7568938607879,
+        "bic": 179.13958962524617,
+        "r2": 0.11912019072338254,
+        "r2_adj": 0.11088766914135817
       },
       "quadratic": {
-        "aic": 197.04949901580702,
-        "bic": 205.72054640047227,
-        "r2": 0.14018472990028974,
-        "r2_adj": 0.1269568026679866
-      },
-      "log": {
-        "aic": 195.24902565469768,
-        "bic": 201.0297239111412,
-        "r2": 0.1388938667461277,
-        "r2_adj": 0.13232053748464778
+        "aic": 175.52217814256403,
+        "bic": 183.59622178925147,
+        "r2": 0.12101499702508145,
+        "r2_adj": 0.10443037432744151
       }
     },
     "loocv": {
-      "rmse_linear": 0.504330749555325,
-      "rmse_quadratic": 0.5067552521266555
+      "rmse_linear": 0.5370505346234469,
+      "rmse_quadratic": 0.5403805190960148
     },
     "cooks_distance": {
-      "max": 0.18279465370500844,
-      "mean": 0.007521424407910655,
-      "n_influential": 8
+      "max": 0.21928906569758233,
+      "mean": 0.009388237584363131,
+      "n_influential": 5
     },
     "sensitivity": {
-      "f_full": 0.3298354080706356,
-      "p_full": 0.5667484565641124,
-      "f_clean": 0.047851542550436006,
-      "p_clean": 0.8271959781459466,
+      "f_full": 0.2285015868306288,
+      "p_full": 0.6336214609886263,
+      "f_clean": 0.010470461631847174,
+      "p_clean": 0.9186974425037419,
       "removed_indices": [
-        132,
+        107,
         69,
         74
       ],
       "removed_labels": [
-        "Arab World",
+        "Algeria",
         "Gabon",
         "Equatorial Guinea"
       ],
-      "n_full": 133,
-      "n_clean": 130
+      "n_full": 109,
+      "n_clean": 106
     },
     "verdict": {
       "verdict": "NOT_SIGNIFICANT",
-      "explanation": "Nonlinear term not significant even with full data (p=0.567)",
-      "best_aic": "log",
-      "best_bic": "log"
+      "explanation": "Nonlinear term not significant even with full data (p=0.634)",
+      "best_aic": "linear",
+      "best_bic": "linear"
     },
     "data_source": "World Bank WDI (API)"
   },
@@ -2059,47 +2035,41 @@
   {
     "name": "Forest Transition Curve",
     "category": "Environmental Science",
-    "n": 242,
+    "n": 194,
     "x_label": "log\u2081\u2080(GDP per capita PPP, $)",
     "y_label": "Forest area (% of land area)",
     "f_test": {
-      "f_stat": 1.743099520222855,
-      "p_value": 0.1880095749697719
+      "f_stat": 2.1651730806133824,
+      "p_value": 0.14281439614935454
     },
     "model_comparison": {
       "linear": {
-        "aic": 2201.893476114314,
-        "bic": 2208.8713515666277,
-        "r2": 0.001882640453535811,
-        "r2_adj": -0.0022761818779077903
+        "aic": 1790.3883498642672,
+        "bic": 1796.9240661823937,
+        "r2": 0.00014636127630685003,
+        "r2_adj": -0.005061209758712382
       },
       "quadratic": {
-        "aic": 2202.1349018248275,
-        "bic": 2212.6017150032976,
-        "r2": 0.00910950549772127,
-        "r2_adj": 0.0008175348324303
-      },
-      "log": {
-        "aic": 2201.788085564579,
-        "bic": 2208.7659610168926,
-        "r2": 0.002317224069475321,
-        "r2_adj": -0.0018397874969018346
+        "aic": 1790.2015403629225,
+        "bic": 1800.0051148401126,
+        "r2": 0.011353641287462968,
+        "r2_adj": 0.0010013233951852163
       }
     },
     "loocv": {
-      "rmse_linear": 22.881186878553248,
-      "rmse_quadratic": 22.887572378820746
+      "rmse_linear": 24.416679624061786,
+      "rmse_quadratic": 24.390635106561312
     },
     "cooks_distance": {
-      "max": 0.0506859129062288,
-      "mean": 0.0040968691116523084,
-      "n_influential": 9
+      "max": 0.04955484035527764,
+      "mean": 0.005087259524173785,
+      "n_influential": 7
     },
     "sensitivity": {
-      "f_full": 1.743099520222855,
-      "p_full": 0.1880095749697719,
-      "f_clean": 3.8416696100312575,
-      "p_clean": 0.05117053172792885,
+      "f_full": 2.1651730806133824,
+      "p_full": 0.14281439614935454,
+      "f_clean": 4.157004069372529,
+      "p_clean": 0.04286266472137268,
       "removed_indices": [
         79,
         37,
@@ -2110,14 +2080,14 @@
         "Solomon Islands",
         "Liberia"
       ],
-      "n_full": 242,
-      "n_clean": 239
+      "n_full": 194,
+      "n_clean": 191
     },
     "verdict": {
       "verdict": "NOT_SIGNIFICANT",
-      "explanation": "Nonlinear term not significant even with full data (p=0.188)",
-      "best_aic": "log",
-      "best_bic": "log"
+      "explanation": "Nonlinear term not significant even with full data (p=0.143)",
+      "best_aic": "quadratic",
+      "best_bic": "linear"
     },
     "data_source": "World Bank WDI (API)"
   },

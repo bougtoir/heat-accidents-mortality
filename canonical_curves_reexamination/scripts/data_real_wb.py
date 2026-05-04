@@ -20,11 +20,23 @@ from core_analysis import CurveReexamination
 
 DATA_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'data')
 
+# World Bank aggregate/regional codes (not independent country observations)
+WB_AGGREGATE_CODES = {
+    'WLD', 'UMC', 'TSS', 'SSA', 'SSF', 'TSA', 'SAS', 'SST', 'PRE', 'PST',
+    'PSS', 'OSS', 'OED', 'INX', 'NAC', 'MIC', 'TMN', 'MNA', 'MEA', 'LMC',
+    'LIC', 'LMY', 'LDC', 'TLA', 'LAC', 'LCN', 'LTE', 'IDA', 'IDX', 'IDB',
+    'IBT', 'IBD', 'HIC', 'HPC', 'FCS', 'EUU', 'TEC', 'ECA', 'ECS', 'EMU',
+    'TEA', 'EAP', 'EAS', 'EAR', 'CEB', 'CSS', 'ARB', 'AFW', 'AFE',
+}
+
 
 def _load_csv(fname):
     path = os.path.join(DATA_DIR, fname)
     if os.path.exists(path):
-        return pd.read_csv(path)
+        df = pd.read_csv(path)
+        if 'country_code' in df.columns:
+            df = df[~df['country_code'].isin(WB_AGGREGATE_CODES)]
+        return df
     return None
 
 
@@ -46,7 +58,8 @@ def get_preston_real():
         x_label="log₁₀(GDP per capita PPP, $)",
         y_label="Life expectancy (years)",
         country_labels=labels,
-        category="Public Health"
+        category="Public Health",
+        x_is_logged=True
     ), len(df)
 
 
@@ -66,7 +79,8 @@ def get_kuznets_real():
         x_label="log₁₀(GDP per capita PPP, $)",
         y_label="Gini coefficient",
         country_labels=labels,
-        category="Economics"
+        category="Economics",
+        x_is_logged=True
     ), len(df)
 
 
@@ -86,7 +100,8 @@ def get_demographic_transition_real():
         x_label="log₁₀(GDP per capita PPP, $)",
         y_label="Total fertility rate",
         country_labels=labels,
-        category="Demography"
+        category="Demography",
+        x_is_logged=True
     ), len(df)
 
 
@@ -106,7 +121,8 @@ def get_forest_transition_real():
         x_label="log₁₀(GDP per capita PPP, $)",
         y_label="Forest area (% of land area)",
         country_labels=labels,
-        category="Environmental Science"
+        category="Environmental Science",
+        x_is_logged=True
     ), len(df)
 
 
@@ -127,7 +143,8 @@ def get_second_demographic_transition_real():
         x_label="log₁₀(GDP per capita PPP, $)",
         y_label="Total fertility rate",
         country_labels=labels,
-        category="Demography"
+        category="Demography",
+        x_is_logged=True
     ), len(df)
 
 
