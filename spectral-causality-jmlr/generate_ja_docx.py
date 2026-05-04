@@ -388,6 +388,16 @@ def build_document():
         "ここで α ∈ [0,1] はドメイン知識の重みパラメータである。"
     ))
 
+    # Figure 2: DPI Architecture
+    add_figure(doc,
+        f"{FIGURES_DIR}/fig_dpi_architecture.png",
+        "図2: Directional Predictability Index (DPI) のアーキテクチャ。"
+        "3つの独立な非対称統計量（回帰係数非対称性 Â_reg、ANM残差独立性 Â_ANM、"
+        "条件付きエントロピー削減 Â_ent）を正規化・平均し、対称相関 |ρ_{ij}| を"
+        "非対称DPIスコアに変換する。モジュラー設計により各成分を独立に拡張可能。",
+        width=Inches(5.5)
+    )
+
     add_heading(doc, "4.4 SCC, SCD, 複素因果指標", level=2)
     add_para(doc, (
         "定義 4.3 (Spectral Causal Coupling, SCC): "
@@ -402,6 +412,16 @@ def build_document():
         "CCI(i,j) = Σ_k f(λ_k) |u_k(i)| |u_k(j)| exp(i(θ_k(i) - θ_k(j))) と定義すると、"
         "SCC(i,j) = Re[CCI(i,j)]、SCD(i,j) = Im[CCI(i,j)] が成り立つ。"
     ))
+
+    # Figure 3: CCI Complex Plane
+    add_figure(doc,
+        f"{FIGURES_DIR}/fig_cci_complex_plane.png",
+        "図3: 複素因果指標 CCI(i,j) の複素平面プロット。"
+        "実軸 (SCC) は結合強度、虚軸 (SCD) は因果方向を表す。"
+        "赤点は順方向 (i→j)、青点は逆方向を示す。"
+        "大多数のペアが下半平面に集中し、Ageの上流ルートノードとしての優位性を反映。",
+        width=Inches(5.5)
+    )
 
     add_para(doc, "命題 4.2 (SCD行列の性質)", bold=True)
     add_para(doc, (
@@ -538,13 +558,13 @@ def build_document():
     )
 
     add_para(doc, (
-        "図2は固有ベクトル成分の複素平面分布を示し、q の増加により上流ノードと下流ノードが分離される。"
+        "図4は固有ベクトル成分の複素平面分布を示し、q の増加により上流ノードと下流ノードが分離される。"
     ))
 
     # Figure 2: Magnetic Laplacian
     add_figure(doc,
         f"{FIGURES_DIR}/fig2_magnetic_laplacian_q.png",
-        "図2: 磁気ラプラシアンのFiedler固有ベクトルの複素平面プロット (q=0, 0.1, 0.25)。"
+        "図4: 磁気ラプラシアンのFiedler固有ベクトルの複素平面プロット (q=0, 0.1, 0.25)。"
         "q=0 では全点が実軸上。q の増加に伴い変数が複素平面に展開し、位相角順序が因果フロー方向を反映。",
         width=Inches(5.0)
     )
@@ -554,13 +574,13 @@ def build_document():
         "辺フロー ω(i,j) = w(i,j) · σ(i,j) にHodge分解を適用:\n"
         "||δ_0 φ||^2 / ||ω||^2 = 85.9% (勾配 = DAG的因果フロー)\n"
         "||δ_1* ψ||^2 / ||ω||^2 = 14.1% (回転 = フィードバックループ)\n"
-        "r_gradient = 85.9% は主にDAG的構造を示す (図3)。"
+        "r_gradient = 85.9% は主にDAG的構造を示す (図5)。"
     ))
 
     # Figure 3: Hodge decomposition
     add_figure(doc,
         f"{FIGURES_DIR}/fig3_hodge_decomposition.png",
-        "図3: Hodge分解結果。(A) フローエネルギーの85.9%が勾配 (DAG) 成分、14.1%が回転 (フィードバック) 成分。"
+        "図5: Hodge分解結果。(A) フローエネルギーの85.9%が勾配 (DAG) 成分、14.1%が回転 (フィードバック) 成分。"
         "(B) 因果ポテンシャル φ: 年齢が最上流、ST低下が最下流。",
         width=Inches(5.5)
     )
@@ -647,13 +667,13 @@ def build_document():
     add_para(doc, (
         "DPIをデータ駆動成分とする場合、α=0 での反対称成分が非ゼロとなり "
         "r_gradient(0) = 0.581 > 0。α=0 から α=1 への遷移は滑らかで、"
-        "旧モデルの一次相転移に替わる二次相転移となる (図4)。"
+        "旧モデルの一次相転移に替わる二次相転移となる (図6)。"
     ))
 
-    # Figure 4: Alpha sweep (renumbered from 図6)
+    # Figure 6: Alpha sweep
     add_figure(doc,
         f"{FIGURES_DIR}/fig8_alpha_sweep.png",
-        "図4: DPIによるα掃引解析。(A) r_gradient は0.581 (α=0) から0.859 (α=1) に滑らかに増加。"
+        "図6: DPIによるα掃引解析。(A) r_gradient は0.581 (α=0) から0.859 (α=1) に滑らかに増加。"
         "(B) 検出辺数とLiNGAM一致率。(C) 非対称ノルム。(D) 相図。",
         width=Inches(5.5)
     )
@@ -683,8 +703,20 @@ def build_document():
 
     add_para(doc, (
         "DAG維持の臨界閾値 (r_gradient > 0.5) は p_flip* ≈ 0.15: "
-        "辺方向の少なくとも85%が正しい必要がある。"
+        "辺方向の少なくとも85%が正しい必要がある (図7)。"
     ))
+
+    # Figure 7: p_flip U-curve
+    add_figure(doc,
+        f"{FIGURES_DIR}/fig_pflip_ucurve.png",
+        "図7: 知識品質の相転移（定理8.2）。"
+        "辺方向反転率 p_flip の増加に伴い、勾配エネルギー比 r_gradient はU字型カーブを描く。"
+        "理論予測 (1-2p)^2 r*（赤破線）は完全対称な反転を仮定。"
+        "実測値（青、200試行、α=0.6）はDPIデータ駆動成分（40%重み）が不変のため乖離し、"
+        "p=0.5でr_gradientはゼロに到達しない。"
+        "臨界閾値 p*_flip ≈ 0.15 以下でDAG構造が維持される。",
+        width=Inches(5.5)
+    )
 
     add_para(doc, "注意 8.2 (部分的誤情報は無知より悪い)", bold=True, italic=True)
     add_para(doc, (

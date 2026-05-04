@@ -18,8 +18,28 @@ FIGURES = [
         ),
     },
     {
+        "file": "figures/fig_dpi_architecture.png",
+        "title": "Figure 2: DPI Architecture",
+        "caption": (
+            "Architecture of the Directional Predictability Index (DPI). Three independent "
+            "asymmetric statistics (regression coefficient asymmetry, ANM residual independence, "
+            "conditional entropy reduction) are normalized and averaged. The composite asymmetric "
+            "score modulates the symmetric correlation into the directional DPI."
+        ),
+    },
+    {
+        "file": "figures/fig_cci_complex_plane.png",
+        "title": "Figure 3: Complex Causal Index in the Complex Plane",
+        "caption": (
+            "CCI(i,j) for all variable pairs plotted in the complex plane. "
+            "Real axis = SCC (coupling strength); imaginary axis = SCD (causal direction). "
+            "Red = forward direction (i -> j); blue = reverse. Most pairs cluster in the "
+            "lower half-plane, reflecting Age's dominance as the upstream root node."
+        ),
+    },
+    {
         "file": "figures/fig2_magnetic_laplacian_q.png",
-        "title": "Figure 2: Magnetic Laplacian Eigenvectors in Complex Plane",
+        "title": "Figure 4: Magnetic Laplacian Eigenvectors in Complex Plane",
         "caption": (
             "Fiedler eigenvector of the magnetic Laplacian plotted in the complex plane "
             "for q=0, 0.1, and 0.25. At q=0, all points lie on the real axis. As q increases, "
@@ -29,7 +49,7 @@ FIGURES = [
     },
     {
         "file": "figures/fig3_hodge_decomposition.png",
-        "title": "Figure 3: Hodge Decomposition Results",
+        "title": "Figure 5: Hodge Decomposition Results",
         "caption": (
             "Hodge decomposition results. (A) 85.9% of flow energy is in the gradient (DAG) "
             "component; 14.1% is in the curl (feedback) component. (B) Causal potential phi: "
@@ -37,8 +57,18 @@ FIGURES = [
         ),
     },
     {
+        "file": "figures/fig_pflip_ucurve.png",
+        "title": "Figure 6: Knowledge Quality Phase Transition",
+        "caption": (
+            "U-shaped quality curve: r_gradient vs p_flip. Empirical results (200 trials, blue) "
+            "closely match theoretical prediction (1-2p)^2 * r* (red dashed). "
+            "Critical threshold p*_flip ~ 0.15: at least 85% correct directions needed. "
+            "Partial misinformation is worse than complete ignorance."
+        ),
+    },
+    {
         "file": "figures/fig8_alpha_sweep.png",
-        "title": "Figure 4: Alpha-Sweep Phase Transition Analysis",
+        "title": "Figure 7: Alpha-Sweep Phase Transition Analysis",
         "caption": (
             "Alpha-sweep analysis with DPI. (A) r_gradient increases smoothly from 0.581 "
             "(alpha=0) to 0.859 (alpha=1). (B) Number of detected edges and LiNGAM agreement rate. "
