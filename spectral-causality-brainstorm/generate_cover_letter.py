@@ -134,12 +134,12 @@ def generate_cover_letter():
     run.bold = True
 
     reviewers = [
-        'Prof. Shohei Shimizu (Shiga University, Japan) \u2014 Developer of LiNGAM; '
-        'expert on non-Gaussian causal discovery methods.',
         'Prof. Markus P\u00fcschel (ETH Z\u00fcrich, Switzerland) \u2014 Pioneer of '
         'causal Fourier analysis on DAGs; expert on graph signal processing.',
         'Prof. Michael Schaub (RWTH Aachen University, Germany) \u2014 Expert on Hodge '
         'decomposition and spectral methods for network analysis.',
+        'Prof. Kun Zhang (Carnegie Mellon University, USA) \u2014 Expert on causal '
+        'discovery, non-linear causal models, and identifiability theory.',
     ]
     for r in reviewers:
         doc.add_paragraph(r, style='List Bullet')
