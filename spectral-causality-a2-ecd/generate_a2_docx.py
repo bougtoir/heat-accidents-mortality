@@ -27,11 +27,11 @@ GREEK = {
 }
 
 SYMBOLS = {
+    r'\infty': '\u221e', r'\partial': '\u2202', r'\times': '\u00d7',
     r'\in': '\u2208', r'\to': '\u2192', r'\rightarrow': '\u2192',
     r'\leftarrow': '\u2190', r'\leftrightarrow': '\u2194',
     r'\leq': '\u2264', r'\geq': '\u2265', r'\neq': '\u2260',
     r'\approx': '\u2248', r'\equiv': '\u2261', r'\sim': '\u223c',
-    r'\infty': '\u221e', r'\partial': '\u2202', r'\times': '\u00d7',
     r'\cdot': '\u00b7', r'\pm': '\u00b1', r'\perp': '\u22a5',
 }
 
@@ -115,9 +115,9 @@ def add_rich_paragraph(doc, text, style=None):
     return p
 
 
-def generate_manuscript():
+def generate_manuscript(md_file='manuscript_a2_ecd.md', out_file='manuscript_a2_ecd.docx', lang='en'):
     """Generate the A2 manuscript docx from markdown."""
-    md_path = os.path.join(BASE_DIR, 'manuscript_a2_ecd.md')
+    md_path = os.path.join(BASE_DIR, md_file)
     with open(md_path, 'r', encoding='utf-8') as f:
         lines = f.readlines()
 
@@ -129,22 +129,40 @@ def generate_manuscript():
     style.paragraph_format.line_spacing = 1.15
 
     # Figure insertion points (after which section heading's content)
-    FIGURES = [
-        ('## 5.', 'fig6_causal_dag.png',
-         'Figure 1. Estimated causal DAG from DirectLiNGAM. Arrow weight indicates estimated causal effect |B_ij|.'),
-        ('### 3.1', 'fig5_hill_radar.png',
-         "Figure 2. Hill's nine criteria coverage. ECD (purple) achieves broader coverage than any single method."),
-        ('### 5.3', 'fig3_hodge_decomposition.png',
-         'Figure 3. Hodge decomposition of causal flows into gradient (DAG-like) and curl (feedback) components.'),
-        ('### 6.1', 'fig4_direction_comparison.png',
-         'Figure 4. Three-method causal direction comparison across all edge pairs.'),
-        ('### 6.2', 'fig7_lingam_vs_spectral.png',
-         'Figure 5. LiNGAM DAG (left) vs. Spectral Causality DCG (right). Dashed lines: feedback edges.'),
-        ('### 8.2', 'fig9_ecd_pruning_analysis.png',
-         'Figure 6. ECD ensemble and pruning analysis with edge-level feedback rates.'),
-        ('### 7.1', 'fig8_alpha_sweep.png',
-         'Figure 7. DAG transition analysis: (A) r_gradient vs alpha, (B) Edge count and LiNGAM agreement.'),
-    ]
+    if lang == 'ja':
+        FIGURES = [
+            ('## 5.', 'fig6_causal_dag.png',
+             '\u56f31. DirectLiNGAM\u306b\u3088\u308b\u63a8\u5b9a\u56e0\u679cDAG\u3002\u77e2\u5370\u306e\u592a\u3055\u306f\u63a8\u5b9a\u56e0\u679c\u52b9\u679c|B_ij|\u3092\u793a\u3059\u3002'),
+            ('### 3.1', 'fig5_hill_radar.png',
+             '\u56f32. Hill\u306e9\u57fa\u6e96\u30ab\u30d0\u30ec\u30c3\u30b8\u3002ECD\uff08\u7d2b\uff09\u304c\u5358\u4e00\u624b\u6cd5\u3088\u308a\u5e83\u7bc4\u306a\u30ab\u30d0\u30ec\u30c3\u30b8\u3092\u9054\u6210\u3002'),
+            ('### 5.3', 'fig3_hodge_decomposition.png',
+             '\u56f33. \u56e0\u679c\u30d5\u30ed\u30fc\u306eHodge\u5206\u89e3\u3002\u5de6\uff1a\u52fe\u914d\uff08DAG\uff09\u6210\u5206\u3001\u4e2d\u592e\uff1a\u30ab\u30fc\u30eb\uff08\u30d5\u30a3\u30fc\u30c9\u30d0\u30c3\u30af\uff09\u6210\u5206\u3001\u53f3\uff1a\u7d71\u5408\u30d5\u30ed\u30fc\u3002'),
+            ('### 6.1', 'fig4_direction_comparison.png',
+             '\u56f34. 3\u624b\u6cd5\u306b\u3088\u308b\u56e0\u679c\u65b9\u5411\u6bd4\u8f03\u3002\u5168\u8fba\u30da\u30a2\u3067\u306e\u4e00\u81f4\u30fb\u4e0d\u4e00\u81f4\u3002'),
+            ('### 6.2', 'fig7_lingam_vs_spectral.png',
+             '\u56f35. LiNGAM DAG\uff08\u5de6\uff09vs \u30b9\u30da\u30af\u30c8\u30eb\u56e0\u679c\u6027DCG\uff08\u53f3\uff09\u3002\u7834\u7dda\uff1a\u30d5\u30a3\u30fc\u30c9\u30d0\u30c3\u30af\u8fba\u3002'),
+            ('### 8.2', 'fig9_ecd_pruning_analysis.png',
+             '\u56f36. ECD\u30a2\u30f3\u30b5\u30f3\u30d6\u30eb\u30fb\u30d7\u30eb\u30fc\u30cb\u30f3\u30b0\u89e3\u6790\u3002\u8fba\u30ec\u30d9\u30eb\u30d5\u30a3\u30fc\u30c9\u30d0\u30c3\u30af\u7387\u3002'),
+            ('### 7.1', 'fig8_alpha_sweep.png',
+             '\u56f37. DAG\u8ee2\u79fb\u89e3\u6790\u3002(A) r_gradient vs \u03b1\u3001(B) \u8fba\u6570\u3068LiNGAM\u4e00\u81f4\u7387\u3002'),
+        ]
+    else:
+        FIGURES = [
+            ('## 5.', 'fig6_causal_dag.png',
+             'Figure 1. Estimated causal DAG from DirectLiNGAM. Arrow weight indicates estimated causal effect |B_ij|.'),
+            ('### 3.1', 'fig5_hill_radar.png',
+             "Figure 2. Hill's nine criteria coverage. ECD (purple) achieves broader coverage than any single method."),
+            ('### 5.3', 'fig3_hodge_decomposition.png',
+             'Figure 3. Hodge decomposition of causal flows into gradient (DAG-like) and curl (feedback) components.'),
+            ('### 6.1', 'fig4_direction_comparison.png',
+             'Figure 4. Three-method causal direction comparison across all edge pairs.'),
+            ('### 6.2', 'fig7_lingam_vs_spectral.png',
+             'Figure 5. LiNGAM DAG (left) vs. Spectral Causality DCG (right). Dashed lines: feedback edges.'),
+            ('### 8.2', 'fig9_ecd_pruning_analysis.png',
+             'Figure 6. ECD ensemble and pruning analysis with edge-level feedback rates.'),
+            ('### 7.1', 'fig8_alpha_sweep.png',
+             'Figure 7. DAG transition analysis: (A) r_gradient vs alpha, (B) Edge count and LiNGAM agreement.'),
+        ]
 
     figure_triggers = {}  # section_key -> (fig_file, caption)
     for trigger, fig_file, caption in FIGURES:
@@ -279,7 +297,7 @@ def generate_manuscript():
     if in_table and table_buffer:
         _flush_table(doc, table_buffer)
 
-    out_path = os.path.join(BASE_DIR, 'manuscript_a2_ecd.docx')
+    out_path = os.path.join(BASE_DIR, out_file)
     doc.save(out_path)
     print(f'Saved: {out_path}')
     return out_path
@@ -467,6 +485,11 @@ def generate_pptx():
 
 
 if __name__ == '__main__':
-    generate_manuscript()
-    generate_cover_letter()
-    generate_pptx()
+    import sys
+    if '--ja' in sys.argv:
+        generate_manuscript('manuscript_a2_ecd_ja.md', 'manuscript_a2_ecd_ja.docx', lang='ja')
+    else:
+        generate_manuscript()
+        generate_manuscript('manuscript_a2_ecd_ja.md', 'manuscript_a2_ecd_ja.docx', lang='ja')
+        generate_cover_letter()
+        generate_pptx()
