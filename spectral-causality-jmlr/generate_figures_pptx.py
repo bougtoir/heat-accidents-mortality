@@ -8,12 +8,13 @@ import os
 
 FIGURES = [
     {
-        "file": "figures/fig6_causal_dag.png",
-        "title": "Figure 1: DirectLiNGAM Estimated Causal DAG",
+        "file": "figures/fig1_three_approaches.png",
+        "title": "Figure 1: Three Approaches to Causal Inference",
         "caption": (
-            "DirectLiNGAM estimated causal DAG for the UCI Heart Disease data "
-            "(N=297, 5 clinical variables). Blue edges indicate positive causal "
-            "effects; red edges indicate negative effects. Age is the most upstream variable."
+            "Three complementary approaches to causal inference: (1) structural equation "
+            "models and DAG-based methods (e.g., LiNGAM), (2) spectral graph methods via "
+            "the magnetic Laplacian, and (3) Hodge-theoretic flow decomposition. "
+            "Spectral causality unifies (2) and (3)."
         ),
     },
     {
@@ -36,57 +37,12 @@ FIGURES = [
         ),
     },
     {
-        "file": "figures/fig4_direction_comparison.png",
-        "title": "Figure 4: Causal Direction Comparison",
-        "caption": (
-            "Causal direction comparison across all 10 variable pairs. LiNGAM (red), "
-            "SCD (blue), Hodge potential (green). +1: first variable causes second; "
-            "-1: reverse. Green background: all three methods agree."
-        ),
-    },
-    {
-        "file": "figures/fig5_hill_radar.png",
-        "title": "Figure 5: Hill's Nine Criteria Coverage",
-        "caption": (
-            "Hill's nine criteria coverage. LiNGAM covers H1 (strength) and H3 (specificity) "
-            "well but lacks H6/H7/H9. Spectral causality covers H6 (plausibility), H7 (coherence), "
-            "H9 (analogy) via the utility function. The ECD ensemble achieves near-complete coverage."
-        ),
-    },
-    {
-        "file": "figures/fig1_three_approaches.png",
-        "title": "Figure 6: Three Approaches to Causal Inference",
-        "caption": (
-            "Three approaches to causal inference on the same dataset. (A) LiNGAM DAG (6 edges). "
-            "(B) Spectral causality at alpha=0.6 (10 directed edges, cycles allowed). "
-            "(C) Spectral causality at alpha=0 with DPI (9 directed edges, no domain knowledge)."
-        ),
-    },
-    {
-        "file": "figures/fig7_lingam_vs_spectral.png",
-        "title": "Figure 7: Three-Condition Structural Comparison",
-        "caption": (
-            "Three-condition comparison. (A) LiNGAM DAG. (B) Spectral causality at alpha=0.6. "
-            "(C) Spectral causality at alpha=0 with DPI."
-        ),
-    },
-    {
         "file": "figures/fig8_alpha_sweep.png",
-        "title": "Figure 8: Alpha-Sweep Analysis with DPI",
+        "title": "Figure 4: Alpha-Sweep Phase Transition Analysis",
         "caption": (
             "Alpha-sweep analysis with DPI. (A) r_gradient increases smoothly from 0.581 "
             "(alpha=0) to 0.859 (alpha=1). (B) Number of detected edges and LiNGAM agreement rate. "
             "(C) Asymmetric norm. (D) Phase diagram."
-        ),
-    },
-    {
-        "file": "figures/fig9_ecd_pruning_analysis.png",
-        "title": "Figure 9: ECD Pipeline Analysis",
-        "caption": (
-            "ECD pipeline analysis. (A) Hodge decomposition of ECD flow. "
-            "(B) Causal potential phi vs. interventionability iota. "
-            "(C) Per-edge feedback ratio. (D) U-shaped curve of r_gradient vs. "
-            "knowledge quality p_flip."
         ),
     },
 ]
