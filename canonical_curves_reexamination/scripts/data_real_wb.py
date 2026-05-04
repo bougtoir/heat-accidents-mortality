@@ -219,7 +219,7 @@ def get_green_revolution_real():
             data = data.dropna()
             if len(data) > 10:
                 x = data['year'].values
-                y = data['yield_kg'].values / 10000  # kg/ha to tonnes/ha
+                y = data['yield_kg'].values / 1000  # kg/ha to tonnes/ha
                 return CurveReexamination(
                     name="Green Revolution Yield Curve",
                     x=x, y=y,
