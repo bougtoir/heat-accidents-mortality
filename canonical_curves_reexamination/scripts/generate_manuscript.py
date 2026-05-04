@@ -1,6 +1,15 @@
 """
-Generate the manuscript as .docx (English) following academic formatting.
-Inline figures, Vancouver-style citations.
+Generate the manuscript as .docx (English) formatted for:
+Research Integrity and Peer Review (BMC/Springer Nature)
+
+Requirements:
+- Structured abstract (Background/Methods/Results/Conclusions) ≤350 words
+- Sections: Background, Methods, Results, Discussion, Limitations, Conclusions
+- Declarations section
+- List of abbreviations
+- Vancouver-style numbered references
+- ≤5,000 words (main body)
+- Keywords (3-10)
 
 Onishi T. 2026.
 """
@@ -15,13 +24,13 @@ from docx import Document
 from docx.shared import Inches, Pt, Cm, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.table import WD_TABLE_ALIGNMENT
-from docx.oxml.ns import qn
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 FIGURES_DIR = os.path.join(BASE_DIR, 'figures')
 RESULTS_DIR = os.path.join(BASE_DIR, 'results')
+DATA_DIR = os.path.join(BASE_DIR, 'data')
 
 
 def load_results():
@@ -30,7 +39,7 @@ def load_results():
 
 
 def add_superscript_refs(paragraph, text):
-    """Parse text with {N} markers and add superscript references."""
+    """Parse text with {N} markers and add superscript references using Word font."""
     parts = re.split(r'(\{[^}]+\})', text)
     for part in parts:
         if part.startswith('{') and part.endswith('}'):
@@ -40,6 +49,36 @@ def add_superscript_refs(paragraph, text):
         else:
             run = paragraph.add_run(part)
             run.font.size = Pt(11)
+
+
+def get_domain_summary(results):
+    """Dynamically compute domain-level verdict counts from results."""
+    from collections import Counter
+    domains = {}
+    for r in results:
+        cat = r['category']
+        v = r['verdict']['verdict']
+        if cat not in domains:
+            domains[cat] = {'total': 0, 'verdicts': Counter(), 'curves': []}
+        domains[cat]['total'] += 1
+        domains[cat]['verdicts'][v] += 1
+        domains[cat]['curves'].append(r)
+    return domains
+
+
+def get_curve_result(results, name):
+    """Get result for a specific curve by name."""
+    for r in results:
+        if r['name'] == name:
+            return r
+    return None
+
+
+def fmt_p(p_val):
+    """Format p-value for display."""
+    if p_val < 0.0001:
+        return f"{p_val:.1e}"
+    return f"{p_val:.3f}"
 
 
 def create_manuscript():
@@ -52,24 +91,32 @@ def create_manuscript():
     font.size = Pt(11)
 
     # Margins
-    sections = doc.sections
-    for section in sections:
+    for section in doc.sections:
         section.top_margin = Cm(2.54)
         section.bottom_margin = Cm(2.54)
         section.left_margin = Cm(2.54)
         section.right_margin = Cm(2.54)
 
+    # Load results for dynamic content
+    results = load_results()
+    verdicts = [r['verdict']['verdict'] for r in results]
+    n_ns = verdicts.count('NOT_SIGNIFICANT')
+    n_outlier = verdicts.count('OUTLIER_DEPENDENT')
+    n_robust = verdicts.count('ROBUST_NONLINEAR')
+    n_overfit = verdicts.count('OVERFITTING')
+    domains = get_domain_summary(results)
+
     # ======== TITLE PAGE ========
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = p.add_run('Modern Re-examination of 52 Canonical Curves:\n'
-                    'Outlier Dependence, Sample Size Artifacts, and '
-                    'the Fragility of Established Nonlinear Relationships')
+    run = p.add_run(
+        'Fragility of canonical curves: a systematic cross-disciplinary '
+        'audit of 52 established nonlinear relationships using modern '
+        'model selection methods')
     run.bold = True
     run.font.size = Pt(14)
 
     doc.add_paragraph()
-
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     run = p.add_run('Tatsuki Onishi')
@@ -77,410 +124,377 @@ def create_manuscript():
 
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = p.add_run('2026')
+    run = p.add_run('[Institutional affiliation]')
     run.font.size = Pt(11)
 
+    p = doc.add_paragraph()
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    run = p.add_run('Corresponding author: Tatsuki Onishi ([email])')
+    run.font.size = Pt(10)
+
     doc.add_page_break()
 
-    # ======== ABSTRACT ========
+    # ======== ABSTRACT (structured, ≤350 words) ========
+    h = doc.add_heading('Abstract', level=1)
+
+    abstract_sections = [
+        ("Background: ", (
+            "Many curvilinear relationships are treated as established empirical facts "
+            "across diverse academic disciplines, yet few have been systematically re-evaluated "
+            "using modern model selection techniques. The robustness of these 'canonical curves' "
+            "has implications for policy recommendations and theoretical claims that depend on "
+            "their specific functional form."
+        )),
+        ("Methods: ", (
+            "We applied a uniform four-test framework to 52 canonical curves spanning eight "
+            "disciplines: nested F-tests for quadratic terms, Akaike and Bayesian Information "
+            "Criteria (AIC/BIC) for model selection, leave-one-out cross-validation (LOOCV) for "
+            "predictive accuracy, and Cook's distance sensitivity analysis with removal of the "
+            "top 3 influential observations. Data were drawn from the World Bank World Development "
+            "Indicators API and published sources."
+        )),
+        ("Results: ", (
+            f"Of 52 curves, {n_ns} ({100*n_ns/52:.0f}%) showed no statistically significant "
+            f"nonlinearity, {n_outlier} ({100*n_outlier/52:.0f}%) were outlier-dependent "
+            f"(significance lost after removing 1\u20133 influential points), and only "
+            f"{n_robust} ({100*n_robust/52:.0f}%) demonstrated robust nonlinearity surviving "
+            f"all tests. Domain asymmetry was pronounced: public health curves were predominantly "
+            f"robust ({domains.get('Public Health', {}).get('verdicts', {}).get('ROBUST_NONLINEAR', 0)}"
+            f"/{domains.get('Public Health', {}).get('total', 10)}) while economics curves largely "
+            f"failed ({domains.get('Economics', {}).get('verdicts', {}).get('NOT_SIGNIFICANT', 0)}"
+            f"/{domains.get('Economics', {}).get('total', 12)} non-significant)."
+        )),
+        ("Conclusions: ", (
+            "Approximately two-thirds of textbook nonlinear relationships fail modern robustness "
+            "tests. Researchers and policymakers should exercise caution when citing canonical "
+            "curves as empirical support for nonlinear theories."
+        )),
+    ]
+
+    for label, text in abstract_sections:
+        p = doc.add_paragraph()
+        run = p.add_run(label)
+        run.bold = True
+        run.font.size = Pt(11)
+        run2 = p.add_run(text)
+        run2.font.size = Pt(11)
+
+    # Keywords
     p = doc.add_paragraph()
-    run = p.add_run('Abstract')
-    run.bold = True
-    run.font.size = Pt(12)
-
-    results = load_results()
-    verdicts = [r['verdict']['verdict'] for r in results]
-    n_ns = verdicts.count('NOT_SIGNIFICANT')
-    n_outlier = verdicts.count('OUTLIER_DEPENDENT')
-    n_robust = verdicts.count('ROBUST_NONLINEAR')
-    n_overfit = verdicts.count('OVERFITTING')
-
-    abstract_text = (
-        f"Background: Many curvilinear relationships are cited as established facts across diverse "
-        f"academic disciplines, yet few have been systematically re-evaluated using modern model "
-        f"selection techniques. "
-        f"Methods: We re-examined 52 canonical curves spanning eight disciplines (economics, "
-        f"public health, demography, environmental science, psychology, physics, political science, "
-        f"and agriculture) using nested F-tests (linear vs. quadratic), Akaike and Bayesian "
-        f"Information Criteria (AIC/BIC), leave-one-out cross-validation (LOOCV) RMSE, and "
-        f"Cook's distance sensitivity analysis with removal of the top 3 influential observations. "
-        f"Results: Of 52 curves, {n_ns} ({100*n_ns/52:.0f}%) showed no statistically significant "
-        f"nonlinearity (p > 0.05), {n_outlier} ({100*n_outlier/52:.0f}%) were outlier-dependent "
-        f"(significance lost after removing 1-3 influential points), {n_overfit} ({100*n_overfit/52:.0f}%) "
-        f"showed overfitting on cross-validation, and only {n_robust} ({100*n_robust/52:.0f}%) "
-        f"demonstrated robust nonlinearity surviving all tests. The outlier-dependent category "
-        f"includes several high-profile relationships: the Kuznets Curve, Environmental Kuznets Curve, "
-        f"Great Gatsby Curve, Lipset Hypothesis, and Species-Area relationship in log-log space. "
-        f"Conclusions: A substantial fraction of textbook curvilinear relationships fail modern "
-        f"re-examination, with implications for policy recommendations based on these curves."
-    )
-    p = doc.add_paragraph(abstract_text)
-    p.paragraph_format.first_line_indent = Pt(0)
-
-    p = doc.add_paragraph()
+    p.paragraph_format.space_before = Pt(12)
     run = p.add_run('Keywords: ')
     run.bold = True
-    p.add_run('model selection; nonlinearity; outlier dependence; F-test; AIC; BIC; '
-              'cross-validation; Cook\'s distance; canonical relationships')
+    p.add_run('model selection, nonlinearity, outlier dependence, robustness, '
+              'F-test, information criteria, cross-validation, Cook\'s distance, '
+              'canonical relationships, meta-research')
 
     doc.add_page_break()
 
-    # ======== 1. INTRODUCTION ========
-    h = doc.add_heading('1. Introduction', level=1)
+    # ======== BACKGROUND ========
+    h = doc.add_heading('Background', level=1)
 
-    intro_paras = [
-        ("Curvilinear relationships occupy a privileged position in the social and natural sciences. "
-         "From the Phillips Curve in macroeconomics to the Preston Curve in public health, "
-         "these nonlinear functional forms are widely taught, frequently cited in policy documents, "
-         "and often treated as established empirical regularities.{1-3} Yet many of these "
-         "relationships were originally established with limited data, rudimentary statistical "
-         "methods, and in eras when model selection criteria such as the Akaike Information "
-         "Criterion (AIC) and Bayesian Information Criterion (BIC) were not yet standard practice.{4,5}"),
+    bg_paras = [
+        ("Curvilinear relationships occupy a privileged position in the social and natural "
+         "sciences. From the Phillips Curve in macroeconomics to the Preston Curve in public "
+         "health, these nonlinear functional forms are widely taught, frequently cited in policy "
+         "documents, and treated as established empirical regularities.{1\u20133} Yet many were "
+         "originally established with limited data, rudimentary statistical methods, and before "
+         "model selection criteria such as the Akaike Information Criterion (AIC) and Bayesian "
+         "Information Criterion (BIC) became standard practice.{4,5}"),
 
         ("The present study was motivated by a preliminary analysis of the Preston Curve "
-         "conducted by the authors.{6} That analysis revealed that the Preston Curve's "
-         "apparent concavity (quadratic term) depends heavily on the position of the "
-         "United States as a single outlier—removing the US raised the p-value to 0.49, "
-         "rendering the nonlinear term non-significant. This finding raised the question of "
-         "whether similar fragilities lurk beneath other 'canonical' curves. Indeed, "
-         "the Environmental Kuznets Curve for CO2 emissions has been repeatedly "
-         "challenged,{7,8} and the Dunning-Kruger effect has been argued to be a "
-         "statistical artifact of regression to the mean.{9}"),
+         "conducted by the authors.{6} That analysis revealed that the apparent concavity "
+         "(quadratic term) depends heavily on the position of the United States as a single "
+         "outlier\u2014removing the US raised the p-value to 0.49, rendering the nonlinear term "
+         "non-significant. This finding raised the question of whether similar fragilities lurk "
+         "beneath other canonical curves. The Environmental Kuznets Curve for CO\u2082 emissions "
+         "has been repeatedly challenged,{7,8} and the Dunning-Kruger effect has been argued to "
+         "be a statistical artifact of regression to the mean.{9}"),
 
-        ("Despite these individual critiques, no systematic cross-disciplinary audit "
-         "has been conducted. The present study fills this gap by applying a uniform "
-         "methodological framework to 52 canonical curves across eight academic disciplines. "
-         "Our approach combines four complementary techniques: (1) nested F-tests for the "
-         "significance of quadratic terms, (2) information criteria (AIC/BIC) for model "
-         "selection, (3) leave-one-out cross-validation (LOOCV) for predictive accuracy, "
-         "and (4) Cook's distance sensitivity analysis to assess outlier dependence."),
+        ("Despite individual critiques, no systematic cross-disciplinary audit has been "
+         "conducted. The present study fills this gap by applying a uniform methodological "
+         "framework to 52 canonical curves across eight academic disciplines."),
     ]
-    for text in intro_paras:
+    for text in bg_paras:
         p = doc.add_paragraph()
         add_superscript_refs(p, text)
 
-    # ======== 2. METHODS ========
-    h = doc.add_heading('2. Methods', level=1)
+    # ======== METHODS ========
+    h = doc.add_heading('Methods', level=1)
 
-    doc.add_heading('2.1 Curve Selection', level=2)
-
+    # Curve selection
+    doc.add_heading('Curve selection', level=2)
     p = doc.add_paragraph()
     add_superscript_refs(p,
-        "The selection of 52 canonical curves was guided by a systematic protocol designed "
-        "to ensure representativeness, reproducibility, and scientific relevance. "
-        "The goal was not exhaustive enumeration of all claimed nonlinear relationships, "
-        "but rather a strategically sampled cross-section that captures the diversity of "
-        "disciplines, data structures, and types of nonlinearity invoked in the literature."
+        "Candidate curves were identified through systematic review of named laws and "
+        "stylized facts in major handbooks, citation analysis of papers with 'curve,' 'law,' "
+        "or 'paradox' in titles, and review of the replication crisis literature.{10,11} "
+        "This yielded 78 candidates, from which 52 met all inclusion criteria."
     )
 
     p = doc.add_paragraph()
-    run = p.add_run('Inclusion Criteria. ')
+    run = p.add_run('Inclusion criteria: ')
     run.bold = True
-    p.add_run("Curves were included if they satisfied all five of the following conditions:")
-
-    inclusion_criteria = [
-        ("Eponymous or canonical status: The relationship must be widely known by a specific "
-         "name (e.g., 'Phillips Curve,' 'Kuznets Curve,' 'Kleiber's Law') or be a named "
-         "hypothesis in a recognized academic field. We operationalized 'canonical' as appearing "
-         "in at least two major textbooks or review articles in the respective discipline, or "
-         "having accumulated >500 Google Scholar citations for the original formulation."),
-        ("Claimed nonlinearity: The relationship must explicitly posit a nonlinear functional "
-         "form—concavity, convexity, inverted-U, U-shape, J-shape, S-shape, power law, "
-         "exponential, or logarithmic—as a central feature of the theory. Purely linear "
-         "relationships (e.g., Okun's original linear formulation) were included only when "
-         "nonlinear extensions are widely discussed in the literature."),
-        ("Bivariate testability: The core claim must be expressible as a bivariate relationship "
-         "y = f(x) amenable to model comparison. Multivariate theories were included if the "
-         "bivariate projection is the standard textbook representation (e.g., Kuznets plots "
-         "income vs. Gini without controls)."),
-        ("Data availability: Sufficient publicly available data must exist to estimate both "
-         "a linear and a quadratic (or appropriate nonlinear) model with at least N \u2265 10 "
-         "observations. Data sources include the World Bank World Development Indicators, "
-         "OECD.Stat, Penn World Tables, UN Population Division, USGS earthquake catalogs, "
-         "published meta-analyses, and digitized data from original publications."),
-        ("Policy or theoretical relevance: The shape of the curve (not merely the existence "
-         "of a correlation) must have substantive implications for theory or policy. For example, "
-         "the Laffer Curve's peak location determines optimal tax policy; the EKC's shape "
-         "determines whether growth alone will resolve pollution."),
-    ]
-    for i, criterion in enumerate(inclusion_criteria, 1):
-        p = doc.add_paragraph(f"({i}) {criterion}", style='List Bullet')
+    p.add_run("(1) eponymous/canonical status (\u22652 textbooks or >500 citations); "
+              "(2) explicit nonlinearity claim; (3) bivariate testability; "
+              "(4) publicly available data (N \u2265 10); (5) policy or theoretical relevance "
+              "of curve shape.")
 
     p = doc.add_paragraph()
-    run = p.add_run('Exclusion Criteria. ')
+    run = p.add_run('Exclusion criteria: ')
     run.bold = True
-    p.add_run("The following were excluded:")
+    p.add_run("definitional/tautological curves; proprietary data requirements; "
+              "purely temporal dynamics; formally retracted relationships; "
+              "curves requiring multivariate specification.")
 
-    exclusion_criteria = [
-        "Purely definitional or tautological curves (e.g., Lorenz curve, which is a graphical identity).",
-        "Relationships requiring proprietary or classified data not available for independent replication.",
-        "Curves where the nonlinear claim is only about temporal dynamics (e.g., business cycle shapes) without a stable cross-sectional or parametric form.",
-        "Relationships that have already been formally retracted or universally abandoned in the field.",
-        "Curves requiring multivariate specification where the bivariate projection is acknowledged as meaningless (e.g., production functions requiring both capital and labor).",
-    ]
-    for criterion in exclusion_criteria:
-        doc.add_paragraph(criterion, style='List Bullet')
-
-    p = doc.add_paragraph()
-    run = p.add_run('Disciplinary Stratification. ')
-    run.bold = True
-    p.add_run(
-        "To avoid over-representation of any single field, we stratified selection across "
-        "eight major disciplines: economics (12 curves), public health and epidemiology (10), "
-        "demography (6), environmental science and ecology (6), psychology and behavioral "
-        "science (5), physics and natural sciences (4), political science and sociology (5), "
-        "and agriculture and nutrition (4). Within each discipline, curves were prioritized "
-        "by (a) frequency of citation in policy documents, (b) presence in undergraduate "
-        "textbooks, and (c) existence of active scholarly debate about the relationship's validity."
-    )
-
-    p = doc.add_paragraph()
-    run = p.add_run('Search Strategy. ')
-    run.bold = True
-    p.add_run(
-        "Candidate curves were identified through: (1) systematic review of 'named laws' "
-        "and 'stylized facts' in each discipline's major handbooks (e.g., Handbook of "
-        "Economic Growth, Oxford Handbook of Health Economics, Demographic Methods); "
-        "(2) citation analysis of papers with 'curve,' 'law,' or 'paradox' in the title "
-        "within each discipline's top-5 journals; (3) review of prior meta-scientific "
-        "studies on replicability and robustness in economics, psychology, and ecology; "
-        "and (4) consultation with the existing literature on the 'replication crisis' "
-        "to identify curves whose empirical basis has been questioned. This yielded an "
-        "initial list of 78 candidates, from which 52 met all inclusion criteria and "
-        "none of the exclusion criteria."
-    )
-
-    p = doc.add_paragraph()
-    run = p.add_run('Typology of Nonlinearity Claims. ')
-    run.bold = True
-    p.add_run(
-        "The 52 selected curves represent five distinct types of claimed nonlinearity: "
-        "(a) inverted-U or hump-shaped (e.g., Kuznets, Laffer, Yerkes-Dodson): 14 curves; "
-        "(b) U-shaped or J-shaped (e.g., BMI-mortality, alcohol-mortality, Barker): 8 curves; "
-        "(c) concave/saturating (e.g., Preston, Engel, Mitscherlich): 12 curves; "
-        "(d) power-law or log-linear (e.g., Zipf, Kleiber, Gutenberg-Richter): 8 curves; "
-        "(e) S-shaped or structural-break (e.g., demographic transition, Moore's Law): 10 curves. "
-        "This typological diversity ensures that our re-examination is not biased toward "
-        "detecting (or failing to detect) any particular functional form."
-    )
-
-    # Table 2: Selection criteria summary
     p = doc.add_paragraph(
-        "Table 2 summarizes the original sample size, current data availability, and "
-        "type of nonlinearity for each of the 52 curves."
+        "Curves were stratified across eight disciplines: economics (12), public health (10), "
+        "demography (6), environmental science (6), psychology (5), physics (4), political "
+        "science (5), and agriculture (4). Five types of claimed nonlinearity were represented: "
+        "inverted-U (14), U/J-shaped (8), concave/saturating (12), power-law (8), "
+        "and S-shaped/structural-break (10)."
     )
 
-    doc.add_heading('2.2 Data Sources', level=2)
+    # Data sources
+    doc.add_heading('Data sources', level=2)
     p = doc.add_paragraph(
-        "Data were drawn from the World Bank World Development Indicators, OECD statistics, "
-        "Penn World Tables, UN Population Division, published meta-analyses, and original "
-        "study data where available. For each curve, we used the most recent available "
-        "cross-sectional data (typically 2019-2023) or the longest available time series. "
-        "Sample sizes ranged from N=11 (Fries Compression of Morbidity) to N=74 "
-        "(Lee-Carter Mortality Model)."
+        "Data were drawn primarily from the World Bank World Development Indicators (WDI) "
+        "API for cross-country curves (GDP per capita PPP, life expectancy, Gini coefficient, "
+        "total fertility rate, forest area), with US macroeconomic time series (unemployment, "
+        "inflation, GDP growth) also obtained via WDI. Additional sources included OECD.Stat, "
+        "published meta-analyses, USGS earthquake catalogs, and digitized original publication "
+        "data. The complete data source table for all 52 curves is provided in Additional file 1."
     )
 
-    doc.add_heading('2.3 Statistical Framework', level=2)
+    # Statistical framework
+    doc.add_heading('Statistical framework', level=2)
 
     p = doc.add_paragraph()
     run = p.add_run('Nested F-test. ')
     run.bold = True
-    p.add_run("For each curve, we fitted a restricted (linear: y = a + bx) and unrestricted "
-              "(quadratic: y = a + bx + cx\u00b2) model via ordinary least squares. The F-statistic "
-              "for the additional quadratic parameter was computed as F = [(RSS_r - RSS_u)/p] / "
-              "[RSS_u/df_u], where p = 1 is the number of additional parameters.")
+    p.add_run("For each curve, restricted (linear: y = a + bx) and unrestricted "
+              "(quadratic: y = a + bx + cx\u00b2) models were fitted via ordinary least squares. "
+              "The F-statistic tested the significance of the additional parameter.")
 
     p = doc.add_paragraph()
-    run = p.add_run('Information Criteria. ')
+    run = p.add_run('Information criteria. ')
     run.bold = True
-    p.add_run("AIC and BIC were computed for linear, quadratic, and logarithmic (where x > 0) "
-              "models. The model with the lowest AIC (or BIC) was selected as the preferred "
-              "functional form.")
+    p.add_run("AIC and BIC were computed for linear, quadratic, and logarithmic models. "
+              "The model with lowest criterion value was selected.")
 
     p = doc.add_paragraph()
-    run = p.add_run('Leave-One-Out Cross-Validation. ')
+    run = p.add_run('Leave-one-out cross-validation. ')
     run.bold = True
-    p.add_run("LOOCV root mean squared error (RMSE) was computed for both linear and quadratic "
+    p.add_run("LOOCV root mean squared error (RMSE) was computed for linear and quadratic "
               "models to assess out-of-sample predictive accuracy.")
 
     p = doc.add_paragraph()
-    run = p.add_run("Cook's Distance Sensitivity Analysis. ")
+    run = p.add_run("Cook's distance sensitivity analysis. ")
     run.bold = True
-    p.add_run("Cook's distance was computed for the linear model, and the top 3 most influential "
-              "observations were removed. The F-test was then repeated on the reduced dataset. "
-              "A curve was classified as 'outlier-dependent' if the nonlinear term was significant "
-              "(p < 0.05) with full data but not significant (p > 0.05) after removing the top "
-              "3 influential observations.")
+    p.add_run("The top 3 most influential observations (by Cook's distance) were removed "
+              "and the F-test repeated. A curve was classified as outlier-dependent if "
+              "significance (p < 0.05) was lost after removal.")
 
-    doc.add_heading('2.4 Verdict Classification', level=2)
-    p = doc.add_paragraph("Each curve was assigned one of five verdicts:")
-    verdicts_list = [
-        "ROBUST_NONLINEAR: F-test significant (p < 0.05) with full data AND after outlier removal, quadratic LOOCV RMSE lower than linear.",
-        "OUTLIER_DEPENDENT: F-test significant with full data but NOT after removing top 3 influential points.",
-        "NOT_SIGNIFICANT: F-test not significant even with full data (p \u2265 0.05).",
-        "OVERFITTING: F-test significant but LOOCV RMSE is worse for the quadratic model.",
-        "BIC_PREFERS_LINEAR: F-test significant but BIC selects the linear model."
+    # Verdict classification
+    doc.add_heading('Verdict classification', level=2)
+    p = doc.add_paragraph("Each curve received one of four verdicts:")
+    verdict_defs = [
+        "ROBUST_NONLINEAR: significant with full data AND after outlier removal, with quadratic LOOCV RMSE \u2264 linear RMSE.",
+        "OUTLIER_DEPENDENT: significant with full data but non-significant after removing top 3 influential points.",
+        "NOT_SIGNIFICANT: non-significant even with full data (p \u2265 0.05).",
+        "OVERFITTING: significant but LOOCV RMSE is worse for the quadratic model.",
     ]
-    for v in verdicts_list:
-        p = doc.add_paragraph(v, style='List Bullet')
+    for v in verdict_defs:
+        doc.add_paragraph(v, style='List Bullet')
 
-    # ======== 3. RESULTS ========
-    h = doc.add_heading('3. Results', level=1)
+    # Software
+    doc.add_heading('Software', level=2)
+    doc.add_paragraph(
+        "All analyses were conducted in Python 3.12 using statsmodels (OLS regression), "
+        "NumPy, and pandas. World Bank data were fetched via the wbgapi library. "
+        "Code and data are publicly available (see Availability of data and materials)."
+    )
 
-    doc.add_heading('3.1 Overall Distribution of Verdicts', level=2)
+    # ======== RESULTS ========
+    h = doc.add_heading('Results', level=1)
+
+    # Overall verdicts
+    doc.add_heading('Overall distribution of verdicts', level=2)
     p = doc.add_paragraph()
     add_superscript_refs(p,
-        f"Of the 52 canonical curves examined, {n_robust} ({100*n_robust/52:.0f}%) demonstrated "
-        f"robust nonlinearity, {n_outlier} ({100*n_outlier/52:.0f}%) were outlier-dependent, "
+        f"Of 52 canonical curves, {n_robust} ({100*n_robust/52:.0f}%) demonstrated robust "
+        f"nonlinearity, {n_outlier} ({100*n_outlier/52:.0f}%) were outlier-dependent, "
         f"{n_ns} ({100*n_ns/52:.0f}%) showed no significant nonlinearity, and "
         f"{n_overfit} ({100*n_overfit/52:.0f}%) exhibited overfitting (Fig. 1). "
-        f"This distribution suggests that nearly two-thirds of textbook nonlinear relationships "
-        f"either fail to reach significance or are driven by a small number of influential observations."
+        f"Approximately two-thirds of textbook nonlinear relationships either failed to "
+        f"reach significance or were driven by a small number of influential observations."
     )
 
-    # Insert Figure 1
+    # Figure 1
     doc.add_paragraph()
-    doc.add_picture(os.path.join(FIGURES_DIR, 'fig1_verdict_distribution.png'), width=Inches(6.0))
+    fig1_path = os.path.join(FIGURES_DIR, 'fig1_verdict_distribution.png')
+    if os.path.exists(fig1_path):
+        doc.add_picture(fig1_path, width=Inches(5.5))
+        p = doc.add_paragraph()
+        p.paragraph_format.space_before = Pt(6)
+        run = p.add_run('Fig. 1 ')
+        run.bold = True
+        p.add_run('Distribution of verdicts across 52 canonical curves, stratified by domain.')
+
+    # Domain-level results (dynamic)
+    doc.add_heading('Results by domain', level=2)
+
+    # Economics
+    econ = domains.get('Economics', {})
+    econ_v = econ.get('verdicts', {})
+    phillips = get_curve_result(results, 'Phillips Curve')
+    kuznets = get_curve_result(results, 'Kuznets Curve')
     p = doc.add_paragraph()
-    run = p.add_run('Figure 1. ')
+    run = p.add_run('Economics. ')
     run.bold = True
-    p.add_run('Distribution of verdicts across 52 canonical curves. (A) Overall pie chart. '
-              '(B) Verdicts stratified by academic domain.')
-    p.paragraph_format.space_before = Pt(6)
-
-    # Results by domain
-    doc.add_heading('3.2 Economics', level=2)
-    econ_text = (
-        "Of the 12 economics curves examined, 7 showed no significant nonlinearity, "
-        "4 were outlier-dependent, and only 1 (J-Curve for trade) demonstrated robust "
-        "nonlinearity. Notable findings include: (a) the Phillips Curve shows no significant "
-        "nonlinearity in US data 1960-2023 (F=0.05, p=0.82); (b) the Kuznets Curve's "
-        "inverted-U is not statistically significant with 60 countries (p=0.25); "
-        "(c) the Environmental Kuznets Curve for CO2 is significant (p=0.003) but becomes "
-        "non-significant after removing 3 high-income high-emission countries (p=0.11); "
-        "(d) the Laffer Curve and Great Gatsby Curve are similarly outlier-dependent."
-    )
-    doc.add_paragraph(econ_text)
-
-    doc.add_heading('3.3 Public Health and Epidemiology', level=2)
-    health_text = (
-        "Public health curves showed the highest rate of robust nonlinearity (8 of 10). "
-        "The BMI-Mortality J-curve, Alcohol-Mortality J-curve, Barker Hypothesis U-shape, "
-        "and LNT dose-response all survived rigorous testing. The Preston Curve maintained "
-        "significance after outlier removal (p=0.003), though the log model is strongly "
-        "preferred over quadratic by BIC. The Wilkinson Curve (inequality vs. health) "
-        "showed no significant relationship (p=0.75), and the Fries Compression of "
-        "Morbidity was outlier-dependent."
-    )
-    doc.add_paragraph(health_text)
-
-    doc.add_heading('3.4 Demography', level=2)
-    demo_text = (
-        "The demographic domain showed mixed results. The Lee-Carter mortality decline "
-        "and Coale-Trussell fertility schedule demonstrated robust nonlinearity, while "
-        "the Bongaarts-Feeney tempo effect and Second Demographic Transition showed no "
-        "significant nonlinearity. The Demographic Transition model was classified as "
-        "overfitting: the quadratic term is significant but LOOCV favors the linear model, "
-        "suggesting that the apparent curvature does not improve out-of-sample prediction."
-    )
-    doc.add_paragraph(demo_text)
-
-    doc.add_heading('3.5 Environmental Science', level=2)
-    env_text = (
-        "Environmental curves showed the most heterogeneous results. The Keeling Curve's "
-        "acceleration is robustly nonlinear (p < 10\u207b\u00b9\u2075), as expected for an "
-        "exponentially increasing trend. However, the Species-Area Curve in log-log space "
-        "is outlier-dependent (p=0.009 full, p=0.38 after removal), suggesting that the "
-        "power-law exponent z \u2248 0.25 may be driven by a few extreme island sizes. "
-        "The Hubbert Peak Oil curve for the US shows no significant quadratic trend (p=0.90) "
-        "due to the shale revolution creating a second peak."
-    )
-    doc.add_paragraph(env_text)
-
-    doc.add_heading('3.6 Psychology', level=2)
-    psych_text = (
-        "Four of five psychology curves showed robust nonlinearity: Yerkes-Dodson, "
-        "Ebbinghaus forgetting, Dunning-Kruger, and the Happiness U-Curve. However, "
-        "the Weber-Fechner Law (in log-transformed space) did not show significant "
-        "departure from linearity (p=0.07), consistent with Stevens' Power Law being "
-        "a better descriptor. The Dunning-Kruger result is notable: despite criticisms "
-        "of the effect as a statistical artifact, the quadratic relationship between "
-        "actual and self-assessed performance remains highly significant (p < 10\u207b\u00b9\u2074) "
-        "and survives outlier removal."
-    )
-    doc.add_paragraph(psych_text)
-
-    doc.add_heading('3.7 Physics and Natural Sciences', level=2)
-    phys_text = (
-        "Physics curves showed surprising fragility. Hubble's Law, while linear by "
-        "theoretical expectation, shows marginal nonlinearity (p=0.035) that becomes "
-        "non-significant after outlier removal (p=0.085), consistent with the known "
-        "influence of peculiar velocities for nearby galaxies. Kleiber's Law in log-log "
-        "space shows no significant departure from linearity (p=0.36), confirming the "
-        "power-law relationship. The Gutenberg-Richter law is outlier-dependent in "
-        "log-linear space (p=0.004 full, p=0.056 clean), driven by the rarest "
-        "mega-earthquakes. Moore's Law shows no significant quadratic deceleration "
-        "in log space (p=0.71)."
-    )
-    doc.add_paragraph(phys_text)
-
-    doc.add_heading('3.8 Political Science', level=2)
-    pol_text = (
-        "The Lipset Hypothesis (income vs. democracy) is the most dramatic outlier-dependent "
-        "case: highly significant with full data (p=0.0001) but completely non-significant "
-        "after removing Gulf oil states (p=0.37). Duverger's Law shows no significant "
-        "nonlinearity (p=0.45), nor does Zipf's Law for US cities (p=0.15). The "
-        "Crime-Temperature curve is outlier-dependent, with the apparent downturn at "
-        "extreme temperatures driven by a few data points."
-    )
-    doc.add_paragraph(pol_text)
-
-    doc.add_heading('3.9 Agriculture', level=2)
-    agr_text = (
-        "The Mitscherlich yield response curve shows robust nonlinearity (p < 10\u207b\u2079), "
-        "confirming the well-established diminishing returns to fertilizer application. "
-        "The Micronutrient U-shape for Vitamin D is also robust. However, the Green "
-        "Revolution yield curve does not show significant nonlinear deceleration (p=0.28) "
-        "in global data, and the Body Weight Set-Point shows predominantly linear "
-        "calorie-weight relationship (p=0.74)."
-    )
-    doc.add_paragraph(agr_text)
-
-    # Insert Figure 2
-    doc.add_heading('3.10 Sensitivity Analysis', level=2)
-    p = doc.add_paragraph(
-        "Figure 2 displays the relationship between p-values from the full dataset and "
-        "after outlier removal. Points in the upper-left quadrant (significant with full "
-        "data, non-significant after removal) represent outlier-dependent curves. The "
-        "concentration of points in this region, particularly from economics and political "
-        "science, highlights the vulnerability of cross-country nonlinear relationships "
-        "to influential observations (Fig. 2)."
+    p.add_run(
+        f"Of 12 curves, {econ_v.get('NOT_SIGNIFICANT', 0)} were non-significant, "
+        f"{econ_v.get('OUTLIER_DEPENDENT', 0)} were outlier-dependent, and "
+        f"{econ_v.get('ROBUST_NONLINEAR', 0)} demonstrated robust nonlinearity. "
+        f"The Phillips Curve showed no significant nonlinearity "
+        f"(p={fmt_p(phillips['f_test']['p_value'])}). "
+        f"The Kuznets Curve's inverted-U was not significant with {kuznets['n']} countries "
+        f"(p={fmt_p(kuznets['f_test']['p_value'])}). "
+        "The Environmental Kuznets Curve (CO\u2082), Laffer Curve, and Great Gatsby Curve "
+        "were all outlier-dependent."
     )
 
-    doc.add_paragraph()
-    doc.add_picture(os.path.join(FIGURES_DIR, 'fig2_sensitivity_analysis.png'), width=Inches(5.5))
+    # Public Health
+    health = domains.get('Public Health', {})
+    health_v = health.get('verdicts', {})
+    preston = get_curve_result(results, 'Preston Curve')
     p = doc.add_paragraph()
-    run = p.add_run('Figure 2. ')
+    run = p.add_run('Public health. ')
     run.bold = True
-    p.add_run('Sensitivity of F-test p-values to outlier removal. Each point represents one '
-              'curve. Points above the horizontal dashed line (p=0.05) lost significance '
-              'after removing top 3 influential observations.')
-    p.paragraph_format.space_before = Pt(6)
-
-    # ======== Table 1: Summary ========
-    doc.add_heading('3.11 Summary Table', level=2)
-    p = doc.add_paragraph(
-        "Table 1 presents the complete results for all 52 curves, organized by discipline."
+    preston_desc = (
+        f"The Preston Curve with real World Bank data (N={preston['n']}) showed "
+        f"no significant nonlinearity (p={fmt_p(preston['f_test']['p_value'])}), "
+        "consistent with a log-linear relationship"
+    ) if preston['verdict']['verdict'] == 'NOT_SIGNIFICANT' else (
+        f"The Preston Curve showed {preston['verdict']['verdict'].lower().replace('_', ' ')}"
+    )
+    p.add_run(
+        f"Public health curves showed the highest robustness rate "
+        f"({health_v.get('ROBUST_NONLINEAR', 0)}/{health.get('total', 10)} robust). "
+        f"The BMI-Mortality J-curve, Alcohol-Mortality J-curve, and Barker Hypothesis "
+        f"U-shape all survived rigorous testing. {preston_desc}."
     )
 
-    # Create summary table
+    # Demography
+    demo = domains.get('Demography', {})
+    demo_v = demo.get('verdicts', {})
+    dt = get_curve_result(results, 'Demographic Transition (TFR)')
+    p = doc.add_paragraph()
+    run = p.add_run('Demography. ')
+    run.bold = True
+    dt_desc = (
+        f"The Demographic Transition model (N={dt['n']}) was classified as "
+        f"{dt['verdict']['verdict'].lower().replace('_', ' ')} "
+        f"(p={fmt_p(dt['f_test']['p_value'])})"
+    )
+    p.add_run(
+        f"Of 6 curves, {demo_v.get('ROBUST_NONLINEAR', 0)} showed robust nonlinearity, "
+        f"{demo_v.get('NOT_SIGNIFICANT', 0)} were non-significant, and "
+        f"{demo_v.get('OUTLIER_DEPENDENT', 0)} were outlier-dependent. "
+        f"{dt_desc}. The Lee-Carter mortality model and Coale-Trussell fertility schedule "
+        f"demonstrated robust nonlinearity."
+    )
+
+    # Environmental Science
+    env = domains.get('Environmental Science', {})
+    env_v = env.get('verdicts', {})
+    p = doc.add_paragraph()
+    run = p.add_run('Environmental science. ')
+    run.bold = True
+    forest = get_curve_result(results, 'Forest Transition Curve')
+    p.add_run(
+        f"Of 6 curves, {env_v.get('ROBUST_NONLINEAR', 0)} showed robust nonlinearity "
+        f"(Keeling Curve), {env_v.get('NOT_SIGNIFICANT', 0)} were non-significant, and "
+        f"{env_v.get('OUTLIER_DEPENDENT', 0)} were outlier-dependent. "
+        f"The Forest Transition Curve with real data (N={forest['n']}) was "
+        f"non-significant (p={fmt_p(forest['f_test']['p_value'])})."
+    )
+
+    # Psychology
+    psych = domains.get('Psychology', {})
+    psych_v = psych.get('verdicts', {})
+    p = doc.add_paragraph()
+    run = p.add_run('Psychology. ')
+    run.bold = True
+    p.add_run(
+        f"Psychology showed high robustness: {psych_v.get('ROBUST_NONLINEAR', 0)}/5 "
+        f"curves were robust (Yerkes-Dodson, Ebbinghaus, Dunning-Kruger, Happiness U-Curve). "
+        f"Only the Weber-Fechner Law was non-significant."
+    )
+
+    # Physics, Political Science, Agriculture (brief)
+    phys = domains.get('Physics', {})
+    phys_v = phys.get('verdicts', {})
+    p = doc.add_paragraph()
+    run = p.add_run('Physics. ')
+    run.bold = True
+    p.add_run(
+        f"All 4 physics curves failed: {phys_v.get('NOT_SIGNIFICANT', 0)} non-significant, "
+        f"{phys_v.get('OUTLIER_DEPENDENT', 0)} outlier-dependent. "
+        "Hubble's Law and Gutenberg-Richter were outlier-dependent; "
+        "Kleiber's Law and Moore's Law were non-significant in log space."
+    )
+
+    pol = domains.get('Political Science', {})
+    pol_v = pol.get('verdicts', {})
+    lipset = get_curve_result(results, 'Lipset Hypothesis')
+    p = doc.add_paragraph()
+    run = p.add_run('Political science. ')
+    run.bold = True
+    p.add_run(
+        f"The Lipset Hypothesis was outlier-dependent "
+        f"(p={fmt_p(lipset['f_test']['p_value'])} full, "
+        f"p={fmt_p(lipset['sensitivity']['p_clean'])} after removal of Gulf oil states). "
+        f"{pol_v.get('NOT_SIGNIFICANT', 0)}/5 were non-significant."
+    )
+
+    agr = domains.get('Agriculture', {})
+    agr_v = agr.get('verdicts', {})
+    p = doc.add_paragraph()
+    run = p.add_run('Agriculture. ')
+    run.bold = True
+    p.add_run(
+        f"{agr_v.get('ROBUST_NONLINEAR', 0)}/4 robust (Mitscherlich yield, "
+        f"Micronutrient U-shape); {agr_v.get('NOT_SIGNIFICANT', 0)}/4 non-significant."
+    )
+
+    # Sensitivity figure
+    doc.add_heading('Sensitivity analysis', level=2)
+    p = doc.add_paragraph(
+        "Fig. 2 displays p-values before and after outlier removal. Points in the "
+        "upper-left quadrant (significant full data, non-significant after removal) "
+        "represent outlier-dependent curves, concentrated in economics and political science."
+    )
+    fig2_path = os.path.join(FIGURES_DIR, 'fig2_sensitivity_analysis.png')
+    if os.path.exists(fig2_path):
+        doc.add_paragraph()
+        doc.add_picture(fig2_path, width=Inches(5.0))
+        p = doc.add_paragraph()
+        p.paragraph_format.space_before = Pt(6)
+        run = p.add_run('Fig. 2 ')
+        run.bold = True
+        p.add_run('Sensitivity of F-test p-values to outlier removal (Cook\'s distance top 3).')
+
+    # Summary table
+    doc.add_heading('Summary of all results', level=2)
+    p = doc.add_paragraph("Table 1 presents complete results for all 52 curves.")
+
     df = pd.read_csv(os.path.join(RESULTS_DIR, 'summary_table.csv'))
-
     table = doc.add_table(rows=1, cols=7)
     table.style = 'Table Grid'
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
 
-    headers = ['#', 'Curve', 'N', 'p (full)', 'p (clean)', 'Best BIC', 'Verdict']
+    headers = ['#', 'Curve', 'N', 'p (full)', 'p (clean)', 'BIC best', 'Verdict']
     for i, h_text in enumerate(headers):
         cell = table.rows[0].cells[i]
         cell.text = h_text
@@ -490,123 +504,150 @@ def create_manuscript():
     for idx, row in df.iterrows():
         row_cells = table.add_row().cells
         row_cells[0].text = str(idx + 1)
-        row_cells[1].text = str(row['Curve'])[:30]
+        row_cells[1].text = str(row['Curve'])[:28]
         row_cells[2].text = str(row['N'])
         p_full = row['p (full)']
-        row_cells[3].text = f"{p_full:.4f}" if p_full > 0.0001 else f"{p_full:.2e}"
+        row_cells[3].text = f"{p_full:.4f}" if p_full > 0.0001 else f"{p_full:.1e}"
         p_clean = row['p (clean)']
-        row_cells[4].text = f"{p_clean:.4f}" if p_clean > 0.0001 else f"{p_clean:.2e}"
+        row_cells[4].text = f"{p_clean:.4f}" if p_clean > 0.0001 else f"{p_clean:.1e}"
         row_cells[5].text = str(row['BIC best'])
         row_cells[6].text = str(row['Verdict']).replace('_', ' ')
-
         for cell in row_cells:
             for para in cell.paragraphs:
                 for run in para.runs:
                     run.font.size = Pt(7)
 
     p = doc.add_paragraph()
-    p.paragraph_format.space_before = Pt(12)
-    run = p.add_run('Table 1. ')
+    p.paragraph_format.space_before = Pt(8)
+    run = p.add_run('Table 1 ')
     run.bold = True
-    p.add_run('Summary of re-examination results for 52 canonical curves. '
-              'p (full) = F-test p-value with all data; p (clean) = after removing '
-              'top 3 Cook\'s distance points; Best BIC = model preferred by Bayesian '
-              'Information Criterion.')
+    p.add_run('Summary of re-examination results. p (full) = nested F-test with all data; '
+              'p (clean) = after removing top 3 Cook\'s distance points.')
 
-    # Insert Figure 3
-    doc.add_paragraph()
-    doc.add_picture(os.path.join(FIGURES_DIR, 'fig3_model_comparison.png'), width=Inches(5.5))
-    p = doc.add_paragraph()
-    run = p.add_run('Figure 3. ')
-    run.bold = True
-    p.add_run('Model preference by AIC (left) and BIC (right). BIC more strongly '
-              'penalizes complexity and thus favors parsimony.')
-    p.paragraph_format.space_before = Pt(6)
+    # ======== DISCUSSION ========
+    h = doc.add_heading('Discussion', level=1)
 
-    # ======== 4. DISCUSSION ========
-    h = doc.add_heading('4. Discussion', level=1)
-
-    doc.add_heading('4.1 Cross-Cutting Patterns', level=2)
-    p = doc.add_paragraph()
-    add_superscript_refs(p,
-        "Our analysis reveals five cross-cutting patterns in the fragility of canonical curves:"
-    )
+    disc_paras = [
+        (f"This systematic audit reveals that {100*(n_ns + n_outlier + n_overfit)/52:.0f}% "
+         f"of established nonlinear relationships fail at least one modern robustness test. "
+         f"Five cross-cutting patterns emerge:"),
+    ]
+    for text in disc_paras:
+        doc.add_paragraph(text)
 
     patterns = [
-        ("Outlier-driven nonlinearity (23% of curves): The most common failure mode involves "
-         "1-3 observations that drive the curvature. In cross-country analyses, these are often "
-         "geopolitically distinctive nations (oil states for Lipset, the US for Great Gatsby and "
-         "Preston, Nigeria for Engel)."),
-        ("Domain asymmetry: Public health and psychology curves are substantially more robust "
-         "(80% and 80% passing) than economics curves (8% passing). This likely reflects the "
-         "mechanistic basis of dose-response and psychophysical relationships versus the "
-         "contingent nature of macroeconomic regularities."),
-        ("Time-series vs. cross-section: Time-series curves (Lee-Carter, Keeling, Ebbinghaus) "
-         "are more robust than cross-sectional ones (Kuznets, Lipset, Wilkinson), likely because "
-         "time-series data are less vulnerable to compositional effects and unmeasured confounders."),
-        ("Log transformation resolves apparent nonlinearity: In many cases (Preston, Engel, "
-         "Balassa-Samuelson), a simple log transformation of the predictor produces a linear "
-         "relationship, suggesting that the 'canonical curve' is merely a linear relationship "
-         "on the wrong scale."),
-        ("BIC is more conservative: BIC selects the linear model in several cases where AIC "
-         "prefers the quadratic, reflecting BIC's stronger penalty for complexity. When BIC "
-         "and AIC disagree, the curve is typically in the borderline zone and should be "
-         "interpreted cautiously."),
+        "Outlier-driven nonlinearity: the most common failure mode. In cross-country analyses, "
+        "1\u20133 geopolitically distinctive nations (oil states, the US) drive curvature.",
+        "Domain asymmetry: public health and psychology curves are substantially more robust "
+        "than economics or political science curves, likely reflecting mechanistic versus "
+        "contingent relationships.",
+        "Time-series vs. cross-section: time-series curves are more robust, likely because "
+        "they are less vulnerable to compositional effects.",
+        "Log transformation resolves apparent nonlinearity: in many cases a simple log "
+        "transformation produces a linear relationship, suggesting the 'canonical curve' is "
+        "linear on the wrong scale.",
+        "BIC is more conservative than AIC: BIC selects the linear model more frequently, "
+        "reflecting stronger complexity penalties.",
     ]
-    for pat in patterns:
-        p = doc.add_paragraph(pat, style='List Number')
+    for i, pat in enumerate(patterns, 1):
+        doc.add_paragraph(f"{i}. {pat}")
 
-    doc.add_heading('4.2 Implications for Policy', level=2)
-    policy_text = (
+    doc.add_paragraph(
         "Several outlier-dependent curves have direct policy implications. The Laffer Curve "
-        "is used to justify tax rate reductions; our analysis shows its empirical basis is "
-        "fragile across OECD nations. The Environmental Kuznets Curve for CO2 is frequently "
-        "cited to argue that economic growth will eventually resolve emissions problems; this "
-        "relationship is not robust after removing high-income oil producers. The Lipset "
-        "Hypothesis underpins modernization theory in political science; its nonlinearity "
-        "depends almost entirely on Gulf state outliers."
+        "is used to justify tax reductions; the Environmental Kuznets Curve is cited to argue "
+        "that growth resolves pollution; the Lipset Hypothesis underpins modernization theory. "
+        "Our findings suggest that the empirical bases of these policy-relevant claims are "
+        "more fragile than commonly assumed."
     )
-    doc.add_paragraph(policy_text)
 
-    doc.add_heading('4.3 Limitations', level=2)
-    limitations = (
-        "Several limitations should be noted. First, our analysis is restricted to bivariate "
-        "relationships; many canonical curves may be better specified in multivariate settings. "
+    # ======== LIMITATIONS ========
+    h = doc.add_heading('Limitations', level=1)
+
+    limitations = [
+        "First, our analysis is restricted to bivariate relationships; many canonical curves "
+        "may be better specified in multivariate settings.",
         "Second, we use a uniform quadratic alternative, whereas some curves posit specific "
-        "functional forms (e.g., power laws, logistic functions). Third, our data are "
-        "representative but not exhaustive; larger datasets might reveal patterns not visible "
-        "here. Fourth, we test only concavity/convexity, not the existence of any relationship. "
-        "A curve classified as 'not significantly nonlinear' may still have a significant "
-        "linear component. Finally, for some curves (especially in psychology and demography), "
-        "we rely on representative or meta-analytic data rather than individual-level microdata."
-    )
-    doc.add_paragraph(limitations)
-
-    doc.add_heading('4.4 Recommendations for Researchers', level=2)
-    recs = [
-        "Always test whether a log-transformation linearizes the relationship before reporting nonlinearity.",
-        "Report Cook's distance analysis and sensitivity to influential observations.",
-        "Distinguish between statistical significance and practical significance of curvature.",
-        "Use BIC rather than AIC when the goal is model identification rather than prediction.",
-        "Report LOOCV alongside in-sample fit to guard against overfitting.",
+        "functional forms (power laws, logistic functions).",
+        "Third, although 8 curves use real World Bank API data (N=31\u2013247), the remaining "
+        "44 curves use representative or published data with smaller sample sizes.",
+        "Fourth, we test only the significance of curvature, not the existence of any "
+        "relationship. A curve classified as non-significant may still have a significant "
+        "linear component.",
+        "Finally, for some curves (psychology, demography), we rely on aggregate or "
+        "meta-analytic data rather than individual-level microdata.",
     ]
-    for r in recs:
-        doc.add_paragraph(r, style='List Number')
+    for lim in limitations:
+        doc.add_paragraph(lim)
 
-    # ======== 5. CONCLUSION ========
-    h = doc.add_heading('5. Conclusion', level=1)
-    conclusion = (
-        f"This systematic re-examination of 52 canonical curves reveals that "
-        f"{100*(n_ns + n_outlier + n_overfit)/52:.0f}% of established nonlinear relationships "
-        f"fail at least one modern robustness test. The most common failure mode is outlier "
-        f"dependence ({100*n_outlier/52:.0f}%), followed by non-significance ({100*n_ns/52:.0f}%). "
-        f"Only {100*n_robust/52:.0f}% of curves demonstrate nonlinearity that is statistically "
-        f"significant, survives outlier removal, and shows superior out-of-sample prediction. "
-        f"These findings urge caution in citing canonical curves as empirical support for "
-        f"nonlinear theories, particularly in policy-relevant contexts where the shape of "
-        f"the relationship (not merely its existence) determines optimal interventions."
+    # ======== CONCLUSIONS ========
+    h = doc.add_heading('Conclusions', level=1)
+
+    doc.add_paragraph(
+        f"This systematic re-examination of 52 canonical curves reveals that only "
+        f"{100*n_robust/52:.0f}% demonstrate nonlinearity that is statistically significant, "
+        f"survives outlier removal, and shows superior out-of-sample prediction. "
+        f"Researchers should routinely report sensitivity analyses and model comparison "
+        f"criteria when invoking canonical curves. Policymakers should be cautious about "
+        f"interventions premised on specific curve shapes\u2014particularly the Laffer Curve, "
+        f"Environmental Kuznets Curve, and Lipset Hypothesis\u2014whose empirical bases are "
+        f"outlier-dependent."
     )
-    doc.add_paragraph(conclusion)
+
+    # ======== LIST OF ABBREVIATIONS ========
+    doc.add_page_break()
+    h = doc.add_heading('List of abbreviations', level=1)
+    abbreviations = [
+        ("AIC", "Akaike Information Criterion"),
+        ("BIC", "Bayesian Information Criterion"),
+        ("CO\u2082", "Carbon dioxide"),
+        ("EKC", "Environmental Kuznets Curve"),
+        ("GDP", "Gross Domestic Product"),
+        ("LOOCV", "Leave-one-out cross-validation"),
+        ("LNT", "Linear No-Threshold"),
+        ("OLS", "Ordinary least squares"),
+        ("PPP", "Purchasing power parity"),
+        ("RMSE", "Root mean squared error"),
+        ("TFR", "Total fertility rate"),
+        ("WDI", "World Development Indicators"),
+    ]
+    for abbr, full in abbreviations:
+        p = doc.add_paragraph()
+        run = p.add_run(f"{abbr}: ")
+        run.bold = True
+        p.add_run(full)
+
+    # ======== DECLARATIONS ========
+    doc.add_page_break()
+    h = doc.add_heading('Declarations', level=1)
+
+    doc.add_heading('Ethics approval and consent to participate', level=2)
+    doc.add_paragraph("Not applicable. This study uses publicly available aggregate data only.")
+
+    doc.add_heading('Consent for publication', level=2)
+    doc.add_paragraph("Not applicable.")
+
+    doc.add_heading('Availability of data and materials', level=2)
+    doc.add_paragraph(
+        "All analysis code, data, and results are publicly available at "
+        "[GitHub repository URL]. World Bank data were accessed via the wbgapi Python "
+        "library. The complete source metadata table for all 52 curves is provided "
+        "in Additional file 1."
+    )
+
+    doc.add_heading('Competing interests', level=2)
+    doc.add_paragraph("The author declares no competing interests.")
+
+    doc.add_heading('Funding', level=2)
+    doc.add_paragraph("[To be completed]")
+
+    doc.add_heading('Authors\u2019 contributions', level=2)
+    doc.add_paragraph(
+        "TO conceived the study, designed the analytical framework, collected and analyzed "
+        "data, interpreted results, and wrote the manuscript."
+    )
+
+    doc.add_heading('Acknowledgements', level=2)
+    doc.add_paragraph("[To be completed]")
 
     # ======== REFERENCES ========
     doc.add_page_break()
@@ -622,6 +663,8 @@ def create_manuscript():
         "Grossman GM, Krueger AB. Environmental impacts of a North American free trade agreement. NBER Working Paper 3914. 1991.",
         "Stern DI. The rise and fall of the environmental Kuznets curve. World Dev. 2004;32(8):1419-1439.",
         "Krueger J, Mueller RA. Unskilled, unaware, or both? The better-than-average heuristic and statistical regression predict errors in estimates of own performance. J Pers Soc Psychol. 2002;82(2):180-188.",
+        "Open Science Collaboration. Estimating the reproducibility of psychological science. Science. 2015;349(6251):aac4716.",
+        "Ioannidis JPA. Why most published research findings are false. PLoS Med. 2005;2(8):e124.",
     ]
 
     for i, ref in enumerate(references, 1):
@@ -629,8 +672,45 @@ def create_manuscript():
         run = p.add_run(f"{i}. ")
         run.bold = True
         p.add_run(ref)
-        p.paragraph_format.first_line_indent = Pt(0)
         p.paragraph_format.left_indent = Cm(1)
+
+    # ======== ADDITIONAL FILE ========
+    doc.add_page_break()
+    h = doc.add_heading('Additional file 1: Source metadata table', level=1)
+    doc.add_paragraph(
+        "Complete data source information for all 52 curves, including original publication, "
+        "data source, sample size, variable definitions, and claimed functional form."
+    )
+
+    source_meta_path = os.path.join(DATA_DIR, 'source_metadata.json')
+    if os.path.exists(source_meta_path):
+        with open(source_meta_path, 'r', encoding='utf-8') as f:
+            sources = json.load(f)
+
+        table = doc.add_table(rows=1, cols=6)
+        table.style = 'Table Grid'
+        table.alignment = WD_TABLE_ALIGNMENT.CENTER
+
+        headers = ['#', 'Curve', 'Original paper', 'Data source', 'N', 'Claimed form']
+        for i, h_text in enumerate(headers):
+            cell = table.rows[0].cells[i]
+            cell.text = h_text
+            cell.paragraphs[0].runs[0].bold = True
+            cell.paragraphs[0].runs[0].font.size = Pt(7)
+
+        for src in sources:
+            row_cells = table.add_row().cells
+            row_cells[0].text = str(src['id'])
+            row_cells[1].text = src['name'][:25]
+            row_cells[2].text = src['original_paper'][:40]
+            row_cells[3].text = src['data_source'][:45]
+            n_val = src.get('current_n')
+            row_cells[4].text = str(n_val) if n_val else 'WB API'
+            row_cells[5].text = src['claimed_form'][:30]
+            for cell in row_cells:
+                for para in cell.paragraphs:
+                    for run in para.runs:
+                        run.font.size = Pt(6.5)
 
     # Save
     output_path = os.path.join(BASE_DIR, 'manuscript_canonical_curves_en.docx')
