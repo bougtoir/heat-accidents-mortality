@@ -204,7 +204,7 @@ phi, grad_e, curl_e, total_e, grad_flows, curl_flows, edges, flows = hodge_decom
 # CCI matrix
 CCI = compute_cci_matrix(eigenvectors, eigenvalues, n_vars)
 
-print(f"r_gradient = {grad_e/total_e:.3f}")
+print(f"r_gradient = {grad_e/total_e:.3f}" if total_e > 1e-12 else "r_gradient = N/A (zero total energy)")
 print(f"Causal potential: {dict(zip(labels, phi.round(3)))}")
 
 # ============================================================
