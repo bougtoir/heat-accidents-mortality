@@ -12,7 +12,7 @@ from pptx.enum.shapes import MSO_SHAPE
 from PIL import Image
 import os
 
-FIGS = '/home/ubuntu/figures'
+FIGS = os.path.join(os.path.dirname(__file__), '..', 'output', 'figures')
 
 # ── Color palette ──
 C_CANDIDATE = RGBColor(0x21, 0x96, 0xF3)
@@ -26,7 +26,7 @@ C_DARK      = RGBColor(0x1A, 0x1A, 0x2E)
 C_GRAY      = RGBColor(0x99, 0x99, 0x99)
 C_BROWN     = RGBColor(0x79, 0x55, 0x48)
 C_CYAN      = RGBColor(0x00, 0xBC, 0xD4)
-C_TASUKI       = RGBColor(0xE9, 0x1E, 0x63)
+C_TATSUKI       = RGBColor(0xE9, 0x1E, 0x63)
 
 def add_rounded_box(slide, left, top, width, height, text, fill_color, font_size=10):
     """Add a rounded rectangle with centered white text."""
@@ -136,7 +136,7 @@ def build_slide1_en(prs):
     add_arrow_shape(slide, x1 + bw + arrow_gap, arrow_y_bot,
                     x2 - x1 - bw - 2 * arrow_gap, arrow_h, C_DARK, 'left')
     add_arrow_shape(slide, x1 + bw // 2 - Inches(0.12), y_top + bh + arrow_gap,
-                    Inches(0.24), y_bot - y_top - bh - 2 * arrow_gap, C_TASUKI, 'up')
+                    Inches(0.24), y_bot - y_top - bh - 2 * arrow_gap, C_TATSUKI, 'up')
 
     # LAYER 2: Phase boxes ON TOP of arrows
     add_rounded_box(slide, x1, y_top, bw, bh,
@@ -160,13 +160,13 @@ def build_slide1_en(prs):
 
     # LAYER 3: Title and text labels (on top of everything)
     add_text_box(slide, Inches(0.5), Inches(0.15), Inches(9), Inches(0.5),
-                 'Figure 1. TASUKI Conceptual Overview', font_size=20,
+                 'Figure 1. TATSUKI Conceptual Overview', font_size=20,
                  bold=True, color=C_DARK, alignment=PP_ALIGN.CENTER)
     add_text_box(slide, Inches(0.5), Inches(0.55), Inches(9), Inches(0.3),
-                 'Trust-Adjusted Scoring with Unified Knowledge Integration (襟) — 6-Phase Cycle',
+                 'Trust-Adjusted Transparent Scoring with Unified Knowledge Integration (襷) — 6-Phase Cycle',
                  font_size=12, italic=True, color=C_GRAY, alignment=PP_ALIGN.CENTER)
     add_text_box(slide, Inches(0.0), Inches(2.1), Inches(0.7), Inches(0.4),
-                 'Next\nCycle', font_size=9, bold=True, color=C_TASUKI,
+                 'Next\nCycle', font_size=9, bold=True, color=C_TATSUKI,
                  alignment=PP_ALIGN.CENTER)
 
     add_text_box(slide, Inches(0.5), Inches(4.3), Inches(9), Inches(0.35),
@@ -183,7 +183,7 @@ def build_slide1_en(prs):
                  font_size=12, italic=True, color=C_DARK, alignment=PP_ALIGN.CENTER)
 
     add_text_box(slide, Inches(0.5), Inches(6.6), Inches(9), Inches(0.5),
-                 'Figure 1. Conceptual overview of the TASUKI mechanism showing the six phases of each electoral cycle: '
+                 'Figure 1. Conceptual overview of the TATSUKI mechanism showing the six phases of each electoral cycle: '
                  'pledge declaration, election, term in office, fulfillment evaluation, accountability score computation, '
                  'and trust coefficient update.',
                  font_size=9, italic=True, color=C_GRAY, alignment=PP_ALIGN.CENTER)
@@ -217,7 +217,7 @@ def build_slide1_ja(prs):
     add_arrow_shape(slide, x1 + bw + arrow_gap, arrow_y_bot,
                     x2 - x1 - bw - 2 * arrow_gap, arrow_h, C_DARK, 'left')
     add_arrow_shape(slide, x1 + bw // 2 - Inches(0.12), y_top + bh + arrow_gap,
-                    Inches(0.24), y_bot - y_top - bh - 2 * arrow_gap, C_TASUKI, 'up')
+                    Inches(0.24), y_bot - y_top - bh - 2 * arrow_gap, C_TATSUKI, 'up')
 
     # LAYER 2: Phase boxes
     add_rounded_box(slide, x1, y_top, bw, bh,
@@ -241,13 +241,13 @@ def build_slide1_ja(prs):
 
     # LAYER 3: Title and text labels
     add_text_box(slide, Inches(0.5), Inches(0.15), Inches(9), Inches(0.5),
-                 '図1. TASUKI 概念的概要', font_size=20,
+                 '図1. TATSUKI 概念的概要', font_size=20,
                  bold=True, color=C_DARK, alignment=PP_ALIGN.CENTER)
     add_text_box(slide, Inches(0.5), Inches(0.55), Inches(9), Inches(0.3),
                  '統合的知識に基づく信頼調整型評価システム（襟）— 6フェーズサイクル',
                  font_size=12, italic=True, color=C_GRAY, alignment=PP_ALIGN.CENTER)
     add_text_box(slide, Inches(0.0), Inches(2.1), Inches(0.7), Inches(0.4),
-                 '次の\nサイクル', font_size=9, bold=True, color=C_TASUKI,
+                 '次の\nサイクル', font_size=9, bold=True, color=C_TATSUKI,
                  alignment=PP_ALIGN.CENTER)
 
     add_text_box(slide, Inches(0.5), Inches(4.3), Inches(9), Inches(0.35),
@@ -264,7 +264,7 @@ def build_slide1_ja(prs):
                  font_size=12, italic=True, color=C_DARK, alignment=PP_ALIGN.CENTER)
 
     add_text_box(slide, Inches(0.5), Inches(6.6), Inches(9), Inches(0.5),
-                 '図1. TASUKIメカニズムの概念的概要。各選挙サイクルの6フェーズを示す：'
+                 '図1. TATSUKIメカニズムの概念的概要。各選挙サイクルの6フェーズを示す：'
                  '公約宣言、選挙、任期、実現度評価、説明責任得点算出、信任係数更新。',
                  font_size=9, italic=True, color=C_GRAY, alignment=PP_ALIGN.CENTER)
 
@@ -347,7 +347,7 @@ def build_slide6_en(prs):
         ('Weighted\nVoting',                 0.58, 0.55, C_CYAN,      Inches(0.50)),
         ('Quadratic\nVoting',                0.74, 0.55, C_WEIGHT,    Inches(0.55)),
         ('Futarchy',                         0.85, 0.65, C_TERM,      Inches(0.50)),
-        ('TASUKI\n(This Paper)',             0.50, 0.20, C_TASUKI,       Inches(0.75)),
+        ('TATSUKI\n(This Paper)',             0.50, 0.20, C_TATSUKI,       Inches(0.75)),
     ]
 
     # LAYER 3: ALL circles first (so labels appear on top)
@@ -364,9 +364,9 @@ def build_slide6_en(prs):
 
     # LAYER 4: ALL labels on top of circles
     for name, px, py, color, diam in circle_positions:
-        fs = 11 if 'TASUKI' in name else 9
-        bld = 'TASUKI' in name
-        if 'TASUKI' in name:
+        fs = 11 if 'TATSUKI' in name else 9
+        bld = 'TATSUKI' in name
+        if 'TATSUKI' in name:
             label_y = py - diam // 2 - Inches(0.35)
         else:
             label_y = py + diam // 2 + Inches(0.05)
@@ -375,7 +375,7 @@ def build_slide6_en(prs):
 
     # LAYER 5: Title and axis labels (on top of everything)
     add_text_box(slide, Inches(0.5), Inches(0.1), Inches(9), Inches(0.45),
-                 'Figure 6. Theoretical Positioning of TASUKI', font_size=18,
+                 'Figure 6. Theoretical Positioning of TATSUKI', font_size=18,
                  bold=True, color=C_DARK, alignment=PP_ALIGN.CENTER)
     add_text_box(slide, Inches(0.3), Inches(6.85), Inches(9.4), Inches(0.3),
                  'Degree of Departure from One-Person-One-Vote  →',
@@ -389,7 +389,7 @@ def build_slide6_en(prs):
 
     # LAYER 6: Caption
     add_text_box(slide, Inches(0.3), Inches(7.05), Inches(9.4), Inches(0.4),
-                 'Figure 6. Positioning of TASUKI relative to existing electoral reform approaches. '
+                 'Figure 6. Positioning of TATSUKI relative to existing electoral reform approaches. '
                  'Horizontal axis: departure from OPOV. Vertical axis: temporal orientation (retrospective to prospective).',
                  font_size=9, italic=True, color=C_GRAY, alignment=PP_ALIGN.CENTER)
 
@@ -434,7 +434,7 @@ def build_slide6_ja(prs):
         ('加重投票',                         0.58, 0.55, C_CYAN,      Inches(0.50)),
         ('Quadratic\nVoting',                                0.74, 0.55, C_WEIGHT,    Inches(0.55)),
         ('Futarchy',                                         0.85, 0.65, C_TERM,      Inches(0.50)),
-        ('TASUKI\n(本論文)',                     0.50, 0.20, C_TASUKI,       Inches(0.75)),
+        ('TATSUKI\n(本論文)',                     0.50, 0.20, C_TATSUKI,       Inches(0.75)),
     ]
 
     # LAYER 3: ALL circles first
@@ -451,9 +451,9 @@ def build_slide6_ja(prs):
 
     # LAYER 4: ALL labels on top
     for name, px, py, color, diam in circle_positions:
-        fs = 11 if 'TASUKI' in name else 9
-        bld = 'TASUKI' in name
-        if 'TASUKI' in name:
+        fs = 11 if 'TATSUKI' in name else 9
+        bld = 'TATSUKI' in name
+        if 'TATSUKI' in name:
             label_y = py - diam // 2 - Inches(0.35)
         else:
             label_y = py + diam // 2 + Inches(0.05)
@@ -462,7 +462,7 @@ def build_slide6_ja(prs):
 
     # LAYER 5: Title and axis labels
     add_text_box(slide, Inches(0.5), Inches(0.1), Inches(9), Inches(0.45),
-                 '図6. TASUKIの理論的位置づけ', font_size=18,
+                 '図6. TATSUKIの理論的位置づけ', font_size=18,
                  bold=True, color=C_DARK, alignment=PP_ALIGN.CENTER)
     add_text_box(slide, Inches(0.3), Inches(6.85), Inches(9.4), Inches(0.3),
                  '一人一票からの乖離度  →',
@@ -476,7 +476,7 @@ def build_slide6_ja(prs):
 
     # LAYER 6: Caption
     add_text_box(slide, Inches(0.3), Inches(7.05), Inches(9.4), Inches(0.4),
-                 '図6. 既存の選挙制度改革提案に対するTASUKIの位置づけ。'
+                 '図6. 既存の選挙制度改革提案に対するTATSUKIの位置づけ。'
                  '横軸：OPOVからの乖離度。縦軸：時間的指向（回顧的〜展望的）。',
                  font_size=9, italic=True, color=C_GRAY, alignment=PP_ALIGN.CENTER)
 
@@ -512,8 +512,17 @@ def create_pptx(lang='en'):
                           '\u03c4_min and \u03c4_max. (b) Scalability analysis across candidate pool sizes.')
         # Slide 6: Fig 6 - editable
         build_slide6_en(prs)
+        # Slide 7: Fig 7 - image (empirical calibration)
+        build_image_slide(prs, f'{FIGS}/fig7_empirical_calibration.png',
+                          'Figure 7. Empirical Calibration & Counterfactual Analysis',
+                          'Figure 7. (a) Empirical pledge fulfillment distribution from Polimeter (N=1,050). '
+                          '(b) Cross-national comparison of mean fulfillment rates. '
+                          '(c) Counterfactual TATSUKI trust trajectory for Trudeau. '
+                          '(d) Original vs empirically calibrated Beta distributions.')
 
-        out_path = '/home/ubuntu/TASUKI_Figures_English.pptx'
+        out_dir = os.path.join(os.path.dirname(__file__), '..', 'output', 'pptx')
+        os.makedirs(out_dir, exist_ok=True)
+        out_path = os.path.join(out_dir, 'TATSUKI_Figures_English.pptx')
     else:
         # Slide 1: Fig 1 - editable
         build_slide1_ja(prs)
@@ -539,8 +548,17 @@ def create_pptx(lang='en'):
                           '(b) \u5019\u88dc\u8005\u30d7\u30fc\u30eb\u30b5\u30a4\u30ba\u5225\u306e\u30b9\u30b1\u30fc\u30e9\u30d3\u30ea\u30c6\u30a3\u5206\u6790\u3002')
         # Slide 6: Fig 6 - editable
         build_slide6_ja(prs)
+        # Slide 7: Fig 7 - image (empirical calibration)
+        build_image_slide(prs, f'{FIGS}/fig7_empirical_calibration.png',
+                          '図7. 実証的較正と反事実分析',
+                          '図7. (a) Polimeterプロジェクトの公約実現スコア分布（N=1,050）。'
+                          '(b) 公約実現率の国際比較。'
+                          '(c) Trudeauの3議会期にTATSUKIを適用した反事実的信任係数軌跡。'
+                          '(d) 元のBeta分布と較正後Beta分布の比較。')
 
-        out_path = '/home/ubuntu/TASUKI_Figures_Japanese.pptx'
+        out_dir = os.path.join(os.path.dirname(__file__), '..', 'output', 'pptx')
+        os.makedirs(out_dir, exist_ok=True)
+        out_path = os.path.join(out_dir, 'TATSUKI_Figures_Japanese.pptx')
 
     prs.save(out_path)
     print(f'Saved: {out_path}')

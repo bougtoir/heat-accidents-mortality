@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Create all figures for the TASUKI JASSS paper."""
+"""Create all figures for the TATSUKI Electoral Studies paper."""
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -21,11 +21,11 @@ plt.rcParams.update({
     'savefig.pad_inches': 0.15,
 })
 
-OUT = '/home/ubuntu/figures'
+OUT = os.path.join(os.path.dirname(__file__), '..', 'output', 'figures')
 os.makedirs(OUT, exist_ok=True)
 
 # ─────────────────────────────────────────────
-# Figure 1: Conceptual Overview of TASUKI
+# Figure 1: Conceptual Overview of TATSUKI
 # ─────────────────────────────────────────────
 def fig1_conceptual_overview():
     fig, ax = plt.subplots(figsize=(10, 7))
@@ -61,7 +61,7 @@ def fig1_conceptual_overview():
                     fontstyle='italic')
 
     # Title
-    ax.text(5, 7.5, 'Trust-Adjusted Scoring with Unified Knowledge Integration (TASUKI)',
+    ax.text(5, 7.5, 'Trust-Adjusted Transparent Scoring with Unified Knowledge Integration (TATSUKI)',
             ha='center', va='center', fontsize=14, fontweight='bold', color='#1a1a2e')
     ax.text(5, 7.1, 'System Overview', ha='center', va='center', fontsize=11, color='#555')
 
@@ -199,7 +199,7 @@ def fig3_simulation_results():
     base_std = 0.45 + 0.05 * np.sin(cycles * 0.3) + np.random.normal(0, 0.03, n_cycles)
     s_std = np.clip(base_std, 0, 1)
 
-    ax.plot(cycles, s_drd, 'o-', color='#E91E63', lw=2, ms=4, label='TASUKI')
+    ax.plot(cycles, s_drd, 'o-', color='#E91E63', lw=2, ms=4, label='TATSUKI')
     ax.plot(cycles, s_std, 's--', color='#607D8B', lw=1.5, ms=3, label='Standard Election', alpha=0.7)
     ax.fill_between(cycles, s_drd - 0.05, s_drd + 0.05, alpha=0.15, color='#E91E63')
     ax.fill_between(cycles, s_std - 0.06, s_std + 0.06, alpha=0.1, color='#607D8B')
@@ -248,7 +248,7 @@ def fig3_simulation_results():
     welfare_std = 0.5 + 0.02 * cycles / n_cycles + np.random.normal(0, 0.02, n_cycles)
     welfare_qv = 0.52 + 0.15 * (1 - np.exp(-0.08 * cycles)) + np.random.normal(0, 0.018, n_cycles)
 
-    ax.plot(cycles, welfare_drd, 'o-', color='#E91E63', lw=2, ms=4, label='TASUKI')
+    ax.plot(cycles, welfare_drd, 'o-', color='#E91E63', lw=2, ms=4, label='TATSUKI')
     ax.plot(cycles, welfare_std, 's--', color='#607D8B', lw=1.5, ms=3, label='Standard', alpha=0.7)
     ax.plot(cycles, welfare_qv, '^-.', color='#9C27B0', lw=1.5, ms=3, label='QV-baseline', alpha=0.7)
     ax.set_xlabel('Electoral Cycle')
@@ -364,9 +364,9 @@ def fig5_sensitivity():
     final_s_std = [0.50, 0.48, 0.46, 0.44, 0.43, 0.42, 0.41]
 
     ax2 = ax.twinx()
-    l1, = ax.plot(n_candidates, conv_cycles_drd, 'o-', color='#E91E63', lw=2, ms=6, label='TASUKI convergence')
+    l1, = ax.plot(n_candidates, conv_cycles_drd, 'o-', color='#E91E63', lw=2, ms=6, label='TATSUKI convergence')
     l2, = ax.plot(n_candidates, conv_cycles_std, 's--', color='#607D8B', lw=1.5, ms=5, label='Standard convergence')
-    l3, = ax2.plot(n_candidates, final_s_drd, '^-', color='#4CAF50', lw=2, ms=6, label='TASUKI final $\\bar{S}$')
+    l3, = ax2.plot(n_candidates, final_s_drd, '^-', color='#4CAF50', lw=2, ms=6, label='TATSUKI final $\\bar{S}$')
     l4, = ax2.plot(n_candidates, final_s_std, 'v--', color='#FF9800', lw=1.5, ms=5, label='Standard final $\\bar{S}$')
 
     ax.set_xlabel('Number of Candidates')
@@ -400,15 +400,15 @@ def fig6_positioning():
         'Futarchy':                 (0.8, 0.6, '#FF9800', 160),
         'Barro-Ferejohn\nModel':    (0.1, 0.35, '#4CAF50', 140),
         'Weighted\nVoting':         (0.6, 0.5, '#00BCD4', 140),
-        'TASUKI\n(This Paper)':     (0.55, 0.25, '#E91E63', 350),
+        'TATSUKI\n(This Paper)':    (0.55, 0.25, '#E91E63', 350),
     }
 
     for name, (x, y, color, size) in approaches.items():
         ax.scatter(x, y, s=size, c=color, alpha=0.85, edgecolors='white', linewidth=2, zorder=5)
-        fontweight = 'bold' if 'TASUKI' in name else 'normal'
-        fontsize = 11 if 'TASUKI' in name else 9
+        fontweight = 'bold' if 'TATSUKI' in name else 'normal'
+        fontsize = 11 if 'TATSUKI' in name else 9
         ax.annotate(name, (x, y), textcoords="offset points",
-                    xytext=(0, -25 if 'TASUKI' not in name else 25),
+                    xytext=(0, -25 if 'TATSUKI' not in name else 25),
                     ha='center', fontsize=fontsize, fontweight=fontweight, color=color)
 
     # Draw connecting lines from DRD-CT to related
@@ -428,7 +428,7 @@ def fig6_positioning():
 
     ax.set_xlabel('Degree of Departure from One-Person-One-Vote', fontsize=12)
     ax.set_ylabel('← Retrospective                    Prospective →', fontsize=12)
-    ax.set_title('Theoretical Positioning of TASUKI in Electoral Reform Literature', fontsize=13, fontweight='bold')
+    ax.set_title('Theoretical Positioning of TATSUKI in Electoral Reform Literature', fontsize=13, fontweight='bold')
     ax.set_xlim(-0.05, 1.0)
     ax.set_ylim(0.1, 0.75)
     ax.grid(True, alpha=0.2)
@@ -444,6 +444,110 @@ def fig6_positioning():
     print('Fig 6 done')
 
 
+# ─────────────────────────────────────────────
+# Figure 7: Empirical Calibration & Counterfactual
+# ─────────────────────────────────────────────
+def fig7_empirical_calibration():
+    """Empirical validation using Polimeter + Thomson et al. (2017) data."""
+    from empirical_calibration import (
+        POLIMETER, THOMSON_DATA, polimeter_to_scores,
+        simulate_tatsuki_counterfactual, omega_concave, omega_linear, omega_sigmoid
+    )
+
+    fig, axes = plt.subplots(2, 2, figsize=(12, 9))
+
+    # Panel (a): Polimeter fulfillment distribution vs fitted Beta
+    ax = axes[0, 0]
+    all_scores = np.concatenate([
+        polimeter_to_scores(data) for data in POLIMETER.values()
+    ])
+    ax.hist(all_scores, bins=[-0.05, 0.15, 0.35, 0.65, 0.85, 1.05],
+            density=True, alpha=0.7, color='#2196F3', edgecolor='white',
+            label='Polimeter (N=1,050)')
+    # Add Thomson reference lines
+    for label, data in THOMSON_DATA.items():
+        if label == 'Cross-national average':
+            ax.axvline(x=data['mean_fulfillment'], color='#E91E63',
+                       linestyle='--', lw=2, label=f'Thomson avg ({data["mean_fulfillment"]:.2f})')
+        elif label == 'Minority government':
+            ax.axvline(x=data['mean_fulfillment'], color='#4CAF50',
+                       linestyle=':', lw=2, label=f'Thomson minority ({data["mean_fulfillment"]:.2f})')
+    polimeter_mean = np.mean(all_scores)
+    ax.axvline(x=polimeter_mean, color='#FF9800', linestyle='-', lw=2.5,
+               label=f'Polimeter mean ({polimeter_mean:.3f})')
+    ax.set_xlabel('Fulfillment Score')
+    ax.set_ylabel('Density')
+    ax.set_title('(a) Empirical Pledge Fulfillment Distribution')
+    ax.legend(fontsize=8, loc='upper left')
+    ax.set_xlim(-0.1, 1.1)
+    ax.grid(True, alpha=0.3)
+
+    # Panel (b): Cross-national comparison (Thomson et al.)
+    ax = axes[0, 1]
+    labels = list(THOMSON_DATA.keys()) + ['Polimeter\n(Trudeau)']
+    means = [d['mean_fulfillment'] for d in THOMSON_DATA.values()] + [polimeter_mean]
+    colors_bar = ['#2196F3', '#4CAF50', '#FF9800', '#9C27B0', '#E91E63']
+    bars = ax.barh(labels, means, color=colors_bar, alpha=0.85, edgecolor='white', height=0.6)
+    ax.set_xlabel('Mean Pledge Fulfillment Rate')
+    ax.set_title('(b) Cross-National Comparison')
+    ax.set_xlim(0, 1.0)
+    ax.grid(True, alpha=0.3, axis='x')
+    for bar, mean in zip(bars, means):
+        ax.text(mean + 0.02, bar.get_y() + bar.get_height() / 2,
+                f'{mean:.2f}', va='center', fontsize=9, fontweight='bold')
+
+    # Panel (c): Counterfactual trust trajectory across Trudeau terms
+    ax = axes[1, 0]
+    terms = ['42nd\n(2015-19)', '43rd\n(2019-21)', '44th\n(2021-25)']
+    for omega_name, omega_func, color, marker in [
+        ('Concave (√S)', omega_concave, '#4CAF50', 'o'),
+        ('Linear', omega_linear, '#2196F3', 's'),
+        ('Sigmoid', omega_sigmoid, '#E91E63', '^'),
+    ]:
+        trajectory = simulate_tatsuki_counterfactual(POLIMETER, omega_func)
+        taus = [1.0] + [t['tau_after'] for t in trajectory]
+        x_pos = [0] + [1, 2, 3]
+        ax.plot(x_pos, taus, f'{marker}-', color=color, lw=2, ms=8,
+                label=f'ω: {omega_name}')
+    ax.axhline(y=1.0, color='gray', linestyle=':', alpha=0.5, label='Baseline (τ=1)')
+    ax.set_xticks([0, 1, 2, 3])
+    ax.set_xticklabels(['Initial'] + terms, fontsize=9)
+    ax.set_ylabel('Trust Coefficient τ')
+    ax.set_title('(c) Counterfactual: TATSUKI Applied to Trudeau')
+    ax.legend(fontsize=8)
+    ax.set_ylim(0.8, 1.6)
+    ax.grid(True, alpha=0.3)
+
+    # Panel (d): Calibrated vs original Beta parameters
+    ax = axes[1, 1]
+    S = np.linspace(0.001, 0.999, 500)
+    # Original parameters
+    ax.plot(S, beta_dist.pdf(S, 8, 2), '-', color='#E91E63', lw=2.0,
+            label='Sincere (orig): Beta(8,2)', alpha=0.6)
+    ax.plot(S, beta_dist.pdf(S, 2, 5), '-', color='#FF9800', lw=2.0,
+            label='Populist (orig): Beta(2,5)', alpha=0.6)
+    ax.plot(S, beta_dist.pdf(S, 5, 3), '-', color='#9C27B0', lw=2.0,
+            label='Strategic (orig): Beta(5,3)', alpha=0.6)
+    # Calibrated parameters
+    ax.plot(S, beta_dist.pdf(S, 5.8, 2.2), '--', color='#E91E63', lw=2.5,
+            label='Sincere (calib): Beta(5.8,2.2)')
+    ax.plot(S, beta_dist.pdf(S, 2.0, 4.9), '--', color='#FF9800', lw=2.5,
+            label='Populist (calib): Beta(2.0,4.9)')
+    ax.plot(S, beta_dist.pdf(S, 4.2, 2.8), '--', color='#9C27B0', lw=2.5,
+            label='Strategic (calib): Beta(4.2,2.8)')
+    ax.set_xlabel('Fulfillment Score $f_j$')
+    ax.set_ylabel('Probability Density')
+    ax.set_title('(d) Original vs Calibrated Beta Distributions')
+    ax.legend(fontsize=7, ncol=2, loc='upper left')
+    ax.set_xlim(0, 1)
+    ax.grid(True, alpha=0.3)
+
+    fig.tight_layout()
+    fig.savefig(f'{OUT}/fig7_empirical_calibration.png')
+    plt.close(fig)
+    print('Fig 7 done')
+
+
 if __name__ == '__main__':
     fig1_conceptual_overview()
     fig2_influence_functions()
@@ -451,4 +555,5 @@ if __name__ == '__main__':
     fig4_adversarial()
     fig5_sensitivity()
     fig6_positioning()
+    fig7_empirical_calibration()
     print('All figures created successfully!')
