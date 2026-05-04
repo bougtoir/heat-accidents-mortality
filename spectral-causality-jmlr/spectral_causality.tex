@@ -348,20 +348,30 @@ Definition~\ref{def:causal-potential}), then $\theta_2(i)$ and
 $\theta_2(j)$ tend to occupy distinct angular sectors.
 \end{theorem}
 
-\noindent\textbf{Proof outline.}
+\begin{proof}
 The key mechanism is phase accumulation along directed paths.  For a
 directed edge $i\to j$ at $q=0.25$, the Hermitian adjacency contributes
 $H^{(q)}_{ij}=iw_{ij}$ and $H^{(q)}_{ji}=-iw_{ij}$.  In the
 eigenequation $\mathcal{L}^{(q)}u_k=\lambda_k u_k$, the asymmetric
-phase factors cause the eigenvector components at causally upstream nodes
-to accumulate phase differently from downstream nodes.  For path graphs,
-we show in Lemma~\ref{lem:path-phase} that the eigenequation recursion
-forces a strictly positive phase increment $\Delta\theta>0$ per directed
-edge, yielding monotone phase ordering along causal paths.
-Theorem~\ref{thm:tree-phase} extends this to tree DAGs via structural
-induction on tree depth, showing that the parent-to-child phase advance
-persists across branches.  The full proof is given in
-Appendix~\ref{app:phase-proof}.\hfill$\square$
+phase factors force a strictly positive phase increment
+$\Delta\theta>0$ per directed edge.
+
+We prove this in two stages in Appendix~\ref{app:phase-proof}.
+\emph{Stage~1} (Lemma~\ref{lem:path-phase}): For a path graph
+$v_1\to\cdots\to v_n$, the normalized magnetic Laplacian eigenequation
+yields the recursion
+$(1-\lambda)u(v_k) = \frac{-iw}{d_{v_k}}u(v_{k-1})
++ \frac{iw}{d_{v_k}}u(v_{k+1})$.
+Writing $u(v_k)=r_k e^{i\theta_k}$ and taking the real part shows that
+$1-\lambda_2>0$ and $r_k>0$ require
+$\theta_{k+1}-\theta_k>0$, giving monotone phase ordering.
+\emph{Stage~2} (Theorem~\ref{thm:tree-phase}): For tree DAGs, we use
+structural induction on depth.  The base case (star graph) gives
+$\theta_2(c_j)=\theta_2(r)+\pi/2$ for each child~$c_j$ of root~$r$.
+The inductive step combines this with the subtree hypothesis via
+transitivity.  A perturbation argument extends the result to
+non-uniform weights $w_{ij}>0$.
+\end{proof}
 
 %% ============================================================
 \section{Spectral Causality: Formulation}
@@ -940,6 +950,16 @@ With a symmetric data-driven component, $\alpha$ acts as a binary
 $\alpha=1$ yield identical $r_{\mathrm{gradient}}$.
 \end{corollary}
 
+\begin{proof}
+When the data-driven component satisfies
+$D_{\mathrm{data}}=D_{\mathrm{data}}^\top$ (symmetric), the
+antisymmetric part of the utility function is
+$A(\alpha)=\alpha\cdot(C_{\mathrm{domain}}-C_{\mathrm{domain}}^\top)/2$
+for any $\alpha>0$.  By Theorem~\ref{thm:scale-invariance},
+$r_{\mathrm{gradient}}$ depends only on the sign structure of~$A$,
+which is identical for all $\alpha>0$.
+\end{proof}
+
 \begin{remark}
 With DPI as the data-driven component ($D_{\DPI}-D_{\DPI}^\top\ne 0$),
 the antisymmetric component at $\alpha=0$ is nonzero, yielding
@@ -1253,6 +1273,16 @@ $D_{\DPI}(i\to j)\ne D_{\DPI}(j\to i)$ with the correct directional
 sign, providing a non-circular data-driven foundation for spectral
 causality.
 \end{corollary}
+
+\begin{proof}
+At $\alpha=0$, the utility function reduces to
+$U(i,j)=D_{\DPI}(i\to j)$.  By Theorem~\ref{thm:dpi-identifiability},
+each DPI component is identifiable under the ANM assumption
+(Proposition~\ref{prop:dpi-asymmetry}), so
+$\bar{A}(i,j)\ne 0$ with the correct sign for true causal edges.
+Hence $D_{\DPI}(i\to j)\ne D_{\DPI}(j\to i)$, and the asymmetric
+utility graph is well-defined without domain knowledge.
+\end{proof}
 
 \subsection{Identifiability Roadmap}
 
