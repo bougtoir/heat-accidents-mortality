@@ -1067,13 +1067,14 @@ catastrophically distort the inferred causal structure.
 \caption{Knowledge quality phase transition (Theorem~\ref{thm:u-shape}).
   As the fraction of flipped edge directions~$p_{\mathrm{flip}}$ increases,
   the gradient energy ratio~$r_{\mathrm{gradient}}$ follows a U-shaped
-  curve.  The empirical curve (blue, 200 trials) closely matches the
-  theoretical prediction~$(1-2p)^2 r^*$ (dashed red).  The critical
+  curve.  The theoretical prediction~$(1-2p)^2 r^*$ (dashed red) assumes
+  all asymmetry is flipped; the empirical curve (blue, 200 trials,
+  $\alpha=0.6$) deviates because only the clinical knowledge component
+  is flipped while the DPI data-driven component ($40\%$ weight)
+  remains constant, preventing $r_{\mathrm{gradient}}$ from reaching
+  zero at $p=0.5$.  The critical
   threshold~$p^*_{\mathrm{flip}}\approx 0.15$ marks the point below which
-  DAG structure ($r_{\mathrm{gradient}}>0.5$) is maintained.  Both
-  endpoints ($p=0$ and $p=1$) yield high $r_{\mathrm{gradient}}$
-  (correct vs.\ reversed DAG), confirming that partial misinformation
-  is worse than complete ignorance.}
+  DAG structure ($r_{\mathrm{gradient}}>0.5$) is maintained.}
 \label{fig:pflip}
 \end{figure}
 
