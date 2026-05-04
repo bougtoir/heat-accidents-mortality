@@ -18,9 +18,11 @@ This project integrates three analytical lenses:
 ## Key Result
 
 The **fiscal return ratio** τ·m / pf (effective tax rate × I-O multiplier ÷
-public financing share) exceeds 1.0 in 8 of 9 countries examined, meaning
-tax revenues from healthcare-induced economic activity **surpass** public
-healthcare expenditure.
+public financing share) exceeds 1.0 in 3 of 9 countries on the demand side
+alone (Japan 1.09, France 1.18, Sweden 1.04), with the remaining six
+recovering 76–96% of public costs. When supply-side health-capital
+accumulation returns are added, comprehensive sustainability likely holds
+for the majority of countries.
 
 ## Structure
 
