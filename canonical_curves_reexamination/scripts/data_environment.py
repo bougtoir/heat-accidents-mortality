@@ -29,7 +29,8 @@ def get_species_area_data():
     return CurveReexamination(
         "Species-Area Curve", np.log10(area), np.log10(species),
         x_label="log₁₀(Area, km²)", y_label="log₁₀(Species Count)",
-        country_labels=islands, category="Environmental Science"
+        country_labels=islands, category="Environmental Science",
+        x_is_logged=True
     )
 
 

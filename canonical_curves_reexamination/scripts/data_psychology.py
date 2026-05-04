@@ -58,7 +58,8 @@ def get_weber_fechner_data():
     return CurveReexamination(
         "Weber-Fechner Law", np.log(stimulus), perceived,
         x_label="log(Stimulus Intensity)", y_label="Perceived Intensity",
-        category="Psychology"
+        category="Psychology",
+        x_is_logged=True
     )
 
 

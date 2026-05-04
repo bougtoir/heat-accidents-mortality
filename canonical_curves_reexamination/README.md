@@ -12,10 +12,9 @@ This project systematically re-examines 52 "canonical" curvilinear relationships
 
 | Verdict | Count | % |
 |---------|-------|---|
-| Not Significant | 21 | 40% |
+| Not Significant | 22 | 42% |
 | Robust Nonlinear | 18 | 35% |
 | Outlier-Dependent | 12 | 23% |
-| Overfitting | 1 | 2% |
 
 **~65% of textbook nonlinear relationships fail at least one modern robustness test.**
 

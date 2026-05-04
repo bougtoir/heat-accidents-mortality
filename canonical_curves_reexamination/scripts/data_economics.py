@@ -263,7 +263,8 @@ def get_gravity_model_data():
     return CurveReexamination(
         "Gravity Model of Trade", np.array(gravity_index), np.array(trade_log),
         x_label="log(GDP_i × GDP_j / Distance²)", y_label="log(Bilateral Trade)",
-        category="Economics"
+        category="Economics",
+        x_is_logged=True
     )
 
 

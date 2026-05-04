@@ -59,7 +59,8 @@ def get_duverger_data():
         "Duverger's Law", np.log(np.array(district_mag) + 1), np.array(enpp),
         x_label="log(District Magnitude + 1)",
         y_label="Effective Number of Parties",
-        country_labels=countries, category="Political Science"
+        country_labels=countries, category="Political Science",
+        x_is_logged=True
     )
 
 
