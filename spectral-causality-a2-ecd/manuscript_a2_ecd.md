@@ -94,7 +94,7 @@ The **gradient energy ratio** $r_{\text{gradient}} = \|\delta_0 \phi\|^2 / \|\om
 
 ### 3.1 The Complementarity Principle
 
-ECD is built on the observation that existing causal methods have **complementary, not overlapping** coverage of the requirements for robust causal inference. No single method satisfies all of Hill's nine criteria [8] (Figure 2):
+ECD is built on the observation that existing causal methods have **complementary, not overlapping** coverage of the requirements for robust causal inference. No single method satisfies all of Hill's nine criteria [8] (Figure 1):
 
 | Criterion | LiNGAM | Granger | RCT | Spectral Causality | ECD |
 |-----------|---------|---------|-----|-------------------|-----|
@@ -175,6 +175,10 @@ The DPI has a modular, plug-in architecture. Additional asymmetric statistics ca
 | 3 | Data + domain + RCT ($\alpha = 0.5$–0.8) | Spectral + intervention | ~0.86+ |
 | 4 | Full ECD ensemble | All methods + Hill's 9 | Comprehensive |
 
+![Figure 2: ECD Pipeline](figures/fig_ecd_pipeline.png)
+
+**Figure 2**: The four-step ECD deployment pipeline. Step 1: LiNGAM bootstrap (1000 iterations) produces a causal DAG with edge confidences. Step 2: DPI-augmented spectral analysis constructs a directed cyclic graph. Step 3: Hodge decomposition separates gradient (DAG) and curl (feedback) components, yielding causal potential $\phi$. Step 4: Interventionability scoring maps $\phi$ to clinical actionability $\iota$. Bottom: Hill's nine criteria coverage achieved by the ensemble.
+
 ---
 
 ## 4. Interventionability: From Causal Potential to Clinical Action
@@ -201,6 +205,10 @@ $$\iota(X_i) = \text{"Degree to which } X_i \text{ can be modified by clinical i
 
 **Implication for clinical trial design**: Variables with high $\phi$ (upstream) are poor treatment targets but excellent confounders to control for. Variables with low $\phi$ (downstream) are promising intervention targets. This provides a data-driven prioritization for treatment target selection.
 
+![Figure 3: Causal Potential vs. Interventionability](figures/fig_interventionability.png)
+
+**Figure 3**: Causal potential $\phi$ vs. clinical interventionability $\iota$ for all five variables. Age (most upstream, $\phi = 0$) has zero interventionability; Cholesterol and RestingBP (downstream) have high interventionability ($\iota = 0.9$ and $0.8$, respectively) with well-established pharmacological interventions (statins, antihypertensives). The inverse relationship between $\phi$ and $\iota$ demonstrates that the mathematical quantity naturally corresponds to clinical actionability.
+
 ### 4.3 From $\phi$ to Treatment Prioritization
 
 The ECD pipeline produces a **treatment prioritization ranking**:
@@ -226,7 +234,7 @@ We use the UCI Heart Disease Dataset (Cleveland subset; Detrano et al. [14]):
 
 ### 5.2 LiNGAM Baseline
 
-DirectLiNGAM [4] estimates the causal order: Age → MaxHR → STDep → RestBP → Chol (Figure 1).
+DirectLiNGAM [4] estimates the causal order: Age → MaxHR → STDep → RestBP → Chol (Figure 4).
 
 Major causal effects:
 - $B_{42} = -0.395$ (Age → MaxHR: aging reduces exercise capacity)
@@ -267,7 +275,7 @@ This demonstrates that ECD can perform causal direction estimation from data alo
 
 ### 6.1 Edge-by-Edge Comparison
 
-Comparing causal directions estimated by LiNGAM (DAG), spectral causality ($\alpha = 0.6$), and DPI ($\alpha = 0$) (Figure 3):
+Comparing causal directions estimated by LiNGAM (DAG), spectral causality ($\alpha = 0.6$), and DPI ($\alpha = 0$) (Figure 5):
 
 | Edge pair | LiNGAM direction | Spectral ($\alpha=0.6$) | DPI ($\alpha=0$) | Agreement |
 |-----------|-----------------|------------------------|------------------|-----------|
@@ -280,7 +288,7 @@ Comparing causal directions estimated by LiNGAM (DAG), spectral causality ($\alp
 
 ### 6.2 The Level 1.5 vs. Level 2 Distinction
 
-When spectral causality suggests a direction opposite to LiNGAM (Figure 4), this is **not necessarily an error**. The two methods capture different types of causality:
+When spectral causality suggests a direction opposite to LiNGAM (Figure 6), this is **not necessarily an error**. The two methods capture different types of causality:
 
 - **LiNGAM (Level 2)**: "If we intervene on $X_i$, would $X_j$ change?" — **interventional causal direction**
 - **Spectral causality (Level 1.5)**: "Does knowing $X_i$ reduce uncertainty about $X_j$ more than the reverse?" — **informational direction**
@@ -354,7 +362,7 @@ Which edges are most important for maintaining DAG structure?
 
 ### 8.1 Why Feedback Is Clinically Correct
 
-DAGs are mathematically convenient, but clinically, cyclic models are often more accurate. The ECD framework does not force a DAG; instead, it **quantifies** the degree of feedback for each edge (Figure 5), allowing clinicians to make informed decisions about which cycles to retain.
+DAGs are mathematically convenient, but clinically, cyclic models are often more accurate. The ECD framework does not force a DAG; instead, it **quantifies** the degree of feedback for each edge (Figure 7), allowing clinicians to make informed decisions about which cycles to retain.
 
 ### 8.2 Edge-Level Feedback Analysis
 
@@ -367,6 +375,10 @@ DAGs are mathematically convenient, but clinically, cyclic models are often more
 | **MaxHR ↔ STDep** | MaxHR → STDep | **73%** | **Strong exercise–ischemia feedback loop** |
 
 The **73% feedback rate for MaxHR ↔ STDep** is the most clinically important finding: LiNGAM's DAG assumption (unidirectional MaxHR → STDep) misses a well-established clinical feedback loop where ischemia (STDep) reduces exercise tolerance (MaxHR), which in turn worsens ischemia.
+
+![Figure 8: Clinical Feedback Network](figures/fig_feedback_network.png)
+
+**Figure 8**: Clinical feedback network with edge-level feedback rates from Hodge decomposition. Green solid arrows: unidirectional edges (< 10% feedback). Orange dashed arrows: weak feedback (10–50%). Red thick double arrows: strong feedback (> 50%). The MaxHR ↔ STDepression edge (73% feedback) represents the clinically important exercise–ischemia feedback loop that a DAG assumption would miss. Node annotations show interventionability scores $\iota$.
 
 ### 8.3 Purpose-Dependent Pruning Thresholds
 

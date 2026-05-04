@@ -482,6 +482,20 @@ $C_{\mathrm{domain}}$ encodes external causal knowledge.  Crucially,
 at $\alpha=0$ the DPI asymmetry preserves directional signal, unlike
 the $|\hat\rho|$-based formulation.
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/fig_dpi_architecture.png}
+\caption{Architecture of the Directional Predictability Index (DPI).
+  Three independent asymmetric statistics---regression coefficient
+  asymmetry~$\hat{A}_{\mathrm{reg}}$, ANM residual independence~$\hat{A}_{\mathrm{ANM}}$,
+  and conditional entropy reduction~$\hat{A}_{\mathrm{ent}}$---are normalized
+  and averaged to produce~$\bar{A}(i,j)$, which modulates the symmetric
+  correlation~$|\hat\rho_{ij}|$ into the asymmetric DPI score.
+  The modular design allows each component to be replaced or extended
+  independently.}
+\label{fig:dpi-architecture}
+\end{figure}
+
 \subsection{Spectral Causal Coupling and Direction}
 
 \begin{definition}[Spectral Causal Coupling]
@@ -549,6 +563,18 @@ $\exp(i\alpha)=\cos\alpha+i\sin\alpha$.
 In the complex plane, $|\CCI(i,j)|$ measures causal coupling strength and
 $\arg(\CCI(i,j))$ measures causal direction.
 \end{remark}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/fig_cci_complex_plane.png}
+\caption{Complex Causal Index~$\CCI(i,j)$ for all variable pairs plotted in
+  the complex plane.  The real axis (SCC) represents coupling strength;
+  the imaginary axis (SCD) represents causal direction.
+  Red points indicate forward direction ($i\to j$); blue points
+  indicate reverse direction.  Most pairs cluster in the lower half-plane
+  (SCD $<0$), reflecting Age's dominance as the upstream root node.}
+\label{fig:cci-complex}
+\end{figure}
 
 \subsection{Properties of the SCD Matrix}
 
@@ -1034,6 +1060,23 @@ This result carries a general warning for knowledge-based causal
 inference: a small number of incorrect directional assertions can
 catastrophically distort the inferred causal structure.
 \end{remark}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.85\textwidth]{figures/fig_pflip_ucurve.png}
+\caption{Knowledge quality phase transition (Theorem~\ref{thm:u-shape}).
+  As the fraction of flipped edge directions~$p_{\mathrm{flip}}$ increases,
+  the gradient energy ratio~$r_{\mathrm{gradient}}$ follows a U-shaped
+  curve.  The theoretical prediction~$(1-2p)^2 r^*$ (dashed red) assumes
+  all asymmetry is flipped; the empirical curve (blue, 200 trials,
+  $\alpha=0.6$) deviates because only the clinical knowledge component
+  is flipped while the DPI data-driven component ($40\%$ weight)
+  remains constant, preventing $r_{\mathrm{gradient}}$ from reaching
+  zero at $p=0.5$.  The critical
+  threshold~$p^*_{\mathrm{flip}}\approx 0.15$ marks the point below which
+  DAG structure ($r_{\mathrm{gradient}}>0.5$) is maintained.}
+\label{fig:pflip}
+\end{figure}
 
 \begin{figure}[t]
 \centering
