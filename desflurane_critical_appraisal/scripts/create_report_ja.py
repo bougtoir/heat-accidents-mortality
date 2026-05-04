@@ -203,10 +203,10 @@ def create_report():
     # Counter-evidence
     doc.add_heading('反証', level=3)
     p = doc.add_paragraph()
-    run = p.add_run('Arain et al. (2005)')
+    run = p.add_run('Arain et al. (2005) ')
     run.font.bold = True
     add_superscript_text(
-        doc.add_paragraph(),
+        p,
         'Arain SR, Barth CD, Shankar H, Ebert TJ. '
         '"Choice of volatile anesthetic for the morbidly obese patient: sevoflurane or desflurane." '
         'J Clin Anesth. 2005;17(6):413-419.{3}'
@@ -221,7 +221,7 @@ def create_report():
     run = p.add_run('Eger EI II, Shafer S. ')
     run.font.bold = True
     add_superscript_text(
-        doc.add_paragraph(),
+        p,
         '"The complexity of recovery from anesthesia." '
         'J Clin Anesth. 2005;17(6):411-412.{4}'
     )
@@ -335,7 +335,7 @@ def create_report():
     run = p.add_run('批判レター: ')
     run.font.bold = True
     add_superscript_text(
-        doc.add_paragraph(),
+        p,
         'Ding F, Zheng L, Luo T. "Desflurane anesthesia and postoperative cognitive function." '
         'J Anesth. 2015. DOI: 10.1007/s00540-015-2002-3.{7}'
     )
@@ -353,7 +353,7 @@ def create_report():
     run = p.add_run('著者回答: ')
     run.font.bold = True
     add_superscript_text(
-        doc.add_paragraph(),
+        p,
         'Tachibana S, Hayase T, Yamakage M. "In reply: Desflurane anesthesia and cognitive function." '
         'J Anesth. 2017;31:637.{8}'
     )
@@ -525,7 +525,7 @@ def create_report():
     run = p.add_run('論文情報: ')
     run.font.bold = True
     add_superscript_text(
-        doc.add_paragraph(),
+        p,
         'White PF, Tang J, Wender RH, et al. '
         '"Desflurane versus sevoflurane for maintenance of outpatient anesthesia: '
         'the effect on early versus late recovery and perioperative coughing." '
@@ -586,7 +586,7 @@ def create_report():
     run = p.add_run('論文情報: ')
     run.font.bold = True
     add_superscript_text(
-        doc.add_paragraph(),
+        p,
         'Lim BG, Lee IO, Ahn H, et al. '
         '"Comparison of the incidence of emergence agitation and emergence times between '
         'desflurane and sevoflurane anesthesia in children: A systematic review and meta-analysis." '
@@ -633,7 +633,7 @@ def create_report():
     run = p.add_run('論文情報: ')
     run.font.bold = True
     add_superscript_text(
-        doc.add_paragraph(),
+        p,
         'Sivanna U, Joshi S, Babu B, Jagadeesh AM. '
         '"A comparative study of pharmacological myocardial protection between sevoflurane and desflurane '
         'at anaesthetic doses in patients undergoing off pump coronary artery bypass grafting surgery." '
@@ -657,7 +657,7 @@ def create_report():
     run = p.add_run('論文情報: ')
     run.font.bold = True
     add_superscript_text(
-        doc.add_paragraph(),
+        p,
         'De Hert SG, et al. '
         '"A comparison of volatile and non volatile agents for cardioprotection '
         'during on-pump coronary surgery." Anaesthesia. 2009;64(9):953-960.{16}'
