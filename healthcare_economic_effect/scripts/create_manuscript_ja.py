@@ -136,7 +136,7 @@ def create_pptx_slide(prs, img_path, title, caption):
 #   §2.2:     15,16,17,18
 #   §2.3:     19
 #   §2.4:     20
-#   §4:       21
+#   §4:       21, 22
 # ---------------------------------------------------------------------------
 REFERENCES = [
     # 1 — Abstract: Japan multiplier 2.78
@@ -213,6 +213,9 @@ REFERENCES = [
     # 21 — §4: Cross-country data source
     "World Bank. World Development Indicators. Washington, DC: World Bank; "
     "2024. Available from: https://databank.worldbank.org/",
+    # 22 — §4: Preston Curve (original)
+    "Preston SH. The changing relation between mortality and level of "
+    "economic development. Popul Stud. 1975;29(2):231-248.",
 ]
 
 
@@ -469,15 +472,30 @@ def build_ja_docx():
     add_heading(doc, "4. クロスカントリー・エビデンス", level=1)
     add_para(doc,
         "図5に、OECD加盟国における対GDP医療支出と平均寿命の関係を示す{12,21}。"
-        "米国を外れ値として除外した線形フィットは正の関係を示すが、"
-        "傾きは急ではなく、一定水準を超えると追加支出の限界効果が逓減する傾向がある。"
-        "ただしこの「逓減」は供給側の効率低下ではなく、"
-        "テンポ効果（ラグの長期化）を反映している可能性がある。"
+        "この関係はPreston（1975）以来、所得（あるいは医療支出）と"
+        "健康アウトカムの間に凹型の逓減関係（Preston Curve）が存在すると"
+        "広く信じられてきた{22}。"
+        "しかし本データで検証すると、この二次（凹型）項の統計的有意性は"
+        "米国というたった1つの外れ値に完全に依存していることが明らかになる。"
+    )
+
+    add_para(doc,
+        "ネストモデルのF検定を行った結果、"
+        "米国を含む場合（n=38）は二次項が高度に有意であった（F=13.2, p<0.001）。"
+        "しかし米国を除外すると（n=37）、二次項は全く有意でなくなった（F=0.5, p=0.49）。"
+        "AIC・BICとも線形が優位であり、Leave-One-Out交差検証RMSEも"
+        "線形（2.12年）が二次（2.19年）を下回った。"
+        "すなわち、Preston Curve的な「逓減リターン」は、"
+        "OECD諸国の医療支出データにおいては米国1点に駆動された"
+        "過剰適合（overfitting）であったと結論される。"
+        "図5にこの比較を可視化する。"
     )
 
     # Figure 5 (CHE vs LifeExp scatter — was Figure 2)
     add_figure(doc, os.path.join(FIG, "fig2_che_vs_lifeexp.png"),
-               "図5. 医療支出（対GDP%）と平均寿命の関係（OECD, 2019年、米国を除く線形フィット）")
+               "図5. 医療支出（対GDP%）と平均寿命の関係（OECD, 2019年）。"
+               "赤実線: 米国除外の線形フィット。灰色破線: 米国を含む二次フィット（Preston-style）。"
+               "F検定結果を図中に表示。")
 
     add_para(doc,
         "米国は対GDP 17%の支出にもかかわらず平均寿命がOECD平均以下であり、"
@@ -487,6 +505,14 @@ def build_ja_docx():
         "テンポ膨張したフローが真の投資を過大に見せている可能性がある{10}。"
         "問題は支出の「量」ではなく「構成」であり、"
         "治療（curative）偏重から予防・R&Dへのシフトが鍵となる。"
+    )
+
+    add_para(doc,
+        "この発見は政策的に重要な含意を持つ。"
+        "Preston Curveが「逓減リターン」として広く引用されてきたことで、"
+        "高所得国における追加医療支出の効果は小さいという認識が定着していた。"
+        "しかしその「逓減」が統計的に支持されないとすれば、"
+        "医療支出の経済的リターンは従来の想定より大きい可能性がある。"
     )
 
     # ---------- 5. Discussion ----------

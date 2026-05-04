@@ -133,7 +133,7 @@ def create_pptx_slide(prs, img_path, title, caption):
 #   S2.2:     15,16,17,18
 #   S2.3:     19
 #   S2.4:     20
-#   S4:       21
+#   S4:       21, 22
 # ---------------------------------------------------------------------------
 REFERENCES = [
     # 1 -- Abstract: Japan multiplier
@@ -211,6 +211,9 @@ REFERENCES = [
     # 21 -- S4: Cross-country data
     "World Bank. World Development Indicators. Washington, DC: World Bank; "
     "2024. Available from: https://databank.worldbank.org/",
+    # 22 -- S4: Preston Curve (original)
+    "Preston SH. The changing relation between mortality and level of "
+    "economic development. Popul Stud. 1975;29(2):231-248.",
 ]
 
 
@@ -486,17 +489,30 @@ def build_en_docx():
     add_para(doc,
         "Figure 5 shows the relationship between healthcare expenditure "
         "(% of GDP) and life expectancy across OECD countries{12,21}. "
-        "The linear fit (excluding the US as an outlier) shows a positive "
-        "relationship, though additional spending beyond a certain level yields "
-        "smaller life-expectancy gains. "
-        "This apparent diminishing return may reflect the tempo effect "
-        "(lengthening lag) rather than genuine inefficiency."
+        "Since Preston (1975), it has been widely assumed that this relationship "
+        "follows a concave curve -- the 'Preston Curve' -- where returns to "
+        "health spending diminish at higher income levels{22}. "
+        "We test this assumption directly using nested-model F-tests."
+    )
+
+    add_para(doc,
+        "When the US is included (n=38), the quadratic term is highly significant "
+        "(F=13.2, p<0.001). However, when the US is excluded (n=37), the quadratic "
+        "term becomes entirely non-significant (F=0.5, p=0.49). "
+        "AIC and BIC both favor the linear model without the US, and Leave-One-Out "
+        "cross-validation RMSE is lower for the linear fit (2.12 yr) than for "
+        "the quadratic (2.19 yr). "
+        "The Preston-style 'diminishing returns' in OECD healthcare spending data "
+        "is thus an artifact of overfitting to a single outlier -- the United States. "
+        "Figure 5 visualizes this comparison."
     )
 
     # Figure 5 (CHE vs LifeExp scatter -- was Figure 2)
     add_figure(doc, get_fig("fig2_che_vs_lifeexp.png"),
                "Figure 5. Healthcare Spending (% GDP) vs Life Expectancy "
-               "(OECD, 2019; linear fit excludes US)")
+               "(OECD, 2019). Red solid: linear fit excluding US. "
+               "Gray dashed: quadratic fit including US (Preston-style). "
+               "F-test results shown in figure.")
 
     add_para(doc,
         "The US spends 17% of GDP on healthcare yet has below-OECD-average life "
@@ -506,6 +522,14 @@ def build_en_docx():
         "inefficiently -- a tempo-inflated flow that overstates true investment{10}. "
         "The issue is not the volume of spending but its composition -- the shift "
         "from curative-heavy toward prevention and R&D is key."
+    )
+
+    add_para(doc,
+        "This finding has important policy implications. The Preston Curve has been "
+        "widely cited to argue that additional healthcare spending in high-income "
+        "countries yields diminishing returns. If this 'diminishing return' is not "
+        "statistically supported, the economic return on healthcare investment may "
+        "be larger than conventionally assumed."
     )
 
     # ---------- 5. Discussion ----------

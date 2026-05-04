@@ -392,12 +392,25 @@ def fig1_io_multiplier_comparison(io_df):
 
 
 def fig2_scatter_che_vs_le(cc_df):
-    """Scatter: CHE %GDP vs Life Expectancy with linear fit (US excluded)."""
-    fig, ax = plt.subplots(figsize=(8, 6))
+    """Scatter: CHE %GDP vs Life Expectancy.
+
+    Shows linear fit (US excluded) as primary, and quadratic fit (all countries)
+    as dashed ghost to illustrate that the Preston-style curvature is driven
+    entirely by the US outlier (F-test p<0.001 with US, p=0.49 without).
+    """
+    from scipy import stats as sp_stats
+
+    fig, ax = plt.subplots(figsize=(9, 6.5))
 
     # Separate US from rest
     us_mask = cc_df["iso3"] == "USA"
     rest = cc_df[~us_mask]
+    x_rest = rest["che_gdp_pct"].values
+    y_rest = rest["life_exp"].values
+    x_all = cc_df["che_gdp_pct"].values
+    y_all = cc_df["life_exp"].values
+    n_rest = len(x_rest)
+    n_all = len(x_all)
 
     ax.scatter(rest["che_gdp_pct"], rest["life_exp"],
                s=60, alpha=0.7, c="#1976D2", edgecolors="white", linewidths=0.5)
@@ -412,24 +425,65 @@ def fig2_scatter_che_vs_le(cc_df):
                         fontsize=7, xytext=(5, 3),
                         textcoords="offset points")
 
-    # Linear fit excluding US
-    z = np.polyfit(rest["che_gdp_pct"], rest["life_exp"], 1)
     xfit = np.linspace(cc_df["che_gdp_pct"].min(), cc_df["che_gdp_pct"].max(), 100)
-    yfit = np.polyval(z, xfit)
-    r2 = np.corrcoef(rest["che_gdp_pct"], rest["life_exp"])[0, 1] ** 2
-    ax.plot(xfit, yfit, "r-", linewidth=1.2, alpha=0.7,
-            label=f"Linear fit (excl. US), R\u00b2={r2:.2f}")
+
+    # --- Linear fit excluding US (primary) ---
+    z1 = np.polyfit(x_rest, y_rest, 1)
+    yfit1 = np.polyval(z1, xfit)
+    ss_res1 = np.sum((y_rest - np.polyval(z1, x_rest))**2)
+    ss_tot = np.sum((y_rest - np.mean(y_rest))**2)
+    r2_lin = 1 - ss_res1 / ss_tot
+    ax.plot(xfit, yfit1, "r-", linewidth=1.5, alpha=0.8,
+            label=f"Linear fit (excl. US), R\u00b2={r2_lin:.2f}")
+
+    # --- Quadratic fit including US (ghost, for comparison) ---
+    z2_all = np.polyfit(x_all, y_all, 2)
+    yfit2_all = np.polyval(z2_all, xfit)
+    ax.plot(xfit, yfit2_all, "--", color="#9E9E9E", linewidth=1.2, alpha=0.6,
+            label="Quadratic fit (incl. US) — Preston-style")
+
+    # --- F-test: is quadratic term significant? ---
+    # Without US
+    z2_rest = np.polyfit(x_rest, y_rest, 2)
+    ss_res2_rest = np.sum((y_rest - np.polyval(z2_rest, x_rest))**2)
+    f_wo = ((ss_res1 - ss_res2_rest) / 1) / (ss_res2_rest / (n_rest - 3))
+    p_wo = 1 - sp_stats.f.cdf(f_wo, 1, n_rest - 3)
+
+    # With US
+    z1_all = np.polyfit(x_all, y_all, 1)
+    ss_res1_all = np.sum((y_all - np.polyval(z1_all, x_all))**2)
+    ss_res2_all = np.sum((y_all - np.polyval(z2_all, x_all))**2)
+    f_w = ((ss_res1_all - ss_res2_all) / 1) / (ss_res2_all / (n_all - 3))
+    p_w = 1 - sp_stats.f.cdf(f_w, 1, n_all - 3)
+
+    # Annotation box with F-test results
+    txt = (f"F-test for quadratic term:\n"
+           f"  With US:    F={f_w:.1f}, p={p_w:.4f}\n"
+           f"  Without US: F={f_wo:.1f}, p={p_wo:.2f}")
+    ax.text(0.02, 0.02, txt, transform=ax.transAxes, fontsize=7.5,
+            verticalalignment="bottom", fontfamily="monospace",
+            bbox=dict(boxstyle="round,pad=0.4", facecolor="#FFF9C4",
+                      edgecolor="#F9A825", alpha=0.85))
 
     ax.set_xlabel("Current Health Expenditure (% of GDP)")
     ax.set_ylabel("Life Expectancy at Birth (years)")
     ax.set_title("Healthcare Spending vs Life Expectancy (OECD, 2019)")
-    ax.legend(fontsize=8)
+    ax.legend(fontsize=8, loc="upper left")
     plt.tight_layout()
     path = os.path.join(FIG, "fig2_che_vs_lifeexp.png")
-    fig.savefig(path)
+    fig.savefig(path, dpi=150, bbox_inches="tight")
     plt.close(fig)
     print(f"  Saved: {path}")
-    return path
+
+    # Return stats for manuscript use
+    overfit_stats = {
+        "n_excl_us": int(n_rest), "n_incl_us": int(n_all),
+        "r2_linear_excl_us": round(r2_lin, 4),
+        "r2_quad_excl_us": round(1 - ss_res2_rest / ss_tot, 4),
+        "f_excl_us": round(f_wo, 3), "p_excl_us": round(p_wo, 4),
+        "f_incl_us": round(f_w, 3), "p_incl_us": round(p_w, 4),
+    }
+    return path, overfit_stats
 
 
 def fig3_fiscal_sustainability(sust_df):
@@ -630,7 +684,11 @@ def main():
     print("\n[3] Cross-country CHE vs Life Expectancy")
     cc_df = build_cross_country_df()
     if len(cc_df) > 5:
-        fig2_scatter_che_vs_le(cc_df)
+        _, overfit = fig2_scatter_che_vs_le(cc_df)
+        with open(os.path.join(DATA, "preston_overfit_test.json"), "w") as f:
+            json.dump(overfit, f, indent=2)
+        print(f"  Preston overfit test: with US p={overfit['p_incl_us']:.4f}, "
+              f"without US p={overfit['p_excl_us']:.4f}")
     else:
         print("  [WARN] Insufficient WB data; skipping scatter plot.")
 
