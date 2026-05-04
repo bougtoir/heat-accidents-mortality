@@ -335,6 +335,105 @@ def create_manuscript_ja():
         f"定説曲線を非線形理論の経験的根拠として引用することに慎重さを促すものである。"
     )
 
+    # ======== Supplementary Table: Data Sources ========
+    doc.add_page_break()
+    h = doc.add_heading('補遺：データソーステーブル', level=1)
+    doc.add_paragraph(
+        "表S1に52本全ての曲線のデータソース、元論文、サンプルサイズ、変数定義を示す。"
+        "World Bank WDI APIから取得した実データを使用した曲線には「WB API」と記載。"
+    )
+
+    # Load source metadata
+    DATA_DIR = os.path.join(BASE_DIR, 'data')
+    source_meta_path = os.path.join(DATA_DIR, 'source_metadata.json')
+    if os.path.exists(source_meta_path):
+        with open(source_meta_path, 'r', encoding='utf-8') as f:
+            sources = json.load(f)
+
+        # Source table
+        table = doc.add_table(rows=1, cols=6)
+        table.style = 'Table Grid'
+        table.alignment = WD_TABLE_ALIGNMENT.CENTER
+
+        headers = ['#', '曲線名', '元論文', 'データソース', 'N', '主張された関数形']
+        for i, h_text in enumerate(headers):
+            cell = table.rows[0].cells[i]
+            cell.text = h_text
+            cell.paragraphs[0].runs[0].bold = True
+            cell.paragraphs[0].runs[0].font.size = Pt(7)
+
+        for src in sources:
+            row_cells = table.add_row().cells
+            row_cells[0].text = str(src['id'])
+            row_cells[1].text = src['name'][:25]
+            row_cells[2].text = src['original_paper'][:40]
+            row_cells[3].text = src['data_source'][:45]
+            n_val = src.get('current_n')
+            row_cells[4].text = str(n_val) if n_val else 'WB API'
+            row_cells[5].text = src['claimed_form'][:30]
+
+            for cell in row_cells:
+                for para in cell.paragraphs:
+                    for run in para.runs:
+                        run.font.size = Pt(6.5)
+
+        p = doc.add_paragraph()
+        p.paragraph_format.space_before = Pt(12)
+        run = p.add_run('表S1. ')
+        run.bold = True
+        p.add_run('52本の定説曲線のデータソース一覧。WB API = World Bank World Development Indicators API'
+                  'から直接取得した実データ。元論文Nは原著論文のサンプルサイズ。')
+
+    # ======== Results table (Table 1) ========
+    doc.add_page_break()
+    h = doc.add_heading('付表：全結果テーブル', level=1)
+    doc.add_paragraph("表1に52本全ての曲線の統計検定結果を示す（図2参照）。")
+
+    df = pd.read_csv(os.path.join(RESULTS_DIR, 'summary_table.csv'))
+    table = doc.add_table(rows=1, cols=7)
+    table.style = 'Table Grid'
+    table.alignment = WD_TABLE_ALIGNMENT.CENTER
+
+    headers = ['#', '曲線名', 'N', 'p (全)', 'p (除外後)', 'BIC最良', '判定']
+    for i, h_text in enumerate(headers):
+        cell = table.rows[0].cells[i]
+        cell.text = h_text
+        cell.paragraphs[0].runs[0].bold = True
+        cell.paragraphs[0].runs[0].font.size = Pt(7)
+
+    verdict_ja = {
+        'NOT_SIGNIFICANT': '非有意',
+        'ROBUST_NONLINEAR': '頑健',
+        'OUTLIER_DEPENDENT': '外れ値依存',
+        'OVERFITTING': '過適合',
+        'BIC_PREFERS_LINEAR': 'BIC線形',
+    }
+
+    for idx, row in df.iterrows():
+        row_cells = table.add_row().cells
+        row_cells[0].text = str(idx + 1)
+        row_cells[1].text = str(row['Curve'])[:28]
+        row_cells[2].text = str(row['N'])
+        p_full = row['p (full)']
+        row_cells[3].text = f"{p_full:.4f}" if p_full > 0.0001 else f"{p_full:.1e}"
+        p_clean = row['p (clean)']
+        row_cells[4].text = f"{p_clean:.4f}" if p_clean > 0.0001 else f"{p_clean:.1e}"
+        row_cells[5].text = str(row['BIC best'])
+        verdict = str(row['Verdict'])
+        row_cells[6].text = verdict_ja.get(verdict, verdict)
+
+        for cell in row_cells:
+            for para in cell.paragraphs:
+                for run in para.runs:
+                    run.font.size = Pt(6.5)
+
+    p = doc.add_paragraph()
+    p.paragraph_format.space_before = Pt(12)
+    run = p.add_run('表1. ')
+    run.bold = True
+    p.add_run("52本の定説曲線の再検証結果。p (全) = 全データでのF検定p値；"
+              "p (除外後) = Cook's distance上位3点除外後；BIC最良 = BICが選択したモデル。")
+
     # References
     doc.add_page_break()
     h = doc.add_heading('参考文献', level=1)
@@ -348,6 +447,7 @@ def create_manuscript_ja():
         "Grossman GM, Krueger AB. Environmental impacts of a North American free trade agreement. NBER Working Paper 3914. 1991.",
         "Stern DI. The rise and fall of the environmental Kuznets curve. World Dev. 2004;32(8):1419-1439.",
         "Krueger J, Mueller RA. Unskilled, unaware, or both? J Pers Soc Psychol. 2002;82(2):180-188.",
+        "World Bank. World Development Indicators. https://databank.worldbank.org/source/world-development-indicators. Accessed 2026.",
     ]
     for i, ref in enumerate(references, 1):
         p = doc.add_paragraph()

@@ -1,6 +1,9 @@
 """
 Master script: Run all 52 curve re-examinations and generate summary.
 
+Uses real World Bank API data where available, falling back to representative
+data for curves without direct API access.
+
 Onishi T. 2026. Modern Re-examination of Canonical Curves.
 """
 
@@ -21,6 +24,65 @@ from data_psychology import run_psychology_analysis
 from data_physics import run_physics_analysis
 from data_political import run_political_analysis
 from data_agriculture import run_agriculture_analysis
+
+
+def _try_real_data_substitution(all_results):
+    """Replace representative data results with real World Bank data where available."""
+    try:
+        from data_real_wb import get_all_real_data
+    except ImportError:
+        print("  [INFO] data_real_wb not available, using representative data only.")
+        return all_results
+
+    real_data = get_all_real_data()
+    if not real_data:
+        print("  [INFO] No real data loaded. Run fetch_real_data.py first.")
+        return all_results
+
+    # Mapping: real data key -> curve name in results
+    real_to_name = {
+        'preston': 'Preston Curve',
+        'kuznets': 'Kuznets Curve',
+        'demographic_transition': 'Demographic Transition (TFR)',
+        'forest_transition': 'Forest Transition Curve',
+        'second_demographic_transition': 'Second Demographic Transition',
+        'phillips': 'Phillips Curve',
+        'okun': "Okun's Law",
+        'green_revolution': 'Green Revolution Yield Curve',
+    }
+
+    replaced = []
+    new_results = []
+    for r in all_results:
+        curve_name = r['name']
+        real_key = None
+        for k, v in real_to_name.items():
+            if v == curve_name:
+                real_key = k
+                break
+
+        if real_key and real_key in real_data:
+            # Re-run analysis with real data
+            crv, n = real_data[real_key]
+            try:
+                new_r = crv.run_full_analysis()
+                new_r['data_source'] = 'World Bank WDI (API)'
+                new_results.append(new_r)
+                replaced.append(curve_name)
+            except Exception as e:
+                print(f"  [WARN] Real data analysis failed for {curve_name}: {e}")
+                r['data_source'] = 'Representative'
+                new_results.append(r)
+        else:
+            r['data_source'] = 'Representative/Published'
+            new_results.append(r)
+
+    if replaced:
+        print(f"\n  [REAL DATA] Replaced {len(replaced)} curves with World Bank API data:")
+        for name in replaced:
+            print(f"    - {name}")
+
+    return new_results
 
 
 def main():
@@ -70,6 +132,12 @@ def main():
     print("-" * 40)
     results_agr = run_agriculture_analysis()
     all_results.extend(results_agr)
+
+    # Substitute real data where available
+    print("\n" + "=" * 70)
+    print("SUBSTITUTING REAL DATA (World Bank API)")
+    print("=" * 70)
+    all_results = _try_real_data_substitution(all_results)
 
     # Summary
     print("\n" + "=" * 70)

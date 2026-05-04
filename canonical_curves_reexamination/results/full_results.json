@@ -2,62 +2,63 @@
   {
     "name": "Phillips Curve",
     "category": "Economics",
-    "n": 64,
-    "x_label": "Unemployment Rate (%)",
-    "y_label": "Inflation Rate (%)",
+    "n": 32,
+    "x_label": "Unemployment rate (%)",
+    "y_label": "Inflation rate (CPI, %)",
     "f_test": {
-      "f_stat": 0.05318008021225868,
-      "p_value": 0.8183909777839513
+      "f_stat": 0.014377713404098227,
+      "p_value": 0.9053835950182431
     },
     "model_comparison": {
       "linear": {
-        "aic": 309.4046761440394,
-        "bic": 313.72244231075877,
-        "r2": 0.065652997206333,
-        "r2_adj": 0.05058288425804802
+        "aic": 114.10334304638026,
+        "bic": 117.03481485197972,
+        "r2": 0.10870033252620137,
+        "r2_adj": 0.07899034361040802
       },
       "quadratic": {
-        "aic": 311.34890495730383,
-        "bic": 317.8255542073828,
-        "r2": 0.0664668556898611,
-        "r2_adj": 0.03585921161411876
+        "aic": 116.0874819148303,
+        "bic": 120.48468962322949,
+        "r2": 0.10914200497227922,
+        "r2_adj": 0.047703522556574396
       },
       "log": {
-        "aic": 309.8183739301146,
-        "bic": 314.13614009683397,
-        "r2": 0.05959378976001417,
-        "r2_adj": 0.04442594765936925
+        "aic": 113.94680571765952,
+        "bic": 116.87827752325897,
+        "r2": 0.11304973781831029,
+        "r2_adj": 0.08348472907892057
       }
     },
     "loocv": {
-      "rmse_linear": 2.7166105687773183,
-      "rmse_quadratic": 2.7642201935755697
+      "rmse_linear": 1.4641035764126393,
+      "rmse_quadratic": 1.5732375756909995
     },
     "cooks_distance": {
-      "max": 0.19928546909808947,
-      "mean": 0.0165690280982578,
-      "n_influential": 6
+      "max": 0.6310893740831818,
+      "mean": 0.042652040823082854,
+      "n_influential": 2
     },
     "sensitivity": {
-      "f_full": 0.05318008021225868,
-      "p_full": 0.8183909777839513,
-      "f_clean": 0.04555394151593513,
-      "p_clean": 0.8317371848767501,
+      "f_full": 0.014377713404098227,
+      "p_full": 0.9053835950182431,
+      "f_clean": 1.340639595066714,
+      "p_clean": 0.25744724067033675,
       "removed_indices": [
-        15,
-        21,
-        20
+        20,
+        18,
+        31
       ],
       "removed_labels": null,
-      "n_full": 64,
-      "n_clean": 61
+      "n_full": 32,
+      "n_clean": 29
     },
     "verdict": {
       "verdict": "NOT_SIGNIFICANT",
-      "explanation": "Nonlinear term not significant even with full data (p=0.818)",
-      "best_aic": "linear",
-      "best_bic": "linear"
-    }
+      "explanation": "Nonlinear term not significant even with full data (p=0.905)",
+      "best_aic": "log",
+      "best_bic": "log"
+    },
+    "data_source": "World Bank WDI (API)"
   },
   {
     "name": "Laffer Curve",
@@ -121,71 +122,73 @@
       "explanation": "Nonlinearity significant with full data (p=0.044) but NOT after removing top influential points (p=0.191)",
       "best_aic": "quadratic",
       "best_bic": "log"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Kuznets Curve",
     "category": "Economics",
-    "n": 60,
-    "x_label": "GDP per capita (PPP, $)",
-    "y_label": "Gini Coefficient",
+    "n": 130,
+    "x_label": "log\u2081\u2080(GDP per capita PPP, $)",
+    "y_label": "Gini coefficient",
     "f_test": {
-      "f_stat": 1.3587706135021231,
-      "p_value": 0.24860530763620348
+      "f_stat": 2.6232756628093914,
+      "p_value": 0.10778743639020172
     },
     "model_comparison": {
       "linear": {
-        "aic": 403.70321194333144,
-        "bic": 407.8919010677756,
-        "r2": 0.23643939316835516,
-        "r2_adj": 0.22327455511953376
+        "aic": 863.4553390495837,
+        "bic": 869.1904079504949,
+        "r2": 0.07778690261613319,
+        "r2_adj": 0.07058211279282178
       },
       "quadratic": {
-        "aic": 404.28970854147025,
-        "bic": 410.5727422281366,
-        "r2": 0.25421741870391446,
-        "r2_adj": 0.22804960883387626
+        "aic": 862.797452974873,
+        "bic": 871.4000563262397,
+        "r2": 0.0964503653462705,
+        "r2_adj": 0.08222123724148733
       },
       "log": {
-        "aic": 406.3169779451693,
-        "bic": 410.5056670696135,
-        "r2": 0.20244143438568873,
-        "r2_adj": 0.18869042463371788
+        "aic": 864.0940688395417,
+        "bic": 869.8291377404529,
+        "r2": 0.07324463776983914,
+        "r2_adj": 0.06600436150241595
       }
     },
     "loocv": {
-      "rmse_linear": 7.011464097652242,
-      "rmse_quadratic": 6.997857449040751
+      "rmse_linear": 6.683919872323378,
+      "rmse_quadratic": 6.665543696694024
     },
     "cooks_distance": {
-      "max": 0.16677969624827196,
-      "mean": 0.01837900175474656,
-      "n_influential": 5
+      "max": 0.05431416801584129,
+      "mean": 0.0065615632520534374,
+      "n_influential": 4
     },
     "sensitivity": {
-      "f_full": 1.3587706135021231,
-      "p_full": 0.24860530763620348,
-      "f_clean": 0.018905661802392046,
-      "p_clean": 0.8911486922220392,
+      "f_full": 2.6232756628093914,
+      "p_full": 0.10778743639020172,
+      "f_clean": 3.8313138777110343,
+      "p_clean": 0.05255004560968379,
       "removed_indices": [
-        8,
-        55,
-        20
+        67,
+        1,
+        46
       ],
       "removed_labels": [
-        "USA",
-        "Ireland",
-        "South Africa"
+        "Kiribati",
+        "Zambia",
+        "Mozambique"
       ],
-      "n_full": 60,
-      "n_clean": 57
+      "n_full": 130,
+      "n_clean": 127
     },
     "verdict": {
       "verdict": "NOT_SIGNIFICANT",
-      "explanation": "Nonlinear term not significant even with full data (p=0.249)",
-      "best_aic": "linear",
+      "explanation": "Nonlinear term not significant even with full data (p=0.108)",
+      "best_aic": "quadratic",
       "best_bic": "linear"
-    }
+    },
+    "data_source": "World Bank WDI (API)"
   },
   {
     "name": "Environmental Kuznets Curve (CO2)",
@@ -249,7 +252,8 @@
       "explanation": "Nonlinearity significant with full data (p=0.003) but NOT after removing top influential points (p=0.111)",
       "best_aic": "quadratic",
       "best_bic": "log"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Beveridge Curve",
@@ -309,61 +313,63 @@
       "explanation": "Nonlinear term not significant even with full data (p=0.081)",
       "best_aic": "log",
       "best_bic": "log"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Okun's Law",
     "category": "Economics",
-    "n": 64,
-    "x_label": "Real GDP Growth (%)",
-    "y_label": "Change in Unemployment Rate (pp)",
+    "n": 31,
+    "x_label": "Real GDP growth (%)",
+    "y_label": "Change in unemployment rate (pp)",
     "f_test": {
-      "f_stat": 0.016644319326349428,
-      "p_value": 0.8977719116883371
+      "f_stat": 7.705892420392644,
+      "p_value": 0.009700299552627856
     },
     "model_comparison": {
       "linear": {
-        "aic": 179.53186943105922,
-        "bic": 183.84963559777856,
-        "r2": 0.16894037350060642,
-        "r2_adj": 0.15553618597642271
+        "aic": 75.60874224778775,
+        "bic": 78.47671665675804,
+        "r2": 0.6479740398511594,
+        "r2_adj": 0.6358352136391304
       },
       "quadratic": {
-        "aic": 181.51440892066023,
-        "bic": 187.99105817073925,
-        "r2": 0.16916707265715625,
-        "r2_adj": 0.14192664880984984
+        "aic": 70.07229446551406,
+        "bic": 74.3742560789695,
+        "r2": 0.7239467713587218,
+        "r2_adj": 0.7042286835986304
       }
     },
     "loocv": {
-      "rmse_linear": 0.990868610902123,
-      "rmse_quadratic": 1.0204710943651725
+      "rmse_linear": 0.8523006906696848,
+      "rmse_quadratic": 0.8966176048856762
     },
     "cooks_distance": {
-      "max": 0.2250016747227876,
-      "mean": 0.020013770092020607,
-      "n_influential": 7
+      "max": 1.1051083551331817,
+      "mean": 0.06024006305765647,
+      "n_influential": 1
     },
     "sensitivity": {
-      "f_full": 0.016644319326349428,
-      "p_full": 0.8977719116883371,
-      "f_clean": 0.8670414381093403,
-      "p_clean": 0.35563543695688327,
+      "f_full": 7.705892420392644,
+      "p_full": 0.009700299552627856,
+      "f_clean": 0.08968444397078462,
+      "p_clean": 0.7670543668001274,
       "removed_indices": [
-        15,
-        51,
-        49
+        7,
+        17,
+        28
       ],
       "removed_labels": null,
-      "n_full": 64,
-      "n_clean": 61
+      "n_full": 31,
+      "n_clean": 28
     },
     "verdict": {
-      "verdict": "NOT_SIGNIFICANT",
-      "explanation": "Nonlinear term not significant even with full data (p=0.898)",
-      "best_aic": "linear",
-      "best_bic": "linear"
-    }
+      "verdict": "OUTLIER_DEPENDENT",
+      "explanation": "Nonlinearity significant with full data (p=0.010) but NOT after removing top influential points (p=0.767)",
+      "best_aic": "quadratic",
+      "best_bic": "quadratic"
+    },
+    "data_source": "World Bank WDI (API)"
   },
   {
     "name": "Engel Curve",
@@ -427,7 +433,8 @@
       "explanation": "Nonlinearity significant with full data (p=0.004) but NOT after removing top influential points (p=0.055)",
       "best_aic": "log",
       "best_bic": "log"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "J-Curve (Trade)",
@@ -481,7 +488,8 @@
       "explanation": "Nonlinearity is robust: significant F-test (p=0.004), survives outlier removal (p=0.000), better LOOCV",
       "best_aic": "quadratic",
       "best_bic": "quadratic"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Rahn Curve",
@@ -545,7 +553,8 @@
       "explanation": "Nonlinear term not significant even with full data (p=0.962)",
       "best_aic": "linear",
       "best_bic": "linear"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Gravity Model of Trade",
@@ -605,7 +614,8 @@
       "explanation": "Nonlinear term not significant even with full data (p=0.266)",
       "best_aic": "linear",
       "best_bic": "linear"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Great Gatsby Curve",
@@ -669,7 +679,8 @@
       "explanation": "Nonlinearity significant with full data (p=0.050) but NOT after removing top influential points (p=0.056)",
       "best_aic": "log",
       "best_bic": "log"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Balassa-Samuelson Effect",
@@ -733,71 +744,73 @@
       "explanation": "Nonlinear term not significant even with full data (p=0.606)",
       "best_aic": "linear",
       "best_bic": "linear"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Preston Curve",
     "category": "Public Health",
-    "n": 40,
-    "x_label": "GDP per capita (PPP, $)",
-    "y_label": "Life Expectancy (years)",
+    "n": 247,
+    "x_label": "log\u2081\u2080(GDP per capita PPP, $)",
+    "y_label": "Life expectancy (years)",
     "f_test": {
-      "f_stat": 16.682262500224013,
-      "p_value": 0.00022726699397424
+      "f_stat": 0.029488172341027453,
+      "p_value": 0.8637990465002292
     },
     "model_comparison": {
       "linear": {
-        "aic": 245.5980449915295,
-        "bic": 248.97580389975735,
-        "r2": 0.5095758276818091,
-        "r2_adj": 0.4966699284102777
+        "aic": 1354.2920393315603,
+        "bic": 1361.3108160048162,
+        "r2": 0.7503702144296638,
+        "r2_adj": 0.7493513173457031
       },
       "quadratic": {
-        "aic": 232.71145590957997,
-        "bic": 237.7780942719218,
-        "r2": 0.6619797018484952,
-        "r2_adj": 0.6437083343808463
+        "aic": 1356.2621904033554,
+        "bic": 1366.7903554132392,
+        "r2": 0.7504003793338869,
+        "r2_adj": 0.7483544808038368
       },
       "log": {
-        "aic": 227.87404023004723,
-        "bic": 231.2517991382751,
-        "r2": 0.6851266308211096,
-        "r2_adj": 0.6768404895269282
+        "aic": 1358.5035594051192,
+        "bic": 1365.522336078375,
+        "r2": 0.7460773606481218,
+        "r2_adj": 0.7450409417119916
       }
     },
     "loocv": {
-      "rmse_linear": 5.27502471892794,
-      "rmse_quadratic": 4.489711387556894
+      "rmse_linear": 3.751573848518511,
+      "rmse_quadratic": 3.766814105349141
     },
     "cooks_distance": {
-      "max": 0.39110156071942215,
-      "mean": 0.03262433330945388,
-      "n_influential": 2
+      "max": 0.04903163537986218,
+      "mean": 0.0038832230563756814,
+      "n_influential": 14
     },
     "sensitivity": {
-      "f_full": 16.682262500224013,
-      "p_full": 0.00022726699397424,
-      "f_clean": 10.478127111813942,
-      "p_clean": 0.0026948598476769225,
+      "f_full": 0.029488172341027453,
+      "p_full": 0.8637990465002292,
+      "f_clean": 0.12330186624124075,
+      "p_clean": 0.7257873538844395,
       "removed_indices": [
-        1,
-        12,
-        32
+        128,
+        162,
+        67
       ],
       "removed_labels": [
-        "Switzerland",
-        "USA",
+        "Greenland",
+        "Chad",
         "Nigeria"
       ],
-      "n_full": 40,
-      "n_clean": 37
+      "n_full": 247,
+      "n_clean": 244
     },
     "verdict": {
-      "verdict": "ROBUST_NONLINEAR",
-      "explanation": "Nonlinearity is robust: significant F-test (p=0.000), survives outlier removal (p=0.003), better LOOCV",
-      "best_aic": "log",
-      "best_bic": "log"
-    }
+      "verdict": "NOT_SIGNIFICANT",
+      "explanation": "Nonlinear term not significant even with full data (p=0.864)",
+      "best_aic": "linear",
+      "best_bic": "linear"
+    },
+    "data_source": "World Bank WDI (API)"
   },
   {
     "name": "Easterlin Paradox",
@@ -861,7 +874,8 @@
       "explanation": "Nonlinearity is robust: significant F-test (p=0.000), survives outlier removal (p=0.010), better LOOCV",
       "best_aic": "quadratic",
       "best_bic": "quadratic"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "McKeown Thesis (TB Mortality)",
@@ -921,7 +935,8 @@
       "explanation": "Nonlinearity is robust: significant F-test (p=0.000), survives outlier removal (p=0.000), better LOOCV",
       "best_aic": "quadratic",
       "best_bic": "quadratic"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Linear No-Threshold (LNT)",
@@ -981,7 +996,8 @@
       "explanation": "Nonlinearity is robust: significant F-test (p=0.000), survives outlier removal (p=0.000), better LOOCV",
       "best_aic": "quadratic",
       "best_bic": "quadratic"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Fries Compression of Morbidity",
@@ -1041,7 +1057,8 @@
       "explanation": "Nonlinearity significant with full data (p=0.002) but NOT after removing top influential points (p=0.231)",
       "best_aic": "quadratic",
       "best_bic": "quadratic"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Barker Hypothesis (U-shape)",
@@ -1101,7 +1118,8 @@
       "explanation": "Nonlinearity is robust: significant F-test (p=0.000), survives outlier removal (p=0.000), better LOOCV",
       "best_aic": "quadratic",
       "best_bic": "quadratic"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Omran Epidemiological Transition",
@@ -1165,7 +1183,8 @@
       "explanation": "Nonlinearity is robust: significant F-test (p=0.005), survives outlier removal (p=0.000), better LOOCV",
       "best_aic": "quadratic",
       "best_bic": "quadratic"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Wilkinson Curve",
@@ -1229,7 +1248,8 @@
       "explanation": "Nonlinear term not significant even with full data (p=0.746)",
       "best_aic": "linear",
       "best_bic": "linear"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "BMI-Mortality J-Curve",
@@ -1289,7 +1309,8 @@
       "explanation": "Nonlinearity is robust: significant F-test (p=0.000), survives outlier removal (p=0.000), better LOOCV",
       "best_aic": "quadratic",
       "best_bic": "quadratic"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Alcohol-Mortality J-Curve",
@@ -1343,71 +1364,73 @@
       "explanation": "Nonlinearity is robust: significant F-test (p=0.000), survives outlier removal (p=0.000), better LOOCV",
       "best_aic": "quadratic",
       "best_bic": "quadratic"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Demographic Transition (TFR)",
     "category": "Demography",
-    "n": 35,
-    "x_label": "Human Development Index",
-    "y_label": "Total Fertility Rate",
+    "n": 247,
+    "x_label": "log\u2081\u2080(GDP per capita PPP, $)",
+    "y_label": "Total fertility rate",
     "f_test": {
-      "f_stat": 8.22317098796478,
-      "p_value": 0.007260504111661237
+      "f_stat": 42.9509533269118,
+      "p_value": 3.3092462103923026e-10
     },
     "model_comparison": {
       "linear": {
-        "aic": 75.72946281737708,
-        "bic": 78.8401589403559,
-        "r2": 0.8534258771975227,
-        "r2_adj": 0.8489842371125992
+        "aic": 557.5794214975685,
+        "bic": 564.5981981708245,
+        "r2": 0.6697010738357265,
+        "r2_adj": 0.6683529149534233
       },
       "quadratic": {
-        "aic": 69.72470663452002,
-        "bic": 74.39075081898827,
-        "r2": 0.8833912937624265,
-        "r2_adj": 0.8761032496225782
+        "aic": 519.5300803594112,
+        "bic": 530.058245369295,
+        "r2": 0.7191403720751316,
+        "r2_adj": 0.7168382439773868
       },
       "log": {
-        "aic": 71.95637939919195,
-        "bic": 75.06707552217077,
-        "r2": 0.868405019663634,
-        "r2_adj": 0.8644172929867745
+        "aic": 541.9975331940866,
+        "bic": 549.0163098673426,
+        "r2": 0.689894205056718,
+        "r2_adj": 0.6886284671181739
       }
     },
     "loocv": {
-      "rmse_linear": 0.7164567702897481,
-      "rmse_quadratic": 0.7505615522732969
+      "rmse_linear": 0.7485348134883298,
+      "rmse_quadratic": 0.6929751136615145
     },
     "cooks_distance": {
-      "max": 0.2329097928929021,
-      "mean": 0.031664394628527576,
-      "n_influential": 2
+      "max": 0.07170090948831911,
+      "mean": 0.004376171325530388,
+      "n_influential": 14
     },
     "sensitivity": {
-      "f_full": 8.22317098796478,
-      "p_full": 0.007260504111661237,
-      "f_clean": 6.868875584901409,
-      "p_clean": 0.013818577277634914,
+      "f_full": 42.9509533269118,
+      "p_full": 3.3092462103923026e-10,
+      "f_clean": 32.41441444992326,
+      "p_clean": 3.6073750542264804e-08,
       "removed_indices": [
-        11,
-        4,
-        0
+        162,
+        36,
+        68
       ],
       "removed_labels": [
-        "India",
-        "DRC",
+        "Chad",
+        "Somalia, Fed. Rep.",
         "Niger"
       ],
-      "n_full": 35,
-      "n_clean": 32
+      "n_full": 247,
+      "n_clean": 244
     },
     "verdict": {
-      "verdict": "OVERFITTING",
-      "explanation": "Nonlinearity significant but LOOCV shows quadratic overfits (RMSE_lin=0.716, RMSE_quad=0.751)",
+      "verdict": "ROBUST_NONLINEAR",
+      "explanation": "Nonlinearity is robust: significant F-test (p=0.000), survives outlier removal (p=0.000), better LOOCV",
       "best_aic": "quadratic",
       "best_bic": "quadratic"
-    }
+    },
+    "data_source": "World Bank WDI (API)"
   },
   {
     "name": "Bongaarts-Feeney Tempo Effect",
@@ -1471,7 +1494,8 @@
       "explanation": "Nonlinear term not significant even with full data (p=0.688)",
       "best_aic": "linear",
       "best_bic": "linear"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Lee-Carter Mortality Model",
@@ -1531,7 +1555,8 @@
       "explanation": "Nonlinearity is robust: significant F-test (p=0.000), survives outlier removal (p=0.000), better LOOCV",
       "best_aic": "quadratic",
       "best_bic": "quadratic"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Coale-Trussell Fertility Schedule",
@@ -1591,7 +1616,8 @@
       "explanation": "Nonlinearity is robust: significant F-test (p=0.000), survives outlier removal (p=0.034), better LOOCV",
       "best_aic": "quadratic",
       "best_bic": "quadratic"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Replacement Migration Curve",
@@ -1649,71 +1675,73 @@
       "explanation": "Nonlinearity significant with full data (p=0.033) but NOT after removing top influential points (p=0.176)",
       "best_aic": "quadratic",
       "best_bic": "quadratic"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Second Demographic Transition",
     "category": "Demography",
-    "n": 30,
-    "x_label": "Human Development Index",
-    "y_label": "Total Fertility Rate",
+    "n": 133,
+    "x_label": "log\u2081\u2080(GDP per capita PPP, $)",
+    "y_label": "Total fertility rate",
     "f_test": {
-      "f_stat": 0.4548904818950389,
-      "p_value": 0.5057559983294274
+      "f_stat": 0.3298354080706356,
+      "p_value": 0.5667484565641124
     },
     "model_comparison": {
       "linear": {
-        "aic": 8.580470741812839,
-        "bic": 11.38286550513715,
-        "r2": 0.0012654238755510638,
-        "r2_adj": -0.03440366812889373
+        "aic": 195.38651864844317,
+        "bic": 201.1672169048867,
+        "r2": 0.13800321051199194,
+        "r2_adj": 0.1314230823479614
       },
       "quadratic": {
-        "aic": 10.079247370376457,
-        "bic": 14.282839515362923,
-        "r2": 0.017813107899935843,
-        "r2_adj": -0.0549414767000691
+        "aic": 197.04949901580702,
+        "bic": 205.72054640047227,
+        "r2": 0.14018472990028974,
+        "r2_adj": 0.1269568026679866
       },
       "log": {
-        "aic": 8.573950531609476,
-        "bic": 11.376345294933788,
-        "r2": 0.001482465601192362,
-        "r2_adj": -0.03417887491305094
+        "aic": 195.24902565469768,
+        "bic": 201.0297239111412,
+        "r2": 0.1388938667461277,
+        "r2_adj": 0.13232053748464778
       }
     },
     "loocv": {
-      "rmse_linear": 0.2747140603986167,
-      "rmse_quadratic": 0.2797834499211903
+      "rmse_linear": 0.504330749555325,
+      "rmse_quadratic": 0.5067552521266555
     },
     "cooks_distance": {
-      "max": 0.19142599713668534,
-      "mean": 0.025689290861809776,
-      "n_influential": 1
+      "max": 0.18279465370500844,
+      "mean": 0.007521424407910655,
+      "n_influential": 8
     },
     "sensitivity": {
-      "f_full": 0.4548904818950389,
-      "p_full": 0.5057559983294274,
-      "f_clean": 0.45162631816690346,
-      "p_clean": 0.5079820306605229,
+      "f_full": 0.3298354080706356,
+      "p_full": 0.5667484565641124,
+      "f_clean": 0.047851542550436006,
+      "p_clean": 0.8271959781459466,
       "removed_indices": [
-        2,
-        1,
-        4
+        132,
+        69,
+        74
       ],
       "removed_labels": [
-        "Taiwan",
-        "South Korea",
-        "Hong Kong"
+        "Arab World",
+        "Gabon",
+        "Equatorial Guinea"
       ],
-      "n_full": 30,
-      "n_clean": 27
+      "n_full": 133,
+      "n_clean": 130
     },
     "verdict": {
       "verdict": "NOT_SIGNIFICANT",
-      "explanation": "Nonlinear term not significant even with full data (p=0.506)",
+      "explanation": "Nonlinear term not significant even with full data (p=0.567)",
       "best_aic": "log",
       "best_bic": "log"
-    }
+    },
+    "data_source": "World Bank WDI (API)"
   },
   {
     "name": "Species-Area Curve",
@@ -1777,7 +1805,8 @@
       "explanation": "Nonlinearity significant with full data (p=0.009) but NOT after removing top influential points (p=0.382)",
       "best_aic": "quadratic",
       "best_bic": "log"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Hubbert Peak Oil (US)",
@@ -1837,7 +1866,8 @@
       "explanation": "Nonlinear term not significant even with full data (p=0.897)",
       "best_aic": "log",
       "best_bic": "log"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Keeling Curve (CO2)",
@@ -1897,7 +1927,8 @@
       "explanation": "Nonlinearity is robust: significant F-test (p=0.000), survives outlier removal (p=0.000), better LOOCV",
       "best_aic": "quadratic",
       "best_bic": "quadratic"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "HANPP vs Development",
@@ -1961,7 +1992,8 @@
       "explanation": "Nonlinear term not significant even with full data (p=0.967)",
       "best_aic": "log",
       "best_bic": "log"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Jevons Paradox (Energy)",
@@ -2021,71 +2053,73 @@
       "explanation": "Nonlinear term not significant even with full data (p=0.081)",
       "best_aic": "quadratic",
       "best_bic": "quadratic"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Forest Transition Curve",
     "category": "Environmental Science",
-    "n": 30,
-    "x_label": "GDP per capita (PPP, $)",
-    "y_label": "Forest Area (% of land)",
+    "n": 242,
+    "x_label": "log\u2081\u2080(GDP per capita PPP, $)",
+    "y_label": "Forest area (% of land area)",
     "f_test": {
-      "f_stat": 6.125725962863092,
-      "p_value": 0.0198931509979412
+      "f_stat": 1.743099520222855,
+      "p_value": 0.1880095749697719
     },
     "model_comparison": {
       "linear": {
-        "aic": 261.81094383100265,
-        "bic": 264.61333859432693,
-        "r2": 0.020054852718020988,
-        "r2_adj": -0.01494318825633556
+        "aic": 2201.893476114314,
+        "bic": 2208.8713515666277,
+        "r2": 0.001882640453535811,
+        "r2_adj": -0.0022761818779077903
       },
       "quadratic": {
-        "aic": 257.67674381334484,
-        "bic": 261.88033595833133,
-        "r2": 0.20126976216986747,
-        "r2_adj": 0.14210455936763533
+        "aic": 2202.1349018248275,
+        "bic": 2212.6017150032976,
+        "r2": 0.00910950549772127,
+        "r2_adj": 0.0008175348324303
       },
       "log": {
-        "aic": 259.98237020263264,
-        "bic": 262.7847649659569,
-        "r2": 0.07800099566608476,
-        "r2_adj": 0.04507245979701624
+        "aic": 2201.788085564579,
+        "bic": 2208.7659610168926,
+        "r2": 0.002317224069475321,
+        "r2_adj": -0.0018397874969018346
       }
     },
     "loocv": {
-      "rmse_linear": 19.90733464052632,
-      "rmse_quadratic": 17.569032056424067
+      "rmse_linear": 22.881186878553248,
+      "rmse_quadratic": 22.887572378820746
     },
     "cooks_distance": {
-      "max": 1.1533720441172846,
-      "mean": 0.06653558356280533,
-      "n_influential": 1
+      "max": 0.0506859129062288,
+      "mean": 0.0040968691116523084,
+      "n_influential": 9
     },
     "sensitivity": {
-      "f_full": 6.125725962863092,
-      "p_full": 0.0198931509979412,
-      "f_clean": 1.3815375817891349,
-      "p_clean": 0.2513686875240043,
+      "f_full": 1.743099520222855,
+      "p_full": 0.1880095749697719,
+      "f_clean": 3.8416696100312575,
+      "p_clean": 0.05117053172792885,
       "removed_indices": [
-        24,
-        25,
-        29
+        79,
+        37,
+        93
       ],
       "removed_labels": [
-        "Sweden",
-        "Finland",
-        "Ireland"
+        "Micronesia, Fed. Sts.",
+        "Solomon Islands",
+        "Liberia"
       ],
-      "n_full": 30,
-      "n_clean": 27
+      "n_full": 242,
+      "n_clean": 239
     },
     "verdict": {
-      "verdict": "OUTLIER_DEPENDENT",
-      "explanation": "Nonlinearity significant with full data (p=0.020) but NOT after removing top influential points (p=0.251)",
-      "best_aic": "quadratic",
-      "best_bic": "quadratic"
-    }
+      "verdict": "NOT_SIGNIFICANT",
+      "explanation": "Nonlinear term not significant even with full data (p=0.188)",
+      "best_aic": "log",
+      "best_bic": "log"
+    },
+    "data_source": "World Bank WDI (API)"
   },
   {
     "name": "Yerkes-Dodson Curve",
@@ -2145,7 +2179,8 @@
       "explanation": "Nonlinearity is robust: significant F-test (p=0.000), survives outlier removal (p=0.000), better LOOCV",
       "best_aic": "quadratic",
       "best_bic": "quadratic"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Ebbinghaus Forgetting Curve",
@@ -2199,7 +2234,8 @@
       "explanation": "Nonlinearity is robust: significant F-test (p=0.000), survives outlier removal (p=0.000), better LOOCV",
       "best_aic": "quadratic",
       "best_bic": "quadratic"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Weber-Fechner Law",
@@ -2259,7 +2295,8 @@
       "explanation": "Nonlinear term not significant even with full data (p=0.068)",
       "best_aic": "quadratic",
       "best_bic": "quadratic"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Dunning-Kruger Effect",
@@ -2319,7 +2356,8 @@
       "explanation": "Nonlinearity is robust: significant F-test (p=0.000), survives outlier removal (p=0.000), better LOOCV",
       "best_aic": "quadratic",
       "best_bic": "quadratic"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Happiness U-Curve (Age)",
@@ -2379,7 +2417,8 @@
       "explanation": "Nonlinearity is robust: significant F-test (p=0.000), survives outlier removal (p=0.000), better LOOCV",
       "best_aic": "quadratic",
       "best_bic": "quadratic"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Hubble's Law",
@@ -2443,7 +2482,8 @@
       "explanation": "Nonlinearity significant with full data (p=0.035) but NOT after removing top influential points (p=0.085)",
       "best_aic": "log",
       "best_bic": "log"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Kleiber's Law",
@@ -2501,7 +2541,8 @@
       "explanation": "Nonlinear term not significant even with full data (p=0.357)",
       "best_aic": "linear",
       "best_bic": "linear"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Gutenberg-Richter Law",
@@ -2561,7 +2602,8 @@
       "explanation": "Nonlinearity significant with full data (p=0.004) but NOT after removing top influential points (p=0.056)",
       "best_aic": "quadratic",
       "best_bic": "quadratic"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Moore's Law",
@@ -2621,7 +2663,8 @@
       "explanation": "Nonlinear term not significant even with full data (p=0.711)",
       "best_aic": "log",
       "best_bic": "log"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Lipset Hypothesis",
@@ -2685,7 +2728,8 @@
       "explanation": "Nonlinearity significant with full data (p=0.000) but NOT after removing top influential points (p=0.372)",
       "best_aic": "quadratic",
       "best_bic": "quadratic"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Duverger's Law",
@@ -2749,7 +2793,8 @@
       "explanation": "Nonlinear term not significant even with full data (p=0.449)",
       "best_aic": "linear",
       "best_bic": "linear"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Zipf's Law (US Cities)",
@@ -2803,7 +2848,8 @@
       "explanation": "Nonlinear term not significant even with full data (p=0.146)",
       "best_aic": "quadratic",
       "best_bic": "linear"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Crime-Temperature Curve",
@@ -2863,7 +2909,8 @@
       "explanation": "Nonlinearity significant with full data (p=0.001) but NOT after removing top influential points (p=0.146)",
       "best_aic": "quadratic",
       "best_bic": "quadratic"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Putnam Social Capital",
@@ -2927,7 +2974,8 @@
       "explanation": "Nonlinear term not significant even with full data (p=0.224)",
       "best_aic": "log",
       "best_bic": "log"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Mitscherlich Yield Curve",
@@ -2981,67 +3029,69 @@
       "explanation": "Nonlinearity is robust: significant F-test (p=0.000), survives outlier removal (p=0.000), better LOOCV",
       "best_aic": "quadratic",
       "best_bic": "quadratic"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Green Revolution Yield Curve",
     "category": "Agriculture",
-    "n": 17,
+    "n": 62,
     "x_label": "Year",
-    "y_label": "Global Cereal Yield (tonnes/ha)",
+    "y_label": "Global cereal yield (tonnes/ha)",
     "f_test": {
-      "f_stat": 1.262107983408418,
-      "p_value": 0.28014836943770116
+      "f_stat": 2.2033525877448334,
+      "p_value": 0.1430341936828915
     },
     "model_comparison": {
       "linear": {
-        "aic": -48.35452388119782,
-        "bic": -46.68809719308539,
-        "r2": 0.9968496229954252,
-        "r2_adj": 0.9966395978617869
+        "aic": -401.616966863955,
+        "bic": -397.3626980938648,
+        "r2": 0.986549570378867,
+        "r2_adj": 0.9863253965518481
       },
       "quadratic": {
-        "aic": -47.82189289835971,
-        "bic": -45.32225286619106,
-        "r2": 0.9971101450656754,
-        "r2_adj": 0.9966973086464862
+        "aic": -401.89016741132923,
+        "bic": -395.50876425619396,
+        "r2": 0.9870337928545805,
+        "r2_adj": 0.986594260408973
       },
       "log": {
-        "aic": -47.61891755520989,
-        "bic": -45.95249086709746,
-        "r2": 0.9967103108072688,
-        "r2_adj": 0.99649099819442
+        "aic": -400.7513544409246,
+        "bic": -396.49708567083445,
+        "r2": 0.9863604653082766,
+        "r2_adj": 0.9861331397300812
       }
     },
     "loocv": {
-      "rmse_linear": 0.056982511364685,
-      "rmse_quadratic": 0.05921094057210701
+      "rmse_linear": 0.009432302819899234,
+      "rmse_quadratic": 0.00938623101958523
     },
     "cooks_distance": {
-      "max": 0.12099356502484868,
-      "mean": 0.048000616203748285,
-      "n_influential": 0
+      "max": 0.07559744850893942,
+      "mean": 0.013341699578334604,
+      "n_influential": 2
     },
     "sensitivity": {
-      "f_full": 1.262107983408418,
-      "p_full": 0.28014836943770116,
-      "f_clean": 0.004722439337606606,
-      "p_clean": 0.9464457834987,
+      "f_full": 2.2033525877448334,
+      "p_full": 0.1430341936828915,
+      "f_clean": 2.2185951770586305,
+      "p_clean": 0.14196788681083206,
       "removed_indices": [
-        9,
-        8,
-        14
+        23,
+        42,
+        56
       ],
       "removed_labels": null,
-      "n_full": 17,
-      "n_clean": 14
+      "n_full": 62,
+      "n_clean": 59
     },
     "verdict": {
       "verdict": "NOT_SIGNIFICANT",
-      "explanation": "Nonlinear term not significant even with full data (p=0.280)",
-      "best_aic": "linear",
+      "explanation": "Nonlinear term not significant even with full data (p=0.143)",
+      "best_aic": "quadratic",
       "best_bic": "linear"
-    }
+    },
+    "data_source": "World Bank WDI (API)"
   },
   {
     "name": "Micronutrient U-shape (Vitamin D)",
@@ -3101,7 +3151,8 @@
       "explanation": "Nonlinearity is robust: significant F-test (p=0.000), survives outlier removal (p=0.000), better LOOCV",
       "best_aic": "quadratic",
       "best_bic": "quadratic"
-    }
+    },
+    "data_source": "Representative/Published"
   },
   {
     "name": "Body Weight Set-Point",
@@ -3155,6 +3206,7 @@
       "explanation": "Nonlinear term not significant even with full data (p=0.737)",
       "best_aic": "linear",
       "best_bic": "linear"
-    }
+    },
+    "data_source": "Representative/Published"
   }
 ]
