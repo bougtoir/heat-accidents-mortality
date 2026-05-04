@@ -66,16 +66,21 @@ def generate_dag():
     # Manual positions for clean layout (x, y) — wider spread
     # causal_order: Age(0), MaxHR(3), STDep(4), RestBP(1), Chol(2)
     pos = {}
-    layer_y = {0: 5.0, 1: 3.5, 2: 2.0, 3: 0.5, 4: -1.0}
-    layer_x = {0: 2.5, 1: 0.8, 2: 4.2, 3: 1.5, 4: 3.5}
+    layer_y = {0: 5.5, 1: 3.5, 2: 2.0, 3: 0.0, 4: -1.5}
+    layer_x = {0: 3.0, 1: 0.5, 2: 5.5, 3: 1.5, 4: 4.0}
     for node in range(n):
         rank = order_rank[node]
         pos[node] = (layer_x[rank], layer_y[rank])
 
     # Create figure
-    fig, ax = plt.subplots(1, 1, figsize=(10, 9))
+    fig, ax = plt.subplots(1, 1, figsize=(12, 10))
 
-    # Draw edges
+    # Node box dimensions
+    box_w = 1.6
+    box_h = 0.55
+
+    # Draw edges (first pass: arrows only)
+    edge_labels = []
     for src, dst, w in edges:
         color = '#1976D2' if w > 0 else '#D32F2F'
         width = max(abs(w) * 6, 1.5)
@@ -104,24 +109,46 @@ def generate_dag():
                 connectionstyle='arc3,rad=0.08',
                 mutation_scale=18,
             ),
-            zorder=1
+            zorder=2
         )
 
-        # Edge label
-        mid_x = (x1 + x2) / 2
-        mid_y = (y1 + y2) / 2
-        # perpendicular offset
-        perp_x = -dy / dist * 0.25 if dist > 0 else 0
-        perp_y = dx / dist * 0.25 if dist > 0 else 0
-        ax.text(mid_x + perp_x, mid_y + perp_y, label_text,
+        # Place label at 35% along edge (closer to source, away from congestion)
+        t = 0.35
+        mid_x = x1 + t * (x2 - x1)
+        mid_y = y1 + t * (y2 - y1)
+        perp_x = -dy / dist * 0.35 if dist > 0 else 0
+        perp_y = dx / dist * 0.35 if dist > 0 else 0
+        lbl_x = mid_x + perp_x
+        lbl_y = mid_y + perp_y
+
+        # Iteratively shift label away from overlapping nodes (max 4 times)
+        for _ in range(4):
+            overlap = False
+            for node_id in range(n):
+                nx_pos, ny_pos = pos[node_id]
+                if abs(lbl_x - nx_pos) < box_w/2 + 0.2 and abs(lbl_y - ny_pos) < box_h/2 + 0.2:
+                    overlap = True
+                    break
+            if not overlap:
+                break
+            # Try flipping to the other side of the edge
+            perp_x = -perp_x
+            perp_y = -perp_y
+            lbl_x = mid_x + perp_x
+            lbl_y = mid_y + perp_y
+
+        edge_labels.append((lbl_x, lbl_y, label_text, color))
+
+    # Draw edge labels (second pass: on top of everything)
+    for lbl_x, lbl_y, label_text, color in edge_labels:
+        ax.text(lbl_x, lbl_y, label_text,
                 fontsize=10, color=color, fontweight='bold',
                 ha='center', va='center',
                 bbox=dict(boxstyle='round,pad=0.2', facecolor='white',
-                          edgecolor=color, alpha=0.9, lw=1))
+                          edgecolor=color, alpha=0.95, lw=1),
+                zorder=10)
 
     # Draw nodes as rounded rectangles
-    box_w = 1.6
-    box_h = 0.55
     for node in range(n):
         rank = order_rank[node]
         x, y = pos[node]
@@ -143,21 +170,21 @@ def generate_dag():
                fontsize=12, fontweight='bold', color='white', zorder=4)
 
     # Causal order sidebar
-    sidebar_x = 6.0
-    ax.text(sidebar_x, 5.5, 'Causal Order', fontsize=11, ha='center',
+    sidebar_x = 7.5
+    ax.text(sidebar_x, 6.0, 'Causal Order', fontsize=11, ha='center',
             fontweight='bold', color='#444444')
-    ax.text(sidebar_x, 5.1, '(upstream \u2192 downstream)', fontsize=9,
+    ax.text(sidebar_x, 5.6, '(upstream \u2192 downstream)', fontsize=9,
             ha='center', style='italic', color='#888888')
     for node in causal_order:
         rank = order_rank[node]
-        y_pos = 4.4 - rank * 0.7
+        y_pos = 4.8 - rank * 0.8
         marker = '\u25B6' if rank == 0 else '\u25B7'
         ax.text(sidebar_x, y_pos, f'{marker}  #{rank+1}  {labels[node]}',
                 fontsize=10, ha='center', va='center', color='#555555',
                 fontfamily='monospace')
 
     # Vertical arrow for direction
-    ax.annotate('', xy=(sidebar_x - 1.0, 1.2), xytext=(sidebar_x - 1.0, 4.6),
+    ax.annotate('', xy=(sidebar_x - 1.0, 0.8), xytext=(sidebar_x - 1.0, 5.0),
                 arrowprops=dict(arrowstyle='->', color='#AAAAAA', lw=1.5))
 
     # Legend
@@ -166,8 +193,8 @@ def generate_dag():
     ax.legend(handles=[pos_patch, neg_patch], loc='lower left',
              fontsize=11, framealpha=0.9, edgecolor='#CCCCCC')
 
-    ax.set_xlim(-0.5, 7.5)
-    ax.set_ylim(-1.8, 6.3)
+    ax.set_xlim(-0.5, 9.0)
+    ax.set_ylim(-2.5, 6.8)
     ax.set_aspect('equal')
     ax.axis('off')
     ax.set_title('Estimated Causal DAG (DirectLiNGAM)\nUCI Heart Disease Data (n = 297)',
@@ -177,8 +204,13 @@ def generate_dag():
     output_path = f'{OUTPUT_DIR}/fig6_causal_dag.png'
     fig.savefig(output_path, dpi=200, bbox_inches='tight',
                 facecolor='white', edgecolor='none')
+    # Also save to A2 directory
+    a2_path = '/home/ubuntu/repos/wip/spectral-causality-a2-ecd/figures/fig6_causal_dag.png'
+    fig.savefig(a2_path, dpi=200, bbox_inches='tight',
+                facecolor='white', edgecolor='none')
     plt.close()
     print(f"\nSaved: {output_path}")
+    print(f"Saved: {a2_path}")
     return output_path
 
 
