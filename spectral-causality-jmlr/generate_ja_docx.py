@@ -388,6 +388,16 @@ def build_document():
         "ここで α ∈ [0,1] はドメイン知識の重みパラメータである。"
     ))
 
+    # Figure: DPI Architecture
+    add_figure(doc,
+        f"{FIGURES_DIR}/fig_dpi_architecture.png",
+        "\u56f35: Directional Predictability Index (DPI) のアーキテクチャ。"
+        "3つの独立な非対称統計量（回帰係数非対称性 Â_reg、ANM残差独立性 Â_ANM、"
+        "条件付きエントロピー削減 Â_ent）を正規化・平均し、対称相関 |ρ̂_{ij}| を"
+        "非対称DPIスコアに変調する。モジュラー設計により各成分を独立に拡張可能。",
+        width=Inches(5.5)
+    )
+
     add_heading(doc, "4.4 SCC, SCD, 複素因果指標", level=2)
     add_para(doc, (
         "定義 4.3 (Spectral Causal Coupling, SCC): "
@@ -402,6 +412,16 @@ def build_document():
         "CCI(i,j) = Σ_k f(λ_k) |u_k(i)| |u_k(j)| exp(i(θ_k(i) - θ_k(j))) と定義すると、"
         "SCC(i,j) = Re[CCI(i,j)]、SCD(i,j) = Im[CCI(i,j)] が成り立つ。"
     ))
+
+    # Figure: CCI Complex Plane
+    add_figure(doc,
+        f"{FIGURES_DIR}/fig_cci_complex_plane.png",
+        "\u56f36: 複素因果指標 CCI(i,j) の複素平面プロット。"
+        "実軸 (SCC) は結合強度、虚軸 (SCD) は因果方向を表す。"
+        "赤点は順方向 (i→j)、青点は逆方向を示す。"
+        "大多数のペアが下半平面に集中し、Ageの上流ルートノードとしての優位性を反映。",
+        width=Inches(5.5)
+    )
 
     add_para(doc, "命題 4.2 (SCD行列の性質)", bold=True)
     add_para(doc, (
@@ -685,6 +705,16 @@ def build_document():
         "DAG維持の臨界閾値 (r_gradient > 0.5) は p_flip* ≈ 0.15: "
         "辺方向の少なくとも85%が正しい必要がある。"
     ))
+
+    # Figure: p_flip U-curve
+    add_figure(doc,
+        f"{FIGURES_DIR}/fig_pflip_ucurve.png",
+        "\u56f37: 知識品質の相転移（定理8.2）。"
+        "辺方向反転率 p_flip の増加に伴い、勾配エネルギー比 r_gradient はU字カーブを描く。"
+        "実験値（青、200試行）は理論予測 (1-2p)^2 r* に近似。"
+        "臨界閾値 p*_flip ≈ 0.15 以下でDAG構造が維持される。",
+        width=Inches(5.5)
+    )
 
     add_para(doc, "注意 8.2 (部分的誤情報は無知より悪い)", bold=True, italic=True)
     add_para(doc, (

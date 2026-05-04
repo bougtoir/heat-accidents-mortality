@@ -45,6 +45,36 @@ FIGURES = [
             "(C) Asymmetric norm. (D) Phase diagram."
         ),
     },
+    {
+        "file": "figures/fig_dpi_architecture.png",
+        "title": "Figure 5: DPI Architecture",
+        "caption": (
+            "Architecture of the Directional Predictability Index (DPI). Three independent "
+            "asymmetric statistics (regression coefficient asymmetry, ANM residual independence, "
+            "conditional entropy reduction) are normalized and averaged. The composite asymmetric "
+            "score modulates the symmetric correlation into the directional DPI."
+        ),
+    },
+    {
+        "file": "figures/fig_cci_complex_plane.png",
+        "title": "Figure 6: Complex Causal Index in the Complex Plane",
+        "caption": (
+            "CCI(i,j) for all variable pairs plotted in the complex plane. "
+            "Real axis = SCC (coupling strength); imaginary axis = SCD (causal direction). "
+            "Red = forward direction (i -> j); blue = reverse. Most pairs cluster in the "
+            "lower half-plane, reflecting Age's dominance as the upstream root node."
+        ),
+    },
+    {
+        "file": "figures/fig_pflip_ucurve.png",
+        "title": "Figure 7: Knowledge Quality Phase Transition",
+        "caption": (
+            "U-shaped quality curve: r_gradient vs p_flip. Empirical results (200 trials, blue) "
+            "closely match theoretical prediction (1-2p)^2 * r* (red dashed). "
+            "Critical threshold p*_flip ~ 0.15: at least 85% correct directions needed. "
+            "Partial misinformation is worse than complete ignorance."
+        ),
+    },
 ]
 
 

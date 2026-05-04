@@ -175,6 +175,10 @@ The DPI has a modular, plug-in architecture. Additional asymmetric statistics ca
 | 3 | Data + domain + RCT ($\alpha = 0.5$–0.8) | Spectral + intervention | ~0.86+ |
 | 4 | Full ECD ensemble | All methods + Hill's 9 | Comprehensive |
 
+![Figure 6: ECD Pipeline](figures/fig_ecd_pipeline.png)
+
+**Figure 6**: The four-step ECD deployment pipeline. Step 1: LiNGAM bootstrap (1000 iterations) produces a causal DAG with edge confidences. Step 2: DPI-augmented spectral analysis constructs a directed cyclic graph. Step 3: Hodge decomposition separates gradient (DAG) and curl (feedback) components, yielding causal potential $\phi$. Step 4: Interventionability scoring maps $\phi$ to clinical actionability $\iota$. Bottom: Hill's nine criteria coverage achieved by the ensemble.
+
 ---
 
 ## 4. Interventionability: From Causal Potential to Clinical Action
@@ -200,6 +204,10 @@ $$\iota(X_i) = \text{"Degree to which } X_i \text{ can be modified by clinical i
 **Non-interventionable variables are exogenous**: Age sits at the root of the DAG because it influences all other variables but is not influenced by any within-system variable. A purely mathematical quantity (the Hodge potential from graph spectral structure) acquires practical clinical meaning as "actionability."
 
 **Implication for clinical trial design**: Variables with high $\phi$ (upstream) are poor treatment targets but excellent confounders to control for. Variables with low $\phi$ (downstream) are promising intervention targets. This provides a data-driven prioritization for treatment target selection.
+
+![Figure 7: Causal Potential vs. Interventionability](figures/fig_interventionability.png)
+
+**Figure 7**: Causal potential $\phi$ vs. clinical interventionability $\iota$ for all five variables. Age (most upstream, $\phi = 0$) has zero interventionability; Cholesterol and RestingBP (downstream) have high interventionability ($\iota = 0.9$ and $0.8$, respectively) with well-established pharmacological interventions (statins, antihypertensives). The inverse relationship between $\phi$ and $\iota$ demonstrates that the mathematical quantity naturally corresponds to clinical actionability.
 
 ### 4.3 From $\phi$ to Treatment Prioritization
 
@@ -367,6 +375,10 @@ DAGs are mathematically convenient, but clinically, cyclic models are often more
 | **MaxHR ↔ STDep** | MaxHR → STDep | **73%** | **Strong exercise–ischemia feedback loop** |
 
 The **73% feedback rate for MaxHR ↔ STDep** is the most clinically important finding: LiNGAM's DAG assumption (unidirectional MaxHR → STDep) misses a well-established clinical feedback loop where ischemia (STDep) reduces exercise tolerance (MaxHR), which in turn worsens ischemia.
+
+![Figure 8: Clinical Feedback Network](figures/fig_feedback_network.png)
+
+**Figure 8**: Clinical feedback network with edge-level feedback rates from Hodge decomposition. Green solid arrows: unidirectional edges (< 10% feedback). Orange dashed arrows: weak feedback (10–50%). Red thick double arrows: strong feedback (> 50%). The MaxHR ↔ STDepression edge (73% feedback) represents the clinically important exercise–ischemia feedback loop that a DAG assumption would miss. Node annotations show interventionability scores $\iota$.
 
 ### 8.3 Purpose-Dependent Pruning Thresholds
 
