@@ -94,7 +94,7 @@ def generate_dag():
         dx = x2 - x1
         dy = y2 - y1
         dist = np.sqrt(dx**2 + dy**2)
-        shrink = 0.55 / dist if dist > 0 else 0
+        shrink = 0.75 / dist if dist > 0 else 0
         sx1 = x1 + dx * shrink
         sy1 = y1 + dy * shrink
         sx2 = x2 - dx * shrink
@@ -109,7 +109,7 @@ def generate_dag():
                 connectionstyle='arc3,rad=0.08',
                 mutation_scale=18,
             ),
-            zorder=2
+            zorder=5
         )
 
         # Place label at 35% along edge (closer to source, away from congestion)

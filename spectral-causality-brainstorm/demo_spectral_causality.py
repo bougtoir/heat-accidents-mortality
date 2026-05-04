@@ -601,8 +601,8 @@ ecd_scores = [3, 3, 3, 2, 2, 2, 3, 2, 2] + [3]
 
 methods = [
     ('DirectLiNGAM', lingam_scores, COLORS['lingam']),
-    ('Utility Causality', utility_scores, COLORS['spectral']),
-    ('Ensemble (ECD)', ecd_scores, COLORS['hodge']),
+    ('Spectral Causality', utility_scores, COLORS['spectral']),
+    ('Ensemble (HIKONE)', ecd_scores, COLORS['hodge']),
 ]
 
 for ax_idx, (name, scores, color) in enumerate(methods):
@@ -616,7 +616,7 @@ for ax_idx, (name, scores, color) in enumerate(methods):
     ax.set_yticklabels(['weak', 'partial', 'strong'], fontsize=8)
     ax.set_title(name, fontsize=14, fontweight='bold', pad=20)
 
-plt.suptitle("Figure 5: Hill's 9 Criteria Coverage — Three Approaches",
+plt.suptitle("Hill's 9 Criteria Coverage — Three Approaches",
              fontsize=14, fontweight='bold', y=1.02)
 plt.tight_layout()
 plt.savefig(f'{OUTPUT_DIR}/fig5_hill_radar.png', dpi=150, bbox_inches='tight')

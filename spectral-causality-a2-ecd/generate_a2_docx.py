@@ -134,9 +134,9 @@ def generate_manuscript(md_file='manuscript_a2_ecd.md', out_file='manuscript_a2_
     if lang == 'ja':
         FIGURES = [
             ('### 3.1', 'fig5_hill_radar.png',
-             '\u56f31. Hill\u306e9\u57fa\u6e96\u30ab\u30d0\u30ec\u30c3\u30b8\u3002ECD\uff08\u7d2b\uff09\u304c\u5358\u4e00\u624b\u6cd5\u3088\u308a\u5e83\u7bc4\u306a\u30ab\u30d0\u30ec\u30c3\u30b8\u3092\u9054\u6210\u3002'),
+             '図1. Hillの9基準カバレッジ。HIKONE（紫）が単一手法より広範なカバレッジを達成。'),
             ('### 3.5', 'fig_ecd_pipeline.png',
-             '\u56f32. ECD\u5b9f\u904b\u7528\u30d1\u30a4\u30d7\u30e9\u30a4\u30f3\u306e4\u30b9\u30c6\u30c3\u30d7\u3002LiNGAM\u30d6\u30fc\u30c8\u30b9\u30c8\u30e9\u30c3\u30d7\u2192DPI\u30b9\u30da\u30af\u30c8\u30eb\u89e3\u6790\u2192Hodge\u5206\u89e3\u2192\u4ecb\u5165\u53ef\u80fd\u6027\u30b9\u30b3\u30a2\u30ea\u30f3\u30b0\u3002'),
+             '図2. HIKONE実運用パイプラインの4ステップ。LiNGAMブートストラップ→DPIスペクトル解析→Hodge分解→介入可能性スコアリング。'),
             ('### 4.2', 'fig_interventionability.png',
              '\u56f33. \u56e0\u679c\u30dd\u30c6\u30f3\u30b7\u30e3\u30eb\u03c6 vs \u81e8\u5e8a\u7684\u4ecb\u5165\u53ef\u80fd\u6027\u03b9\u3002\u03c6\u3068\u03b9\u306e\u9006\u76f8\u95a2\u304c\u6570\u7406\u91cf\u3068\u81e8\u5e8a\u7684\u884c\u52d5\u53ef\u80fd\u6027\u306e\u5bfe\u5fdc\u3092\u5b9f\u8a3c\u3002'),
             ('## 5.', 'fig6_causal_dag.png',
@@ -146,16 +146,16 @@ def generate_manuscript(md_file='manuscript_a2_ecd.md', out_file='manuscript_a2_
             ('### 6.2', 'fig7_lingam_vs_spectral.png',
              '\u56f36. LiNGAM DAG\uff08\u5de6\uff09vs \u30b9\u30da\u30af\u30c8\u30eb\u56e0\u679c\u6027DCG\uff08\u53f3\uff09\u3002\u7834\u7dda\uff1a\u30d5\u30a3\u30fc\u30c9\u30d0\u30c3\u30af\u8fba\u3002'),
             ('### 8.2', 'fig9_ecd_pruning_analysis.png',
-             '\u56f37. ECD\u30a2\u30f3\u30b5\u30f3\u30d6\u30eb\u30fb\u30d7\u30eb\u30fc\u30cb\u30f3\u30b0\u89e3\u6790\u3002\u8fba\u30ec\u30d9\u30eb\u30d5\u30a3\u30fc\u30c9\u30d0\u30c3\u30af\u7387\u3002'),
+             '図7. HIKONEアンサンブル・プルーニング解析。辺レベルフィードバック率。'),
             ('### 8.3', 'fig_feedback_network.png',
              '\u56f38. \u81e8\u5e8a\u30d5\u30a3\u30fc\u30c9\u30d0\u30c3\u30af\u30cd\u30c3\u30c8\u30ef\u30fc\u30af\u3002\u8fba\u8272: \u7dd1=\u4e00\u65b9\u5411\u3001\u30aa\u30ec\u30f3\u30b8=\u5f31\u30d5\u30a3\u30fc\u30c9\u30d0\u30c3\u30af\u3001\u8d64=\u5f37\u30d5\u30a3\u30fc\u30c9\u30d0\u30c3\u30af\u3002'),
         ]
     else:
         FIGURES = [
             ('### 3.1', 'fig5_hill_radar.png',
-             "Figure 1. Hill's nine criteria coverage. ECD (purple) achieves broader coverage than any single method."),
+             "Figure 1. Hill's nine criteria coverage. HIKONE (purple) achieves broader coverage than any single method."),
             ('### 3.5', 'fig_ecd_pipeline.png',
-             'Figure 2. Four-step ECD deployment pipeline: LiNGAM bootstrap \u2192 DPI spectral analysis \u2192 Hodge decomposition \u2192 Interventionability scoring.'),
+             'Figure 2. Four-step HIKONE deployment pipeline: LiNGAM bootstrap → DPI spectral analysis → Hodge decomposition → Interventionability scoring.'),
             ('### 4.2', 'fig_interventionability.png',
              'Figure 3. Causal potential \u03c6 vs. clinical interventionability \u03b9. The inverse relationship demonstrates that mathematical quantities correspond to clinical actionability.'),
             ('## 5.', 'fig6_causal_dag.png',
@@ -165,7 +165,7 @@ def generate_manuscript(md_file='manuscript_a2_ecd.md', out_file='manuscript_a2_
             ('### 6.2', 'fig7_lingam_vs_spectral.png',
              'Figure 6. LiNGAM DAG (left) vs. Spectral Causality DCG (right). Dashed lines: feedback edges.'),
             ('### 8.2', 'fig9_ecd_pruning_analysis.png',
-             'Figure 7. ECD ensemble and pruning analysis with edge-level feedback rates.'),
+             'Figure 7. HIKONE ensemble and pruning analysis with edge-level feedback rates.'),
             ('### 8.3', 'fig_feedback_network.png',
              'Figure 8. Clinical feedback network. Edge colors: green = unidirectional, orange = weak feedback, red = strong feedback.'),
         ]
@@ -357,8 +357,8 @@ def generate_cover_letter():
 
     p = doc.add_paragraph()
     p.add_run('Re: Submission of manuscript entitled ')
-    run = p.add_run('"Ensemble Causal Discovery with Feedback Quantification: '
-        'Integrating Spectral Graph Methods and LiNGAM for Clinical Causal Inference"')
+    run = p.add_run('"HIKONE: Hodge-Integrated Knowledge-Optional Network Estimation '
+        'with Feedback Quantification for Clinical Causal Inference"')
     run.italic = True
     doc.add_paragraph('')
 
@@ -369,7 +369,8 @@ def generate_cover_letter():
     doc.add_paragraph(
         'We are pleased to submit the above-titled manuscript (~5,000 words, 8 figures, '
         '10 tables) for consideration as an Original Research Article in the Journal of '
-        'Biomedical Informatics. This manuscript presents Ensemble Causal Discovery (ECD), '
+        'Biomedical Informatics. This manuscript presents HIKONE (Hodge-Integrated '
+        'Knowledge-Optional Network Estimation), '
         'a novel pipeline that integrates LiNGAM\u2019s identifiability guarantees with '
         'spectral causality\u2019s Hodge decomposition to enable clinically meaningful causal '
         'inference that accommodates feedback loops\u2014a ubiquitous feature of pathophysiology '
@@ -381,7 +382,7 @@ def generate_cover_letter():
         'We believe JBI is the ideal venue for this work for three reasons. First, it directly '
         'addresses the gap between causal discovery methods and clinical applicability\u2014a '
         'topic of growing interest in biomedical informatics, as highlighted by the recent '
-        'scoping review by Liu et al. (BMC MRM, 2024). Second, the ECD pipeline produces '
+        'scoping review by Liu et al. (BMC MRM, 2024). Second, the HIKONE pipeline produces '
         'interventionability scores that map graph-theoretic quantities (Hodge causal potential) '
         'to clinical actionability (treatment target prioritization), providing a principled '
         'bridge between mathematical methods and clinical decision support. Third, the manuscript '
