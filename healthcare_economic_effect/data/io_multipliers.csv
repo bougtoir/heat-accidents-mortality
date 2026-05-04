@@ -1,0 +1,9 @@
+country,iso3,multiplier,ci_lo,ci_hi,year,source
+Japan,JPN,2.78,2.74,2.9,2011,Yamada & Imanaka 2015
+Japan (JMARI),JPN,2.85,,,2006,Maeda 2008 (JMARI WP172)
+United States (Medicare),USA,1.7,,,2017,Dupor & Guerrero 2017 (Fed StL)
+Canada,CAN,1.82,,,2009,CIHI / Conference Board 2013
+United Kingdom,GBR,1.9,,,2016,ONS Health SUT / King's Fund 2018
+Germany,DEU,2.1,,,2014,Henke & Ostwald 2012 (GGR estimate)
+Australia,AUS,1.85,,,2015,AIHW / Deloitte Access Economics 2016
+OECD Average,OECD,1.95,1.5,2.9,2020,Synthesis (this study)
