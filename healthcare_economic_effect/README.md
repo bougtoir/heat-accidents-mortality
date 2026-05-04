@@ -6,7 +6,7 @@ A neutral sustainability framework that reframes healthcare spending from
 ## Core Thesis
 
 Healthcare expenditure is simultaneously a **cost** and an **economic effect**.
-This project integrates four analytical lenses:
+This project integrates five analytical lenses:
 
 1. **Input-Output (I-O) Multipliers** -- healthcare spending as demand stimulus
    (Japan: 2.78x, OECD range: 1.7-2.9x)
@@ -17,6 +17,9 @@ This project integrates four analytical lenses:
 4. **Three-Layer Tempo Analogy** -- the Bongaarts-Feeney quantum-tempo
    decomposition ported from Population to GDP to Healthcare, showing that
    healthcare exhibits the largest tempo drift (+0.15 yr/yr vs GDP +0.04)
+5. **Equipment Stock & Import Leakage** -- Japan's diagnostic imaging density
+   (170.9 CT+MRI/million, 4x OECD median) as health capital asset; import
+   leakage (~5% CHE) reducing effective I-O multiplier
 
 ## Key Results
 
@@ -29,6 +32,9 @@ This project integrates four analytical lenses:
 - The **three-layer analogy** (Population -> GDP -> Healthcare) reveals that
   healthcare has the largest tempo drift among all three domains, making it
   the field where tempo correction matters most.
+- **Counterfactual analysis**: reducing Japan's equipment density to OECD average
+  drops fiscal return to 0.98 (unsustainable); domestic manufacturing raises it
+  to 1.09. High equipment density is a sustainability component, not excess.
 
 ## Country Selection
 
@@ -45,14 +51,14 @@ Countries are included based on published I-O multiplier evidence:
 ```
 healthcare_economic_effect/
   scripts/
-    analyze_healthcare_economic_effect.py   # Data + figures (5 figs, bilingual)
+    analyze_healthcare_economic_effect.py   # Data + figures (8 figs, bilingual)
     create_manuscript_ja.py                 # Japanese manuscript (docx + pptx)
     create_manuscript_en.py                 # English manuscript (docx + pptx)
   data/                                     # CSV + JSON outputs
   output/
     docx/     # Manuscripts (JA/EN)
     pptx/     # Editable figures (1 slide per figure, JA/EN)
-    figures/  # PNG figures (5 EN + 1 JA variant)
+    figures/  # PNG figures (8 EN + 4 JA variants)
   README.md
 ```
 
@@ -82,7 +88,7 @@ analogy (Figure 2) connects all four papers into a unified programme.
 
 ## References
 
-Key sources (21 total in manuscripts):
+Key sources (24 total in manuscripts):
 - Yamada & Imanaka (2015) *Environ Health Prev Med* -- Japan I-O multiplier 2.78
 - Dupor & Guerrero (2021) *Econ Inq* -- US Medicare multiplier 1.7
 - Gutierrez-Hernandez & Abasolo-Alesson (2021) *Cost Eff Resour Alloc* -- EU-28 I-O framework
@@ -90,3 +96,6 @@ Key sources (21 total in manuscripts):
 - Bongaarts & Feeney (1998) *Popul Dev Rev* -- Tempo effect origin
 - Goldstein, Lutz & Scherbov (2003) *Popul Dev Rev* -- Forgotten parameter sigma
 - Onishi (2026) Working Papers -- GDP tempo + healthcare PoC companion papers
+- OECD (2023) *Health at a Glance* -- CT/MRI density data
+- MHLW (2021) Pharmaceutical production statistics -- Japan trade data
+- Preston (1975) *Popul Stud* -- Original Preston Curve (overfit demonstrated)
