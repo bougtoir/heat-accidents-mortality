@@ -87,7 +87,8 @@ quantity.
 Experiments on the UCI Heart Disease dataset ($n=297$, 5 clinical variables)
 demonstrate that spectral causality with DPI detects 9 directed edges at
 $\alpha=0$ (no domain knowledge), achieving 67\% directional agreement with
-DirectLiNGAM, while Hodge decomposition reveals clinically meaningful
+Direct Linear Non-Gaussian Acyclic Model (DirectLiNGAM; \citealp{Shimizu2011}),
+while Hodge decomposition reveals clinically meaningful
 feedback loops invisible to DAG-based methods.  We propose the
 \emph{Ensemble Causal Direction} (ECD) pipeline that integrates LiNGAM's
 identifiability guarantees with spectral causality's feedback
@@ -150,15 +151,15 @@ The main contributions of this paper are:
   magnitude---establishing that knowledge \emph{quality}, not quantity,
   governs causal structure emergence (Section~\ref{sec:transition}).
 
-\item \textbf{Partial identifiability of DPI.}  Under the additive noise
-  model, the ANM component of DPI consistently identifies causal direction
-  as $n\to\infty$, providing a non-circular theoretical foundation
-  (Section~\ref{sec:identifiability}).
-
 \item \textbf{Ensemble Causal Direction (ECD).}  A pipeline integrating
   LiNGAM's local identifiability with spectral causality's global structural
   analysis, achieving broad coverage of Hill's nine epidemiological criteria
   (Section~\ref{sec:ecd}).
+
+\item \textbf{Partial identifiability of DPI.}  Under the additive noise
+  model, the ANM component of DPI consistently identifies causal direction
+  as $n\to\infty$, providing a non-circular theoretical foundation
+  (Section~\ref{sec:identifiability}).
 \end{enumerate}
 
 Figure~\ref{fig:three-approaches} provides a conceptual overview of the
@@ -478,9 +479,18 @@ The full utility function combines domain knowledge and data:
   + (1-\alpha)\cdot D_{\DPI}(i\to j),
 \end{equation}
 where $\alpha\in[0,1]$ is the domain knowledge mixing ratio and
-$C_{\mathrm{domain}}$ encodes external causal knowledge.  Crucially,
-at $\alpha=0$ the DPI asymmetry preserves directional signal, unlike
-the $|\hat\rho|$-based formulation.
+$C_{\mathrm{domain}}(i,j)\in[0,1]$ is a \emph{domain knowledge matrix}
+encoding the degree to which variable~$X_i$ is believed to causally
+influence variable~$X_j$, based on external knowledge sources such as
+expert elicitation, published literature, or structured ontologies.
+Unlike a binary adjacency matrix, $C_{\mathrm{domain}}$ permits graded
+confidence: $C_{\mathrm{domain}}(i,j)=0.8$ encodes strong believed
+influence, while $C_{\mathrm{domain}}(i,j)=0.1$ encodes weak or
+uncertain influence.  The asymmetry
+$C_{\mathrm{domain}}(i,j)\ne C_{\mathrm{domain}}(j,i)$ encodes
+directional prior knowledge.
+Crucially, at $\alpha=0$ the DPI asymmetry preserves directional signal,
+unlike the $|\hat\rho|$-based formulation.
 Figure~\ref{fig:dpi-architecture} illustrates this modular architecture.
 
 \begin{figure}[t]
@@ -780,6 +790,37 @@ We use the UCI Heart Disease Dataset (Cleveland subset;
 Sample size $N=297$; all variables are standardized to zero mean and unit
 variance.
 
+\paragraph{Domain knowledge matrix.}
+We construct $C_{\mathrm{domain}}$ from established cardiovascular
+physiology (Table~\ref{tab:clinical-knowledge}).  Each entry
+$C_{\mathrm{domain}}(i,j)\in[0,1]$ represents the strength of
+the believed causal influence of $X_i$ on $X_j$, elicited from
+medical literature \citep{Detrano1989}.  For example,
+$C_{\mathrm{domain}}(\text{Age},\text{RestBP})=0.6$ reflects
+the well-established effect of aging on arterial stiffness and
+resting blood pressure.
+
+\begin{table}[t]
+\centering
+\caption{Domain knowledge matrix $C_{\mathrm{domain}}$ for the UCI
+  Heart Disease variables.  Entry $(i,j)$ represents the believed
+  causal influence strength of variable $i$ on variable $j$, based
+  on cardiovascular physiology.  Asymmetry
+  $C(i,j)\ne C(j,i)$ encodes directional prior knowledge.}
+\label{tab:clinical-knowledge}
+\begin{tabular}{lccccc}
+\toprule
+$C(i,j)$ & Age & RestBP & Chol & MaxHR & STDep \\
+\midrule
+Age         & ---  & 0.6  & 0.4  & 0.5  & 0.3 \\
+RestBP      & 0.1  & ---  & 0.2  & 0.3  & 0.4 \\
+Cholesterol & 0.1  & 0.3  & ---  & 0.1  & 0.3 \\
+MaxHR       & 0.1  & 0.2  & 0.1  & ---  & 0.5 \\
+STDep       & 0.0  & 0.1  & 0.0  & 0.2  & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \subsection{LiNGAM Baseline}
 \label{sec:lingam-baseline}
 
@@ -793,8 +834,10 @@ exercise-intolerance-induced ischemia).
 
 \subsection{Magnetic Laplacian Eigenvectors}
 
-We construct the utility directed graph with $\alpha=0.6$ (60\% clinical
-knowledge, 40\% data-driven DPI) and compute $\mathcal{L}^{(q)}$ for
+We construct the utility directed graph (Eq.~\ref{eq:utility-hybrid}) with
+$\alpha=0.6$, combining $C_{\mathrm{domain}}$
+(Table~\ref{tab:clinical-knowledge}) at 60\% weight with data-driven DPI
+at 40\% weight, and compute $\mathcal{L}^{(q)}$ for
 $q\in\{0,\,0.1,\,0.25\}$.
 
 At $q=0$, all eigenvectors are real; no directional information is
@@ -882,14 +925,17 @@ Rank & Variable & $\phi$ \\
 \subsection{Method Comparison}
 \label{sec:method-comparison}
 
-Comparing causal directions across LiNGAM, SCD, and Hodge potential for
-all $\binom{5}{2}=10$ variable pairs reveals both agreements and
+Comparing causal directions across three conditions---DirectLiNGAM~(A),
+spectral causality with domain knowledge~(B, $\alpha=0.6$), and
+spectral causality with DPI alone~(C, $\alpha=0$)---for all
+$\binom{5}{2}=10$ variable pairs reveals both agreements and
 informative disagreements.
 
 Disagreements between methods are \emph{informative}: when spectral
-causality indicates the reverse direction from LiNGAM, the variable pair
-often has a ``diagnostic marker'' relationship---the downstream variable
-(effect) is used clinically to infer the upstream variable (cause).
+causality (B or C) indicates the reverse direction from
+DirectLiNGAM~(A), the variable pair often has a ``diagnostic marker''
+relationship---the downstream variable (effect) is used clinically to
+infer the upstream variable (cause).
 This reflects the distinction between \emph{interventional causality}
 (Level 2: ``manipulating $X$ changes $Y$'') and \emph{informational
 causality} (Level 1.5: ``knowing $X$ informs about $Y$'').
@@ -1057,10 +1103,11 @@ The critical threshold for DAG maintenance
 $p_{\mathrm{flip}}^*\approx 0.15$: at least 85\% of edge directions
 must be correct (Figure~\ref{fig:pflip}).
 
-\begin{remark}[Partial misinformation is worse than ignorance]
+\begin{remark}[A little learning is a dangerous thing]
 This result carries a general warning for knowledge-based causal
 inference: a small number of incorrect directional assertions can
-catastrophically distort the inferred causal structure.
+catastrophically distort the inferred causal structure---partial
+misinformation is strictly worse than complete ignorance ($\alpha=0$).
 \end{remark}
 
 \begin{figure}[t]
