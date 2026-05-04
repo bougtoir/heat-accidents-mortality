@@ -216,6 +216,19 @@ def build_document():
         "大域的構造解析を統合するパイプライン（第9節）。"
     ))
 
+    add_para(doc, (
+        "図1に、本研究で統合する3つの相補的アプローチの概念的概観を示す。"
+    ))
+
+    # Figure 1: Three approaches (conceptual overview)
+    add_figure(doc,
+        f"{FIGURES_DIR}/fig1_three_approaches.png",
+        "図1: 因果推論への3つの相補的アプローチ: (1) 構造方程式モデルとDAGベース手法 (例: LiNGAM)、"
+        "(2) 磁気ラプラシアンによるスペクトルグラフ手法、(3) Hodge理論的フロー分解。"
+        "スペクトル因果性は (2) と (3) を統合する。",
+        width=Inches(5.5)
+    )
+
     # ============================================================
     # Section 2: Preliminaries
     # ============================================================
@@ -501,16 +514,7 @@ def build_document():
         "X_1 ≺ X_4 ≺ X_5 ≺ X_2 ≺ X_3 (年齢→最大心拍数→ST低下→安静時血圧→コレステロール)\n"
         "主要因果効果: B_{42} = -0.395 (年齢→最大心拍数)、B_{21} = +0.309 (年齢→安静時血圧)、"
         "B_{54} = -0.348 (最大心拍数→ST低下)。"
-        "図1にDirectLiNGAMで推定された因果DAGを示す。"
     ))
-
-    # Figure 1: DAG (first mention)
-    add_figure(doc,
-        f"{FIGURES_DIR}/fig6_causal_dag.png",
-        "図1: DirectLiNGAM推定因果DAG (UCI心疾患データ, N=297, 臨床変数5個)。"
-        "青い辺は正の因果効果、赤い辺は負の因果効果を示す。年齢が最上流変数。",
-        width=Inches(4.0)
-    )
 
     add_heading(doc, "7.3 磁気ラプラシアンの固有ベクトル", level=2)
     add_para(doc, (
@@ -582,16 +586,8 @@ def build_document():
     add_heading(doc, "7.5 手法比較", level=2)
     add_para(doc, (
         "全 C(5,2)=10 変数ペアについてLiNGAM, SCD, Hodgeポテンシャルの因果方向を比較すると、"
-        "一致と情報を含む不一致の両方が明らかになる (図4)。"
+        "一致と情報を含む不一致の両方が明らかになる。"
     ))
-
-    # Figure 4: Direction comparison
-    add_figure(doc,
-        f"{FIGURES_DIR}/fig4_direction_comparison.png",
-        "図4: 全10変数ペアの因果方向比較。LiNGAM (赤), SCD (青), Hodgeポテンシャル (緑)。"
-        "+1: 第1変数→第2変数; -1: 逆。緑背景: 3手法全てが一致。",
-        width=Inches(5.5)
-    )
 
     add_para(doc, (
         "手法間の不一致は情報的である: スペクトル因果性がLiNGAMと逆方向を示す場合、"
@@ -613,16 +609,8 @@ def build_document():
 
     add_para(doc, (
         "条件 (C) はDPIによりα=0で9本の有向辺を検出し、r_gradient = 0.581、"
-        "LiNGAMとの方向一致率67%。α=0からα=0.6への遷移で r_gradient は0.581から0.824に滑らかに改善 (図5)。"
+        "LiNGAMとの方向一致率67%。α=0からα=0.6への遷移で r_gradient は0.581から0.824に滑らかに改善。"
     ))
-
-    # Figure 5: Three conditions
-    add_figure(doc,
-        f"{FIGURES_DIR}/fig7_lingam_vs_spectral.png",
-        "図5: 三条件比較。(A) LiNGAM DAG (6辺)。(B) スペクトル因果性 α=0.6 (10有向辺, 巡回許容)。"
-        "(C) スペクトル因果性 α=0 + DPI (9有向辺, ドメイン知識なし)。",
-        width=Inches(5.5)
-    )
 
     # ============================================================
     # Section 8: Phase Transition
@@ -659,13 +647,13 @@ def build_document():
     add_para(doc, (
         "DPIをデータ駆動成分とする場合、α=0 での反対称成分が非ゼロとなり "
         "r_gradient(0) = 0.581 > 0。α=0 から α=1 への遷移は滑らかで、"
-        "旧モデルの一次相転移に替わる二次相転移となる (図6)。"
+        "旧モデルの一次相転移に替わる二次相転移となる (図4)。"
     ))
 
-    # Figure 6: Alpha sweep
+    # Figure 4: Alpha sweep (renumbered from 図6)
     add_figure(doc,
         f"{FIGURES_DIR}/fig8_alpha_sweep.png",
-        "図6: DPIによるα掃引解析。(A) r_gradient は0.581 (α=0) から0.859 (α=1) に滑らかに増加。"
+        "図4: DPIによるα掃引解析。(A) r_gradient は0.581 (α=0) から0.859 (α=1) に滑らかに増加。"
         "(B) 検出辺数とLiNGAM一致率。(C) 非対称ノルム。(D) 相図。",
         width=Inches(5.5)
     )
@@ -747,17 +735,8 @@ def build_document():
 
     add_heading(doc, "9.2 因果ポテンシャルと介入可能性", level=2)
     add_para(doc, (
-        "因果ポテンシャル φ は臨床的介入可能性 ι との著しい対応を示す (図7):"
+        "因果ポテンシャル φ は臨床的介入可能性 ι との著しい対応を示す:"
     ))
-
-    # Figure 7: ECD analysis
-    add_figure(doc,
-        f"{FIGURES_DIR}/fig9_ecd_pruning_analysis.png",
-        "図7: ECDパイプライン解析。(A) ECDフローのHodge分解。"
-        "(B) 因果ポテンシャル φ vs 介入可能性 ι。(C) 辺ごとのフィードバック率。"
-        "(D) 知識品質 p_flip vs r_gradient のU字型カーブ。",
-        width=Inches(5.5)
-    )
 
     add_table(doc,
         ["変数", "φ", "ι", "臨床的理由"],
@@ -791,17 +770,11 @@ def build_document():
     add_heading(doc, "9.3 Hillの9基準カバレッジ", level=2)
     add_para(doc, (
         "単一の計算手法ではHillの因果判定9基準すべてをカバーできない (Hill, 1965)。"
-        "ECDアンサンブルは大幅に広いカバレッジを達成する (図8)。"
+        "ECDアンサンブルは大幅に広いカバレッジを達成する。"
+        "具体的には、LiNGAMはH1 (強さ) とH3 (特異性) をカバーするがH6/H7/H9は欠如。"
+        "スペクトル因果性はユーティリティ関数を通じてH6 (妥当性), H7 (整合性), H9 (類似性) をカバーし、"
+        "ECDアンサンブルは両方を統合してほぼ完全なカバレッジを達成する。"
     ))
-
-    # Figure 8: Hill radar
-    add_figure(doc,
-        f"{FIGURES_DIR}/fig5_hill_radar.png",
-        "図8: Hillの9基準カバレッジ。LiNGAMはH1 (強さ) とH3 (特異性) をカバーするがH6/H7/H9は欠如。"
-        "スペクトル因果性はユーティリティ関数を通じてH6 (妥当性), H7 (整合性), H9 (類似性) をカバー。"
-        "ECDアンサンブルは両方を統合し、ほぼ完全なカバレッジを達成。",
-        width=Inches(4.0)
-    )
 
     add_heading(doc, "9.4 フィードバック解析とプルーニング", level=2)
 

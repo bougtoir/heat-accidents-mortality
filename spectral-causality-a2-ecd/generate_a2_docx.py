@@ -152,16 +152,12 @@ def generate_manuscript(md_file='manuscript_a2_ecd.md', out_file='manuscript_a2_
              'Figure 1. Estimated causal DAG from DirectLiNGAM. Arrow weight indicates estimated causal effect |B_ij|.'),
             ('### 3.1', 'fig5_hill_radar.png',
              "Figure 2. Hill's nine criteria coverage. ECD (purple) achieves broader coverage than any single method."),
-            ('### 5.3', 'fig3_hodge_decomposition.png',
-             'Figure 3. Hodge decomposition of causal flows into gradient (DAG-like) and curl (feedback) components.'),
             ('### 6.1', 'fig4_direction_comparison.png',
-             'Figure 4. Three-method causal direction comparison across all edge pairs.'),
+             'Figure 3. Three-method causal direction comparison across all edge pairs.'),
             ('### 6.2', 'fig7_lingam_vs_spectral.png',
-             'Figure 5. LiNGAM DAG (left) vs. Spectral Causality DCG (right). Dashed lines: feedback edges.'),
+             'Figure 4. LiNGAM DAG (left) vs. Spectral Causality DCG (right). Dashed lines: feedback edges.'),
             ('### 8.2', 'fig9_ecd_pruning_analysis.png',
-             'Figure 6. ECD ensemble and pruning analysis with edge-level feedback rates.'),
-            ('### 7.1', 'fig8_alpha_sweep.png',
-             'Figure 7. DAG transition analysis: (A) r_gradient vs alpha, (B) Edge count and LiNGAM agreement.'),
+             'Figure 5. ECD ensemble and pruning analysis with edge-level feedback rates.'),
         ]
 
     figure_triggers = {}  # section_key -> (fig_file, caption)
@@ -442,16 +438,12 @@ def generate_pptx():
          'Arrow weight indicates estimated causal effect size |B_ij|.'),
         ('fig5_hill_radar.png', "Figure 2: Hill's Nine Criteria Coverage",
          'ECD (purple) achieves broader coverage than any single method.'),
-        ('fig3_hodge_decomposition.png', 'Figure 3: Hodge Decomposition of Causal Flows',
-         'Left: gradient (DAG). Middle: curl (feedback). Right: combined.'),
-        ('fig4_direction_comparison.png', 'Figure 4: Three-Method Direction Comparison',
+        ('fig4_direction_comparison.png', 'Figure 3: Three-Method Direction Comparison',
          'Green = agreement, Red = disagreement between methods.'),
-        ('fig7_lingam_vs_spectral.png', 'Figure 5: LiNGAM DAG vs. Spectral Causality DCG',
+        ('fig7_lingam_vs_spectral.png', 'Figure 4: LiNGAM DAG vs. Spectral Causality DCG',
          'Dashed lines indicate feedback edges absent in the DAG.'),
-        ('fig9_ecd_pruning_analysis.png', 'Figure 6: ECD Ensemble & Pruning Analysis',
+        ('fig9_ecd_pruning_analysis.png', 'Figure 5: ECD Ensemble & Pruning Analysis',
          'Edge-level feedback rates and bootstrap confidence intervals.'),
-        ('fig8_alpha_sweep.png', 'Figure 7: DAG Transition Analysis',
-         '(A) r_gradient vs alpha. (B) Edge count and LiNGAM agreement.'),
     ]
 
     for fname, title, caption in FIGURES:

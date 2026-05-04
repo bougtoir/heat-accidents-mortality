@@ -241,7 +241,7 @@ Major causal effects:
 - $r_{\text{gradient}} = 0.859$ (85.9% DAG-like)
 - 10 significant edges detected (|SCD| > 0.05)
 
-**Step 3**: Hodge decomposition results (Figure 3):
+**Step 3**: Hodge decomposition results:
 
 | Component | Energy fraction | Interpretation |
 |-----------|----------------|---------------|
@@ -267,7 +267,7 @@ This demonstrates that ECD can perform causal direction estimation from data alo
 
 ### 6.1 Edge-by-Edge Comparison
 
-Comparing causal directions estimated by LiNGAM (DAG), spectral causality ($\alpha = 0.6$), and DPI ($\alpha = 0$) (Figure 4):
+Comparing causal directions estimated by LiNGAM (DAG), spectral causality ($\alpha = 0.6$), and DPI ($\alpha = 0$) (Figure 3):
 
 | Edge pair | LiNGAM direction | Spectral ($\alpha=0.6$) | DPI ($\alpha=0$) | Agreement |
 |-----------|-----------------|------------------------|------------------|-----------|
@@ -280,7 +280,7 @@ Comparing causal directions estimated by LiNGAM (DAG), spectral causality ($\alp
 
 ### 6.2 The Level 1.5 vs. Level 2 Distinction
 
-When spectral causality suggests a direction opposite to LiNGAM (Figure 5), this is **not necessarily an error**. The two methods capture different types of causality:
+When spectral causality suggests a direction opposite to LiNGAM (Figure 4), this is **not necessarily an error**. The two methods capture different types of causality:
 
 - **LiNGAM (Level 2)**: "If we intervene on $X_i$, would $X_j$ change?" — **interventional causal direction**
 - **Spectral causality (Level 1.5)**: "Does knowing $X_i$ reduce uncertainty about $X_j$ more than the reverse?" — **informational direction**
@@ -308,7 +308,7 @@ Edges satisfying all three conditions (e.g., Age → MaxHR: $|B| = 0.395$, feedb
 
 The critical question for clinical deployment is: **"How accurate must directional information be to maintain valid DAG structure?"**
 
-We systematically flip a fraction $p_{\text{flip}}$ of edge directions in correct domain knowledge (200 trials, $\alpha = 0.6$; Figure 7):
+We systematically flip a fraction $p_{\text{flip}}$ of edge directions in correct domain knowledge (200 trials, $\alpha = 0.6$):
 
 | $p_{\text{flip}}$ | $r_{\text{gradient}}$ (mean ± SD) | Interpretation |
 |-------------------|----------------------------------|----------------|
@@ -354,7 +354,7 @@ Which edges are most important for maintaining DAG structure?
 
 ### 8.1 Why Feedback Is Clinically Correct
 
-DAGs are mathematically convenient, but clinically, cyclic models are often more accurate. The ECD framework does not force a DAG; instead, it **quantifies** the degree of feedback for each edge (Figure 6), allowing clinicians to make informed decisions about which cycles to retain.
+DAGs are mathematically convenient, but clinically, cyclic models are often more accurate. The ECD framework does not force a DAG; instead, it **quantifies** the degree of feedback for each edge (Figure 5), allowing clinicians to make informed decisions about which cycles to retain.
 
 ### 8.2 Edge-Level Feedback Analysis
 
