@@ -152,10 +152,10 @@ def create_report():
     p = doc.add_paragraph()
     run = p.add_run('論文情報: ')
     run.font.bold = True
-    p.add_run(
-        'La Colla L, Albertin A, La Colla G, Mangano A. '
-        '"Faster wash-out and recovery for desflurane vs sevoflurane in morbidly obese patients '
-        'when no premedication is used." Br J Anaesth. 2007;99(3):353-358.'
+    add_superscript_text(
+        p,
+        'La Colla, 2007, "Faster wash-out and recovery for desflurane vs '
+        'sevoflurane in morbidly obese patients when no premedication is used."{1}'
     )
 
     p = doc.add_paragraph()
@@ -179,10 +179,10 @@ def create_report():
     p = doc.add_paragraph()
     run = p.add_run('論文情報: ')
     run.font.bold = True
-    p.add_run(
-        'Kaur A, Jain AK, Sehgal R, Sood J. '
-        '"Hemodynamics and early recovery characteristics of desflurane versus sevoflurane '
-        'in bariatric surgery." J Anaesthesiol Clin Pharmacol. 2013;29(1):36-40.'
+    add_superscript_text(
+        p,
+        'Kaur, 2013, "Hemodynamics and early recovery characteristics of '
+        'desflurane versus sevoflurane in bariatric surgery."{2}'
     )
 
     p = doc.add_paragraph()
@@ -203,13 +203,12 @@ def create_report():
     # Counter-evidence
     doc.add_heading('反証', level=3)
     p = doc.add_paragraph()
-    run = p.add_run('Arain et al. (2005) ')
+    run = p.add_run('反証: ')
     run.font.bold = True
     add_superscript_text(
         p,
-        'Arain SR, Barth CD, Shankar H, Ebert TJ. '
-        '"Choice of volatile anesthetic for the morbidly obese patient: sevoflurane or desflurane." '
-        'J Clin Anesth. 2005;17(6):413-419.{3}'
+        'Arain, 2005, "Choice of volatile anesthetic for the morbidly obese patient: '
+        'sevoflurane or desflurane."{3}'
     )
     p = doc.add_paragraph(
         'BIS-guided titration（BIS 45-50を目標）で麻酔深度を揃えた場合、'
@@ -218,12 +217,11 @@ def create_report():
 
     doc.add_heading('批判レター・エディトリアル', level=3)
     p = doc.add_paragraph()
-    run = p.add_run('Eger EI II, Shafer S. ')
+    run = p.add_run('エディトリアル: ')
     run.font.bold = True
     add_superscript_text(
         p,
-        '"The complexity of recovery from anesthesia." '
-        'J Clin Anesth. 2005;17(6):411-412.{4}'
+        'Eger & Shafer, 2005, "The complexity of recovery from anesthesia."{4}'
     )
     p = doc.add_paragraph(
         'Arain論文に付随するエディトリアルで、Eger & Shaferは「覚醒の速さ」が'
@@ -246,9 +244,8 @@ def create_report():
     doc.add_heading('メタアナリシス', level=3)
     add_superscript_text(
         doc.add_paragraph(),
-        'Singh PM et al. "Comparison of the Recovery Profile between Desflurane and Sevoflurane '
-        'in Patients Undergoing Bariatric Surgery—a Meta-Analysis of Randomized Controlled Trials." '
-        'Obes Surg. 2017;27(11):3031-3039.{5} '
+        'Singh, 2017, "Comparison of the Recovery Profile between Desflurane and Sevoflurane '
+        'in Patients Undergoing Bariatric Surgery."{5} '
         'メタアナリシスでは抜管時間に統計的有意差を認めたものの、その差は臨床的に意味のある閾値（数分）に過ぎず、'
         '退院時間やPACU滞在時間には差がないと結論。'
         '出版バイアスが検出されている（Egger検定 p=0.02）。'
@@ -299,10 +296,10 @@ def create_report():
     p = doc.add_paragraph()
     run = p.add_run('論文情報: ')
     run.font.bold = True
-    p.add_run(
-        'Tachibana S, Hayase T, Osuda M, Kazuma S, Yamakage M. '
-        '"Recovery of postoperative cognitive function in elderly patients after a long duration '
-        'of desflurane anesthesia: a pilot study." J Anesth. 2015;29:627-630.'
+    add_superscript_text(
+        p,
+        'Tachibana, 2015, "Recovery of postoperative cognitive function in elderly patients '
+        'after a long duration of desflurane anesthesia: a pilot study."{6}'
     )
 
     p = doc.add_paragraph()
@@ -336,8 +333,7 @@ def create_report():
     run.font.bold = True
     add_superscript_text(
         p,
-        'Ding F, Zheng L, Luo T. "Desflurane anesthesia and postoperative cognitive function." '
-        'J Anesth. 2015. DOI: 10.1007/s00540-015-2002-3.{7}'
+        'Ding, 2015, "Desflurane anesthesia and postoperative cognitive function."{7}'
     )
 
     p = doc.add_paragraph('Ding et al.は以下の3点を指摘:')
@@ -354,8 +350,7 @@ def create_report():
     run.font.bold = True
     add_superscript_text(
         p,
-        'Tachibana S, Hayase T, Yamakage M. "In reply: Desflurane anesthesia and cognitive function." '
-        'J Anesth. 2017;31:637.{8}'
+        'Tachibana, 2017, "In reply: Desflurane anesthesia and cognitive function."{8}'
     )
 
     p = doc.add_paragraph('著者らは回答で以下を認めた（事実上の譲歩）:')
@@ -453,11 +448,11 @@ def create_report():
     p = doc.add_paragraph()
     run = p.add_run('論文情報: ')
     run.font.bold = True
-    p.add_run(
-        'Dube SK, Pandia MP, Chaturvedi A, Bithal P, Dash HH. '
-        '"Comparison of intraoperative brain condition, hemodynamics and postoperative recovery '
-        'between desflurane and sevoflurane in patients undergoing supratentorial craniotomy." '
-        'Saudi J Anaesth. 2015;9(2):167-173.'
+    add_superscript_text(
+        p,
+        'Dube, 2015, "Comparison of intraoperative brain condition, hemodynamics and '
+        'postoperative recovery between desflurane and sevoflurane in patients undergoing '
+        'supratentorial craniotomy."{10}'
     )
 
     p = doc.add_paragraph()
@@ -480,9 +475,9 @@ def create_report():
     doc.add_heading('メタアナリシス', level=3)
     add_superscript_text(
         doc.add_paragraph(),
-        '2025年のメタアナリシス{11}（Comparison of desflurane and sevoflurane as maintenance '
-        'inhalational anaesthetic agents for adult patients undergoing neurosurgeries. '
-        'PMID: 40046703）でも、抜管時間の統計的差異はあるが臨床的転帰に差はないと結論。'
+        '2025年のメタアナリシス, "Comparison of desflurane and sevoflurane as maintenance '
+        'inhalational anaesthetic agents for adult patients undergoing neurosurgeries."{11} '
+        '抜管時間の統計的差異はあるが臨床的転帰に差はないと結論。'
     )
 
     doc.add_heading('主要エンドポイントと多重比較検定の検証', level=3)
@@ -526,10 +521,8 @@ def create_report():
     run.font.bold = True
     add_superscript_text(
         p,
-        'White PF, Tang J, Wender RH, et al. '
-        '"Desflurane versus sevoflurane for maintenance of outpatient anesthesia: '
-        'the effect on early versus late recovery and perioperative coughing." '
-        'Anesth Analg. 2009;109(2):387-393.{12}'
+        'White, 2009, "Desflurane versus sevoflurane for maintenance of outpatient anesthesia: '
+        'the effect on early versus late recovery and perioperative coughing."{12}'
     )
 
     items = [
@@ -545,9 +538,8 @@ def create_report():
     doc.add_heading('系統的レビュー', level=3)
     add_superscript_text(
         doc.add_paragraph(),
-        'Gupta et al. "Comparison of Recovery Profile After Ambulatory Anesthesia with Propofol, '
-        'Isoflurane, Sevoflurane and Desflurane: A Systematic Review." '
-        'Anesth Analg. 2004;98:632-641.{13} '
+        'Gupta, 2004, "Comparison of Recovery Profile After Ambulatory Anesthesia with Propofol, '
+        'Isoflurane, Sevoflurane and Desflurane: A Systematic Review."{13} '
         '退院時間に有意差なし。'
     )
 
@@ -587,10 +579,8 @@ def create_report():
     run.font.bold = True
     add_superscript_text(
         p,
-        'Lim BG, Lee IO, Ahn H, et al. '
-        '"Comparison of the incidence of emergence agitation and emergence times between '
-        'desflurane and sevoflurane anesthesia in children: A systematic review and meta-analysis." '
-        'Medicine. 2016;95(38):e4927.{14}'
+        'Lim, 2016, "Comparison of the incidence of emergence agitation and emergence times between '
+        'desflurane and sevoflurane anesthesia in children: A systematic review and meta-analysis."{14}'
     )
 
     items = [
@@ -634,10 +624,9 @@ def create_report():
     run.font.bold = True
     add_superscript_text(
         p,
-        'Sivanna U, Joshi S, Babu B, Jagadeesh AM. '
-        '"A comparative study of pharmacological myocardial protection between sevoflurane and desflurane '
-        'at anaesthetic doses in patients undergoing off pump coronary artery bypass grafting surgery." '
-        'Indian J Anaesth. 2015;59(5):282-286.{15}'
+        'Sivanna, 2015, "A comparative study of pharmacological myocardial protection between '
+        'sevoflurane and desflurane at anaesthetic doses in patients undergoing off pump '
+        'coronary artery bypass grafting surgery."{15}'
     )
 
     items = [
@@ -658,9 +647,8 @@ def create_report():
     run.font.bold = True
     add_superscript_text(
         p,
-        'De Hert SG, et al. '
-        '"A comparison of volatile and non volatile agents for cardioprotection '
-        'during on-pump coronary surgery." Anaesthesia. 2009;64(9):953-960.{16}'
+        'De Hert, 2009, "A comparison of volatile and non volatile agents for cardioprotection '
+        'during on-pump coronary surgery."{16}'
     )
     p = doc.add_paragraph(
         '多施設前向き研究（VACMAN: Volatile Anesthetics and Cardioprotection '
@@ -760,7 +748,9 @@ def create_report():
     doc.add_heading('コホート研究', level=3)
     add_superscript_text(
         doc.add_paragraph(),
-        '日本全国DPCデータベース研究（2025）{17}: COPD 24,243例、喘息 16,199例の解析で、'
+        'DPCデータベース研究, 2026, "Postoperative pulmonary complications of desflurane- versus '
+        'sevoflurane-based general anesthesia in patients with COPD or asthma."{17} '
+        'COPD 24,243例、喘息 16,199例の解析で、'
         'デスフルラン vs セボフルランの術後肺合併症に有意差なし'
         '（COPD: aRD −0.57%, 99%CI −1.8%〜+0.60%; 喘息: aRD −0.62%, 99%CI −1.8%〜+0.59%）。'
         'ただし本研究は後ろ向きコホート研究であり非劣性試験ではない。'
