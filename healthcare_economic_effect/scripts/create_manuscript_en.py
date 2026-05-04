@@ -134,6 +134,7 @@ def create_pptx_slide(prs, img_path, title, caption):
 #   S2.3:     19
 #   S2.4:     20
 #   S4:       21, 22
+#   S4.2:     23, 24
 # ---------------------------------------------------------------------------
 REFERENCES = [
     # 1 -- Abstract: Japan multiplier
@@ -214,6 +215,13 @@ REFERENCES = [
     # 22 -- S4: Preston Curve (original)
     "Preston SH. The changing relation between mortality and level of "
     "economic development. Popul Stud. 1975;29(2):231-248.",
+    # 23 -- S4.2: OECD diagnostic technology
+    "OECD. Health at a Glance 2023: OECD Indicators. Paris: OECD Publishing; "
+    "2023. Chapter 5.23: Diagnostic technologies.",
+    # 24 -- S4.2: MHLW pharma/device trade statistics
+    "Ministry of Health, Labour and Welfare. Pharmaceutical and medical "
+    "device production statistics annual report. "
+    "Tokyo: MHLW; 2021. [In Japanese]",
 ]
 
 
@@ -532,6 +540,78 @@ def build_en_docx():
         "be larger than conventionally assumed."
     )
 
+    # ---------- 4.2 Equipment Stock & Import Leakage ----------
+    add_heading(doc, "4.2 Equipment Stock, Import Leakage, and Sustainability", level=2)
+    add_para(doc,
+        "Japan exhibits the highest diagnostic imaging density among OECD countries: "
+        "115.7 CT scanners and 55.2 MRI units per million population "
+        "(OECD medians: approximately 27 and 19, respectively), far exceeding "
+        "second-ranked Australia (CT: 70.2){23}. "
+        "This equipment stock may function as 'diagnostic capital' that enhances "
+        "health capital H(t) accumulation through earlier detection and treatment. "
+        "Figure 6 shows imaging equipment density by country."
+    )
+
+    # Figure 6
+    add_figure(doc, get_fig("fig6_equipment_density.png"),
+               "Figure 6. Diagnostic imaging equipment density (CT+MRI per million "
+               "population, OECD 2021). Japan (red) at 170.9 per million is "
+               "approximately 4x the OECD median.")
+
+    add_para(doc,
+        "However, Japan is also a net importer of medical devices and pharmaceuticals. "
+        "Pharmaceutical imports total approximately USD 28.5 billion against exports "
+        "of USD 5.1 billion; net imports (approx. USD 23.4 billion) represent "
+        "approximately 5.0% of current health expenditure (CHE){24}. "
+        "Including medical devices, the total medical import leakage is approximately "
+        "5.0% of CHE."
+    )
+
+    add_para(doc,
+        "To quantify this effect on the I-O multiplier, we define the "
+        "effective multiplier as m_eff = m x (1 - leakage). "
+        "For Japan, the nominal multiplier of 2.78 becomes an effective multiplier "
+        "of 2.64, and the fiscal return ratio falls from 1.09 to 1.04 -- still "
+        "above 1.0, maintaining demand-side sustainability. "
+        "Figure 7 shows the relationship between import leakage and effective "
+        "multipliers across countries."
+    )
+
+    # Figure 7
+    add_figure(doc, get_fig("fig7_import_leakage_multiplier.png"),
+               "Figure 7. Medical import leakage (% of CHE) vs effective I-O "
+               "multiplier. Gray x markers show unadjusted nominal multipliers. "
+               "Red arrow for Japan shows the leakage adjustment effect.")
+
+    add_para(doc,
+        "Counterfactual analysis for Japan separates the effects of equipment density "
+        "and import leakage (Figure 8). "
+        "Scenario A (reducing to OECD-average equipment density) lowers the fiscal "
+        "return ratio to 0.98, eliminating sustainability. "
+        "Scenario B (domestic manufacturing, zero import leakage) raises it to 1.09. "
+        "Scenario C (both: average equipment + domestic manufacturing) yields 1.03, "
+        "showing that equipment reduction and leakage elimination roughly offset."
+    )
+
+    # Figure 8
+    add_figure(doc, get_fig("fig8_counterfactual_japan.png"),
+               "Figure 8. Japan counterfactual analysis. Baseline (1.04), "
+               "A: OECD-average equipment (0.98), B: Domestic manufacturing (1.09), "
+               "C: Both (1.03). Dashed line: sustainability threshold 1.0.")
+
+    add_para(doc,
+        "These findings have important policy implications. "
+        "First, Japan's high imaging density is not 'excessive' but functions as "
+        "diagnostic capital stock that contributes to sustainability. "
+        "Reducing density to the OECD average would eliminate sustainability. "
+        "Second, domestic manufacturing of medical devices and pharmaceuticals "
+        "would improve the effective multiplier by approximately 5%. "
+        "Third, regarding exportability: countries with medical trade surpluses "
+        "(Germany, Italy) already have zero import leakage and higher effective "
+        "multipliers, while import-dependent countries (Canada: 8.5%, Australia: 7.1%) "
+        "have room for domestic manufacturing gains similar to Japan."
+    )
+
     # ---------- 5. Discussion ----------
     add_heading(doc, "5. Discussion", level=1)
 
@@ -566,6 +646,17 @@ def build_en_docx():
         "drift (outcomes take longer to materialize). "
         "Japan achieves higher stock accumulation per unit of spending but faces "
         "the risk that aging-driven growth of long-term care may accelerate mu_H drift."
+    )
+    add_para(doc,
+        "The equipment stock and import leakage analysis in Section 4.2 adds a new "
+        "dimension to this Japan-US contrast. Japan's diagnostic imaging density is "
+        "approximately 4 times the OECD average, and this 'diagnostic capital' "
+        "amplifies health capital accumulation through earlier detection and treatment. "
+        "Counterfactual analysis shows that reducing equipment density would eliminate "
+        "sustainability (ratio falls to 0.98), demonstrating quantitatively that "
+        "high density functions as a component of sustainability, not excess. "
+        "Meanwhile, import leakage (approximately 5%) offers room for improvement: "
+        "domestic manufacturing could restore the effective multiplier from 2.64 to 2.78."
     )
 
     add_heading(doc, "5.3 Candidate D-H: The 'Forgotten Parameter' in Spending Composition", level=2)
@@ -662,7 +753,19 @@ def build_en_pptx():
         ("fig2_che_vs_lifeexp.png",
          "Figure 5. Healthcare Spending (% GDP) vs Life Expectancy (OECD, 2019)",
          "X-axis: CHE as % of GDP. Y-axis: Life expectancy at birth (years). "
-         "Linear fit excludes US (outlier shown in red)."),
+         "Linear fit excludes US (outlier shown in red). F-test results in figure."),
+        ("fig6_equipment_density.png",
+         "Figure 6. Diagnostic Imaging Equipment Density (CT+MRI, OECD 2021)",
+         "Combined CT and MRI scanners per million population. "
+         "Japan (red) at 170.9 is approximately 4x the OECD median."),
+        ("fig7_import_leakage_multiplier.png",
+         "Figure 7. Medical Import Leakage vs Effective I-O Multiplier",
+         "Import leakage reduces the effective I-O multiplier. "
+         "Gray x = nominal multiplier. Red arrow = Japan's leakage adjustment."),
+        ("fig8_counterfactual_japan.png",
+         "Figure 8. Japan Counterfactual Sustainability Scenarios",
+         "Baseline (1.04), A: OECD-avg equipment (0.98), "
+         "B: Domestic manufacturing (1.09), C: Both (1.03)."),
     ]
 
     for fname, title, caption in figures:

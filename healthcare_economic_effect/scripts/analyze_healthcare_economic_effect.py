@@ -23,6 +23,31 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
+import matplotlib.font_manager as fm
+
+# Register Noto Sans CJK JP for Japanese figures if available
+_noto_cjk = [f.fname for f in fm.fontManager.ttflist if "Noto Sans CJK JP" in f.name]
+if _noto_cjk:
+    _JA_FONT_PROP = fm.FontProperties(fname=_noto_cjk[0])
+    _JA_FONT_NAME = _JA_FONT_PROP.get_name()
+else:
+    _JA_FONT_PROP = None
+    _JA_FONT_NAME = None
+
+from contextlib import contextmanager
+
+@contextmanager
+def _ja_font_ctx():
+    """Temporarily switch matplotlib font to Noto Sans CJK JP for JA figures."""
+    if _JA_FONT_NAME:
+        old = matplotlib.rcParams.get("font.family", ["sans-serif"])
+        matplotlib.rcParams["font.family"] = [_JA_FONT_NAME]
+        try:
+            yield
+        finally:
+            matplotlib.rcParams["font.family"] = old
+    else:
+        yield
 from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -664,7 +689,334 @@ def fig5_three_layer_analogy(lang="en"):
 
 
 # ---------------------------------------------------------------------------
-# 8. Main
+# 8. Medical Equipment Stock & Import Leakage Analysis
+#
+# Sources:
+#   CT/MRI: OECD Health at a Glance 2023, Table 5.23 (2021 or latest year)
+#   Pharma trade: UN COMTRADE via Trading Economics; MHLW 薬事工業生産動態統計
+#   Med-device trade: UN COMTRADE HS 9018-9022; MHLW statistics
+#   CHE: OECD Health Statistics 2023
+# ---------------------------------------------------------------------------
+EQUIPMENT_STOCK = pd.DataFrame([
+    # CT and MRI per million population (OECD HaG 2023, 2021 or latest)
+    {"iso3": "JPN", "country": "Japan",       "ct_per_m": 115.7, "mri_per_m": 55.2,
+     "che_bn_usd": 553.0},
+    {"iso3": "USA", "country": "USA",         "ct_per_m": 44.9,  "mri_per_m": 40.4,
+     "che_bn_usd": 4255.0},
+    {"iso3": "DEU", "country": "Germany",     "ct_per_m": 35.1,  "mri_per_m": 34.7,
+     "che_bn_usd": 440.0},
+    {"iso3": "AUS", "country": "Australia",   "ct_per_m": 70.2,  "mri_per_m": 16.0,
+     "che_bn_usd": 155.0},
+    {"iso3": "KOR", "country": "Korea",       "ct_per_m": 41.1,  "mri_per_m": 33.5,
+     "che_bn_usd": 135.0},
+    {"iso3": "ITA", "country": "Italy",       "ct_per_m": 35.7,  "mri_per_m": 31.3,
+     "che_bn_usd": 191.0},
+    {"iso3": "FRA", "country": "France",      "ct_per_m": 18.0,  "mri_per_m": 16.1,
+     "che_bn_usd": 310.0},
+    {"iso3": "GBR", "country": "UK",          "ct_per_m": 9.5,   "mri_per_m": 7.2,
+     "che_bn_usd": 283.0},
+    {"iso3": "CAN", "country": "Canada",      "ct_per_m": 15.8,  "mri_per_m": 10.4,
+     "che_bn_usd": 195.0},
+    {"iso3": "SWE", "country": "Sweden",      "ct_per_m": 19.7,  "mri_per_m": 15.3,
+     "che_bn_usd": 59.0},
+    {"iso3": "ESP", "country": "Spain",       "ct_per_m": 19.6,  "mri_per_m": 17.1,
+     "che_bn_usd": 140.0},
+    {"iso3": "NLD", "country": "Netherlands", "ct_per_m": 14.4,  "mri_per_m": 13.5,
+     "che_bn_usd": 107.0},
+    {"iso3": "FIN", "country": "Finland",     "ct_per_m": 24.2,  "mri_per_m": 23.9,
+     "che_bn_usd": 26.0},
+])
+
+# Medical trade balance (pharma HS30 + devices HS9018-22), bn USD, ~2019-2021
+# Positive = net exporter, Negative = net importer
+# Sources: UN COMTRADE, Trading Economics, MHLW, Eurostat
+MEDICAL_TRADE = pd.DataFrame([
+    {"iso3": "JPN", "country": "Japan",       "pharma_exp": 5.1,  "pharma_imp": 28.5,
+     "device_exp": 7.8, "device_imp": 12.3},
+    {"iso3": "USA", "country": "USA",         "pharma_exp": 52.0, "pharma_imp": 136.0,
+     "device_exp": 44.0, "device_imp": 55.0},
+    {"iso3": "DEU", "country": "Germany",     "pharma_exp": 93.0, "pharma_imp": 62.0,
+     "device_exp": 28.0, "device_imp": 17.0},
+    {"iso3": "AUS", "country": "Australia",   "pharma_exp": 4.5,  "pharma_imp": 12.0,
+     "device_exp": 2.5,  "device_imp": 6.0},
+    {"iso3": "KOR", "country": "Korea",       "pharma_exp": 8.5,  "pharma_imp": 8.0,
+     "device_exp": 4.5,  "device_imp": 5.5},
+    {"iso3": "ITA", "country": "Italy",       "pharma_exp": 37.0, "pharma_imp": 24.0,
+     "device_exp": 11.0, "device_imp": 9.0},
+    {"iso3": "FRA", "country": "France",      "pharma_exp": 36.0, "pharma_imp": 30.0,
+     "device_exp": 8.0,  "device_imp": 12.0},
+    {"iso3": "GBR", "country": "UK",          "pharma_exp": 30.0, "pharma_imp": 32.0,
+     "device_exp": 7.0,  "device_imp": 11.0},
+    {"iso3": "CAN", "country": "Canada",      "pharma_exp": 7.0,  "pharma_imp": 18.0,
+     "device_exp": 2.5,  "device_imp": 8.0},
+    {"iso3": "SWE", "country": "Sweden",      "pharma_exp": 12.0, "pharma_imp": 5.5,
+     "device_exp": 3.5,  "device_imp": 3.0},
+    {"iso3": "ESP", "country": "Spain",       "pharma_exp": 14.0, "pharma_imp": 18.0,
+     "device_exp": 2.5,  "device_imp": 5.5},
+    {"iso3": "NLD", "country": "Netherlands", "pharma_exp": 42.0, "pharma_imp": 28.0,
+     "device_exp": 10.0, "device_imp": 12.0},
+    {"iso3": "FIN", "country": "Finland",     "pharma_exp": 2.0,  "pharma_imp": 2.5,
+     "device_exp": 0.8,  "device_imp": 1.5},
+])
+
+
+def build_equipment_trade_df():
+    """Merge equipment stock, trade, and I-O data into a single analysis frame."""
+    eq = EQUIPMENT_STOCK.copy()
+    tr = MEDICAL_TRADE.copy()
+
+    # Compute combined diagnostic equipment density
+    eq["equip_density"] = eq["ct_per_m"] + eq["mri_per_m"]
+
+    # Compute trade balance
+    tr["trade_balance_bn"] = (
+        (tr["pharma_exp"] + tr["device_exp"])
+        - (tr["pharma_imp"] + tr["device_imp"])
+    )
+    tr["total_med_imports_bn"] = tr["pharma_imp"] + tr["device_imp"]
+    tr["total_med_exports_bn"] = tr["pharma_exp"] + tr["device_exp"]
+
+    merged = eq.merge(tr[["iso3", "trade_balance_bn", "total_med_imports_bn",
+                          "total_med_exports_bn"]], on="iso3", how="left")
+
+    # Import leakage ratio = net imports / CHE
+    merged["import_leakage"] = np.clip(
+        (-merged["trade_balance_bn"]) / merged["che_bn_usd"], 0, 1
+    )
+
+    # Merge I-O multipliers (take first entry per iso3, skip OECD average)
+    io = IO_MULTIPLIERS[IO_MULTIPLIERS["iso3"] != "OECD"].copy()
+    io = io.drop_duplicates(subset="iso3", keep="first")
+    merged = merged.merge(io[["iso3", "multiplier"]], on="iso3", how="left")
+
+    # Effective multiplier adjusted for import leakage
+    merged["effective_multiplier"] = merged["multiplier"] * (1 - merged["import_leakage"])
+
+    return merged
+
+
+def japan_counterfactual(eq_trade_df):
+    """Compute counterfactual scenarios for Japan.
+
+    Scenario A: Japan with OECD-average equipment density (holds other vars)
+    Scenario B: Japan with zero net medical imports (domestic manufacturing)
+    Returns dict of results.
+    """
+    jpn = eq_trade_df[eq_trade_df["iso3"] == "JPN"].iloc[0]
+    oecd_avg_density = eq_trade_df["equip_density"].median()
+
+    # Baseline
+    baseline = {
+        "equip_density": jpn["equip_density"],
+        "import_leakage": jpn["import_leakage"],
+        "multiplier": jpn["multiplier"],
+        "effective_multiplier": jpn["effective_multiplier"],
+    }
+    # Fiscal return: tau * m_eff / pf
+    tau_jpn, pf_jpn = 0.33, 0.84
+    baseline["fiscal_return"] = tau_jpn * baseline["effective_multiplier"] / pf_jpn
+
+    # Scenario A: OECD-average equipment density
+    # Equipment contributes to health capital but also represents spending.
+    # With less equipment, CHE would be lower (assume equipment-related
+    # spending is proportional to density ratio).
+    # Estimate: ~15% of CHE is capital/equipment-related (OECD average)
+    equip_che_share = 0.15
+    density_ratio = oecd_avg_density / jpn["equip_density"]
+    scenario_a = baseline.copy()
+    scenario_a["equip_density"] = oecd_avg_density
+    scenario_a["label"] = "A: OECD-average equipment"
+    # Lower equipment → lower CHE → but also lower diagnostic capability
+    # Net effect on multiplier: reduced domestic production of equipment-related services
+    # Assume multiplier decreases proportionally to the equipment share reduction
+    equip_reduction = (1 - density_ratio) * equip_che_share
+    scenario_a["multiplier_adj"] = jpn["multiplier"] * (1 - equip_reduction * 0.5)
+    scenario_a["effective_multiplier"] = scenario_a["multiplier_adj"] * (
+        1 - jpn["import_leakage"])
+    scenario_a["fiscal_return"] = tau_jpn * scenario_a["effective_multiplier"] / pf_jpn
+
+    # Scenario B: Domestic manufacturing (zero net imports)
+    scenario_b = baseline.copy()
+    scenario_b["import_leakage"] = 0.0
+    scenario_b["label"] = "B: Domestic manufacturing"
+    scenario_b["effective_multiplier"] = jpn["multiplier"] * 1.0
+    scenario_b["fiscal_return"] = tau_jpn * scenario_b["effective_multiplier"] / pf_jpn
+
+    # Scenario C: Both (average equipment + domestic manufacturing)
+    scenario_c = baseline.copy()
+    scenario_c["equip_density"] = oecd_avg_density
+    scenario_c["import_leakage"] = 0.0
+    scenario_c["label"] = "C: Average equip + domestic mfg"
+    scenario_c["multiplier_adj"] = scenario_a["multiplier_adj"]
+    scenario_c["effective_multiplier"] = scenario_c["multiplier_adj"]
+    scenario_c["fiscal_return"] = tau_jpn * scenario_c["effective_multiplier"] / pf_jpn
+
+    return {
+        "baseline": baseline,
+        "scenario_a": scenario_a,
+        "scenario_b": scenario_b,
+        "scenario_c": scenario_c,
+        "oecd_avg_density": oecd_avg_density,
+    }
+
+
+COUNTRY_JA = {
+    "Japan": "日本", "USA": "米国", "Germany": "ドイツ",
+    "Australia": "豪州", "Korea": "韓国", "Italy": "イタリア",
+    "France": "フランス", "UK": "英国", "Canada": "カナダ",
+    "Sweden": "スウェーデン", "Spain": "スペイン",
+    "Netherlands": "オランダ", "Finland": "フィンランド",
+}
+
+
+def fig6_equipment_density_comparison(eq_trade_df, lang="en"):
+    """Bar chart: combined CT+MRI density by country, with OECD average line."""
+    df = eq_trade_df.sort_values("equip_density", ascending=True).copy()
+    if lang == "ja":
+        df["label"] = df["country"].map(COUNTRY_JA)
+    else:
+        df["label"] = df["country"]
+    fig, ax = plt.subplots(figsize=(9, 6))
+
+    colors = ["#F44336" if iso == "JPN" else "#1976D2" for iso in df["iso3"]]
+    bars = ax.barh(df["label"], df["equip_density"], color=colors, edgecolor="white",
+                   height=0.7)
+
+    oecd_avg = df["equip_density"].median()
+    lbl = f"中央値 = {oecd_avg:.0f}" if lang == "ja" else f"Median = {oecd_avg:.0f}"
+    ax.axvline(oecd_avg, color="#FF9800", linestyle="--", linewidth=1.5, label=lbl)
+
+    for bar, val in zip(bars, df["equip_density"]):
+        ax.text(val + 1, bar.get_y() + bar.get_height() / 2,
+                f"{val:.0f}", va="center", fontsize=8)
+
+    if lang == "ja":
+        ax.set_xlabel("CT + MRI 合計台数（人口100万人あたり）")
+        ax.set_title("画像診断装置密度（OECD, 2021年）")
+    else:
+        ax.set_xlabel("Combined CT + MRI Units per Million Population")
+        ax.set_title("Diagnostic Imaging Equipment Density (OECD, 2021)")
+    ax.legend(fontsize=9)
+    plt.tight_layout()
+    suffix = "_ja" if lang == "ja" else ""
+    path = os.path.join(FIG, f"fig6_equipment_density{suffix}.png")
+    fig.savefig(path, dpi=150, bbox_inches="tight")
+    plt.close(fig)
+    print(f"  Saved: {path}")
+    return path
+
+
+def fig7_import_leakage_vs_multiplier(eq_trade_df, lang="en"):
+    """Scatter: import leakage ratio vs effective multiplier, sized by CHE."""
+    fig, ax = plt.subplots(figsize=(9, 6.5))
+
+    df = eq_trade_df.dropna(subset=["multiplier"]).copy()
+    if lang == "ja":
+        df["label"] = df["country"].map(COUNTRY_JA)
+    else:
+        df["label"] = df["country"]
+    sizes = (df["che_bn_usd"] / df["che_bn_usd"].max()) * 400 + 40
+
+    for _, row in df.iterrows():
+        c = "#F44336" if row["iso3"] == "JPN" else "#1976D2"
+        mk = "D" if row["iso3"] == "USA" else "o"
+        ax.scatter(row["import_leakage"] * 100, row["effective_multiplier"],
+                   s=sizes[_], alpha=0.7, c=c, edgecolors="white",
+                   linewidths=0.5, marker=mk, zorder=3)
+        ax.annotate(row["label"],
+                    (row["import_leakage"] * 100, row["effective_multiplier"]),
+                    fontsize=7, xytext=(5, 3), textcoords="offset points")
+
+    # Show raw multiplier as faded markers
+    for _, row in df.iterrows():
+        ax.scatter(row["import_leakage"] * 100, row["multiplier"],
+                   s=30, alpha=0.25, c="#9E9E9E", marker="x", zorder=2)
+
+    # Arrow from raw to effective for Japan
+    jpn = df[df["iso3"] == "JPN"].iloc[0]
+    ax.annotate("", xy=(jpn["import_leakage"] * 100, jpn["effective_multiplier"]),
+                xytext=(jpn["import_leakage"] * 100, jpn["multiplier"]),
+                arrowprops=dict(arrowstyle="-|>", color="#F44336", lw=1.5,
+                                linestyle="--"))
+    leak_txt = "輸入漏出\n効果" if lang == "ja" else "Import\nleakage\neffect"
+    ax.text(jpn["import_leakage"] * 100 + 0.3,
+            (jpn["multiplier"] + jpn["effective_multiplier"]) / 2,
+            leak_txt, fontsize=7, color="#F44336", va="center")
+
+    # Reference line: fiscal sustainability threshold
+    thr_lbl = ("財政閾値（日本: pf/τ）" if lang == "ja"
+               else "Fiscal threshold (Japan: pf/tau)")
+    ax.axhline(0.84 / 0.33, color="#4CAF50", linestyle=":", alpha=0.5,
+               label=thr_lbl)
+
+    if lang == "ja":
+        ax.set_xlabel("医療関連輸入漏出率（%CHE）")
+        ax.set_ylabel("乗数（実効 = 漏出調整後）")
+        ax.set_title("I-O乗数 vs 医療関連輸入漏出率")
+    else:
+        ax.set_xlabel("Medical Import Leakage (% of CHE)")
+        ax.set_ylabel("Multiplier (effective = adjusted for leakage)")
+        ax.set_title("I-O Multiplier vs Medical Import Leakage")
+    ax.legend(fontsize=8, loc="upper right")
+    plt.tight_layout()
+    suffix = "_ja" if lang == "ja" else ""
+    path = os.path.join(FIG, f"fig7_import_leakage_multiplier{suffix}.png")
+    fig.savefig(path, dpi=150, bbox_inches="tight")
+    plt.close(fig)
+    print(f"  Saved: {path}")
+    return path
+
+
+def fig8_counterfactual_japan(cf_results, lang="en"):
+    """Bar chart: Japan counterfactual fiscal return ratios."""
+    fig, ax = plt.subplots(figsize=(8, 5))
+
+    if lang == "ja":
+        scenarios = [
+            ("ベースライン\n（実績）", cf_results["baseline"]["fiscal_return"], "#F44336"),
+            ("A: OECD平均\n装置密度", cf_results["scenario_a"]["fiscal_return"], "#FF9800"),
+            ("B: 国内\n製造", cf_results["scenario_b"]["fiscal_return"], "#1976D2"),
+            ("C: A+B\n（両方）", cf_results["scenario_c"]["fiscal_return"], "#4CAF50"),
+        ]
+    else:
+        scenarios = [
+            ("Baseline\n(actual)", cf_results["baseline"]["fiscal_return"], "#F44336"),
+            ("A: OECD-avg\nequipment", cf_results["scenario_a"]["fiscal_return"], "#FF9800"),
+            ("B: Domestic\nmanufacturing", cf_results["scenario_b"]["fiscal_return"], "#1976D2"),
+            ("C: Both\n(A + B)", cf_results["scenario_c"]["fiscal_return"], "#4CAF50"),
+        ]
+
+    labels = [s[0] for s in scenarios]
+    vals = [s[1] for s in scenarios]
+    colors = [s[2] for s in scenarios]
+
+    bars = ax.bar(labels, vals, color=colors, edgecolor="white", width=0.6)
+    thr = "持続可能性閾値 (1.0)" if lang == "ja" else "Sustainability threshold (1.0)"
+    ax.axhline(1.0, color="black", linestyle="--", linewidth=1, alpha=0.5, label=thr)
+
+    for bar, val in zip(bars, vals):
+        ax.text(bar.get_x() + bar.get_width() / 2, val + 0.02,
+                f"{val:.2f}", ha="center", va="bottom", fontsize=10, fontweight="bold")
+
+    if lang == "ja":
+        ax.set_ylabel("財政回収率（需要側）")
+        ax.set_title("日本：カウンターファクチュアル持続可能性シナリオ")
+    else:
+        ax.set_ylabel("Fiscal Return Ratio (demand-side)")
+        ax.set_title("Japan: Counterfactual Sustainability Scenarios")
+    ax.legend(fontsize=8)
+    ax.set_ylim(0, max(vals) * 1.25)
+    plt.tight_layout()
+    suffix = "_ja" if lang == "ja" else ""
+    path = os.path.join(FIG, f"fig8_counterfactual_japan{suffix}.png")
+    fig.savefig(path, dpi=150, bbox_inches="tight")
+    plt.close(fig)
+    print(f"  Saved: {path}")
+    return path
+
+
+# ---------------------------------------------------------------------------
+# 9. Main
 # ---------------------------------------------------------------------------
 def main():
     print("=" * 60)
@@ -726,6 +1078,34 @@ def main():
     for k, v in narrative.items():
         if isinstance(v, str):
             print(f"  {k}: {v[:80]}...")
+
+    # Medical equipment stock & import leakage
+    print("\n[9] Medical equipment stock & import leakage analysis")
+    eq_trade_df = build_equipment_trade_df()
+    eq_trade_df.to_csv(os.path.join(DATA, "equipment_trade_analysis.csv"), index=False)
+    fig6_equipment_density_comparison(eq_trade_df, lang="en")
+    fig7_import_leakage_vs_multiplier(eq_trade_df, lang="en")
+
+    print("\n[10] Japan counterfactual scenarios")
+    cf = japan_counterfactual(eq_trade_df)
+    with open(os.path.join(DATA, "japan_counterfactual.json"), "w") as f:
+        json.dump(cf, f, indent=2, default=str)
+    fig8_counterfactual_japan(cf, lang="en")
+
+    # JA versions with CJK font
+    with _ja_font_ctx():
+        fig6_equipment_density_comparison(eq_trade_df, lang="ja")
+        fig7_import_leakage_vs_multiplier(eq_trade_df, lang="ja")
+        fig8_counterfactual_japan(cf, lang="ja")
+    print(f"  Baseline fiscal return: {cf['baseline']['fiscal_return']:.2f}")
+    print(f"  Scenario A (avg equip): {cf['scenario_a']['fiscal_return']:.2f}")
+    print(f"  Scenario B (domestic mfg): {cf['scenario_b']['fiscal_return']:.2f}")
+    print(f"  Scenario C (both): {cf['scenario_c']['fiscal_return']:.2f}")
+
+    # Print summary table
+    print("\n  Equipment & Trade Summary:")
+    print(eq_trade_df[["country", "equip_density", "import_leakage",
+                        "multiplier", "effective_multiplier"]].to_string(index=False))
 
     print("\n" + "=" * 60)
     print("Analysis complete. See output/figures/ and data/.")
