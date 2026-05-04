@@ -762,7 +762,7 @@ def create_report():
 
     doc.add_heading('主要エンドポイントと多重比較検定の検証', level=3)
     p = doc.add_paragraph()
-    run = p.add_run('DPC研究 2025: ')
+    run = p.add_run('DPC研究 2026: ')
     run.font.bold = True
     p.add_run(
         '【主要EP】術後肺合併症を主要アウトカムとして明記。'
