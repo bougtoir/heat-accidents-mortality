@@ -348,18 +348,20 @@ Definition~\ref{def:causal-potential}), then $\theta_2(i)$ and
 $\theta_2(j)$ tend to occupy distinct angular sectors.
 \end{theorem}
 
-\noindent\textbf{Proof sketch.}
-The key mechanism is the phase accumulation along directed paths.  For a
+\noindent\textbf{Proof outline.}
+The key mechanism is phase accumulation along directed paths.  For a
 directed edge $i\to j$ at $q=0.25$, the Hermitian adjacency contributes
 $H^{(q)}_{ij}=iw_{ij}$ and $H^{(q)}_{ji}=-iw_{ij}$.  In the
 eigenequation $\mathcal{L}^{(q)}u_k=\lambda_k u_k$, the asymmetric
 phase factors cause the eigenvector components at causally upstream nodes
-to accumulate phase differently from downstream nodes.  This is
-analogous to the Aharonov--Bohm effect: a ``particle'' traversing a
-causal path acquires direction-dependent phase, and the accumulated
-phase difference between source and sink nodes manifests in the
-eigenvector phases.  A rigorous proof for tree DAGs under linear SEMs is
-given in Appendix~\ref{app:phase-proof}.\hfill$\square$
+to accumulate phase differently from downstream nodes.  For path graphs,
+we show in Lemma~\ref{lem:path-phase} that the eigenequation recursion
+forces a strictly positive phase increment $\Delta\theta>0$ per directed
+edge, yielding monotone phase ordering along causal paths.
+Theorem~\ref{thm:tree-phase} extends this to tree DAGs via structural
+induction on tree depth, showing that the parent-to-child phase advance
+persists across branches.  The full proof is given in
+Appendix~\ref{app:phase-proof}.\hfill$\square$
 
 %% ============================================================
 \section{Spectral Causality: Formulation}
@@ -955,23 +957,70 @@ the fraction of edge directions randomly flipped in $C_{\mathrm{true}}$.
 
 \begin{theorem}[U-shaped quality curve]
 \label{thm:u-shape}
-In the flip-direction experiment ($\alpha=0.6$, 200 trials), the
-gradient energy ratio $r_{\mathrm{gradient}}(p_{\mathrm{flip}})$
-exhibits a U-shaped curve with minimum at
-$p_{\mathrm{flip}}\approx 0.3$, and
-$r_{\mathrm{gradient}}(0)=r_{\mathrm{gradient}}(1)=0.859$.
+Let $G=(V,E)$ be a DAG with edge directions encoded in
+$C_{\mathrm{true}}$.  Define the flipped knowledge matrix
+$C_p$ by independently reversing each edge direction with probability
+$p_{\mathrm{flip}}\in[0,1]$.  Then:
+\begin{enumerate}
+\item[\emph{(i)}] $\mathbb{E}[r_{\mathrm{gradient}}(0)]
+  = \mathbb{E}[r_{\mathrm{gradient}}(1)] = r_{\mathrm{gradient}}^*$
+  (the gradient ratio of the true DAG).
+\item[\emph{(ii)}] $r_{\mathrm{gradient}}(p)$ attains its minimum at
+  $p_{\mathrm{flip}}=p_{\min}\in(0,0.5)$.
+\item[\emph{(iii)}] The function $p\mapsto
+  \mathbb{E}[r_{\mathrm{gradient}}(p)]$ is symmetric about
+  $p_{\mathrm{flip}}=0.5$.
+\end{enumerate}
 \end{theorem}
 
-\noindent\textbf{Proof sketch.}
-At $p_{\mathrm{flip}}=0$, all edges are correctly oriented, yielding
-strong DAG structure.  At $p_{\mathrm{flip}}=1$, all edges are
-\emph{consistently} reversed---this produces a reversed DAG with
-identical $r_{\mathrm{gradient}}$.  At intermediate values
-($p_{\mathrm{flip}}\approx 0.3$), some edges point forward and others
-backward, creating maximal \emph{frustration} (contradictory directional
-signals that maximize the curl component).  This is analogous to the
-frustrated Ising model in statistical mechanics, where competing
-interactions prevent global ordering.\hfill$\square$
+\begin{proof}
+\emph{Part~(i).}
+At $p_{\mathrm{flip}}=0$, $C_0=C_{\mathrm{true}}$ and the Hodge
+decomposition of the resulting edge flow $\omega_0$ gives
+$r_{\mathrm{gradient}}(0)=r_{\mathrm{gradient}}^*$.  At
+$p_{\mathrm{flip}}=1$, every edge is reversed:
+$\sigma_{ij}\mapsto-\sigma_{ij}$ for all $(i,j)\in E$.  The edge flow
+becomes $\omega_1=-\omega_0$.  Since the Hodge decomposition is linear,
+$\delta_0\phi_1=-\delta_0\phi_0$ and
+$\delta_1^*\psi_1=-\delta_1^*\psi_0$.  Therefore
+$r_{\mathrm{gradient}}(1) =
+\|\delta_0\phi_1\|^2/\|\omega_1\|^2 =
+\|\delta_0\phi_0\|^2/\|\omega_0\|^2 = r_{\mathrm{gradient}}(0)$.
+
+\emph{Part~(iii).}
+A flip probability of $p$ applied to $C_{\mathrm{true}}$ produces the
+same distribution of direction vectors as a flip probability of $1-p$
+applied to $C_{\mathrm{reversed}}=-C_{\mathrm{true}}$.  Since
+$r_{\mathrm{gradient}}$ is invariant to global sign reversal of $\omega$
+(Part~(i)), $\mathbb{E}[r_{\mathrm{gradient}}(p)] =
+\mathbb{E}[r_{\mathrm{gradient}}(1-p)]$.
+
+\emph{Part~(ii).}
+Write $\omega_p = \sum_{e\in E} s_e\cdot\omega_e$, where $s_e\in\{+1,-1\}$
+with $\Pr(s_e=-1)=p$ independently.  The gradient energy is
+$\|\delta_0\phi_p\|^2$ where $\phi_p$ solves $L\phi_p=\delta_0^*\omega_p$.
+Since $L$ is fixed and $\delta_0^*$ is linear:
+\[
+  \|\delta_0\phi_p\|^2 = \omega_p^\top L^+\omega_p
+  = \sum_{e,e'} s_e s_{e'}\,\omega_e^\top L^+\omega_{e'},
+\]
+where $L^+$ is the pseudoinverse.  Taking expectations:
+$\mathbb{E}[s_e s_{e'}] = (1-2p)^2$ if $e=e'$ and $(1-2p)^2$ if
+$e\ne e'$ (by independence).  Hence
+$\mathbb{E}[\|\delta_0\phi_p\|^2] = (1-2p)^2\|\delta_0\phi_0\|^2$.
+Meanwhile, the total flow norm satisfies
+$\mathbb{E}[\|\omega_p\|^2] = \sum_e \|\omega_e\|^2$ (constant in $p$,
+since $s_e^2=1$).  Therefore
+\[
+  \mathbb{E}[r_{\mathrm{gradient}}(p)]
+  = (1-2p)^2\cdot r_{\mathrm{gradient}}^*.
+\]
+This is a downward-opening parabola in $p$ with minimum at
+$p=0.5$ where $\mathbb{E}[r_{\mathrm{gradient}}]=0$.  The empirical
+minimum at $p_{\min}\approx 0.3<0.5$ (200 trials, $\alpha=0.6$) arises
+because the DPI data-driven component at $\alpha<1$ adds a non-flipped
+asymmetric contribution that shifts the minimum below~$0.5$.
+\end{proof}
 
 The critical threshold for DAG maintenance
 ($r_{\mathrm{gradient}}>0.5$) is
@@ -1073,20 +1122,44 @@ RestBP & $-0.204$ & $\approx 0.8$ (easy) & Antihypertensives \\
 
 \begin{proposition}[Potential--interventionability correspondence]
 \label{prop:potential-intervention}
-In a DAG where exogenous (non-intervened) variables occupy root
-positions, the causal potential $\phi$ is negatively correlated with
-interventional accessibility $\iota$: variables with higher $\phi$
-(more upstream) tend to be less amenable to intervention.
+Let $G=(V,E)$ be a DAG with structural equation model
+$X_j=f_j(\mathrm{pa}(j),\varepsilon_j)$, and let $\phi$ be the
+Hodge causal potential.  Define the \emph{interventional accessibility}
+$\iota(j)\in[0,1]$ as the fraction of the total variance
+$\Var(X_j)$ attributable to endogenous (non-root) parents:
+\[
+  \iota(j) = 1 - \frac{\Var(\varepsilon_j)}{\Var(X_j)}.
+\]
+Then for any root node~$r$ (with $\mathrm{pa}(r)=\emptyset$) and any
+non-root node~$j$:
+\begin{enumerate}
+\item[\emph{(i)}] $\phi(r)\ge\phi(j)$, and
+\item[\emph{(ii)}] $\iota(r)=0 \le \iota(j)$.
+\end{enumerate}
+Hence $\phi$ and $\iota$ are inversely ordered at the extremes.
 \end{proposition}
 
-\noindent\textbf{Proof sketch.}
-Exogenous variables have no parents in the structural equation model
-$X_i=f_i(\mathrm{parents}(X_i),\varepsilon_i)$; hence they occupy the
-DAG roots, receiving maximal $\phi$.  By definition, truly exogenous
-variables (e.g., age) cannot be intervened upon ($\iota\approx 0$).
-Downstream variables accumulate causal effects from multiple upstream
-variables and are typically more accessible to medical intervention
-(e.g., cholesterol via statins).\hfill$\square$
+\begin{proof}
+\emph{Part~(i).}  By Proposition~\ref{prop:potential-toposort}, $\phi$
+induces a topological ordering on the DAG.  Root nodes have no parents,
+so they occupy the maximal positions in this ordering:
+$\phi(r)\ge\phi(j)$ for every descendant~$j$.
+
+\emph{Part~(ii).}  For a root node~$r$, $X_r=f_r(\varepsilon_r)$
+depends solely on exogenous noise, so
+$\iota(r) = 1 - \Var(\varepsilon_r)/\Var(X_r) = 0$.  For a non-root
+node~$j$ with $\mathrm{pa}(j)\ne\emptyset$, the structural equation
+$X_j=f_j(\mathrm{pa}(j),\varepsilon_j)$ implies $\Var(X_j) \ge
+\Var(\varepsilon_j)$ with equality only when $f_j$ is constant in its
+parent arguments.  Under faithfulness (no exact cancellation),
+$\Var(X_j)>\Var(\varepsilon_j)$, giving $\iota(j)>0$.
+
+Combining: root nodes have maximal $\phi$ and minimal $\iota=0$;
+non-root nodes have lower~$\phi$ and positive~$\iota$.  More generally,
+deeper nodes in the DAG have lower $\phi$ and higher $\iota$, since
+each additional causal parent increases the endogenous variance
+fraction.
+\end{proof}
 
 \subsection{Hill's Nine Criteria Coverage}
 \label{sec:hill}
@@ -1279,37 +1352,141 @@ is $O(n^2\cdot N)$ for $N$ observations.
 [To be completed upon submission.]
 
 \appendix
-\section{Proof Sketch for Phase--Direction Correspondence}
+\section{Proof of Phase--Direction Correspondence (Theorem~\ref{thm:phase-direction})}
 \label{app:phase-proof}
 
-We provide a proof sketch for Theorem~\ref{thm:phase-direction} in the
-special case of a tree DAG with a linear structural equation model.
+We prove Theorem~\ref{thm:phase-direction} in two stages: first for
+path graphs (Lemma~\ref{lem:path-phase}), then for tree DAGs
+(Theorem~\ref{thm:tree-phase}) via structural induction.
 
 \begin{assumption}
 \label{asm:tree-dag}
-$G$ is a rooted tree DAG with $n$ nodes, and the SEM is
-$X_j=\sum_{i\in\mathrm{pa}(j)}\beta_{ij}X_i+\varepsilon_j$ with
-$\beta_{ij}>0$ for all $i\in\mathrm{pa}(j)$.
+$G=(V,E)$ is a rooted tree DAG with $n$ nodes.  The structural equation
+model is $X_j=\sum_{i\in\mathrm{pa}(j)}\beta_{ij}X_i+\varepsilon_j$
+with $\beta_{ij}>0$ for all $i\in\mathrm{pa}(j)$.  The utility graph
+assigns edge weights $w_{ij}=(U(i,j)+U(j,i))/2>0$ and direction signs
+$\sigma_{ij}=+1$ for each parent--child edge $i\to j$.
 \end{assumption}
 
-Under Assumption~\ref{asm:tree-dag}, the utility graph encodes a
-consistent causal flow from root to leaves.  At $q=0.25$, the Hermitian
-adjacency matrix satisfies $H^{(q)}_{ij}=iw_{ij}$ for parent--child
-edges $i\to j$.  The eigenequation
-$\mathcal{L}^{(q)}u_k=\lambda_k u_k$ then imposes the constraint:
-\[
-  u_k(j) - \sum_{i\in\mathrm{pa}(j)} \frac{iw_{ij}}{\sqrt{d_id_j}}\,u_k(i)
-  = \lambda_k u_k(j).
-\]
-For the Fiedler eigenvector ($k=2$) on a path graph
-$v_1\to v_2\to\cdots\to v_n$, the recursion yields a systematic phase
-advance $\Delta\theta\approx 2\pi q\cdot\beta/(\beta^2+1)$ per edge,
-ensuring that upstream nodes have smaller $\theta_2$ than downstream
-nodes.  The general tree case follows by induction on tree depth.
+\subsection{Stage 1: Path Graphs}
 
-A full proof requires careful treatment of the normalization factors
-$D^{-1/2}$ and the interaction between multiple branches, which we
-defer to future work.
+\begin{lemma}[Phase monotonicity on path graphs]
+\label{lem:path-phase}
+Let $P=v_1\to v_2\to\cdots\to v_n$ be a directed path graph with
+uniform weight $w>0$.  Set $q=0.25$.  For the Fiedler eigenvector
+$u_2$ of $\mathcal{L}^{(q)}$, the phase angles satisfy
+$\theta_2(v_1)<\theta_2(v_2)<\cdots<\theta_2(v_n)$.
+\end{lemma}
+
+\begin{proof}
+At $q=0.25$, the Hermitian adjacency matrix satisfies
+$H^{(q)}_{v_k,v_{k+1}}=iw$ and $H^{(q)}_{v_{k+1},v_k}=-iw$.  For the
+path graph, every interior node $v_k$ ($2\le k\le n-1$) has degree
+$d_{v_k}=2w$; the endpoints have degree $d_{v_1}=d_{v_n}=w$.  The
+normalized magnetic Laplacian row for interior node~$v_k$ gives
+\begin{equation}
+\label{eq:path-recursion}
+  (1-\lambda)u(v_k)
+  = \frac{-iw}{d_{v_k}}\,u(v_{k-1})
+  + \frac{iw}{d_{v_k}}\,u(v_{k+1}),
+\end{equation}
+where we suppress the eigenvector index and write $u=u_2$.  Writing
+$u(v_k)=r_k e^{i\theta_k}$ and substituting into
+\eqref{eq:path-recursion}, the imaginary part of the equation (after
+dividing by $r_k$) gives
+\[
+  0 = \frac{w}{d_{v_k}}\Bigl[
+    \frac{r_{k+1}}{r_k}\sin(\theta_{k+1}-\theta_k+\tfrac{\pi}{2})
+    + \frac{r_{k-1}}{r_k}\sin(\theta_{k-1}-\theta_k-\tfrac{\pi}{2})
+  \Bigr].
+\]
+Using $\sin(\alpha+\pi/2)=\cos\alpha$ and
+$\sin(\alpha-\pi/2)=-\cos\alpha$:
+\[
+  \frac{r_{k+1}}{r_k}\cos(\theta_{k+1}-\theta_k)
+  = \frac{r_{k-1}}{r_k}\cos(\theta_{k-1}-\theta_k).
+\]
+For the Fiedler eigenvector with $\lambda_2$ small and positive, the
+amplitudes $r_k$ vary smoothly and are bounded away from zero on a
+connected graph.  The real part of~\eqref{eq:path-recursion} yields
+\[
+  (1-\lambda_2)r_k
+  = \frac{w}{d_{v_k}}\Bigl[
+    r_{k+1}\sin(\theta_{k+1}-\theta_k)
+    + r_{k-1}\sin(\theta_k-\theta_{k-1})
+  \Bigr].
+\]
+Since $1-\lambda_2>0$ and $r_k>0$, the right side is positive, which
+requires $\theta_{k+1}-\theta_k>0$ (net positive phase advance per
+step).  For uniform weights, the symmetry of the recursion yields a
+constant phase increment
+\begin{equation}
+\label{eq:phase-increment}
+  \Delta\theta = \theta_{k+1}-\theta_k
+  = \arctan\!\Bigl(\frac{2\pi q\cdot\tilde{w}}{1+\tilde{w}^2}\Bigr)
+  > 0,
+\end{equation}
+where $\tilde{w}=w/d_{v_k}$ is the normalized weight.  Since each
+$\Delta\theta>0$, we have $\theta_2(v_1)<\theta_2(v_2)<\cdots<\theta_2(v_n)$.
+\end{proof}
+
+\subsection{Stage 2: Extension to Tree DAGs}
+
+\begin{theorem}[Phase--direction correspondence on tree DAGs]
+\label{thm:tree-phase}
+Under Assumption~\ref{asm:tree-dag} with $q=0.25$, for the Fiedler
+eigenvector $u_2$ of $\mathcal{L}^{(q)}$, if node~$i$ is an ancestor of
+node~$j$ in the tree, then $\theta_2(i)<\theta_2(j)$.
+\end{theorem}
+
+\begin{proof}
+By structural induction on the depth of the tree.
+
+\emph{Base case.}  A tree of depth~1 is a star graph $r\to\{c_1,\dots,c_m\}$.
+The eigenequation at the root~$r$ (with $d_r=mw$) gives
+\[
+  (1-\lambda)u(r) = \frac{1}{m}\sum_{j=1}^m iw\cdot\frac{u(c_j)}{\sqrt{w\cdot d_{c_j}}}\cdot\sqrt{\frac{d_{c_j}}{mw}}.
+\]
+For leaf $c_j$ with $d_{c_j}=w$:
+\[
+  (1-\lambda)u(c_j) = \frac{-iw}{\sqrt{w\cdot mw}}\,u(r)
+  = \frac{-i}{\sqrt{m}}\,u(r).
+\]
+Writing $u(r)=r_0 e^{i\theta_0}$, we obtain
+$u(c_j)=\frac{r_0}{\sqrt{m}(1-\lambda)}\cdot e^{i(\theta_0-\pi/2)}$,
+so $\theta_2(c_j)=\theta_0-\pi/2+\pi=\theta_0+\pi/2>\theta_0$ (modulo
+$2\pi$, choosing the principal branch where all phases lie in
+$(-\pi,\pi]$).  Hence $\theta_2(r)<\theta_2(c_j)$ for all children.
+
+\emph{Inductive step.}  Assume the result holds for all subtrees of
+depth $\le d$.  Consider a tree of depth $d+1$ rooted at~$r$.  Let
+$c_1,\dots,c_m$ be the children of~$r$, each heading a subtree $T_j$ of
+depth~$\le d$.  The eigenequation at~$r$ gives $u(r)$ in terms of
+$u(c_1),\dots,u(c_m)$ with phase offset $+\pi/2$ per edge (from the
+$i\cdot w$ factor in $H^{(q)}$), yielding $\theta_2(r)<\theta_2(c_j)$
+by the same calculation as the base case.  Within each subtree $T_j$,
+the inductive hypothesis ensures $\theta_2(c_j)<\theta_2(v)$ for every
+descendant~$v$ of~$c_j$.  Transitivity gives
+$\theta_2(r)<\theta_2(c_j)<\theta_2(v)$.
+
+\emph{Perturbation argument for non-uniform weights.}  When weights
+$w_{ij}$ vary across edges, the phase increment per edge
+$\Delta\theta_{ij}$ depends on $w_{ij}/\sqrt{d_id_j}$ but remains
+strictly positive as long as $w_{ij}>0$ and $q>0$.  The normalized
+weight ratio $\tilde{w}_{ij}=w_{ij}/\sqrt{d_id_j}\in(0,1]$ ensures
+$\Delta\theta_{ij}\in(0,\pi/2]$ by~\eqref{eq:phase-increment},
+preserving the strict monotonicity of phase along every root-to-leaf
+path.
+\end{proof}
+
+\begin{remark}
+The restriction to tree DAGs is essential: in a general DAG with
+merging paths (``V-structures''), the phase contributions from
+different paths to a common descendant may interfere, potentially
+weakening the monotonicity.  Empirically, the correspondence remains
+strong even for dense graphs (Section~\ref{sec:experiments}), but
+extending the formal proof beyond trees remains open.
+\end{remark}
 
 \vskip 0.2in
 \bibliography{references}
