@@ -137,14 +137,17 @@ def create_manuscript():
          "methods, and in eras when model selection criteria such as the Akaike Information "
          "Criterion (AIC) and Bayesian Information Criterion (BIC) were not yet standard practice.{4,5}"),
 
-        ("Recent work has demonstrated that some celebrated curves may be artifacts of small "
-         "samples, outlier dependence, or inappropriate model specification. For example, "
-         "the Preston Curve's apparent concavity has been shown to depend heavily on the "
-         "position of the United States as an outlier.{6} The Environmental Kuznets Curve "
-         "for CO2 emissions has been repeatedly challenged.{7,8} The Dunning-Kruger effect "
-         "has been argued to be a statistical artifact of regression to the mean.{9}"),
+        ("The present study was motivated by a preliminary analysis of the Preston Curve "
+         "conducted by the authors.{6} That analysis revealed that the Preston Curve's "
+         "apparent concavity (quadratic term) depends heavily on the position of the "
+         "United States as a single outlier—removing the US raised the p-value to 0.49, "
+         "rendering the nonlinear term non-significant. This finding raised the question of "
+         "whether similar fragilities lurk beneath other 'canonical' curves. Indeed, "
+         "the Environmental Kuznets Curve for CO2 emissions has been repeatedly "
+         "challenged,{7,8} and the Dunning-Kruger effect has been argued to be a "
+         "statistical artifact of regression to the mean.{9}"),
 
-        ("Despite these individual re-examinations, no systematic cross-disciplinary audit "
+        ("Despite these individual critiques, no systematic cross-disciplinary audit "
          "has been conducted. The present study fills this gap by applying a uniform "
          "methodological framework to 52 canonical curves across eight academic disciplines. "
          "Our approach combines four complementary techniques: (1) nested F-tests for the "
