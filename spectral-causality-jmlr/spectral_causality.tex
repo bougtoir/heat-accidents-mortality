@@ -1395,6 +1395,117 @@ direction} (``knowing $X$ informs about $Y$''), which may reverse the
 \emph{interventional direction} (``manipulating $X$ changes $Y$'') for
 diagnostic marker pairs.
 
+\subsection{Theoretical Implications}
+
+The scale invariance theorem (Theorem~\ref{thm:scale-invariance}) has a
+striking practical consequence: once the \emph{sign structure} of the
+asymmetric component is fixed, the precise numerical values in the domain
+knowledge matrix $C_{\mathrm{domain}}$ are irrelevant for
+$r_{\mathrm{gradient}}$.  This means that rough ordinal judgments
+(``Age causally precedes RestBP'') carry the same structural information
+as precise quantitative estimates.  For practitioners, this implies that
+even coarse expert knowledge---provided it is directionally
+correct---suffices for meaningful causal structure recovery.
+
+The U-shaped quality curve (Theorem~\ref{thm:u-shape}) formalizes an
+important but often overlooked risk: incorporating partially incorrect
+domain knowledge can be \emph{worse} than using no domain knowledge at
+all.  The critical threshold $p_{\mathrm{flip}}^* \approx 0.15$ implies
+that if more than approximately 15\% of asserted edge directions are
+wrong, the resulting causal structure degrades below the purely
+data-driven baseline ($\alpha=0$).  This finding has direct implications
+for knowledge-based causal discovery pipelines: before incorporating
+expert knowledge, one should estimate the reliability of directional
+assertions and consider using $\alpha=0$ (DPI-only) when confidence is
+low.
+
+The phase--direction correspondence (Theorem~\ref{thm:phase-direction})
+establishes a deep connection between spectral graph theory and causal
+ordering: the complex-valued eigenvectors of the magnetic Laplacian
+encode a topological sort via their phase angles.  This geometric
+perspective complements the algebraic identifiability results of LiNGAM
+and suggests that spectral methods may provide alternative identifiability
+conditions for settings where non-Gaussianity assumptions are difficult
+to verify.
+
+\subsection{Interpretation of Experimental Results}
+
+The experimental comparison between DirectLiNGAM and spectral causality
+reveals systematic patterns in their disagreements.  Of the 10 variable
+pairs, disagreements cluster in two categories:
+
+\emph{Diagnostic marker reversals.}  For pairs such as
+(Cholesterol, STDep) and (RestBP, MaxHR), spectral causality reverses
+the LiNGAM direction.  These are precisely the pairs where the downstream
+variable (effect) is routinely used as a diagnostic indicator for the
+upstream variable (cause) in clinical practice.  Cholesterol levels
+inform about cardiovascular risk (not the reverse), and blood pressure
+predicts exercise capacity.  This pattern suggests that the spectral
+framework's ``informational direction'' captures the predictive structure
+of clinical reasoning, which is complementary to---not contradictory
+with---the interventional structure that LiNGAM recovers.
+
+\emph{Feedback detection.}  The 73\% curl component on the
+MaxHR$\leftrightarrow$STDep edge is clinically meaningful: exercise
+intolerance $\to$ ischemia $\to$ increased myocardial oxygen demand
+$\to$ further exercise limitation constitutes a well-known pathological
+feedback loop.  DAG-based methods force a unidirectional
+MaxHR$\to$STDep edge, losing this bidirectional structure.  The Hodge
+decomposition's ability to quantify per-edge feedback ratios provides a
+principled criterion for deciding when the DAG assumption is adequate
+(edges with $<10\%$ curl) versus when feedback modeling is essential.
+
+The smooth $\alpha$-sweep from $r_{\mathrm{gradient}}=0.581$ at
+$\alpha=0$ to $0.859$ at $\alpha=1$ demonstrates that domain knowledge
+and data-driven inference provide complementary rather than redundant
+information.  The fact that DPI alone ($\alpha=0$) already achieves
+67\% directional agreement with LiNGAM validates the DPI as a
+meaningful asymmetric statistic, while the additional 20+ percentage
+points from domain knowledge highlight the value of expert input when
+available and reliable.
+
+\subsection{Examination of Assumptions}
+
+The theoretical results in this paper rely on several assumptions whose
+scope and relaxability merit discussion.
+
+\emph{Additive noise model (ANM).}  The partial identifiability theorem
+(Theorem~\ref{thm:dpi-identifiability}) assumes an ANM data-generating
+process.  While this is weaker than LiNGAM's joint requirement of
+linearity \emph{and} non-Gaussianity, it still excludes important model
+classes: multiplicative noise, heteroscedastic models, and
+post-nonlinear models.  In practice, the DPI's ensemble design
+(averaging three asymmetric components) provides empirical robustness
+beyond the ANM setting, but formal guarantees for broader model classes
+remain an open problem.
+
+\emph{Tree DAG structure.}  The phase--direction correspondence proof
+(Appendix~\ref{app:phase-proof}) assumes a tree DAG with positive edge
+weights.  Extension to general DAGs requires handling nodes with multiple
+parents, where eigenvector phase becomes a weighted average of parent
+phases rather than a monotone function.  Preliminary numerical experiments
+suggest the correspondence holds approximately for sparse DAGs with
+bounded in-degree, but a formal proof is lacking.
+
+\emph{Fixed charge parameter $q$.}  The spectral analysis depends on the
+charge parameter $q$, which controls the trade-off between symmetric
+coupling information ($q=0$) and directional phase information ($q>0$).
+Our experiments use $q=0.25$ for eigenvector analysis and $q=0.15$ for
+CCI computation (to avoid SCC degeneracy at $q=0.25$).  A principled
+$q$-selection procedure---analogous to bandwidth selection in kernel
+methods---would strengthen the practical applicability of the framework.
+Cross-validation against an external criterion (e.g., LiNGAM agreement
+rate or bootstrap stability) is a promising direction.
+
+\emph{Domain knowledge quality.}  The framework assumes access to a
+domain knowledge matrix $C_{\mathrm{domain}}$ whose entries are
+non-negative and roughly calibrated to causal influence strength.
+While Theorem~\ref{thm:scale-invariance} shows that only the sign
+structure matters for $r_{\mathrm{gradient}}$, the SCC and SCD values
+\emph{do} depend on the magnitudes.  Sensitivity analysis of the
+spectral indices to perturbations in $C_{\mathrm{domain}}$ would
+provide confidence bounds and is a natural extension.
+
 \subsection{Scalability}
 
 The magnetic Laplacian eigendecomposition is $O(n^3)$; for large $n$,
