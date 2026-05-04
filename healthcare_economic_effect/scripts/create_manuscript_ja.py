@@ -1,9 +1,16 @@
 """
-日本語原稿: 医療費は経済効果である — ニュートラルな持続可能性フレームワーク
+日本語原稿: 医療費は経済効果である
+— 産業連関乗数・健康資本テンポ効果・三層テンポ構造に基づく
+  ニュートラルな持続可能性フレームワーク
 
 Generates:
   - output/docx/Healthcare_Economic_Effect_JA.docx
   - output/pptx/Healthcare_Economic_Effect_Figures_JA.pptx (editable figures)
+
+Integrates findings from:
+  - GDP tempo paper (PR#39, Onishi 2026b)
+  - Healthcare tempo PoC Candidate A-H (PR#37, Onishi 2026c)
+  - Population tempo paper (PR#33-35, Onishi 2026a)
 """
 import os
 import re
@@ -45,8 +52,7 @@ def add_text_with_refs(paragraph, text, bold=False):
 
 
 def add_heading(doc, text, level=1):
-    h = doc.add_heading(text, level=level)
-    return h
+    return doc.add_heading(text, level=level)
 
 
 def add_para(doc, text, bold=False, style=None):
@@ -93,15 +99,14 @@ def add_table_from_df(doc, df, caption):
             for p in row_cells[j].paragraphs:
                 for r in p.runs:
                     r.font.size = Pt(9)
-    doc.add_paragraph()  # spacing
+    doc.add_paragraph()
 
 
 # ---------------------------------------------------------------------------
 # PPTX figure helper
 # ---------------------------------------------------------------------------
 def create_pptx_slide(prs, img_path, title, caption):
-    slide = prs.slides.add_slide(prs.slide_layouts[6])  # blank
-    # Title
+    slide = prs.slides.add_slide(prs.slide_layouts[6])
     txBox = slide.shapes.add_textbox(PptxInches(0.5), PptxInches(0.2),
                                       PptxInches(12.33), PptxInches(0.6))
     tf = txBox.text_frame
@@ -110,12 +115,10 @@ def create_pptx_slide(prs, img_path, title, caption):
     tf.paragraphs[0].font.bold = True
     tf.paragraphs[0].alignment = PP_ALIGN.CENTER
 
-    # Image
     if os.path.exists(img_path):
         slide.shapes.add_picture(img_path, PptxInches(1.5), PptxInches(1.0),
                                   PptxInches(10.33), PptxInches(5.0))
 
-    # Caption
     txBox2 = slide.shapes.add_textbox(PptxInches(0.5), PptxInches(6.3),
                                        PptxInches(12.33), PptxInches(0.8))
     tf2 = txBox2.text_frame
@@ -184,6 +187,21 @@ REFERENCES = [
     "Bloom DE, Canning D, Sevilla J. The effect of health on economic "
     "growth: a production function approach. World Dev. "
     "2004;32(1):1-13.",
+    # 17 — NEW: Bongaarts-Feeney (tempo effect origin)
+    "Bongaarts J, Feeney G. On the quantum and tempo of fertility. "
+    "Popul Dev Rev. 1998;24(2):271-291.",
+    # 18 — NEW: Goldstein-Lutz-Scherbov (forgotten parameter sigma)
+    "Goldstein JR, Lutz W, Scherbov S. Long-term population decline in "
+    "Europe: the relative importance of tempo effects and generational "
+    "length. Popul Dev Rev. 2003;29(4):699-707.",
+    # 19 — NEW: Onishi GDP tempo paper (companion)
+    "Onishi T. The forgotten tempo effect in capital accounting: "
+    "investment-to-output time-to-build, intangible capital, and the "
+    "reconciliation of flow- and stock-based national wealth measures. "
+    "Working Paper. 2026.",
+    # 20 — NEW: Onishi healthcare tempo PoC (companion)
+    "Onishi T. Healthcare sustainable-spending composition via tempo + "
+    "sigma framework: Candidate A-H proof of concept. Working Paper. 2026.",
 ]
 
 
@@ -196,7 +214,11 @@ def build_ja_docx():
     # Title
     title = doc.add_paragraph()
     title.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = title.add_run("医療費は経済効果である\n— 産業連関乗数と健康資本テンポ効果に基づくニュートラルな持続可能性フレームワーク")
+    run = title.add_run(
+        "医療費は経済効果である\n"
+        "— 産業連関乗数・健康資本テンポ効果・三層テンポ構造に基づく\n"
+        "ニュートラルな持続可能性フレームワーク"
+    )
     run.font.size = Pt(16)
     run.bold = True
 
@@ -207,17 +229,18 @@ def build_ja_docx():
         "しかし産業連関（I-O）分析によれば、医療支出1単位あたり日本では2.78倍の経済波及効果が生じ{1}、"
         "OECD諸国でも1.7〜2.9倍の乗数効果が報告されている{1,3,13}。"
         "さらにHealth-Led Growth Hypothesis (HLGH) の実証研究は、医療支出とGDP成長の間に"
-        "双方向の因果関係（bidirectional Granger causality）が存在することを示している{4-7}。"
-        "本稿では、(1) I-O乗数による需要側リターン、(2) 健康資本ストックのテンポ効果による"
-        "供給側リターンを統合した「ニュートラルな持続可能性基準」を提案し、"
-        "9か国のデータを用いてその適用可能性を検証する。"
-        "分析の結果、9か国中3か国（日本・フランス・スウェーデン）で需要側のみの"
-        "財政回収率（fiscal return ratio = τ·m / pf）が1.0を上回り、"
-        "残りの国も0.76〜0.96と1.0に近接していた。"
-        "供給側の健康資本蓄積リターンを加味すれば、"
-        "大半の国で総合的な持続可能性が成立する可能性が高い。"
-        "医療費を「コスト」から「経済効果を伴う投資」へ再定義することで、"
-        "持続可能性の議論はより生産的な方向に転換しうる。"
+        "双方向の因果関係が存在することを示している{4-7}。"
+        "本稿では、人口学のBongaarts-Feeney テンポ効果{17}を"
+        "GDP資本会計{19}さらに医療支出{20}へと三層的に移植する枠組みを基盤とし、"
+        "(1) I-O乗数による需要側リターン、(2) 健康資本ストックのテンポ効果による"
+        "供給側リターンを統合した「ニュートラルな持続可能性基準」を提案する。"
+        "9か国のデータを用いた分析では、需要側のみの"
+        "財政回収率（τ·m / pf）が1.0を超えたのは3か国（日本・フランス・スウェーデン）であったが、"
+        "残りの6か国も0.76〜0.96と大部分を回収していた。"
+        "供給側リターンを加味すれば大半の国で持続可能性が成立しうる。"
+        "また、healthcare_tempo_pocの39か国分析では、テンポモデル（M2）が"
+        "定数ラグモデル（M1）を95%の国で上回り（μ_H1 = +0.15年/年）{20}、"
+        "フロー指標のみの評価がリターンを系統的に過小評価していることが確認された。"
     )
 
     # ---------- 1. Introduction ----------
@@ -241,6 +264,9 @@ def build_ja_docx():
         "本稿の目的は、医療費を「コストでもあり経済効果でもある」というニュートラルな立場から"
         "再評価し、持続可能性を需要側（I-O乗数）と供給側（健康資本ストック）の"
         "二重リターンの観点から定式化することである。"
+        "特に、人口学のテンポ効果{17}がGDP資本会計{19}さらに医療{20}へと"
+        "三層的に移植される構造を明示し、フロー偏重の政策評価が"
+        "いかに投資リターンを過小評価しているかを示す。"
     )
 
     # ---------- 2. Background ----------
@@ -281,16 +307,53 @@ def build_ja_docx():
         "健康状態の改善がTFP（全要素生産性）を高めることを示し{16}、"
         "Barro（2013）は平均寿命1年の延長がGDP成長率を約0.04 pp引き上げると推計した{15}。"
     )
+
+    add_heading(doc, "2.3 テンポ効果の三層構造：人口→GDP→医療", level=2)
     add_para(doc,
-        "重要なのは、健康資本の蓄積と経済アウトカムの間には時間ラグ（テンポ効果）が"
-        "存在することである。我々のhealthcare_tempo_pocにおけるCandidate A-Hの分析では、"
-        "ラグの平均的なドリフトμ_H1 = +0.15年/年が検出され、"
-        "39か国中95%でテンポモデル（M2）が定数ラグモデル（M1）を上回った。"
-        "これは「現在の医療支出が平均寿命に反映されるまでの時間が、時代とともに長くなっている」"
-        "ことを意味し、フロー（当期支出）のみで効率を評価すると過小評価が生じる。"
+        "Bongaarts & Feeney（1998）は人口学において、"
+        "平均出産年齢（MAC）の上昇が期間合計出生率（TFR）を機械的に押し下げる"
+        "「テンポ効果」を提唱した{17}。"
+        "Goldstein, Lutz & Scherbov（2003）はパリティ別分散σ（「忘れられたパラメータ」）を"
+        "導入し、テンポ補正済み出生率とコーホートデータの整合性を大幅に改善した{18}。"
+    )
+    add_para(doc,
+        "Onishi（2026b）はこの量子・テンポ分解を資本会計に移植し、"
+        "投資→産出の time-to-build ラグμ(t) と無形資本比率β（忘れられたパラメータ）を"
+        "導入することで、PWT（フロー）とCWON（ストック）の乖離を説明した{19}。"
+        "39か国のGDP分析では、テンポドリフトμ₁ = +0.04年/年が検出され、"
+        "OOS MAPEが4.60%→3.99%へ13%改善した{19}。"
+    )
+    add_para(doc,
+        "本稿のhealthcare_tempo_poc（Candidate A-H）は同じ枠組みを医療支出に適用する{20}。"
+        "支出→アウトカム（平均寿命）ラグμ_H(t)を定式化し、39か国で推定した結果を表4に示す。"
     )
 
-    add_heading(doc, "2.3 HLGHの実証的エビデンス", level=2)
+    # Table 4: PoC A-H results
+    poc_data = pd.DataFrame([
+        {"モデル": "M0（フローのみ）", "水準RMSE中央値（年）": "0.510",
+         "変化率RMSE中央値": "0.455", "概要": "支出→アウトカム即時"},
+        {"モデル": "M1（定数ラグ）", "水準RMSE中央値（年）": "0.441",
+         "変化率RMSE中央値": "0.403", "概要": "μ*≈4年の固定ラグ"},
+        {"モデル": "M2（テンポラグ）", "水準RMSE中央値（年）": "0.434",
+         "変化率RMSE中央値": "0.405", "概要": "μ_H1=+0.15年/年ドリフト"},
+    ])
+    add_table_from_df(doc, poc_data,
+                      "表4. healthcare_tempo_poc Candidate A-H 結果（39か国、2000-2019年）")
+
+    add_para(doc,
+        "M2（テンポ）はM1（定数ラグ）を95%の国で上回り{20}、"
+        "「支出がアウトカムに反映されるまでのラグが一定ではなく時代とともに長くなっている」"
+        "ことを裏付ける。μ_H1 = +0.15年/年は、10年で1.5年のラグ延長を意味し、"
+        "GDPのμ₁ = +0.04年/年{19}の約4倍である。"
+        "この差は、医療が急性期から慢性疾患管理・予防・R&Dへとシフトするにつれ、"
+        "投資→成果のパイプラインが長期化していることと整合的である。"
+    )
+
+    # Figure 5 (three-layer analogy)
+    add_figure(doc, os.path.join(FIG, "fig5_three_layer_analogy_ja.png"),
+               "図5. テンポ効果の三層構造 — 人口→GDP→医療への移植")
+
+    add_heading(doc, "2.4 HLGHの実証的エビデンス", level=2)
     add_para(doc,
         "Health-Led Growth Hypothesis (HLGH) は、医療支出が経済成長を促進するという仮説である。"
         "表2に、OECD諸国を対象とした主要なパネルデータ研究の結果を要約する。"
@@ -357,8 +420,6 @@ def build_ja_docx():
         "需要側リターンだけで公的支出の大部分を回収できている。"
         "ドイツ（0.96）や米国（0.92）、韓国（0.86）は"
         "供給側の健康資本蓄積リターンを加味すれば閾値を超える可能性が高い。"
-        "これは、医療費を単純に「削減すべきコスト」と位置づける議論が、"
-        "経済循環の実態を過小評価していることを示唆する。"
     )
 
     add_heading(doc, "3.2 供給側：テンポ調整済み健康資本リターン", level=2)
@@ -366,8 +427,8 @@ def build_ja_docx():
         "需要側の財政回収率は当期のフロー効果のみを捉える。"
         "しかし医療支出の真の経済的価値には、"
         "将来の生産性向上を通じた供給側リターンも含まれる。"
-        "healthcare_tempo_pocの分析では、支出→アウトカムのラグμ_Hが"
-        "時間とともにドリフトしている（μ_H1 = +0.15年/年）ことが示された。"
+        "Candidate A-Hの分析では、支出→アウトカムのラグμ_Hが"
+        "時間とともにドリフトしている（μ_H1 = +0.15年/年）ことが示された{20}。"
         "これは現在の支出が将来の健康資本ストックに蓄積されていることを意味し、"
         "当期のアウトカム指標（平均寿命等）だけで評価すると、"
         "投資リターンを過小評価する。"
@@ -390,7 +451,7 @@ def build_ja_docx():
         "図2に、OECD加盟国における対GDP医療支出と平均寿命の関係を示す{10,12}。"
         "二次関数フィットは逓減的な関係を示し、"
         "一定水準を超えると支出増加あたりの平均寿命改善は小さくなる。"
-        "しかしこの「逓減」は供給側の効率ではなく、"
+        "しかしこの「逓減」は供給側の効率低下ではなく、"
         "テンポ効果（ラグの長期化）を反映している可能性がある。"
     )
 
@@ -400,11 +461,12 @@ def build_ja_docx():
 
     add_para(doc,
         "米国は対GDP 17%の支出にもかかわらず平均寿命がOECD平均以下であり、"
-        "「非効率」の典型例とされる。しかしニュートラルな観点からは、"
-        "(1) I-O乗数1.7による経済波及効果は年間約1.0兆ドルの追加産出を生み、"
-        "(2) テンポ効果のドリフトが示すように、支出の一部は将来の健康資本に蓄積されている。"
+        "「非効率」の典型例とされる。しかしテンポの枠組みから見ると、"
+        "米国のパターンは人口学における「高TFR・低コーホート出生率」と相似である{17}。"
+        "すなわち、フロー（当期支出）は大きいがストック（健康資本）の蓄積効率が低い — "
+        "テンポ膨張したフローが真の投資を過大に見せている可能性がある{19}。"
         "問題は支出の「量」ではなく「構成」であり、"
-        "治療（curative）偏重から予防・R&Dへのシフトが鍵となる{1,10}。"
+        "治療（curative）偏重から予防・R&Dへのシフトが鍵となる。"
     )
 
     # ---------- 5. Discussion ----------
@@ -422,42 +484,72 @@ def build_ja_docx():
         "雇用と税収を減少させる可能性を示唆する。"
     )
 
-    add_heading(doc, "5.2 日米比較の含意", level=2)
+    add_heading(doc, "5.2 日米比較とテンポ効果の含意", level=2)
     add_para(doc,
         "日本の高い乗数（2.78）は、国民皆保険制度による高いアクセス率と、"
         "医薬品・医療機器産業の国内集積によるものと考えられる。"
         "米国の相対的に低い乗数（1.7）は、"
         "高い薬価と保険管理コストが海外製薬企業や保険会社の利潤として域外に漏出するためである{3}。"
-        "しかし需要側乗数の差異は、制度設計の改善余地を示すものであり、"
-        "医療費そのものが「高すぎる」ことを意味しない。"
+    )
+    add_para(doc,
+        "テンポ効果の観点を加えると、この日米差はさらに深い構造を持つ。"
+        "GDP論文{19}の§6.4が示唆するように、"
+        "米国は支出の「無形健康資本比率」（予防・R&Dの比率 = 「忘れられたパラメータ」λ_b）が低い。"
+        "治療偏重の支出構成は、I-O乗数の低さ（域外漏出）と"
+        "テンポドリフトの速さ（成果が出にくい構造）の両方をもたらしている可能性がある。"
+        "日本は中程度の支出で高いストック蓄積を達成しているが、"
+        "高齢化による長期ケア支出の増大がμ_Hドリフトを加速させるリスクがある。"
     )
 
-    add_heading(doc, "5.3 限界と今後の課題", level=2)
+    add_heading(doc, "5.3 Candidate D-H：支出構成の「忘れられたパラメータ」", level=2)
+    add_para(doc,
+        "本稿のhealthcare_tempo_pocではCandidate A-H（支出→アウトカムラグ）を実装した{20}。"
+        "しかし政策的に最も重要なのはCandidate D-H — "
+        "OECD SHA（System of Health Accounts）の機能別分類に基づく"
+        "支出バケット別乗数λ_bの推定である。"
+        "治療（HC.1）、長期ケア（HC.3）、予防（HC.6）、R&D（HC.R）の"
+        "それぞれが異なるアウトカム乗数を持つと仮定すれば、"
+        "持続可能性の議論は「いくら使うか」から「何に使うか」へ転換される。"
+    )
+    add_para(doc,
+        "GDP論文{19}における「忘れられたパラメータ」βが無形資本比率であったように、"
+        "医療における「忘れられたパラメータ」λ_bは予防・R&D支出の相対的乗数である。"
+        "これは三層テンポ構造（図5）の第3列「Healthcare」の核心であり、"
+        "今後の実証課題である。"
+    )
+
+    add_heading(doc, "5.4 限界と今後の課題", level=2)
     add_para(doc,
         "本分析にはいくつかの限界がある。"
         "第一に、I-O乗数は静的なモデルであり、価格調整や供給制約を考慮していない。"
         "第二に、財政回収率の推計は実効税率τの設定に依存し、国際比較にはさらなる精緻化が必要である。"
         "第三に、テンポ効果のμ_Hドリフトは健康資本蓄積の代理指標であり、"
         "直接的な因果推論には追加的な識別戦略が求められる。"
-        "今後は、OECD SHA（System of Health Accounts）の機能別支出データを用いて、"
-        "バケット別乗数（Candidate D-H）の推定を行い、"
-        "「どの種類の医療支出がもっとも高いリターンを生むか」を検証する予定である。"
+        "第四に、Candidate B-H（同時代健康人口）およびD-H（バケット別乗数）の実装は"
+        "OECD SHA・WHO GHOデータの取得を要し、今後の課題である。"
     )
 
     # ---------- 6. Conclusion ----------
     add_heading(doc, "6. 結論", level=1)
     add_para(doc,
         "医療費は「コスト」であると同時に「経済効果」である。"
-        "産業連関乗数は、医療支出が直接・間接・誘発効果を通じて"
-        "1.7〜2.9倍の経済産出を生むことを示す。"
-        "HLGH研究は、医療支出とGDP成長の間に双方向因果が存在することを確認している。"
-        "テンポ効果の分析は、当期のフロー指標のみでは投資リターンを過小評価することを示す。"
-        "需要側のみの財政回収率では9か国中3か国が1.0を上回り、"
+        "産業連関乗数は、医療支出が1.7〜2.9倍の経済産出を生むことを示す。"
+        "HLGH研究は、医療支出とGDP成長の双方向因果を確認している。"
+        "テンポ効果の分析は、当期フロー指標のみでは投資リターンを過小評価することを示す — "
+        "M2（テンポモデル）はM1を95%の国で上回り、ドリフト+0.15年/年は"
+        "GDPの+0.04年/年{19}の約4倍であった{20}。"
+    )
+    add_para(doc,
+        "需要側のみの財政回収率では9か国中3か国が1.0を超え、"
         "残りも0.76〜0.96と近接していた。"
-        "供給側リターンを加味した統合基準の下では、"
+        "供給側リターンを統合した基準の下では、"
         "大半の国で医療支出は経済的に正当化されうる。"
+        "テンポ効果の三層構造 — 人口{17,18}→GDP{19}→医療{20} — は、"
+        "「フロー偏重の政策評価がストック蓄積を過小評価する」という"
+        "領域横断的な問題を浮き彫りにする。"
         "医療費政策の議論は、「いかに抑制するか」から"
-        "「いかに経済的リターンを最大化するか」へ転換すべきである。"
+        "「いかに経済的リターンを最大化するか」— "
+        "そして「何に使うか（構成の最適化）」へ転換すべきである。"
     )
 
     # ---------- References ----------
@@ -498,6 +590,10 @@ def build_ja_pptx():
         ("fig4_dual_return_schematic.png",
          "図4. 二重リターン・フレームワーク概念図",
          "医療支出は需要側（I-O乗数）と供給側（健康資本テンポ効果）の二つの経路で経済にリターンをもたらす。"),
+        ("fig5_three_layer_analogy_ja.png",
+         "図5. テンポ効果の三層構造 — 人口→GDP→医療への移植",
+         "Bongaarts-Feeneyのテンポ効果を資本会計・医療に三層的に移植。医療のテンポドリフトは"
+         "GDP（+0.04年/年）の約4倍（+0.15年/年）。"),
     ]
 
     for fname, title, caption in figures:

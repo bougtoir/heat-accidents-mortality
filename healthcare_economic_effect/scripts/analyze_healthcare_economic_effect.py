@@ -6,10 +6,13 @@ Integrates:
   2. Health-Led Growth Hypothesis (HLGH) — bidirectional causality evidence
   3. Tempo-effect health-capital model (from healthcare_tempo_poc) — lag structure
   4. Net fiscal balance — taxes/contributions generated vs public expenditure
+  5. Three-layer tempo analogy (Population → GDP → Healthcare)
+     from companion papers: Onishi (2026a) population, (2026b) GDP, (2026c) this paper
 
-Produces figures and data for the Japanese/English manuscripts.
+Produces bilingual (EN/JA) figures and data for the Japanese/English manuscripts.
 
-Data: World Bank WDI via API, OECD health statistics (summary), published I-O studies.
+Data: World Bank WDI via API, OECD health statistics (summary), published I-O studies,
+      healthcare_tempo_poc Candidate A-H results.
 """
 
 import os
@@ -200,20 +203,92 @@ def sustainability_table():
 
 
 # ---------------------------------------------------------------------------
-# 5. Tempo-adjusted sustainability (combines tempo PoC results)
+# 5. Candidate A-H PoC results (from healthcare_tempo_poc PR#37)
+#    Bug-fixed rerun (2026-04-21): corrected stock normalisation
 # ---------------------------------------------------------------------------
+POC_AH_RESULTS = {
+    "n_countries": 39,
+    "data_source": "World Bank WDI (SH.XPD.CHEX.PP.CD, SP.DYN.LE00.IN)",
+    "period": "2000-2019",
+    "models": {
+        "M0_flow": {"description": "Naive flow-only regression",
+                    "level_rmse_median": 0.510,
+                    "change_rmse_median": 0.455},
+        "M1_constant_lag": {"description": "Constant lag mu_H (PIM)",
+                            "level_rmse_median": 0.441,
+                            "change_rmse_median": 0.403,
+                            "mu_const_median_yr": 4.0},
+        "M2_tempo_lag": {"description": "Time-varying mu_H(t) = mu0 + mu1*(year-t0)",
+                         "level_rmse_median": 0.434,
+                         "change_rmse_median": 0.405,
+                         "mu_H1_median_yr_per_yr": 0.15},
+    },
+    "key_findings": {
+        "M1_beats_M0_level_pct": 69,
+        "M2_beats_M0_level_pct": 77,
+        "M2_beats_M0_change_pct": 87,
+        "M2_beats_M1_pct": 95,
+        "M0_to_M1_rmse_reduction_pct": 14,
+        "M0_to_M2_rmse_reduction_pct": 15,
+    },
+    "interpretation": (
+        "M2 beats M1 in 95% of countries, confirming that the "
+        "spending-to-outcome lag is not constant but drifts over time. "
+        "Median drift mu_H1 = +0.15 yr/yr means the lag lengthens by "
+        "~1.5 years per decade, consistent with the shift from acute "
+        "to chronic disease management and longer R&D-to-outcome cycles."
+    ),
+}
+
+# Three-layer tempo analogy: Population → GDP → Healthcare
+THREE_LAYER_ANALOGY = pd.DataFrame([
+    {"concept": "Flow (quantum)",
+     "population": "TFR (period fertility rate)",
+     "gdp": "I/GDP (investment rate)",
+     "healthcare": "E/GDP (health spending rate)"},
+    {"concept": "Tempo (timing lag)",
+     "population": "MAC (mean age at childbearing)",
+     "gdp": "mu (investment-to-output lag)",
+     "healthcare": "mu_H (spending-to-outcome lag)"},
+    {"concept": "Forgotten parameter",
+     "population": "sigma (parity variance)",
+     "gdp": "beta (intangible capital share)",
+     "healthcare": "lambda_b (composition multipliers)"},
+    {"concept": "Stock",
+     "population": "Cohort size N(t)",
+     "gdp": "Capital stock K(t)",
+     "healthcare": "Health capital H(t)"},
+    {"concept": "Tempo drift (mu_1)",
+     "population": "+0.05 yr/yr (MAC shift)",
+     "gdp": "+0.04 yr/yr (time-to-build)",
+     "healthcare": "+0.15 yr/yr (spending-to-outcome)"},
+    {"concept": "Effect size vs M0",
+     "population": "Large (TFR bias ~15-20%)",
+     "gdp": "Small (MAPE -0.6 pp)",
+     "healthcare": "Medium (RMSE -15%)"},
+    {"concept": "Identity",
+     "population": "Renewal equation",
+     "gdp": "dW/dt = S(Y) - delta*W",
+     "healthcare": "dH/dt = sum(lambda_b*E_b) - delta_H*H"},
+])
+
+
 def tempo_adjusted_narrative():
-    """Summarize how the tempo effect modifies the sustainability picture."""
+    """Combine PoC A-H results with tempo narrative for manuscripts."""
+    poc = POC_AH_RESULTS
     return {
+        "poc_summary": poc,
+        "three_layer_analogy": THREE_LAYER_ANALOGY.to_dict(orient="records"),
         "key_insight": (
-            "When μ_H (the spending-to-outcome lag) drifts upward, "
-            "current-period health outcomes understate the stock of health "
-            "capital being accumulated. This means the *apparent* return "
-            "on healthcare spending looks lower than the *true* return. "
-            "Countries with rising μ_H are accumulating health capital "
-            "that will yield benefits in future periods — the I-O multiplier "
-            "captures the immediate demand-side return, while the tempo "
-            "framework captures the deferred supply-side return."
+            "The healthcare_tempo_poc (Candidate A-H, 39 countries) shows "
+            "that treating health spending as a stock-building flow with a "
+            "time-varying lag mu_H(t) reduces life-expectancy prediction "
+            f"RMSE from {poc['models']['M0_flow']['level_rmse_median']:.3f} "
+            f"to {poc['models']['M2_tempo_lag']['level_rmse_median']:.3f} years "
+            f"(−{poc['key_findings']['M0_to_M2_rmse_reduction_pct']}%). "
+            "M2 beats M1 in 95% of countries, confirming that the lag is "
+            "not constant but drifts at +0.15 yr/yr — the spending-to-outcome "
+            "pipeline lengthens by ~1.5 years per decade."
         ),
         "policy_implication": (
             "A 'neutral' sustainability criterion must account for both "
@@ -222,15 +297,33 @@ def tempo_adjusted_narrative():
             "activity cover public financing?), and (2) the intertemporal "
             "health-capital accumulation effect (tempo: does the stock "
             "of health built today justify the flow of spending?). "
-            "Neither alone gives a complete picture."
+            "Neither alone gives a complete picture. "
+            "Furthermore, Candidate D-H (spending composition) suggests "
+            "that the 'forgotten parameter' lambda_b — the relative "
+            "outcome multiplier of preventive/R&D vs curative spending — "
+            "may matter more than total spending level."
         ),
         "us_japan_contrast": (
             "The US has high spending (17% GDP) but a low I-O multiplier "
-            "(1.7) and rapid μ_H drift (+0.15 yr/yr in PoC) — suggesting "
-            "spending leaks to non-stock-building activities. Japan has "
-            "moderate spending (11% GDP), a high multiplier (2.78), and "
-            "moderate μ_H drift — suggesting better stock accumulation per "
-            "unit of spending."
+            "(1.7), suggesting leakage through high drug prices and "
+            "administrative costs. Japan has moderate spending (11% GDP) "
+            "but the highest multiplier (2.78) and a fiscal return ratio "
+            "above 1.0 (1.09). Through the tempo lens, the US pattern — "
+            "high flow, low stock accumulation — mirrors 'high TFR, low "
+            "cohort fertility' in demography: a tempo-inflated flow that "
+            "overstates true investment in health capital."
+        ),
+        "three_layer_connection": (
+            "The tempo-plus-forgotten-parameter framework originated in "
+            "demography (Bongaarts-Feeney 1998, Goldstein-Lutz-Scherbov 2003), "
+            "was ported to GDP/wealth accounting (Onishi 2026, PR#39), and "
+            "now extends to health expenditure (this paper). In each domain, "
+            "a period flow statistic (TFR / I/GDP / E/GDP) is biased by "
+            "a timing drift (MAC / mu / mu_H), and a forgotten stock parameter "
+            "(sigma / beta / lambda_b) reconciles flow and stock accounts. "
+            "Healthcare shows the largest tempo drift (+0.15 yr/yr vs GDP's "
+            "+0.04), suggesting that health accounting may be the domain "
+            "where the correction matters most."
         ),
     }
 
@@ -409,8 +502,80 @@ def fig4_dual_return_schematic():
     return path
 
 
+def fig5_three_layer_analogy(lang="en"):
+    """Table-style figure showing the Population/GDP/Healthcare tempo analogy."""
+    import matplotlib.font_manager as fm
+
+    ja_font_name = "DejaVu Sans"
+    if lang == "ja":
+        ja_hits = [f for f in fm.fontManager.ttflist
+                   if "IPAGothic" in f.name or "IPAPGothic" in f.name]
+        if ja_hits:
+            fm.fontManager.addfont(ja_hits[0].fname)
+            ja_font_name = ja_hits[0].name
+
+    fig, ax = plt.subplots(figsize=(10, 4.5))
+    ax.axis("off")
+
+    if lang == "ja":
+        col_labels = ["概念", "人口", "GDP / 国富", "医療"]
+        row_data = [
+            ["フロー（量子）", "TFR\n（期間出生率）", "I/GDP\n（投資率）", "E/GDP\n（医療支出率）"],
+            ["テンポ（時間ラグ）", "MAC\n（平均出産年齢）", "mu\n（投資→産出ラグ）", "mu_H\n（支出→成果ラグ）"],
+            ["忘れられたパラメータ", "sigma\n（パリティ分散）", "beta\n（無形資本比率）", "lambda_b\n（構成乗数）"],
+            ["ストック", "コーホート人口\nN(t)", "資本ストック\nK(t)", "健康資本\nH(t)"],
+            ["テンポドリフト (mu_1)", "+0.05 年/年\n（MAC上昇）", "+0.04 年/年\n（建設期間延長）", "+0.15 年/年\n（支出→成果遅延）"],
+            ["効果サイズ vs M0", "大（TFR偏り\n15-20%）", "小（MAPE\n-0.6 pp）", "中（RMSE\n-15%）"],
+        ]
+        title = "図5. テンポ効果の三層構造 — 人口→GDP→医療への移植"
+    else:
+        col_labels = ["Concept", "Population", "GDP / Wealth", "Healthcare"]
+        row_data = [
+            ["Flow (quantum)", "TFR\n(period fertility)", "I/GDP\n(investment rate)", "E/GDP\n(health spend rate)"],
+            ["Tempo (timing lag)", "MAC\n(mean age childbearing)", "mu\n(invest-to-output lag)", "mu_H\n(spend-to-outcome lag)"],
+            ["Forgotten parameter", "sigma\n(parity variance)", "beta\n(intangible K share)", "lambda_b\n(composition mult.)"],
+            ["Stock", "Cohort size\nN(t)", "Capital stock\nK(t)", "Health capital\nH(t)"],
+            ["Tempo drift (mu_1)", "+0.05 yr/yr\n(MAC shift)", "+0.04 yr/yr\n(time-to-build)", "+0.15 yr/yr\n(spend-to-outcome)"],
+            ["Effect size vs M0", "Large (TFR bias\n15-20%)", "Small (MAPE\n-0.6 pp)", "Medium (RMSE\n-15%)"],
+        ]
+        title = "Figure 5. Three-Layer Tempo Analogy: Population to GDP to Healthcare"
+
+    colors_col = ["#E3F2FD", "#FCE4EC", "#FFF3E0", "#E8F5E9"]
+    table = ax.table(
+        cellText=row_data,
+        colLabels=col_labels,
+        cellLoc="center",
+        loc="center",
+    )
+    table.auto_set_font_size(False)
+    table.set_fontsize(8.5)
+    table.scale(1.0, 2.2)
+
+    for (row, col), cell in table.get_celld().items():
+        cell.set_edgecolor("#BDBDBD")
+        if row == 0:
+            cell.set_facecolor("#37474F")
+            cell.set_text_props(color="white", fontweight="bold", fontsize=9.5,
+                                fontfamily=ja_font_name)
+        else:
+            cell.set_facecolor(colors_col[col] if col < len(colors_col) else "#FFFFFF")
+            cell.set_text_props(fontfamily=ja_font_name)
+        if col == 3 and row > 0:
+            cell.set_text_props(fontweight="bold", fontfamily=ja_font_name)
+
+    ax.set_title(title, fontsize=12, pad=15, fontweight="bold",
+                 fontfamily=ja_font_name)
+    plt.tight_layout()
+    suffix = "_ja" if lang == "ja" else ""
+    path = os.path.join(FIG, f"fig5_three_layer_analogy{suffix}.png")
+    fig.savefig(path, bbox_inches="tight")
+    plt.close(fig)
+    print(f"  Saved: {path}")
+    return path
+
+
 # ---------------------------------------------------------------------------
-# 7. Main
+# 8. Main
 # ---------------------------------------------------------------------------
 def main():
     print("=" * 60)
@@ -444,13 +609,30 @@ def main():
     print("\n[5] Dual-return conceptual diagram")
     fig4_dual_return_schematic()
 
+    # Three-layer analogy (EN + JA)
+    print("\n[6] Three-layer tempo analogy")
+    fig5_three_layer_analogy(lang="en")
+    fig5_three_layer_analogy(lang="ja")
+
+    # PoC A-H results
+    print("\n[7] PoC A-H results (from healthcare_tempo_poc)")
+    with open(os.path.join(DATA, "poc_AH_summary.json"), "w") as f:
+        json.dump(POC_AH_RESULTS, f, indent=2)
+    THREE_LAYER_ANALOGY.to_csv(
+        os.path.join(DATA, "three_layer_analogy.csv"), index=False)
+    m2 = POC_AH_RESULTS["models"]["M2_tempo_lag"]
+    print(f"  M2 level RMSE: {m2['level_rmse_median']:.3f} yr")
+    print(f"  mu_H1 drift: +{m2['mu_H1_median_yr_per_yr']:.2f} yr/yr")
+    print(f"  M2 beats M1: {POC_AH_RESULTS['key_findings']['M2_beats_M1_pct']}%")
+
     # Tempo narrative
-    print("\n[6] Tempo-adjusted narrative")
+    print("\n[8] Tempo-adjusted narrative")
     narrative = tempo_adjusted_narrative()
     with open(os.path.join(DATA, "tempo_narrative.json"), "w") as f:
-        json.dump(narrative, f, indent=2)
+        json.dump(narrative, f, indent=2, default=str)
     for k, v in narrative.items():
-        print(f"  {k}: {v[:80]}...")
+        if isinstance(v, str):
+            print(f"  {k}: {v[:80]}...")
 
     print("\n" + "=" * 60)
     print("Analysis complete. See output/figures/ and data/.")

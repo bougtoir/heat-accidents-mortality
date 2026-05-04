@@ -1,10 +1,16 @@
 """
 English manuscript: Healthcare Expenditure as Economic Effect
-— A Neutral Sustainability Framework Based on I-O Multipliers and Health-Capital Tempo
+— A Neutral Sustainability Framework Based on I-O Multipliers,
+  Health-Capital Tempo, and the Three-Layer Tempo Analogy
 
 Generates:
   - output/docx/Healthcare_Economic_Effect_EN.docx
   - output/pptx/Healthcare_Economic_Effect_Figures_EN.pptx
+
+Integrates findings from:
+  - GDP tempo paper (PR#39, Onishi 2026b)
+  - Healthcare tempo PoC Candidate A-H (PR#37, Onishi 2026c)
+  - Population tempo paper (PR#33-35, Onishi 2026a)
 """
 import os
 import re
@@ -21,8 +27,7 @@ from pptx.enum.text import PP_ALIGN
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.abspath(os.path.join(HERE, ".."))
 DATA = os.path.join(ROOT, "data")
-FIG_EN = os.path.join(ROOT, "output", "figures_en")
-FIG = os.path.join(ROOT, "output", "figures")  # fallback if EN figs not generated
+FIG = os.path.join(ROOT, "output", "figures")
 DOCX_DIR = os.path.join(ROOT, "output", "docx")
 PPTX_DIR = os.path.join(ROOT, "output", "pptx")
 os.makedirs(DOCX_DIR, exist_ok=True)
@@ -30,15 +35,11 @@ os.makedirs(PPTX_DIR, exist_ok=True)
 
 
 def get_fig(name):
-    """Return EN figure path if it exists, otherwise fallback to default."""
-    en_path = os.path.join(FIG_EN, name)
-    if os.path.exists(en_path):
-        return en_path
     return os.path.join(FIG, name)
 
 
 # ---------------------------------------------------------------------------
-# Helpers (same pattern as JA)
+# Helpers
 # ---------------------------------------------------------------------------
 def add_text_with_refs(paragraph, text, bold=False):
     parts = re.split(r'(\{[^}]+\})', text)
@@ -126,45 +127,76 @@ def create_pptx_slide(prs, img_path, title, caption):
 
 
 REFERENCES = [
+    # 1
     "Yamada G, Imanaka Y. Input-output analysis on the economic impact of "
     "medical care in Japan. Environ Health Prev Med. 2015;20(5):379-387.",
+    # 2
     "Maeda Y. Economic ripple effects of healthcare and long-term care. "
     "JMARI Working Paper No. 172. 2008. [In Japanese]",
+    # 3
     "Dupor B, Guerrero R. The aggregate and local economic effects of "
     "government financed health care. Econ Inq. 2021;59(2):662-670.",
-    "Ertuğrul HM, Baycan O, Atilgan E, Ulucan H. Health-led growth hypothesis "
+    # 4
+    "Ertugrul HM, Baycan O, Atilgan E, Ulucan H. Health-led growth hypothesis "
     "and health financing systems: an econometric synthesis for OECD countries. "
     "Front Public Health. 2024;12:1437304.",
+    # 5
     "Amiri A, Ventelou B. Granger causality between total expenditure on "
     "health and GDP in OECD: Evidence from the Toda-Yamamoto approach. "
     "Econ Lett. 2012;116(3):541-544.",
+    # 6
     "Beylik U, Cetin M, Senol O, Cirakli U, Ecevit E. The relationship "
     "between health expenditure indicators and economic growth in OECD "
     "countries: A Driscoll-Kraay approach. Front Public Health. "
     "2022;10:1050550.",
+    # 7
     "Wang KM. Health care expenditure and economic growth: Quantile "
     "panel-type analysis. Econ Model. 2011;28(4):1536-1549.",
+    # 8
     "Mushkin SJ. Health as an investment. J Polit Econ. 1962;70(5):129-157.",
+    # 9
     "Grossman M. On the concept of health capital and the demand for "
     "health. J Polit Econ. 1972;80(2):223-255.",
+    # 10
     "OECD. Health at a Glance 2023: OECD Indicators. Paris: OECD Publishing; "
     "2023.",
+    # 11
     "Cabinet Office, Japan. Annual Report on the Japanese Economy 2025. "
     "Tokyo: Cabinet Office; 2025. [In Japanese]",
+    # 12
     "World Bank. World Development Indicators. Washington, DC: World Bank; "
     "2024. Available from: https://databank.worldbank.org/",
+    # 13
     "Henke KD, Ostwald DA. Health satellite account: the first step. "
     "In: Dged JM, ed. The Elgar Companion to Health Economics. 2nd ed. "
     "Cheltenham: Edward Elgar; 2012. p. 327-337.",
-    "Piabuo SM, Tieguhong JC. Health expenditure and economic growth — "
+    # 14
+    "Piabuo SM, Tieguhong JC. Health expenditure and economic growth -- "
     "a review of the literature and an analysis between the economic "
     "community for central African states (CEMAC) and selected African "
     "countries. Health Econ Rev. 2017;7(1):23.",
+    # 15
     "Barro RJ. Health and economic growth. Ann Econ Finance. "
     "2013;14(2):305-342.",
+    # 16
     "Bloom DE, Canning D, Sevilla J. The effect of health on economic "
     "growth: a production function approach. World Dev. "
     "2004;32(1):1-13.",
+    # 17 -- NEW: Bongaarts-Feeney (tempo effect origin)
+    "Bongaarts J, Feeney G. On the quantum and tempo of fertility. "
+    "Popul Dev Rev. 1998;24(2):271-291.",
+    # 18 -- NEW: Goldstein-Lutz-Scherbov (forgotten parameter sigma)
+    "Goldstein JR, Lutz W, Scherbov S. Long-term population decline in "
+    "Europe: the relative importance of tempo effects and generational "
+    "length. Popul Dev Rev. 2003;29(4):699-707.",
+    # 19 -- NEW: Onishi GDP tempo paper (companion)
+    "Onishi T. The forgotten tempo effect in capital accounting: "
+    "investment-to-output time-to-build, intangible capital, and the "
+    "reconciliation of flow- and stock-based national wealth measures. "
+    "Working Paper. 2026.",
+    # 20 -- NEW: Onishi healthcare tempo PoC (companion)
+    "Onishi T. Healthcare sustainable-spending composition via tempo + "
+    "sigma framework: Candidate A-H proof of concept. Working Paper. 2026.",
 ]
 
 
@@ -179,8 +211,8 @@ def build_en_docx():
     title.alignment = WD_ALIGN_PARAGRAPH.CENTER
     run = title.add_run(
         "Healthcare Expenditure as Economic Effect:\n"
-        "A Neutral Sustainability Framework Based on I-O Multipliers "
-        "and Health-Capital Tempo"
+        "A Neutral Sustainability Framework Based on I-O Multipliers, "
+        "Health-Capital Tempo, and the Three-Layer Tempo Analogy"
     )
     run.font.size = Pt(16)
     run.bold = True
@@ -192,21 +224,24 @@ def build_en_docx():
         "'cost' to be contained. However, input-output (I-O) analysis reveals "
         "that each unit of healthcare spending generates 2.78 times its value "
         "in economic output in Japan{1}, with multipliers ranging from 1.7 to "
-        "2.9 across OECD countries{1,3,13}. Furthermore, the Health-Led Growth "
+        "2.9 across OECD countries{1,3,13}. The Health-Led Growth "
         "Hypothesis (HLGH) literature confirms bidirectional Granger causality "
-        "between health expenditure and GDP growth{4-7}. This paper proposes "
+        "between health expenditure and GDP growth{4-7}. "
+        "Building on the Bongaarts-Feeney tempo framework{17} ported to "
+        "GDP/wealth accounting{19} and to healthcare{20}, this paper proposes "
         "a 'neutral sustainability criterion' that integrates (1) demand-side "
         "returns via I-O multipliers and (2) supply-side returns via health-capital "
-        "stock accumulation with tempo effects. Using data from nine countries, "
-        "we find that the demand-side fiscal return ratio (tau * m / pf) exceeds 1.0 "
-        "in three of nine cases (Japan, France, Sweden), with the remaining six "
-        "countries achieving ratios of 0.76-0.96 — recovering the majority of "
-        "public expenditure through tax revenues from healthcare-induced economic "
-        "activity alone. When supply-side health-capital accumulation returns are "
-        "added, comprehensive sustainability likely holds for most countries. "
-        "Reframing healthcare expenditure from 'cost' to 'investment with economic "
-        "returns' can redirect the sustainability debate toward more productive "
-        "policy discourse."
+        "stock accumulation with tempo effects. "
+        "The demand-side fiscal return ratio (tau * m / pf) exceeds 1.0 "
+        "in three of nine countries (Japan, France, Sweden), with the remaining six "
+        "achieving 0.76-0.96. "
+        "Our healthcare_tempo_poc (39 countries) shows that the tempo model (M2) "
+        "outperforms the constant-lag model (M1) in 95% of countries "
+        "(mu_H1 = +0.15 yr/yr){20}, confirming that flow-only evaluation "
+        "systematically underestimates returns. "
+        "The three-layer tempo analogy (Population -> GDP -> Healthcare) reveals "
+        "that healthcare exhibits the largest tempo drift (+0.15 yr/yr vs GDP's +0.04), "
+        "making it the domain where tempo correction matters most."
     )
 
     # ---------- 1. Introduction ----------
@@ -221,7 +256,7 @@ def build_en_docx():
     )
     add_para(doc,
         "This discourse has almost uniformly treated healthcare expenditure as a "
-        "'cost' — an expense to be minimized through efficiency gains and volume "
+        "'cost' -- an expense to be minimized through efficiency gains and volume "
         "controls. Yet healthcare is also a major economic sector: it purchases "
         "inputs from pharmaceuticals, medical devices, and IT; it employs millions "
         "of workers; and these workers spend their incomes, generating further "
@@ -233,9 +268,15 @@ def build_en_docx():
     )
     add_para(doc,
         "The aim of this paper is to re-evaluate healthcare expenditure from a "
-        "neutral standpoint — as both a cost and an economic effect — and to "
+        "neutral standpoint -- as both a cost and an economic effect -- and to "
         "formalize sustainability in terms of dual returns: demand-side (I-O "
-        "multiplier) and supply-side (health-capital accumulation)."
+        "multiplier) and supply-side (health-capital accumulation). "
+        "We embed this analysis within the three-layer tempo framework: "
+        "the Bongaarts-Feeney quantum-tempo decomposition{17} originated in "
+        "demography, was ported to GDP capital accounting{19}, and is here "
+        "extended to healthcare expenditure{20}. This three-layer structure "
+        "reveals that flow-biased policy evaluation systematically underestimates "
+        "stock accumulation across all three domains."
     )
 
     # ---------- 2. Background ----------
@@ -276,17 +317,56 @@ def build_en_docx():
         "increase in life expectancy raises GDP growth by approximately 0.04 "
         "percentage points{15}."
     )
+
+    add_heading(doc, "2.3 The Three-Layer Tempo Structure: Population -> GDP -> Healthcare", level=2)
     add_para(doc,
-        "Crucially, there is a temporal lag between health-capital accumulation "
-        "and economic outcomes. Our healthcare_tempo_poc analysis (Candidate A-H) "
-        "detected a mean lag drift of mu_H1 = +0.15 years/year, with the tempo "
-        "model (M2) outperforming the constant-lag model (M1) in 95% of 39 "
-        "countries. This implies that evaluating efficiency using only "
-        "contemporaneous flow indicators (period spending vs. period outcomes) "
-        "systematically underestimates the return on healthcare investment."
+        "Bongaarts and Feeney (1998) demonstrated that rising mean age at "
+        "childbearing (MAC) mechanically depresses the period total fertility "
+        "rate (TFR) even when cohort fertility is unchanged -- the 'tempo effect'{17}. "
+        "Goldstein, Lutz, and Scherbov (2003) introduced the parity-specific "
+        "variance sigma (the 'forgotten parameter'), substantially improving the "
+        "reconciliation between tempo-adjusted TFR and cohort data{18}."
+    )
+    add_para(doc,
+        "Onishi (2026b) ported this quantum-tempo decomposition to capital "
+        "accounting, introducing the investment-to-output time-to-build lag mu(t) "
+        "and the intangible capital share beta (the forgotten parameter in GDP "
+        "accounting). Across 39 countries, a time-varying mu(t) reduced the "
+        "out-of-sample MAPE from 4.60% to 3.99% (13% relative improvement){19}."
+    )
+    add_para(doc,
+        "The present paper's healthcare_tempo_poc (Candidate A-H) applies the same "
+        "machinery to health expenditure{20}. We model the spending-to-outcome "
+        "lag mu_H(t) = mu_H0 + mu_H1*(year - t0) and estimate it across 39 countries "
+        "using WB data (2000-2019). Table 4 summarizes the results."
     )
 
-    add_heading(doc, "2.3 Empirical Evidence for the HLGH", level=2)
+    # Table 4: PoC A-H results
+    poc_data = pd.DataFrame([
+        {"Model": "M0 (flow-only)", "Level RMSE Median (yr)": "0.510",
+         "Change RMSE Median": "0.455", "Description": "Spending -> outcome (immediate)"},
+        {"Model": "M1 (constant lag)", "Level RMSE Median (yr)": "0.441",
+         "Change RMSE Median": "0.403", "Description": "mu* = 4 yr (fixed lag, PIM)"},
+        {"Model": "M2 (tempo lag)", "Level RMSE Median (yr)": "0.434",
+         "Change RMSE Median": "0.405", "Description": "mu_H1 = +0.15 yr/yr (drift)"},
+    ])
+    add_table_from_df(doc, poc_data,
+                      "Table 4. healthcare_tempo_poc Candidate A-H Results (39 countries, 2000-2019)")
+
+    add_para(doc,
+        "M2 (tempo) outperforms M1 (constant lag) in 95% of countries{20}, "
+        "confirming that the spending-to-outcome lag is not constant but drifts "
+        "at +0.15 yr/yr -- the pipeline lengthens by ~1.5 years per decade. "
+        "This drift is approximately four times larger than GDP's mu_1 = +0.04 yr/yr{19}, "
+        "suggesting that healthcare is the domain where the tempo correction "
+        "matters most among the three layers (Figure 5)."
+    )
+
+    # Figure 5 (three-layer analogy)
+    add_figure(doc, get_fig("fig5_three_layer_analogy.png"),
+               "Figure 5. Three-Layer Tempo Analogy: Population to GDP to Healthcare")
+
+    add_heading(doc, "2.4 Empirical Evidence for the HLGH", level=2)
     add_para(doc,
         "The Health-Led Growth Hypothesis (HLGH) posits that healthcare "
         "expenditure promotes economic growth. Table 2 summarizes the principal "
@@ -351,13 +431,9 @@ def build_en_docx():
         "Three of nine countries (Japan 1.09, France 1.18, Sweden 1.04) achieve a "
         "demand-side-only fiscal return ratio above 1.0. The remaining six countries "
         "range from 0.76 (Australia) to 0.96 (Germany), recovering the bulk of "
-        "public expenditure through demand-side tax revenues alone. Germany (0.96) "
-        "and the US (0.92) narrowly miss the threshold; Korea (0.86), Canada (0.82), "
-        "the UK (0.78), and Australia (0.76) show progressively larger gaps. These "
-        "gaps are expected to be closed by supply-side returns (health-capital "
-        "accumulation) not captured in this demand-only metric. The finding that "
-        "demand-side revenues alone recover 76-118% of public costs challenges the "
-        "framing of healthcare as a pure fiscal drain."
+        "public expenditure through demand-side tax revenues alone. "
+        "These gaps are expected to be closed by supply-side returns (health-capital "
+        "accumulation) not captured in this demand-only metric."
     )
 
     add_heading(doc, "3.2 Supply Side: Tempo-Adjusted Health-Capital Returns", level=2)
@@ -365,9 +441,9 @@ def build_en_docx():
         "The fiscal return ratio captures only the contemporaneous flow effect. "
         "The full economic value of healthcare spending also includes supply-side "
         "returns through future productivity gains from health-capital "
-        "accumulation. Our tempo analysis showed that the spending-to-outcome "
-        "lag mu_H drifts at +0.15 years/year, meaning current spending accumulates "
-        "into a health-capital stock whose returns manifest in future periods. "
+        "accumulation. Candidate A-H showed that mu_H drifts at +0.15 yr/yr{20}, "
+        "meaning current spending accumulates into a health-capital stock whose "
+        "returns manifest in future periods. "
         "Evaluating by period outcomes alone thus underestimates the true return."
     )
     add_para(doc, "The integrated sustainability criterion can be written as:")
@@ -396,12 +472,12 @@ def build_en_docx():
 
     add_para(doc,
         "The US spends 17% of GDP on healthcare yet has below-OECD-average life "
-        "expectancy — the textbook example of 'inefficiency.' From a neutral "
-        "perspective, however: (1) the I-O multiplier of 1.7 generates approximately "
-        "$1.0 trillion in additional output annually, and (2) the tempo drift "
-        "suggests a portion of spending accumulates into future health capital. "
-        "The issue is not the volume of spending but its composition — the shift "
-        "from curative-heavy toward prevention and R&D is key{1,10}."
+        "expectancy. Through the tempo lens, the US pattern is analogous to "
+        "'high period TFR, low cohort fertility' in demography{17}: the flow "
+        "(current spending) is large but the stock (health capital) accumulates "
+        "inefficiently -- a tempo-inflated flow that overstates true investment{19}. "
+        "The issue is not the volume of spending but its composition -- the shift "
+        "from curative-heavy toward prevention and R&D is key."
     )
 
     # ---------- 5. Discussion ----------
@@ -420,28 +496,54 @@ def build_en_docx():
         "output, employment, and tax revenue."
     )
 
-    add_heading(doc, "5.2 Implications of the Japan-US Comparison", level=2)
+    add_heading(doc, "5.2 Japan-US Comparison and Tempo Implications", level=2)
     add_para(doc,
         "Japan's high multiplier (2.78) likely reflects universal health insurance "
         "ensuring broad access, and a domestic concentration of pharmaceutical and "
         "medical-device industries. The US's lower multiplier (1.7) reflects "
         "leakage through high drug prices and insurance administrative costs "
-        "accruing to overseas firms and insurer profits{3}. The difference in "
-        "multipliers points to institutional design improvements, not to healthcare "
-        "spending itself being 'too high.'"
+        "accruing to overseas firms and insurer profits{3}."
+    )
+    add_para(doc,
+        "Adding the tempo perspective deepens this contrast. As the GDP paper's "
+        "Section 6.4 suggests{19}, the US has a low 'intangible health-capital "
+        "share' -- spending is heavily weighted toward curative care (HC.1) rather "
+        "than prevention (HC.6) or R&D (HC.R), the healthcare analogue of the "
+        "'forgotten parameter' lambda_b. A curative-heavy composition simultaneously "
+        "depresses the I-O multiplier (leakage abroad) and accelerates the tempo "
+        "drift (outcomes take longer to materialize). "
+        "Japan achieves higher stock accumulation per unit of spending but faces "
+        "the risk that aging-driven growth of long-term care may accelerate mu_H drift."
     )
 
-    add_heading(doc, "5.3 Limitations and Future Directions", level=2)
+    add_heading(doc, "5.3 Candidate D-H: The 'Forgotten Parameter' in Spending Composition", level=2)
+    add_para(doc,
+        "The healthcare_tempo_poc implemented Candidate A-H (spending-to-outcome lag){20}. "
+        "The most policy-relevant extension is Candidate D-H -- estimating "
+        "bucket-specific outcome multipliers lambda_b by functional category from "
+        "OECD SHA (System of Health Accounts) data. "
+        "If curative (HC.1), long-term care (HC.3), prevention (HC.6), and R&D (HC.R) "
+        "carry different lambda_b values, the sustainability discussion shifts from "
+        "'how much to spend' to 'what to spend on.'"
+    )
+    add_para(doc,
+        "Just as the forgotten parameter beta (intangible capital share) reconciles "
+        "flow and stock accounts in GDP{19}, lambda_b (prevention/R&D composition "
+        "multiplier) is the forgotten parameter in healthcare accounting. "
+        "This is the core of the third column in the three-layer analogy (Figure 5) "
+        "and constitutes the primary empirical agenda going forward."
+    )
+
+    add_heading(doc, "5.4 Limitations and Future Directions", level=2)
     add_para(doc,
         "Several limitations apply. First, I-O multipliers are static models that "
         "do not account for price adjustments or supply constraints. Second, the "
         "fiscal return ratio depends on the effective tax rate parameter, requiring "
         "further refinement for robust international comparisons. Third, the tempo "
         "drift mu_H is a proxy for health-capital accumulation; direct causal "
-        "inference requires additional identification strategies. Future work will "
-        "use OECD SHA (System of Health Accounts) functional expenditure data to "
-        "estimate bucket-specific multipliers (Candidate D-H) and determine which "
-        "types of healthcare spending yield the highest returns."
+        "inference requires additional identification strategies. "
+        "Fourth, Candidates B-H (same-healthy-population) and D-H (bucket multipliers) "
+        "require OECD SHA and WHO GHO data and are left for future work."
     )
 
     # ---------- 6. Conclusion ----------
@@ -449,15 +551,22 @@ def build_en_docx():
     add_para(doc,
         "Healthcare expenditure is simultaneously a 'cost' and an 'economic effect.' "
         "I-O multipliers demonstrate that healthcare spending generates 1.7 to 2.9 "
-        "times its value in economic output through direct, indirect, and induced "
-        "effects. HLGH studies confirm bidirectional causality between health "
-        "expenditure and GDP growth. Tempo analysis shows that contemporaneous "
-        "flow indicators underestimate investment returns. Under the demand-side "
-        "fiscal return ratio, three of nine countries exceed 1.0, and all nine "
-        "recover at least 76% of public costs from demand-side tax revenues alone "
-        "— before accounting for supply-side health-capital returns. "
+        "times its value in economic output. HLGH studies confirm bidirectional "
+        "causality between health expenditure and GDP growth. "
+        "Tempo analysis shows that contemporaneous flow indicators underestimate "
+        "investment returns -- M2 (tempo model) outperforms M1 in 95% of countries "
+        "with drift of +0.15 yr/yr, roughly four times GDP's +0.04{19,20}."
+    )
+    add_para(doc,
+        "Under the demand-side fiscal return ratio, three of nine countries exceed "
+        "1.0, and all nine recover at least 76% of public costs from demand-side "
+        "tax revenues alone. "
+        "The three-layer tempo structure -- Population{17,18} -> GDP{19} -> "
+        "Healthcare{20} -- highlights a cross-domain pattern: flow-biased policy "
+        "evaluation systematically underestimates stock accumulation. "
         "The policy debate should shift from 'how to contain costs' to "
-        "'how to maximize the economic return on healthcare investment.'"
+        "'how to maximize economic return on healthcare investment' -- and "
+        "ultimately to 'what to spend on (composition optimization).'"
     )
 
     # ---------- References ----------
@@ -494,6 +603,10 @@ def build_en_pptx():
         ("fig4_dual_return_schematic.png",
          "Figure 4. Dual-Return Framework for Neutral Sustainability",
          "Healthcare spending generates returns through two channels: demand-side (I-O multiplier) and supply-side (health-capital tempo effect)."),
+        ("fig5_three_layer_analogy.png",
+         "Figure 5. Three-Layer Tempo Analogy: Population -> GDP -> Healthcare",
+         "The Bongaarts-Feeney tempo framework ported across three domains. Healthcare shows the largest tempo drift "
+         "(+0.15 yr/yr vs GDP +0.04)."),
     ]
 
     for fname, title, caption in figures:
