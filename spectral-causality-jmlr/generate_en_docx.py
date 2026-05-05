@@ -1469,7 +1469,11 @@ def build_document():
     # Acknowledgments
     # ============================================================
     add_heading(doc, "Acknowledgments and Disclosure of Funding", level=1)
-    add_para(doc, "[To be completed upon submission.]")
+    add_para(doc, (
+        "The author thanks the anonymous reviewers for their constructive "
+        "comments. This work was not supported by external funding. The author "
+        "declares no competing interests."
+    ))
 
     # ============================================================
     # References
