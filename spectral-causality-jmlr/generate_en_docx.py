@@ -260,7 +260,12 @@ def build_document():
         "(5) DPI partial identifiability. Under the ANM assumption, "
         "we prove that DPI's ANM component consistently identifies causal "
         "direction as N\u2192\u221e, with convergence rates characterized for each "
-        "component (Section 10)."
+        "component (Section 10).\n"
+        "(6) Multi-dataset validation. Experiments on synthetic random "
+        "DAGs (n=5\u201320), the Sachs protein signaling network "
+        "(Sachs et al., 2005; n=11, 17 ground-truth edges), and the UCI Heart "
+        "Disease dataset (N=297, 5 variables) demonstrate competitive "
+        "structural recovery against DirectLiNGAM, PC, GES, and NOTEARS (Section 7)."
     ))
 
     add_para(doc, (
@@ -1274,14 +1279,21 @@ def build_document():
 
     add_para(doc, "Remark 10.1 (Sample size requirements).", bold=True, italic=True)
     add_para(doc, (
-        "For the UCI Heart Disease dataset (N=297, d=2 per pair), the "
+        "The convergence rates have concrete implications for our experimental "
+        "datasets. For the UCI Heart Disease dataset (N=297, d=2 per pair), the "
         "effective convergence rate O(N^{-1/3}) \u2248 0.15 suggests that "
         "DPI asymmetry estimates are within \u00b10.15 of their population "
         "values. Since the observed |\u0100(i,j)| ranges from 0.05 to 0.35 "
         "across the 10 variable pairs, direction estimation is reliable for "
         "the 7 pairs with |\u0100| > 0.15 but noisy for the remaining 3. "
-        "Bootstrap analysis (200 resamples) confirms that the 7 high-asymmetry "
-        "pairs have consistent sign across >95% of resamples."
+        "For the Sachs protein signaling dataset (N=853, d=2), the rate "
+        "improves to O(853^{-1/3}) \u2248 0.106, consistent with the higher "
+        "TPR (0.47 at \u03b1=0) relative to the UCI experiment. "
+        "The synthetic experiments (\u00a77.5) confirm the predicted improvement "
+        "with sample size: TPR increases from N=200 to N=1000 across all methods, "
+        "with spectral causality's FDR decreasing from 0.35 to 0.22. "
+        "Bootstrap analysis (200 resamples) on the UCI dataset confirms that the "
+        "7 high-asymmetry pairs have consistent sign across >95% of resamples."
     ))
 
     # ============================================================
@@ -1329,29 +1341,45 @@ def build_document():
 
     add_heading(doc, "11.3 Interpretation of Experimental Results", level=2)
     add_para(doc, (
-        "The experimental comparison between DirectLiNGAM and spectral causality "
-        "reveals systematic patterns in their disagreements. Of the 10 variable "
-        "pairs, disagreements cluster in two categories."
+        "The experimental results span three complementary evaluations: "
+        "synthetic benchmarks (\u00a77.5), the Sachs protein signaling "
+        "network (\u00a77.6), and the UCI Heart Disease dataset (\u00a77.7\u20137.8)."
     ))
     add_para(doc, (
-        "Diagnostic marker reversals. For pairs such as "
-        "(Cholesterol, STDep) and (RestBP, MaxHR), spectral causality reverses "
-        "the LiNGAM direction. These are precisely the pairs where the downstream "
-        "variable (effect) is routinely used as a diagnostic indicator for the "
-        "upstream variable (cause) in clinical practice."
+        "Synthetic benchmarks. The controlled experiments on random DAGs "
+        "confirm that spectral causality with DPI alone achieves competitive TPR "
+        "across sample sizes (N=200\u20131000), with its primary weakness being "
+        "higher FDR due to DCG-to-DAG conversion. The ECD pipeline "
+        "(DirectLiNGAM for edge orientation, spectral causality for structural "
+        "diagnostics) consistently outperforms either method alone."
     ))
     add_para(doc, (
-        "Feedback detection. The 73% curl component on the MaxHR\u2194STDep edge "
-        "is clinically meaningful: exercise intolerance \u2192 ischemia \u2192 "
-        "increased myocardial oxygen demand \u2192 further exercise limitation "
-        "constitutes a well-known pathological feedback loop."
+        "Sachs protein signaling. The Sachs network provides an "
+        "important validation on biological data with established ground truth. "
+        "r_gradient=0.52 at \u03b1=0 correctly identifies that the signaling network "
+        "is not purely DAG-structured: known feedback loops (e.g., Erk\u2194Akt via "
+        "the PI3K pathway) contribute to the curl component. This diagnostic "
+        "capability is absent from all comparison methods. The Hodge potential "
+        "ordering (PKC > PKA > Raf) under partial knowledge recovers the known "
+        "biological hierarchy."
     ))
     add_para(doc, (
-        "The smooth \u03b1-sweep from r_gradient = 0.581 at \u03b1=0 to 0.859 at "
-        "\u03b1=1 demonstrates that domain knowledge and data-driven inference "
-        "provide complementary rather than redundant information. DPI alone "
-        "(\u03b1=0) already achieves 67% directional agreement with LiNGAM, "
-        "validating DPI as a meaningful asymmetric statistic."
+        "UCI Heart Disease. The comparison between DirectLiNGAM and spectral "
+        "causality reveals systematic patterns: (i) Diagnostic marker reversals\u2014for "
+        "pairs such as (Cholesterol, STDep) and (RestBP, MaxHR), spectral causality "
+        "reverses the LiNGAM direction, capturing the 'informational direction'; "
+        "(ii) Feedback detection\u2014the 73% curl component on the MaxHR\u2194STDep "
+        "edge reflects the well-known exercise intolerance feedback loop."
+    ))
+    add_para(doc, (
+        "Cross-dataset consistency. A common pattern emerges across both "
+        "real datasets: spectral causality's unique contribution is not necessarily "
+        "superior edge recovery, but rather the structural diagnostics provided by "
+        "r_gradient and the Hodge decomposition. On the Sachs network, "
+        "r_gradient=0.52 flags substantial feedback; on UCI Heart Disease, "
+        "r_gradient=0.581 identifies moderate feedback. These diagnostics enable "
+        "informed decisions about when DAG-based analysis suffices and when "
+        "feedback-aware models are needed."
     ))
 
     add_heading(doc, "11.4 Examination of Assumptions", level=2)
@@ -1369,7 +1397,14 @@ def build_document():
         "(Appendix A) assumes a tree DAG with positive edge weights. "
         "Extension to general DAGs requires handling nodes with multiple "
         "parents, where eigenvector phase becomes a weighted average of parent "
-        "phases rather than a monotone function."
+        "phases rather than a monotone function. The Sachs network experiment "
+        "(\u00a77.6) provides empirical evidence that the framework performs well "
+        "beyond tree structures: the consensus network contains multiple-parent "
+        "nodes (e.g., Erk receives edges from both Mek and PKA), yet the Hodge "
+        "potential correctly recovers the known biological hierarchy. The synthetic "
+        "experiments (\u00a77.5) further confirm competitive performance on random "
+        "DAGs with expected degree d=2\u20134. Nevertheless, a formal proof for "
+        "general DAGs is lacking."
     ))
     add_para(doc, (
         "Fixed charge parameter q. The spectral analysis depends on q, "
@@ -1396,24 +1431,38 @@ def build_document():
 
     add_heading(doc, "11.6 Limitations", level=2)
     add_para(doc, (
-        "(1) The UCI Heart Disease experiment involves only 5 variables; "
-        "validation on larger datasets (MIMIC-IV, Japanese health checkup "
-        "cohorts with n > 10\u2075) is needed.\n"
-        "(2) The charge parameter q significantly affects results; principled "
-        "selection criteria require further development.\n"
-        "(3) Full identifiability (Phase 3) remains an open problem."
+        "(1) Dataset scale. While we validate on synthetic DAGs (up to n=20), "
+        "the Sachs protein signaling network (n=11, 17 edges), and the UCI Heart "
+        "Disease dataset (n=5), all experiments remain in the small-to-moderate "
+        "regime. Validation on larger-scale datasets (MIMIC-IV with n>100 variables, "
+        "Japanese health checkup cohorts with N>10\u2075) is needed.\n"
+        "(2) Charge parameter q. The spectral analysis depends on q, which "
+        "significantly affects results; principled selection criteria require "
+        "further development.\n"
+        "(3) Identifiability gap. Full identifiability (Phase 3) remains an "
+        "open problem; our current guarantees cover only Phase 1 (DPI "
+        "component-level consistency)."
     ))
 
     add_heading(doc, "11.7 Future Directions", level=2)
     add_para(doc, (
-        "(1) Phase 2 identifiability proof for tree DAG + linear SEM.\n"
-        "(2) ECD validation on MIMIC-IV and large-scale cohort data.\n"
-        "(3) Temporal extension: time-lagged utility graphs with eigentrajectory extraction.\n"
-        "(4) Automated p_flip estimation from LiNGAM agreement rates.\n"
-        "(5) Data-adaptive \u03b1 via bootstrap tests of asymmetric matrix consistency "
-        "with correlation structure.\n"
-        "(6) Formal proof that the phase-transition threshold "
-        "p*_flip \u2248 0.15 generalizes beyond the 5-variable case."
+        "(1) Phase 2 identifiability. A formal proof of spectral propagation "
+        "consistency for tree DAGs under the linear SEM.\n"
+        "(2) Large-scale validation. Application to MIMIC-IV (n>100 clinical "
+        "variables), large-scale cohort data, and additional biological networks "
+        "(e.g., gene regulatory networks via CausalBench). The Sachs results "
+        "(\u00a77.6) suggest that spectral causality's feedback detection transfers "
+        "across domains.\n"
+        "(3) Temporal extension. Time-lagged utility graphs with eigentrajectory "
+        "extraction, connecting spectral causality to Granger-type methods.\n"
+        "(4) Automated knowledge quality estimation. The U-shaped curve "
+        "(Theorem 8.2) motivates automated p_flip estimation from LiNGAM "
+        "agreement rates.\n"
+        "(5) Data-adaptive \u03b1. Bootstrap tests of asymmetric matrix consistency "
+        "with correlation structure could replace manual \u03b1 selection.\n"
+        "(6) Phase-transition generalization. The threshold p*_flip \u2248 0.15 was "
+        "derived for the 5-variable case; the synthetic experiments (\u00a77.5) suggest "
+        "similar behavior at n=10\u201320, but formal dimension-free bounds remain open."
     ))
 
     # ============================================================

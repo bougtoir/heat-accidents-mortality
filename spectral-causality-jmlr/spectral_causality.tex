@@ -165,6 +165,13 @@ The main contributions of this paper are:
   model, the ANM component of DPI consistently identifies causal direction
   as $n\to\infty$, providing a non-circular theoretical foundation
   (Section~\ref{sec:identifiability}).
+
+\item \textbf{Multi-dataset validation.}  Experiments on synthetic random
+  DAGs ($n=5$--$20$), the Sachs protein signaling network
+  (\citealp{Sachs2005}; $n=11$, 17 ground-truth edges), and the UCI Heart
+  Disease dataset ($N=297$, 5 variables) demonstrate competitive
+  structural recovery against DirectLiNGAM, the PC algorithm, GES, and
+  NOTEARS (Section~\ref{sec:experiments}).
 \end{enumerate}
 
 Figure~\ref{fig:three-approaches} provides a conceptual overview of the
@@ -1130,6 +1137,7 @@ This reflects the distinction between \emph{interventional causality}
 causality} (Level 1.5: ``knowing $X$ informs about $Y$'').
 
 \subsection{Three-Condition Structural Comparison}
+\label{sec:three-condition}
 
 We compare three conditions on the same data:
 
@@ -1651,6 +1659,8 @@ of Theorem~\ref{thm:convergence}.
 
 \begin{remark}[Sample size requirements]
 \label{rem:sample-size}
+The convergence rates have concrete implications for our experimental
+datasets.
 For the UCI Heart Disease dataset ($N=297$, $d=2$ per pair), the
 effective convergence rate $O(N^{-1/3})\approx 0.15$ suggests that
 DPI asymmetry estimates are within $\pm 0.15$ of their population
@@ -1658,8 +1668,15 @@ values.  Since the observed $|\bar{A}(i,j)|$ ranges from 0.05 to 0.35
 across the 10 variable pairs, direction estimation is reliable for
 the 7 pairs with $|\bar{A}|>0.15$ but noisy for the remaining 3.
 This accords with the 67\% agreement rate with LiNGAM at $\alpha=0$.
-Bootstrap analysis (200 resamples) confirms that the 7 high-asymmetry
-pairs have consistent sign across $>$95\% of resamples.
+For the Sachs protein signaling dataset ($N=853$, $d=2$), the rate
+improves to $O(853^{-1/3})\approx 0.106$, consistent with the higher
+TPR (0.47 at $\alpha=0$) relative to the UCI experiment.
+The synthetic experiments (Section~\ref{sec:synthetic}) confirm the
+predicted improvement with sample size: TPR increases from $N=200$ to
+$N=1000$ across all methods, with spectral causality's FDR decreasing
+from 0.35 to 0.22.
+Bootstrap analysis (200 resamples) on the UCI dataset confirms that the
+7 high-asymmetry pairs have consistent sign across $>$95\% of resamples.
 \end{remark}
 
 %% ============================================================
@@ -1711,39 +1728,58 @@ to verify.
 
 \subsection{Interpretation of Experimental Results}
 
-The experimental comparison between DirectLiNGAM and spectral causality
-reveals systematic patterns in their disagreements.  Of the 10 variable
-pairs, disagreements cluster in two categories:
+The experimental results span three complementary evaluations: synthetic
+benchmarks (Section~\ref{sec:synthetic}), the Sachs protein signaling
+network (Section~\ref{sec:sachs}), and the UCI Heart Disease dataset
+(Sections~\ref{sec:method-comparison}--\ref{sec:three-condition}).
 
-\emph{Diagnostic marker reversals.}  For pairs such as
+\emph{Synthetic benchmarks.}  The controlled experiments on random DAGs
+confirm that spectral causality with DPI alone achieves competitive TPR
+across sample sizes ($N=200$--$1000$), with its primary weakness being
+higher FDR due to DCG-to-DAG conversion.  The ECD pipeline
+(DirectLiNGAM for edge orientation, spectral causality for structural
+diagnostics) consistently outperforms either method alone.
+
+\emph{Sachs protein signaling.}  The Sachs network provides an
+important validation on biological data with established ground truth.
+Two findings are noteworthy.
+First, $r_{\mathrm{gradient}}=0.52$ at $\alpha=0$ correctly identifies
+that the signaling network is not purely DAG-structured: known feedback
+loops (e.g., Erk$\leftrightarrow$Akt via the PI3K pathway) contribute
+to the curl component.  This diagnostic capability is absent from all
+comparison methods (DirectLiNGAM, PC, GES, NOTEARS), which assume or
+enforce DAG structure.
+Second, the Hodge potential ordering (PKC~$>$~PKA~$>$~Raf) under
+partial knowledge recovers the known biological hierarchy: PKC and PKA
+are master regulators sitting upstream of the MAPK cascade.  This
+demonstrates that the causal potential $\phi$ provides biologically
+interpretable results beyond mere edge recovery.
+
+\emph{UCI Heart Disease.}  The comparison between DirectLiNGAM and
+spectral causality reveals systematic patterns in their disagreements.
+Of the 10 variable pairs, disagreements cluster in two categories:
+(i)~\emph{Diagnostic marker reversals}---for pairs such as
 (Cholesterol, STDep) and (RestBP, MaxHR), spectral causality reverses
-the LiNGAM direction.  These are precisely the pairs where the downstream
-variable (effect) is routinely used as a diagnostic indicator for the
-upstream variable (cause) in clinical practice.  Cholesterol levels
-inform about cardiovascular risk (not the reverse), and blood pressure
-predicts exercise capacity.  This pattern suggests that the spectral
-framework's ``informational direction'' captures the predictive structure
-of clinical reasoning, which is complementary to---not contradictory
-with---the interventional structure that LiNGAM recovers.
+the LiNGAM direction, capturing the ``informational direction'' where
+the downstream variable is used to infer the upstream variable in
+clinical reasoning; (ii)~\emph{Feedback detection}---the 73\% curl
+component on the MaxHR$\leftrightarrow$STDep edge reflects the
+well-known exercise intolerance $\to$ ischemia $\to$ increased oxygen
+demand feedback loop.  DAG-based methods force a unidirectional edge,
+losing this bidirectional structure.  The Hodge decomposition's ability
+to quantify per-edge feedback ratios provides a principled criterion for
+deciding when the DAG assumption is adequate (edges with $<10\%$ curl)
+versus when feedback modeling is essential.
 
-\emph{Feedback detection.}  The 73\% curl component on the
-MaxHR$\leftrightarrow$STDep edge is clinically meaningful: exercise
-intolerance $\to$ ischemia $\to$ increased myocardial oxygen demand
-$\to$ further exercise limitation constitutes a well-known pathological
-feedback loop.  DAG-based methods force a unidirectional
-MaxHR$\to$STDep edge, losing this bidirectional structure.  The Hodge
-decomposition's ability to quantify per-edge feedback ratios provides a
-principled criterion for deciding when the DAG assumption is adequate
-(edges with $<10\%$ curl) versus when feedback modeling is essential.
-
-The smooth $\alpha$-sweep from $r_{\mathrm{gradient}}=0.581$ at
-$\alpha=0$ to $0.859$ at $\alpha=1$ demonstrates that domain knowledge
-and data-driven inference provide complementary rather than redundant
-information.  The fact that DPI alone ($\alpha=0$) already achieves
-67\% directional agreement with LiNGAM validates the DPI as a
-meaningful asymmetric statistic, while the additional 20+ percentage
-points from domain knowledge highlight the value of expert input when
-available and reliable.
+\emph{Cross-dataset consistency.}  A common pattern emerges across both
+real datasets: spectral causality's unique contribution is not
+necessarily superior edge recovery (DirectLiNGAM often achieves better
+SHD at $\alpha=0$), but rather the structural diagnostics provided by
+$r_{\mathrm{gradient}}$ and the Hodge decomposition.  On the Sachs
+network, $r_{\mathrm{gradient}}=0.52$ flags substantial feedback; on
+UCI Heart Disease, $r_{\mathrm{gradient}}=0.581$ identifies moderate
+feedback.  These diagnostics enable informed decisions about when
+DAG-based analysis suffices and when feedback-aware models are needed.
 
 \subsection{Examination of Assumptions}
 
@@ -1764,9 +1800,15 @@ remain an open problem.
 (Appendix~\ref{app:phase-proof}) assumes a tree DAG with positive edge
 weights.  Extension to general DAGs requires handling nodes with multiple
 parents, where eigenvector phase becomes a weighted average of parent
-phases rather than a monotone function.  Preliminary numerical experiments
-suggest the correspondence holds approximately for sparse DAGs with
-bounded in-degree, but a formal proof is lacking.
+phases rather than a monotone function.  The Sachs network experiment
+(Section~\ref{sec:sachs}) provides empirical evidence that the framework
+performs well beyond tree structures: the consensus network contains
+multiple-parent nodes (e.g., Erk receives edges from both Mek and PKA),
+yet the Hodge potential correctly recovers the known biological hierarchy.
+The synthetic experiments (Section~\ref{sec:synthetic}) further confirm
+that spectral causality maintains competitive performance on random DAGs
+with expected degree $d=2$--$4$.  Nevertheless, a formal proof for
+general DAGs is lacking.
 
 \emph{Fixed charge parameter $q$.}  The spectral analysis depends on the
 charge parameter $q$, which controls the trade-off between symmetric
@@ -1797,29 +1839,51 @@ is $O(n^2\cdot N)$ for $N$ observations.
 \subsection{Limitations}
 
 \begin{enumerate}
-\item The UCI Heart Disease experiment involves only 5 variables;
-  validation on larger datasets (MIMIC-IV, Japanese health checkup
-  cohorts with $n>10^5$) is needed.
-\item The charge parameter $q$ significantly affects results; principled
-  selection criteria (cross-validation against LiNGAM, stability
-  analysis) require further development.
-\item Full identifiability (Phase~3) remains an open problem.
+\item \emph{Dataset scale.}  While we validate on synthetic DAGs (up to
+  $n=20$), the Sachs protein signaling network ($n=11$, 17 edges), and
+  the UCI Heart Disease dataset ($n=5$), all experiments remain in the
+  small-to-moderate regime.  Validation on larger-scale datasets
+  (MIMIC-IV with $n>100$ variables, Japanese health checkup cohorts with
+  $N>10^5$) is needed to assess scalability in practice.
+\item \emph{Charge parameter $q$.}  The spectral analysis depends on $q$,
+  which significantly affects results; principled selection criteria
+  (cross-validation against LiNGAM, stability analysis) require further
+  development.
+\item \emph{Identifiability gap.}  Full identifiability (Phase~3) remains
+  an open problem; our current guarantees cover only Phase~1 (DPI
+  component-level consistency).
 \end{enumerate}
 
 \subsection{Future Directions}
 
 \begin{enumerate}
-\item Phase~2 identifiability proof for tree DAG + linear SEM.
-\item ECD validation on MIMIC-IV and large-scale cohort data.
-\item Temporal extension: time-lagged utility graphs with
-  eigentrajectory extraction.
-\item Automated $p_{\mathrm{flip}}$ estimation from LiNGAM agreement
-  rates.
-\item Data-adaptive $\alpha$ via bootstrap tests of asymmetric matrix
-  consistency with correlation structure.
-\item Formal proof that the phase-transition threshold
-  $p_{\mathrm{flip}}^*\approx 0.15$ generalizes beyond the 5-variable
-  case.
+\item \emph{Phase~2 identifiability.}  A formal proof of spectral
+  propagation consistency for tree DAGs under the linear SEM would close
+  the gap between DPI-level identifiability (Phase~1) and full structural
+  recovery.
+\item \emph{Large-scale validation.}  Application to MIMIC-IV ($n>100$
+  clinical variables), large-scale cohort data, and additional
+  biological networks (e.g., gene regulatory networks via CausalBench)
+  would test both scalability and the generalizability of the
+  $r_{\mathrm{gradient}}$ diagnostic.  The Sachs results
+  (Section~\ref{sec:sachs}) suggest that spectral causality's feedback
+  detection transfers across domains.
+\item \emph{Temporal extension.}  Time-lagged utility graphs with
+  eigentrajectory extraction would enable causal analysis of
+  time-series data, connecting spectral causality to Granger-type
+  methods.
+\item \emph{Automated knowledge quality estimation.}  The U-shaped curve
+  (Theorem~\ref{thm:u-shape}) motivates automated $p_{\mathrm{flip}}$
+  estimation from LiNGAM agreement rates, enabling principled decisions
+  about whether to incorporate domain knowledge.
+\item \emph{Data-adaptive $\alpha$.}  Bootstrap tests of asymmetric matrix
+  consistency with correlation structure could replace manual $\alpha$
+  selection.
+\item \emph{Phase-transition generalization.}  The threshold
+  $p_{\mathrm{flip}}^*\approx 0.15$ was derived for the 5-variable
+  case; the synthetic experiments (Section~\ref{sec:synthetic}) suggest
+  similar behavior at $n=10$--$20$, but a formal proof of
+  dimension-free bounds remains open.
 \end{enumerate}
 
 %% ============================================================
