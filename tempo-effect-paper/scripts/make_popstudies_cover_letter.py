@@ -72,10 +72,12 @@ add_para(doc,
 add_para(doc,
     "Our paper provides three contributions. First, we offer the first systematic "
     "cross-national quantification of the tempo effect on SLP, using a parsimonious "
-    "endogenous renewal model validated against UN WPP 2024 data for 40 countries "
-    "(38 OECD members, China, DRC) over 1970\u20132023. We find that the observed 4\u20136 year "
-    "rise in mean age at childbearing across OECD countries independently reduced SLP "
-    "by 8\u201317%\u2014equivalent to 15\u201340 years of below-replacement fertility.",
+    "endogenous renewal model validated against United Nations World Population Prospects "
+    "2024 data for 40 countries (38 Organisation for Economic Co-operation and Development "
+    "members, China, the Democratic Republic of the Congo) over 1970\u20132023. We find that "
+    "the observed 4\u20136 year rise in mean age at childbearing (MAC) across these countries "
+    "independently reduced SLP by 8\u201317%\u2014equivalent to 15\u201340 years of below-replacement "
+    "fertility.",
     size=12, space_after=12)
 
 add_para(doc,
