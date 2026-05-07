@@ -1,1 +1,1 @@
-# tempo-effect-paper
+# tasuki-electoral-model
