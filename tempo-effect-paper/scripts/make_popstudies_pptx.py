@@ -75,25 +75,25 @@ figures = [
         'path': os.path.join(FIG_DIR, 'fig1_showcase.png'),
         'title': 'Figure 1: Model versus observed population trajectories, '
                  'six representative countries, 1970\u20132023',
-        'caption': 'Dynamic model (blue dashed) updates parameters decadally; '
-                   'static model (red dotted) uses 1970 base-year parameters; '
-                   'black solid = UN WPP 2024 observed.',
+        'caption': 'Tempo-responsive model (blue dashed) updates all parameters '
+                   'decadally; fixed-parameter model (red dotted) uses 1970 '
+                   'base-year parameters; black solid = UN WPP 2024 observed.',
     },
     {
         'path': os.path.join(FIG_DIR, 'fig2_all_countries.png'),
         'title': 'Figure 2: Model validation across all 40 countries',
-        'caption': 'Dynamic model MAPE shown in upper-right corner of each panel. '
+        'caption': 'Tempo-responsive model MAPE shown in upper-right corner of each panel. '
                    'Countries sorted alphabetically.',
     },
     {
         'path': os.path.join(FIG_DIR, 'fig3_heatmap.png'),
-        'title': 'Figure 3: Static model MAPE (%) by country and base year',
+        'title': 'Figure 3: Fixed-parameter model MAPE (%) by country and base year',
         'caption': 'Greener cells indicate better fit; redder cells indicate '
                    'poorer fit. Scale capped at 30%.',
     },
     {
         'path': os.path.join(FIG_DIR, 'fig4_comparison.png'),
-        'title': 'Figure 4: Static versus dynamic model comparison',
+        'title': 'Figure 4: Fixed-parameter versus tempo-responsive model comparison',
         'caption': 'Left panel: MAPE by country. Right panel: final population '
                    'ratio (model/observed in 2023).',
     },

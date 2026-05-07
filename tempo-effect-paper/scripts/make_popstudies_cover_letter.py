@@ -70,24 +70,29 @@ add_para(doc,
 
 # What the paper contributes
 add_para(doc,
-    "Our paper provides three contributions. First, we offer the first systematic "
-    "cross-national quantification of the tempo effect on SLP, using a parsimonious "
-    "endogenous renewal model validated against United Nations World Population Prospects "
-    "2024 data for 40 countries (38 Organisation for Economic Co-operation and Development "
-    "members, China, the Democratic Republic of the Congo) over 1970\u20132023. We find that "
-    "the observed 4\u20136 year rise in mean age at childbearing (MAC) across these countries "
-    "independently reduced SLP by 8\u201317%\u2014equivalent to 15\u201340 years of below-replacement "
-    "fertility.",
+    "Our paper provides four contributions. First, we show that incorporating tempo into "
+    "projection models substantially improves accuracy. Comparing a tempo-responsive model "
+    "(all parameters updated decadally) with a tempo-invariant variant (fertility level and "
+    "survival updated but birth timing held fixed\u2014mirroring current national practice), "
+    "we find that accounting for tempo reduces median projection error nearly threefold "
+    "(from 12.8% to 4.6%). This systematic overestimation by tempo-invariant models mirrors "
+    "the serial downward revision observed in national projection systems. Second, using a "
+    "parsimonious endogenous renewal model validated against United Nations World Population "
+    "Prospects 2024 data for 40 countries (38 Organisation for Economic Co-operation and "
+    "Development members, China, the Democratic Republic of the Congo) over 1970\u20132023, we "
+    "find that the observed 4\u20136 year rise in mean age at childbearing (MAC) independently "
+    "reduced the simultaneously living population (SLP) by 8\u201317%\u2014equivalent to 15\u201340 "
+    "years of below-replacement fertility.",
     size=12, space_after=12)
 
 add_para(doc,
-    "Second, we decompose population change into quantum, tempo, and survival components, "
+    "Third, we decompose population change into quantum, tempo, and survival components, "
     "showing that tempo is typically the second-largest contributor in post-transitional "
     "countries\u2014approaching or exceeding the quantum effect in Central and Eastern Europe.",
     size=12, space_after=12)
 
 add_para(doc,
-    "Third, we demonstrate that higher MAC accelerates the annual pace of population "
+    "Fourth, we demonstrate that higher MAC accelerates the annual pace of population "
     "decline. This has a direct policy implication: the demographic response to population "
     "decline should not be framed as a binary choice between \u2018more births\u2019 and \u2018more "
     "immigration.\u2019 Birth timing constitutes a third, independent, and actionable policy "
