@@ -129,8 +129,10 @@ add_para(doc,
     "We provide the first systematic cross-national quantification of the tempo effect on "
     "simultaneously living population (SLP). Using a parsimonious endogenous renewal model\u2014"
     "coupling normal-distributed age-specific fertility with Gompertz survival\u2014we analyse "
-    "40 countries (38 OECD members, China, DRC) over 1970\u20132023. The validated model "
-    "(median MAPE 4.6% against UN WPP 2024) enables counterfactual decomposition of "
+    "40 countries (38 Organisation for Economic Co-operation and Development [OECD] "
+    "members, China, the Democratic Republic of the Congo) over 1970\u20132023. The validated "
+    "model (median absolute percentage error of 4.6% against United Nations World "
+    "Population Prospects 2024) enables counterfactual decomposition of "
     "population change into quantum, tempo, and survival components. We find that the "
     "observed 4\u20136 year rise in mean age at childbearing (MAC) across OECD countries "
     "independently reduced SLP by 8\u201317%, equivalent to 15\u201340 years of below-replacement "
@@ -159,7 +161,8 @@ add_para(doc,
     "When fertility falls below replacement, policy responses almost universally target the "
     "quantum of fertility\u2014the number of children born. South Korea\u2019s record 47 trillion won "
     "pronatalist investment, Japan\u2019s successive Plans for Measures Against the Declining "
-    "Birthrate, and similar programmes across OECD nations share this quantum-centric "
+    "Birthrate, and similar programmes across Organisation for Economic Co-operation "
+    "and Development (OECD) nations share this quantum-centric "
     "framing.{1} Yet a second, independent demographic force shapes how many people are "
     "simultaneously alive at any given moment: the timing of births.",
     size=12, space_after=12)
@@ -168,7 +171,8 @@ add_para(doc,
     "Ryder{2} introduced the concept of demographic translation\u2014the idea that shifts in "
     "the timing of vital events alter period rates independently of underlying quantum. "
     "Bongaarts and Feeney{3} formalised the quantum\u2013tempo distinction for fertility, "
-    "showing that period TFR is mechanically depressed when women postpone childbearing, "
+    "showing that the period total fertility rate (TFR) is mechanically depressed when "
+    "women postpone childbearing, "
     "even if completed cohort fertility remains unchanged. Subsequent work extended this "
     "framework: Kohler and Ortega{4} developed tempo-adjusted parity progression measures; "
     "Sobotka{5} demonstrated that much of Europe\u2019s lowest-low fertility could be attributed "
@@ -320,8 +324,8 @@ add_para(doc,
 add_para(doc,
     "(b) Fertility: Births are generated endogenously. The age-specific fertility rate is "
     "modelled as a normal density centred on MAC with standard deviation \u03c3, scaled to TFR. "
-    "Births at time t equal \u03a3 P\u2093(t) \u00b7 f \u00b7 ASFR(x) for x = 15\u201349, where f is the "
-    "female population share.",
+    "Births at time t equal \u03a3 P\u2093(t) \u00b7 f \u00b7 ASFR(x) for x = 15\u201349, where ASFR "
+    "denotes the age-specific fertility rate and f is the female population share.",
     size=12, space_after=8)
 
 add_para(doc,
@@ -747,7 +751,8 @@ add_para(doc,
     "the model\u2019s \u2018error\u2019 in these countries is itself informative, quantifying the "
     "migration component of population change. For example, Australia\u2019s 13.5% MAPE implies "
     "that net immigration added approximately 13\u201314% to the population beyond what natural "
-    "increase would produce\u2014consistent with ABS estimates. Our natural experiments analysis "
+    "increase would produce\u2014consistent with Australian Bureau of Statistics (ABS) "
+    "estimates. Our natural experiments analysis "
     "(Appendix A) demonstrates that Germany\u2019s model misfit quantifies the demographic "
     "footprint of reunification as a migration shock.",
     size=12, space_after=12)
@@ -830,7 +835,13 @@ add_para(doc,
     "Source: UN DESA (2024), IPSS Japan (2023), US Census Bureau (2023), Destatis (2025), "
     "ONS UK (2025), INSEE France (2021), KOSTAT Korea (2023), ISTAT Italy (2023), "
     "ABS Australia (2018), Statistics Canada (2024), Eurostat (2024), CONAPO Mexico (2018), "
-    "TurkStat (2023).",
+    "TurkStat (2023). "
+    "Abbreviations: IPSS = National Institute of Population and Social Security Research; "
+    "Destatis = Federal Statistical Office of Germany; ONS = Office for National Statistics; "
+    "INSEE = National Institute of Statistics and Economic Studies; "
+    "KOSTAT = Statistics Korea; ISTAT = National Institute of Statistics (Italy); "
+    "ABS = Australian Bureau of Statistics; CONAPO = National Population Council (Mexico); "
+    "NBS = National Bureau of Statistics of China; TurkStat = Turkish Statistical Institute.",
     italic=True, size=9, space_after=12)
 
 add_para(doc,
