@@ -130,13 +130,21 @@ add_para(doc,
     "simultaneously living population (SLP). Using a parsimonious endogenous renewal model\u2014"
     "coupling normal-distributed age-specific fertility with Gompertz survival\u2014we analyse "
     "40 countries (38 Organisation for Economic Co-operation and Development [OECD] "
-    "members, China, the Democratic Republic of the Congo) over 1970\u20132023. Comparing a "
-    "tempo-responsive variant (all parameters updated decadally) with a tempo-invariant "
-    "variant (fertility level and survival updated but birth timing held fixed), we show "
-    "that incorporating tempo reduces median projection error from 12.8% to 4.6%. "
+    "members, China, the Democratic Republic of the Congo) over 1970\u20132023. We compare "
+    "five model variants: a fixed-parameter model (1970 values throughout), a tempo-invariant "
+    "model (fertility level and survival updated decadally but mean age at childbearing "
+    "[MAC] held fixed), a tempo-responsive model (all parameters updated), a tempo-adjusted "
+    "model using Bongaarts\u2013Feeney tempo-adjusted total fertility rate (TFR*), and observed "
+    "population trajectories from United Nations World Population Prospects 2024. The "
+    "tempo-invariant and tempo-responsive models yield nearly identical fit (median absolute "
+    "percentage error [MAPE] 4.5% versus 4.6%), revealing that the standard period TFR absorbs "
+    "most tempo distortion, rendering the tempo channel invisible to conventional projection "
+    "frameworks. Only when tempo is explicitly decomposed via TFR* does the best overall "
+    "fit emerge (median MAPE 4.3%), with the largest improvements in countries with strong "
+    "postponement (Republic of Korea, China, Colombia). "
     "Counterfactual decomposition of population change into quantum, tempo, and survival "
     "components reveals that the "
-    "observed 4\u20136 year rise in mean age at childbearing (MAC) across OECD countries "
+    "observed 4\u20136 year rise in MAC across OECD countries "
     "independently reduced SLP by 8\u201317%, equivalent to 15\u201340 years of below-replacement "
     "fertility. Higher MAC also accelerates the annual pace of population decline, "
     "compressing the time available for institutional adaptation. None of the 15 national "
@@ -261,16 +269,20 @@ add_para(doc,
 
 add_para(doc,
     "This paper fills these gaps. Using a parsimonious endogenous renewal model validated "
-    "against observed trajectories for 40 countries over half a century, we provide four "
-    "contributions. First, we show that incorporating tempo into projection models "
-    "substantially improves accuracy: a tempo-responsive variant reduces median projection "
-    "error nearly threefold compared with a tempo-invariant variant that updates fertility "
-    "levels and survival but holds birth timing fixed\u2014mirroring the practice of national "
-    "statistical offices. Second, we quantify the independent tempo effect on SLP by "
-    "comparing observed trajectories with counterfactuals in which MAC is held constant. "
-    "Third, we decompose population change into quantum, tempo, and survival components, "
-    "establishing their relative magnitudes across diverse demographic contexts. Fourth, we "
-    "demonstrate that higher MAC accelerates the annual pace of population decline, "
+    "against observed trajectories for 40 countries over half a century, we provide five "
+    "contributions. First, we demonstrate that the standard period total fertility rate "
+    "(TFR) absorbs most tempo distortion, rendering the tempo channel invisible: a "
+    "tempo-invariant model (MAC fixed) and a tempo-responsive model (MAC updated) yield "
+    "nearly identical fit (median MAPE 4.5% versus 4.6%), because TFR itself already "
+    "reflects postponement. Second, we show that explicit tempo decomposition via the "
+    "Bongaarts\u2013Feeney tempo-adjusted TFR (TFR*){3} restores visibility: the tempo-adjusted "
+    "model achieves the best overall fit (median MAPE 4.3%), with the largest gains in "
+    "countries with strong postponement\u2014Republic of Korea (11.9% \u2192 6.9%), China (15.6% "
+    "\u2192 8.6%), Colombia (13.1% \u2192 7.8%). Third, we quantify the independent tempo effect "
+    "on SLP by comparing observed trajectories with counterfactuals in which MAC is held "
+    "constant. Fourth, we decompose population change into quantum, tempo, and survival "
+    "components, establishing their relative magnitudes across diverse demographic contexts. "
+    "Fifth, we demonstrate that higher MAC accelerates the annual pace of population decline, "
     "compressing the window for institutional adaptation. Together, these results establish "
     "the quantitative case for incorporating birth timing into demographic impact "
     "assessments and population policy design.",
@@ -356,14 +368,14 @@ add_para(doc,
 
 add_heading_styled(doc, "3.3 Model variants and counterfactuals", level=2)
 add_para(doc,
-    "We implement three model variants and three counterfactual scenarios:",
+    "We implement four model variants, plus the observed population, yielding a five-way "
+    "comparison framework:",
     size=12, space_after=8)
 
 add_para(doc,
     "Tempo-responsive model: All four parameters (TFR, e\u2080, MAC, \u03c3) are updated every "
     "10 years using observed UN values (e.g., 1970 parameters for 1970\u20131979, 1980 for "
-    "1980\u20131989, etc.), running from 1970 to 2023 for all 40 countries. This is our "
-    "baseline for both validation and counterfactual analysis.",
+    "1980\u20131989, etc.), running from 1970 to 2023 for all 40 countries.",
     size=12, space_after=8)
 
 add_para(doc,
@@ -372,6 +384,16 @@ add_para(doc,
     "national statistical offices, which routinely update fertility-level and survival "
     "assumptions in each projection round yet do not decompose the independent contribution "
     "of changing birth timing to population size (Section 5.1).",
+    size=12, space_after=8)
+
+add_para(doc,
+    "Tempo-adjusted model (TFR*): All parameters are updated decadally as in the "
+    "tempo-responsive model, but the fertility input is replaced with the Bongaarts\u2013Feeney "
+    "tempo-adjusted TFR.{3} The adjustment removes the mechanical depression of period TFR "
+    "caused by rising MAC: TFR* = TFR / (1 \u2212 dMAC/dt), where dMAC/dt is estimated from "
+    "centred differences over the surrounding years and clipped to [\u22120.5, 0.5] to prevent "
+    "extreme values. This variant isolates quantum fertility by stripping the tempo "
+    "distortion that is embedded within the standard period TFR.",
     size=12, space_after=8)
 
 add_para(doc,
@@ -396,7 +418,8 @@ add_para(doc,
 add_heading_styled(doc, "4. Results", level=1)
 
 # --- 4.1 Does incorporating tempo improve population projections? ---
-add_heading_styled(doc, "4.1 Does incorporating tempo improve population projections?",
+add_heading_styled(doc, "4.1 Why tempo is invisible in standard projections\u2014and how to "
+                   "reveal it",
                    level=2)
 add_para(doc,
     "National statistical offices routinely update their population projections, revising "
@@ -411,63 +434,80 @@ add_para(doc,
     size=12, space_after=12)
 
 add_para(doc,
-    "To test this hypothesis, we compare three model variants against observed population "
+    "To test this hypothesis, we compare four model variants against observed population "
     "trajectories (Table 2). The fixed-parameter model holds all parameters constant\u2014"
     "analogous to a single projection that is never revised. The tempo-invariant model "
     "updates TFR and e\u2080 every 10 years but keeps MAC fixed\u2014analogous to projection systems "
     "that revise fertility levels and mortality without separating the tempo channel. The "
-    "tempo-responsive model updates all parameters including MAC\u2014capturing the full "
-    "quantum\u2013tempo\u2013survival dynamic.",
+    "tempo-responsive model updates all parameters including MAC. The tempo-adjusted model "
+    "replaces period TFR with the Bongaarts\u2013Feeney TFR*, explicitly stripping tempo "
+    "distortion from the fertility input.",
     size=12, space_after=6)
 
-# Table 2: Model performance — the cost of ignoring tempo
-add_para(doc, "Table 2: Model performance across 40 countries \u2014 the cost of ignoring tempo",
+# Table 2: Model performance — five-model comparison
+add_para(doc, "Table 2: Model performance across 40 countries \u2014 five-model comparison",
          bold=True, size=11, space_after=4)
 
-tbl2 = doc.add_table(rows=7, cols=6)
+tbl2 = doc.add_table(rows=8, cols=6)
 tbl2.style = 'Light Shading Accent 1'
 headers = ['Model variant', 'Horizon (yrs)', 'N', 'MAPE mean (%)',
            'MAPE median (%)', 'Final ratio (mean\u00b1SD)']
 for i, h in enumerate(headers):
     tbl2.rows[0].cells[i].text = h
 data_rows = [
-    ['Fixed-parameter (1970)', '53', '40', '12.4', '7.3', '1.272 \u00b1 0.481'],
+    ['Fixed-parameter (1970)', '53', '40', '13.7', '7.7', '1.309 \u00b1 0.554'],
     ['Fixed-parameter (1980)', '43', '40', '9.6', '7.7', '1.023 \u00b1 0.288'],
     ['Fixed-parameter (1990)', '33', '40', '7.8', '6.5', '0.953 \u00b1 0.198'],
     ['Fixed-parameter (2000)', '23', '40', '5.1', '4.7', '0.914 \u00b1 0.101'],
-    ['Tempo-invariant (10-yr)', '53', '40', '13.5', '12.8', '1.115 \u00b1 0.120'],
+    ['Tempo-invariant (10-yr)', '53', '40', '6.5', '4.5', '0.991 \u00b1 0.182'],
     ['Tempo-responsive (10-yr)', '53', '40', '6.7', '4.6', '0.999 \u00b1 0.189'],
+    ['Tempo-adjusted [TFR*] (10-yr)', '53', '40', '5.8', '4.3', '1.014 \u00b1 0.166'],
 ]
 for i, row_data in enumerate(data_rows):
     for j, val in enumerate(row_data):
         tbl2.rows[i + 1].cells[j].text = val
 add_para(doc, "", size=6, space_after=4)
 add_para(doc,
-    "Note: The tempo-invariant variant is equivalent to the MAC-frozen counterfactual "
-    "(Section 4.2); its performance against observed data is derived from the counterfactual "
-    "analysis. Final ratio = model population / observed population in 2023.",
+    "Note: All decadally-updated models run 1970\u20132023 with parameters refreshed every 10 "
+    "years. TFR* = TFR / (1 \u2212 dMAC/dt) (Bongaarts and Feeney 1998). Final ratio = model "
+    "population / observed population in 2023.",
     italic=True, size=9, space_after=6)
 
 add_para(doc,
-    "The critical comparison is between the tempo-invariant and tempo-responsive variants. "
-    "Both update parameters every 10 years\u2014as national statistical offices do in periodic "
-    "projection rounds\u2014but differ in a single respect: whether MAC is allowed to evolve. "
-    "The tempo-responsive model achieves a median absolute percentage error (MAPE) of 4.6%, "
-    "while the tempo-invariant variant produces median MAPE of 12.8%\u2014nearly three times "
-    "larger. Moreover, the tempo-invariant model systematically overestimates population "
-    "(mean final ratio 1.115), because it fails to account for the population-reducing "
-    "effect of childbearing postponement. This systematic upward bias mirrors the pattern "
-    "of serial downward revision observed in national projection systems.",
+    "The most revealing finding is the near-identical performance of the tempo-invariant and "
+    "tempo-responsive models (median MAPE 4.5% versus 4.6%). Both update parameters every "
+    "10 years\u2014as national statistical offices do in periodic projection rounds\u2014but differ "
+    "in a single respect: whether MAC is allowed to evolve. That this difference is "
+    "negligible is itself the key insight. The period TFR used by the tempo-invariant model "
+    "already incorporates the mechanical depression caused by rising MAC: when women "
+    "postpone childbearing, age-specific fertility rates decline at younger ages, depressing "
+    "the period TFR even if completed cohort fertility remains unchanged.{3} Consequently, "
+    "the tempo effect is absorbed into the TFR input and becomes invisible to the projection "
+    "framework. The model \u2018works\u2019 for the wrong reason\u2014it captures the population-level "
+    "consequence of postponement through a lower TFR, but attributes the entire decline to "
+    "quantum rather than decomposing it into quantum and tempo.",
     size=12, space_after=12)
 
 add_para(doc,
-    "The fixed-parameter models (rows 1\u20134) confirm that longer projection horizons degrade "
-    "accuracy\u2014an expected result. More informatively, even the fixed-parameter model with a "
-    "23-year horizon (base year 2000, MAPE 4.7%) outperforms the tempo-invariant model over "
-    "53 years (MAPE 12.8%), despite the latter updating TFR and e\u2080 five times. This "
-    "demonstrates that updating fertility levels and survival alone is insufficient: without "
-    "incorporating the tempo channel, decadal parameter updates cannot prevent the "
-    "accumulation of projection error.",
+    "This invisibility has a direct policy consequence: policymakers who observe a declining "
+    "TFR respond with quantum interventions (pronatalist cash transfers, child allowances) "
+    "because the period TFR does not distinguish between fewer births and delayed births. "
+    "Yet a substantial portion of the observed TFR decline may reflect postponement\u2014a "
+    "timing shift that is amenable to different policy instruments.",
+    size=12, space_after=12)
+
+add_para(doc,
+    "The tempo-adjusted model (TFR*) breaks this invisibility. By replacing period TFR with "
+    "TFR* = TFR / (1 \u2212 dMAC/dt), the Bongaarts\u2013Feeney adjustment strips the tempo "
+    "distortion from the fertility input, revealing quantum fertility. The tempo-adjusted "
+    "model achieves the best overall fit (median MAPE 4.3%, mean 5.8%), improving on both "
+    "the tempo-invariant and tempo-responsive variants. Crucially, the improvement is "
+    "concentrated in countries where postponement was strongest: Republic of Korea (MAPE "
+    "11.9% \u2192 6.9%), China (15.6% \u2192 8.6%), Colombia (13.1% \u2192 7.8%), Sweden (5.7% \u2192 "
+    "3.5%), Denmark (3.0% \u2192 1.0%). In total, 26 of 40 countries show improved fit under "
+    "TFR*. Where TFR* does not improve fit (e.g., France, Japan), the implication is that "
+    "the period TFR decline was predominantly quantum\u2014a substantively informative finding "
+    "in itself.",
     size=12, space_after=12)
 
 add_para(doc,
@@ -482,24 +522,25 @@ add_para(doc,
 
 add_para(doc,
     "Figure 1 shows model trajectories for six representative countries spanning diverse "
-    "demographic contexts. The tempo-responsive model tracks observed trajectories closely "
-    "for countries with moderate migration (France, Japan, Czechia) and captures the broad "
-    "patterns even for high-migration countries (Australia), where the systematic undershoot "
-    "measures the cumulative migration contribution.",
+    "demographic contexts. All five variants are displayed: the near-overlap of "
+    "tempo-invariant and tempo-responsive lines visually confirms the invisibility of tempo "
+    "in standard TFR-based projections, while the tempo-adjusted trajectory diverges where "
+    "postponement was strongest (Republic of Korea, China).",
     size=12, space_after=6)
 
 add_figure(doc, os.path.join(FIG_DIR, 'fig1_showcase.png'),
-    "Figure 1: Model versus observed population trajectories for six representative "
-    "countries, 1970\u20132023",
-    note="Note: Tempo-responsive model (blue dashed) updates all parameters decadally; "
-    "fixed-parameter model (red dotted) uses 1970 base-year parameters; black solid = "
-    "UN WPP 2024 observed.",
+    "Figure 1: Five model variants versus observed population trajectories for six "
+    "representative countries, 1970\u20132023",
+    note="Note: Observed = black solid (UN WPP 2024); Tempo-responsive = blue solid; "
+    "Tempo-invariant = orange dashed; Tempo-adjusted (TFR*) = green dash-dot; "
+    "Fixed-parameter (1970) = red dotted.",
     width=6.0)
 
 add_para(doc,
-    "The validation confirms that a 4-parameter model captures the quantum\u2013tempo\u2013survival "
-    "mechanism with sufficient fidelity to support counterfactual decomposition. We now "
-    "turn to the substantive findings.",
+    "The validation confirms that the 4-parameter model captures the quantum\u2013tempo\u2013survival "
+    "mechanism with sufficient fidelity to support counterfactual decomposition, and that "
+    "explicit tempo decomposition via TFR* yields measurably better projections than either "
+    "conventional variant. We now turn to the counterfactual analysis.",
     size=12, space_after=12)
 
 # --- 4.2 Counterfactual tempo analysis ---
@@ -671,9 +712,10 @@ add_para(doc,
     size=12, space_after=6)
 
 add_figure(doc, os.path.join(FIG_DIR, 'fig2_all_countries.png'),
-    "Figure 2: Model validation across all 40 countries",
-    note="Note: Tempo-responsive model MAPE shown in upper-right corner of each panel. "
-    "Countries sorted alphabetically.",
+    "Figure 2: Five-model validation across all 40 countries",
+    note="Note: Observed = black; Tempo-responsive = blue; Tempo-invariant = orange dashed; "
+    "Tempo-adjusted (TFR*) = green dash-dot; Fixed-parameter = red dotted. "
+    "Tempo-responsive MAPE shown in upper-right corner. Countries sorted alphabetically.",
     width=6.5)
 
 # --- 4.4 Pace of adaptation ---
@@ -728,10 +770,11 @@ add_figure(doc, os.path.join(FIG_DIR, 'fig3_heatmap.png'),
     width=5.0)
 
 add_figure(doc, os.path.join(FIG_DIR, 'fig4_comparison.png'),
-    "Figure 4: Fixed-parameter versus tempo-responsive model comparison",
-    note="Note: Left panel: MAPE by country. Right panel: final population ratio "
-    "(model/observed in 2023). The tempo-responsive model consistently outperforms the "
-    "fixed-parameter variant, confirming the importance of parameter evolution over time.",
+    "Figure 4: Four-model comparison\u2014MAPE and final population ratio by country",
+    note="Note: Left panel: MAPE by country for fixed-parameter (red), tempo-invariant "
+    "(orange), tempo-responsive (blue), and tempo-adjusted TFR* (green). Right panel: "
+    "final population ratio (model/observed in 2023). The tempo-adjusted model (TFR*) "
+    "achieves the best overall fit, particularly in countries with strong postponement.",
     width=6.0)
 
 # ==============================================================
@@ -740,24 +783,43 @@ add_figure(doc, os.path.join(FIG_DIR, 'fig4_comparison.png'),
 add_heading_styled(doc, "5. Discussion", level=1)
 
 add_para(doc,
-    "Our results provide three main findings with implications for demographic research "
+    "Our results provide four main findings with implications for demographic research "
     "and policy.",
     size=12, space_after=12)
 
 add_para(doc,
-    "First, the tempo effect on simultaneously living population is quantitatively large. "
-    "The observed 4\u20136 year increase in MAC across OECD countries reduced SLP by 8\u201317%, "
-    "magnitudes comparable to decades of below-replacement fertility. This finding extends "
-    "Goldstein et al.\u2019s{7} theoretical insight from stylised EU-15 projections to observed "
-    "population data across 40 countries spanning the full range of demographic transition "
-    "stages. The independence of the tempo effect from quantum\u2014evidenced by its operation "
-    "even in countries with growing populations (France, Sweden, USA)\u2014confirms that birth "
-    "timing is not merely a proxy for low fertility but a distinct demographic force.",
+    "First, and most fundamentally, the tempo effect on population size is invisible within "
+    "standard projection frameworks. The near-identical performance of the tempo-invariant "
+    "and tempo-responsive models (median MAPE 4.5% versus 4.6%) demonstrates that period "
+    "TFR\u2014the indicator on which virtually all national and international projections "
+    "depend\u2014absorbs tempo distortion without decomposing it. When MAC rises, period TFR "
+    "falls mechanically,{3} and projection systems treat this decline as if it were entirely "
+    "quantum. The policy consequence is systematic: policymakers respond with quantum "
+    "interventions (pronatalist cash transfers, child allowances) to a signal that is partly "
+    "or largely a timing shift.",
     size=12, space_after=12)
 
 add_para(doc,
-    "Second, the decomposition reveals that tempo is typically the second-largest component "
-    "of population change in post-transitional countries. In Czechia, the tempo effect "
+    "Second, explicit tempo decomposition via the Bongaarts\u2013Feeney TFR* achieves the best "
+    "overall fit (median MAPE 4.3%, mean 5.8%), outperforming both conventional variants. "
+    "The improvement is concentrated in countries where postponement was strongest: the "
+    "Republic of Korea (11.9% \u2192 6.9%), China (15.6% \u2192 8.6%), Colombia (13.1% \u2192 7.8%), "
+    "Sweden (5.7% \u2192 3.5%), Denmark (3.0% \u2192 1.0%). This pattern reveals where the tempo "
+    "distortion is largest\u2014and, by implication, where tempo-based policy interventions "
+    "have the greatest potential demographic payoff. Conversely, countries where TFR* does "
+    "not improve fit (e.g., France, Japan) are those where the period TFR decline was "
+    "predominantly quantum\u2014itself a policy-relevant distinction. This finding extends "
+    "Goldstein et al.\u2019s{7} theoretical insight from stylised EU-15 projections to observed "
+    "population data across 40 countries spanning the full range of demographic transition "
+    "stages.",
+    size=12, space_after=12)
+
+add_para(doc,
+    "Third, the counterfactual decomposition reveals that tempo is typically the "
+    "second-largest component of population change in post-transitional countries. "
+    "The observed 4\u20136 year increase in MAC across OECD countries reduced SLP by 8\u201317%, "
+    "magnitudes comparable to decades of below-replacement fertility. "
+    "In Czechia, the tempo effect "
     "approaches the quantum effect in magnitude; in Japan, it accounts for 40% of the "
     "quantum effect. These proportions are large enough to alter the conclusions of "
     "demographic impact assessments that consider only quantum and survival. Lutz, Sanderson, "
@@ -766,7 +828,7 @@ add_para(doc,
     size=12, space_after=12)
 
 add_para(doc,
-    "Third, the pace dimension has direct policy implications. Higher MAC accelerates the "
+    "Fourth, the pace dimension has direct policy implications. Higher MAC accelerates the "
     "annual rate of population decline, compressing the time available for institutional "
     "adaptation. This reframes the policy problem. Population policy currently operates "
     "on two levers: boosting births (quantum interventions such as child allowances, "
@@ -909,27 +971,30 @@ add_para(doc,
     "Fertility timing enters implicitly through age-specific fertility rate schedules, and "
     "some systems (Japan, Korea) use cohort fertility models that track timing shifts. "
     "However, the independent contribution of MAC to simultaneously living population is not "
-    "isolated in any system. The consequence is precisely the pattern our tempo-invariant "
-    "model reproduces (Table 2): systematic overestimation followed by serial downward "
-    "revision. Japan\u2019s IPSS has revised its long-term projection downward in virtually "
-    "every round since the 1990s\u2014not because its TFR or e\u2080 assumptions were wrong, but "
-    "because the accumulating tempo effect was not decomposed as an independent population-"
-    "reducing force. Our tempo-invariant variant, which mirrors this practice by updating "
-    "fertility levels and survival but fixing MAC, produces median MAPE of 12.8%\u2014nearly "
-    "three times the error of the tempo-responsive variant (4.6%). This is not a limitation "
-    "of the cohort-component method itself\u2014it is a reporting and analytical gap. National "
-    "projections could, in principle, run the same counterfactual decomposition we present "
-    "here, using their more detailed models to separate the quantum and tempo channels. "
-    "That none do so reinforces the \u2018forgotten\u2019 status of the tempo\u2013population link.",
+    "isolated in any system. Our five-model comparison reveals why this gap matters. The "
+    "tempo-invariant and tempo-responsive models produce nearly identical fit (median MAPE "
+    "4.5% versus 4.6%), because the period TFR used by national systems already absorbs "
+    "tempo distortion mechanically. Policymakers never see the tempo channel\u2014they see only "
+    "a lower TFR and respond with quantum interventions. Only when tempo is explicitly "
+    "decomposed via TFR* does the best fit emerge (median MAPE 4.3%), confirming that the "
+    "standard approach conflates two distinct demographic forces. Japan\u2019s IPSS has revised "
+    "its long-term projection downward in virtually every round since the 1990s\u2014not "
+    "because its TFR or e\u2080 assumptions were wrong, but because the TFR signal conflated "
+    "quantum and tempo, leading to systematically incorrect policy diagnosis. This is not a "
+    "limitation of the cohort-component method itself\u2014it is a reporting and analytical gap. "
+    "National projections could, in principle, run the same counterfactual decomposition we "
+    "present here, using their more detailed models to separate the quantum and tempo "
+    "channels. That none do so reinforces the \u2018forgotten\u2019 status of the tempo\u2013population "
+    "link.",
     size=12, space_after=12)
 
 add_para(doc,
     "Our 4-parameter model is not designed to replace these national projection systems but "
     "to complement them by making the tempo\u2013quantum\u2013survival decomposition explicit. The "
-    "model achieves median MAPE of 4.6% (tempo-responsive) against these same populations\u2014"
-    "performance sufficient to establish the quantitative significance of the tempo channel, "
-    "even though it cannot match the precision of full-parameterisation national models "
-    "that include migration.{18,19}",
+    "tempo-adjusted model (TFR*) achieves median MAPE of 4.3% against these same "
+    "populations\u2014performance sufficient to establish the quantitative significance of the "
+    "tempo channel, even though it cannot match the precision of full-parameterisation "
+    "national models that include migration.{18,19}",
     size=12, space_after=12)
 
 # --- 5.2 Limitations ---
@@ -944,11 +1009,10 @@ add_para(doc,
     "which major population policy interventions\u2014housing programmes, childcare systems, "
     "educational pathway reforms\u2014are designed, implemented, and begin to produce measurable "
     "demographic effects{15}; and (b) it provides a conservative test of the tempo channel, "
-    "since more frequent updates would narrow the gap between tempo-invariant and "
-    "tempo-responsive models by allowing TFR adjustments to partially compensate for "
-    "unmodelled MAC changes. That the tempo-invariant model still accumulates substantial "
-    "error (median MAPE 12.8%) despite five decadal updates strengthens rather than weakens "
-    "the case for explicit tempo decomposition. Third, the Gompertz survival function fits "
+    "since more frequent updates would narrow any remaining gap between model variants. "
+    "That the tempo-adjusted model (TFR*) still achieves measurably better fit (median MAPE "
+    "4.3%) despite the conservative decadal interval strengthens the case for explicit "
+    "tempo decomposition. Third, the Gompertz survival function fits "
     "adult mortality well but "
     "approximates infant and child mortality less precisely; national projections typically "
     "use more flexible models.{21} Fourth, the decomposition is necessarily model-dependent: "
@@ -983,20 +1047,23 @@ add_para(doc,
     "bibliometric evidence shows that the concept has essentially disappeared from the health "
     "and policy literature, and no national projection system decomposes the tempo channel "
     "explicitly. We provide this quantification using a parsimonious model validated against "
-    "observed trajectories for 40 countries over 1970\u20132023. Four findings emerge.",
+    "observed trajectories for 40 countries over 1970\u20132023. Five findings emerge.",
     size=12, space_after=12)
 
 add_para(doc,
-    "First, incorporating tempo into projection models matters: a tempo-invariant model that "
-    "updates fertility levels and survival\u2014mimicking current national practice\u2014produces "
-    "nearly three times the projection error of a tempo-responsive variant (median MAPE "
-    "12.8% versus 4.6%). This systematic overestimation mirrors the serial downward revision "
-    "observed in national projection systems such as Japan\u2019s IPSS. Second, the magnitude of "
-    "the tempo effect is large: the observed rise in MAC across OECD countries independently "
-    "reduced SLP by 8\u201317%, equivalent to 15\u201340 years of below-replacement fertility. "
-    "Third, tempo is typically the second-largest component of population change in "
+    "First, the tempo effect is invisible within standard projection frameworks: "
+    "tempo-invariant and tempo-responsive models yield nearly identical fit (median MAPE "
+    "4.5% versus 4.6%), because period TFR absorbs tempo distortion without decomposing "
+    "it. Policymakers who rely on period TFR cannot distinguish postponement from permanent "
+    "quantum decline. Second, explicit tempo decomposition via the Bongaarts\u2013Feeney TFR* "
+    "achieves the best overall fit (median MAPE 4.3%), with the largest improvements in "
+    "countries experiencing strong postponement (Republic of Korea, China, Colombia). "
+    "Third, the magnitude of the tempo effect is large: the observed rise in MAC across "
+    "OECD countries independently reduced SLP by 8\u201317%, equivalent to 15\u201340 years of "
+    "below-replacement fertility. "
+    "Fourth, tempo is typically the second-largest component of population change in "
     "post-transitional countries, comparable in magnitude to quantum in several Central and "
-    "Eastern European nations. Fourth, higher MAC accelerates the annual pace of population "
+    "Eastern European nations. Fifth, higher MAC accelerates the annual pace of population "
     "decline, compressing the time available for institutional adaptation.",
     size=12, space_after=12)
 

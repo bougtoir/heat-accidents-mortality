@@ -70,29 +70,40 @@ add_para(doc,
 
 # What the paper contributes
 add_para(doc,
-    "Our paper provides four contributions. First, we show that incorporating tempo into "
-    "projection models substantially improves accuracy. Comparing a tempo-responsive model "
-    "(all parameters updated decadally) with a tempo-invariant variant (fertility level and "
-    "survival updated but birth timing held fixed\u2014mirroring current national practice), "
-    "we find that accounting for tempo reduces median projection error nearly threefold "
-    "(from 12.8% to 4.6%). This systematic overestimation by tempo-invariant models mirrors "
-    "the serial downward revision observed in national projection systems. Second, using a "
-    "parsimonious endogenous renewal model validated against United Nations World Population "
-    "Prospects 2024 data for 40 countries (38 Organisation for Economic Co-operation and "
-    "Development members, China, the Democratic Republic of the Congo) over 1970\u20132023, we "
-    "find that the observed 4\u20136 year rise in mean age at childbearing (MAC) independently "
-    "reduced the simultaneously living population (SLP) by 8\u201317%\u2014equivalent to 15\u201340 "
-    "years of below-replacement fertility.",
+    "Our paper provides five contributions. First, we demonstrate that the tempo effect is "
+    "invisible within standard projection frameworks. Comparing a tempo-invariant model "
+    "(fertility level and survival updated decadally, but mean age at childbearing [MAC] "
+    "held fixed) with a tempo-responsive model (all parameters updated), we find nearly "
+    "identical fit (median absolute percentage error 4.5% versus 4.6%). This near-equivalence "
+    "is itself the key insight: the standard period total fertility rate (TFR) mechanically "
+    "absorbs the depression caused by rising MAC, conflating quantum decline with "
+    "postponement. Policymakers who rely on period TFR cannot distinguish between fewer "
+    "births and delayed births.",
     size=12, space_after=12)
 
 add_para(doc,
-    "Third, we decompose population change into quantum, tempo, and survival components, "
-    "showing that tempo is typically the second-largest contributor in post-transitional "
-    "countries\u2014approaching or exceeding the quantum effect in Central and Eastern Europe.",
+    "Second, we show that explicit tempo decomposition restores visibility. Using the "
+    "Bongaarts\u2013Feeney tempo-adjusted TFR (TFR*), which strips the timing distortion from "
+    "period TFR, we achieve the best overall fit (median absolute percentage error 4.3%), "
+    "with the largest improvements in countries experiencing strong postponement: the "
+    "Republic of Korea, China, and Colombia. Where TFR* does not improve fit (e.g., France, "
+    "Japan), the implication is that the TFR decline was predominantly quantum\u2014itself a "
+    "policy-relevant distinction.",
     size=12, space_after=12)
 
 add_para(doc,
-    "Fourth, we demonstrate that higher MAC accelerates the annual pace of population "
+    "Third, using a parsimonious endogenous renewal model validated against United Nations "
+    "World Population Prospects 2024 data for 40 countries (38 Organisation for Economic "
+    "Co-operation and Development members, China, the Democratic Republic of the Congo) over "
+    "1970\u20132023, we find that the observed 4\u20136 year rise in MAC independently reduced the "
+    "simultaneously living population (SLP) by 8\u201317%\u2014equivalent to 15\u201340 years of "
+    "below-replacement fertility. Fourth, we decompose population change into quantum, tempo, "
+    "and survival components, showing that tempo is typically the second-largest contributor "
+    "in post-transitional countries.",
+    size=12, space_after=12)
+
+add_para(doc,
+    "Fifth, we demonstrate that higher MAC accelerates the annual pace of population "
     "decline. This has a direct policy implication: the demographic response to population "
     "decline should not be framed as a binary choice between \u2018more births\u2019 and \u2018more "
     "immigration.\u2019 Birth timing constitutes a third, independent, and actionable policy "

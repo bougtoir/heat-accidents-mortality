@@ -73,17 +73,18 @@ def add_figure_slide(prs, fig_path, title, caption, img_width=10.0):
 figures = [
     {
         'path': os.path.join(FIG_DIR, 'fig1_showcase.png'),
-        'title': 'Figure 1: Model versus observed population trajectories, '
+        'title': 'Figure 1: Five model variants versus observed population, '
                  'six representative countries, 1970\u20132023',
-        'caption': 'Tempo-responsive model (blue dashed) updates all parameters '
-                   'decadally; fixed-parameter model (red dotted) uses 1970 '
-                   'base-year parameters; black solid = UN WPP 2024 observed.',
+        'caption': 'Observed = black solid (UN WPP 2024); Tempo-responsive = blue; '
+                   'Tempo-invariant = orange dashed; Tempo-adjusted (TFR*) = green '
+                   'dash-dot; Fixed-parameter (1970) = red dotted.',
     },
     {
         'path': os.path.join(FIG_DIR, 'fig2_all_countries.png'),
-        'title': 'Figure 2: Model validation across all 40 countries',
-        'caption': 'Tempo-responsive model MAPE shown in upper-right corner of each panel. '
-                   'Countries sorted alphabetically.',
+        'title': 'Figure 2: Five-model validation across all 40 countries',
+        'caption': 'Observed = black; Responsive = blue; Invariant = orange; '
+                   'Adjusted (TFR*) = green; Fixed = red. MAPE shown in '
+                   'upper-right corner. Countries sorted alphabetically.',
     },
     {
         'path': os.path.join(FIG_DIR, 'fig3_heatmap.png'),
@@ -93,9 +94,10 @@ figures = [
     },
     {
         'path': os.path.join(FIG_DIR, 'fig4_comparison.png'),
-        'title': 'Figure 4: Fixed-parameter versus tempo-responsive model comparison',
-        'caption': 'Left panel: MAPE by country. Right panel: final population '
-                   'ratio (model/observed in 2023).',
+        'title': 'Figure 4: Four-model comparison \u2014 MAPE and final population ratio',
+        'caption': 'Left: MAPE by country for fixed (red), invariant (orange), '
+                   'responsive (blue), adjusted TFR* (green). Right: final ratio '
+                   '(model/observed, 2023). TFR* achieves best overall fit.',
     },
     {
         'path': os.path.join(FIG_DIR, 'fig5_bias.png'),
