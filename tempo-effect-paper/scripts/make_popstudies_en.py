@@ -1,11 +1,12 @@
-"""Create Population Studies submission — English manuscript.
+"""Create Population Studies submission — English manuscript (v2).
 
-Key changes from DemRes version (addressing editor feedback):
-- Restructured: model validation is supporting, NOT the main result
-- Main results: counterfactual tempo analysis + decomposition + pace of change
-- Contribution reframed: first systematic cross-country QUANTIFICATION
-- Policy discussion empirically grounded, not speculative
-- Unstructured abstract (~200 words)
+Revision notes (v2):
+- Added PubMed bibliometric evidence for 'forgotten' argument (Table 1)
+- Added national projection methods analysis showing tempo gap (Table 4 + Section 5.1)
+- Moved former Appendix A (GATHER) and Appendix B (national methods) into main text
+- Added Natural Experiments appendix as Appendix A
+- Renumbered all tables: T1=PubMed, T2=Model perf, T3=Counterfactual, T4=Decomposition,
+  T5=National methods
 - Vancouver numbered references (superscript, font-based)
 - Figures/tables inline after first citation
 """
@@ -28,7 +29,6 @@ def add_para(doc, text, bold=False, italic=False, size=12, align=None,
              space_after=6, first_line_indent=None):
     """Add paragraph, converting {N} or {N-M} markers to superscript refs."""
     p = doc.add_paragraph()
-    # Split on ref markers like {1} or {1-3} or {1,5}
     parts = re.split(r'(\{[^}]+\})', text)
     for part in parts:
         if part.startswith('{') and part.endswith('}'):
@@ -95,7 +95,7 @@ style.font.size = Pt(12)
 style.paragraph_format.line_spacing = 2.0
 
 # ==============================================================
-# Title page (separate, for editor — not sent to reviewers)
+# Title page
 # ==============================================================
 add_para(doc, "Manuscript submitted to Population Studies",
          italic=True, size=10, align=WD_ALIGN_PARAGRAPH.CENTER, space_after=24)
@@ -109,7 +109,7 @@ add_para(doc, "[Author names removed for double-blind review]",
          italic=True, size=12, align=WD_ALIGN_PARAGRAPH.CENTER, space_after=6)
 add_para(doc, "[Institutional affiliation removed for double-blind review]",
          italic=True, size=12, align=WD_ALIGN_PARAGRAPH.CENTER, space_after=6)
-add_para(doc, "Word count (main text): approximately 7,800",
+add_para(doc, "Word count (main text): approximately 8,500",
          italic=True, size=10, align=WD_ALIGN_PARAGRAPH.CENTER, space_after=24)
 
 doc.add_page_break()
@@ -122,21 +122,23 @@ add_heading_styled(doc, "Abstract", level=2)
 add_para(doc,
     "The timing of childbearing affects population size independently of the number of "
     "children born, yet this tempo channel remains absent from most demographic impact "
-    "assessments and population policy designs. We provide the first systematic "
-    "cross-national quantification of the tempo effect on simultaneously living population "
-    "(SLP). Using a parsimonious endogenous renewal model\u2014coupling normal-distributed "
-    "age-specific fertility with Gompertz survival, parameterised by total fertility rate, "
-    "life expectancy, mean age at childbearing (MAC), and fertility schedule width\u2014we "
-    "analyse 40 countries (38 OECD members, China, DRC) over 1970\u20132023. "
-    "The validated model (median MAPE 4.6% against UN WPP 2024) enables counterfactual "
-    "decomposition of population change into quantum, tempo, and survival components. "
-    "We find that the observed 4\u20136 year rise in MAC across OECD countries independently "
-    "reduced SLP by 8\u201317%, equivalent to 15\u201340 years of below-replacement fertility in "
-    "many countries. Critically, higher MAC accelerates the annual pace of population "
-    "decline, compressing the time available for institutional adaptation. These findings "
-    "establish the quantitative significance of birth timing as an independent demographic "
-    "force and identify tempo-sensitive interventions as a complementary lever for managing "
-    "the speed of demographic transition.",
+    "assessments, national population projection systems, and population policy designs. "
+    "A bibliometric analysis of PubMed shows that while publications on \u2018delayed "
+    "childbearing\u2019 grew fourfold since 1998, formal analysis of the \u2018tempo effect\u2019 "
+    "on population size has essentially disappeared from the health and policy literature. "
+    "We provide the first systematic cross-national quantification of the tempo effect on "
+    "simultaneously living population (SLP). Using a parsimonious endogenous renewal model\u2014"
+    "coupling normal-distributed age-specific fertility with Gompertz survival\u2014we analyse "
+    "40 countries (38 OECD members, China, DRC) over 1970\u20132023. The validated model "
+    "(median MAPE 4.6% against UN WPP 2024) enables counterfactual decomposition of "
+    "population change into quantum, tempo, and survival components. We find that the "
+    "observed 4\u20136 year rise in mean age at childbearing (MAC) across OECD countries "
+    "independently reduced SLP by 8\u201317%, equivalent to 15\u201340 years of below-replacement "
+    "fertility. Higher MAC also accelerates the annual pace of population decline, "
+    "compressing the time available for institutional adaptation. None of the 15 national "
+    "projection systems we reviewed explicitly decomposes this tempo channel. These "
+    "findings establish the quantitative case for incorporating birth timing into "
+    "demographic assessment and policy.",
     size=12, space_after=12)
 
 add_para(doc,
@@ -183,15 +185,69 @@ add_para(doc,
     "fewer generations coexist.",
     size=12, space_after=12)
 
+# --- NEW: The 'forgotten' evidence ---
 add_para(doc,
-    "Despite this theoretical foundation, the tempo\u2013population link has not been "
-    "systematically quantified across countries. Three gaps persist. First, the Goldstein "
-    "et al.{7} analysis was limited to EU-15 projections with stylised assumptions; no study "
-    "has measured the tempo effect against observed population data across diverse demographic "
-    "contexts. Second, the relative magnitudes of quantum and tempo contributions to population "
-    "change remain unquantified: we do not know, for any given country, what fraction of "
-    "population change is attributable to postponement versus changes in the number of births. "
-    "Third, the dynamic implication\u2014that tempo affects not only the level but the pace of "
+    "Despite this theoretical foundation, the tempo\u2013population link has been largely "
+    "forgotten in subsequent research and policy. Evidence for this neglect comes from "
+    "two independent sources. First, a bibliometric analysis reveals a striking divergence: "
+    "while PubMed-indexed publications on \u2018delayed childbearing\u2019 or \u2018postponement of "
+    "childbearing\u2019 grew from 22 articles in 1998\u20132002 to 96 in 2023\u20132025 (a fourfold "
+    "increase), publications mentioning the \u2018tempo effect\u2019 in a demographic context "
+    "remained near zero throughout the same period (Table 1). The phenomenon of "
+    "delayed childbearing is increasingly discussed\u2014particularly in the health and policy "
+    "literature\u2014but its formal demographic mechanism (the tempo effect on population size) "
+    "has essentially disappeared from the scholarly conversation.",
+    size=12, space_after=6)
+
+# Table 1: PubMed bibliometric data
+add_para(doc, "Table 1: PubMed publication counts by search term and period",
+         bold=True, size=11, space_after=4)
+
+tbl1 = doc.add_table(rows=7, cols=4)
+tbl1.style = 'Light Shading Accent 1'
+for i, h in enumerate(['Period', '\u2018Tempo effect\u2019\n+ demography',
+                        '\u2018Delayed\nchildbearing\u2019',
+                        '\u2018Fertility\npostponement\u2019']):
+    tbl1.rows[0].cells[i].text = h
+pubmed_data = [
+    ['1998\u20132002', '0', '22', '0'],
+    ['2003\u20132007', '2', '39', '0'],
+    ['2008\u20132012', '2', '56', '6'],
+    ['2013\u20132017', '1', '90', '5'],
+    ['2018\u20132022', '3', '89', '10'],
+    ['2023\u20132025', '0', '96', '14'],
+]
+for i, rd in enumerate(pubmed_data):
+    for j, val in enumerate(rd):
+        tbl1.rows[i + 1].cells[j].text = val
+add_para(doc, "", size=6, space_after=4)
+add_para(doc,
+    "Note: PubMed search conducted May 2025 using NCBI E-utilities API. \u2018Tempo effect\u2019 "
+    "search: \"tempo effect\" AND (fertility OR demography OR population). \u2018Delayed "
+    "childbearing\u2019 search: \"delayed childbearing\" OR \"postponement of childbearing\". "
+    "\u2018Fertility postponement\u2019 search: exact phrase. Results filtered by publication date.",
+    italic=True, size=9, space_after=12)
+
+add_para(doc,
+    "Second, a review of 15 national population projection systems across OECD countries "
+    "reveals that none explicitly decomposes population change into quantum and tempo "
+    "components (see Section 5.1). Fertility timing enters national models implicitly "
+    "through age-specific fertility rate schedules, but the independent contribution of "
+    "the mean age at childbearing (MAC) to simultaneously living population is not isolated "
+    "or reported. This is not merely a semantic omission: it means that the population-level "
+    "consequences of postponement\u2014which, as we demonstrate, can be equivalent to decades of "
+    "below-replacement fertility\u2014are structurally invisible in the projections that inform "
+    "pension reform, healthcare planning, and immigration policy.",
+    size=12, space_after=12)
+
+add_para(doc,
+    "Three specific gaps persist in the literature. First, the Goldstein et al.{7} analysis "
+    "was limited to EU-15 projections with stylised assumptions; no study has measured the "
+    "tempo effect against observed population data across diverse demographic contexts. "
+    "Second, the relative magnitudes of quantum and tempo contributions to population change "
+    "remain unquantified: we do not know, for any given country, what fraction of population "
+    "change is attributable to postponement versus changes in the number of births. Third, "
+    "the dynamic implication\u2014that tempo affects not only the level but the pace of "
     "population change\u2014has not been empirically demonstrated.",
     size=12, space_after=12)
 
@@ -277,11 +333,13 @@ add_para(doc,
 add_heading_styled(doc, "3.2 Data", level=2)
 add_para(doc,
     "All parameters and validation data are drawn from the United Nations World Population "
-    "Prospects 2024.{11} We analyse 40 countries: all 38 OECD member states (as of 2024) "
-    "plus China and the Democratic Republic of the Congo (DRC), chosen to span the full "
-    "range of demographic transition stages. Initial population age structures (5-year age "
-    "groups, both sexes) are interpolated to single-year ages. Demographic indicators\u2014TFR, "
-    "e\u2080, and MAC\u2014are extracted for each calendar year from 1950 to 2023.",
+    "Prospects 2024 (UN WPP 2024).{11} We analyse 40 countries: all 38 OECD member states "
+    "(as of 2024) plus China and the Democratic Republic of the Congo (DRC), chosen to span "
+    "the full range of demographic transition stages. Initial population age structures "
+    "(5-year age groups, both sexes) are interpolated to single-year ages. Demographic "
+    "indicators\u2014TFR, e\u2080, and MAC\u2014are extracted for each calendar year from 1950 to 2023. "
+    "This study reports population estimates and follows the Guidelines for Accurate and "
+    "Transparent Health Estimates Reporting (GATHER).{12}",
     size=12, space_after=12)
 
 add_heading_styled(doc, "3.3 Model variants and counterfactuals", level=2)
@@ -320,23 +378,23 @@ add_heading_styled(doc, "4. Results", level=1)
 add_heading_styled(doc, "4.1 Model validation", level=2)
 add_para(doc,
     "Before using the model for counterfactual decomposition, we establish that it "
-    "adequately reproduces observed population trajectories. Table 1 summarises model "
+    "adequately reproduces observed population trajectories. Table 2 summarises model "
     "performance. The dynamic model achieves a median absolute percentage error (MAPE) of "
     "4.6% (mean 6.7%) over a 53-year horizon, with a mean final population ratio of 0.999 "
     "(SD = 0.189)\u2014indicating negligible systematic bias. Across the 40 countries, 30 "
     "achieve dynamic MAPE below 10%, 20 below 5%, and 6 below 2%.",
     size=12, space_after=6)
 
-# Table 1
-add_para(doc, "Table 1: Model performance across 40 countries, by variant and base year",
+# Table 2: Model performance
+add_para(doc, "Table 2: Model performance across 40 countries, by variant and base year",
          bold=True, size=11, space_after=4)
 
-table = doc.add_table(rows=6, cols=6)
-table.style = 'Light Shading Accent 1'
+tbl2 = doc.add_table(rows=6, cols=6)
+tbl2.style = 'Light Shading Accent 1'
 headers = ['Model variant', 'Horizon (yrs)', 'N', 'MAPE mean (%)',
            'MAPE median (%)', 'Final ratio (mean\u00b1SD)']
 for i, h in enumerate(headers):
-    table.rows[0].cells[i].text = h
+    tbl2.rows[0].cells[i].text = h
 data_rows = [
     ['Static (1970)', '50', '40', '12.4', '7.3', '1.272 \u00b1 0.481'],
     ['Static (1980)', '43', '40', '9.6', '7.7', '1.023 \u00b1 0.288'],
@@ -346,7 +404,7 @@ data_rows = [
 ]
 for i, row_data in enumerate(data_rows):
     for j, val in enumerate(row_data):
-        table.rows[i + 1].cells[j].text = val
+        tbl2.rows[i + 1].cells[j].text = val
 add_para(doc, "", size=6, space_after=6)
 
 add_para(doc,
@@ -390,7 +448,7 @@ add_para(doc,
     size=12, space_after=12)
 
 add_para(doc,
-    "Table 2 presents the results for 20 countries with the largest tempo effects. The "
+    "Table 3 presents the results for 20 countries with the largest tempo effects. The "
     "findings are striking. Across OECD countries, the observed 4\u20136 year rise in MAC "
     "between 1970 and 2023 independently reduced the simultaneously living population by "
     "8\u201317% relative to the counterfactual with stable birth timing. In absolute terms, "
@@ -398,18 +456,18 @@ add_para(doc,
     "below-replacement fertility.",
     size=12, space_after=6)
 
-# Table 2: Counterfactual tempo analysis
-add_para(doc, "Table 2: Counterfactual tempo analysis \u2014 population impact of observed MAC "
+# Table 3: Counterfactual tempo analysis
+add_para(doc, "Table 3: Counterfactual tempo analysis \u2014 population impact of observed MAC "
          "increase, selected countries",
          bold=True, size=11, space_after=4)
 
-tbl2 = doc.add_table(rows=21, cols=6)
-tbl2.style = 'Light Shading Accent 1'
-h2 = ['Country', 'MAC 1970', 'MAC 2020s', '\u0394MAC (yrs)',
+tbl3 = doc.add_table(rows=21, cols=6)
+tbl3.style = 'Light Shading Accent 1'
+h3 = ['Country', 'MAC 1970', 'MAC 2020s', '\u0394MAC (yrs)',
       'Tempo effect\non SLP (%)', 'Equivalent\nTFR-years']
-for i, h in enumerate(h2):
-    tbl2.rows[0].cells[i].text = h
-t2_data = [
+for i, h in enumerate(h3):
+    tbl3.rows[0].cells[i].text = h
+t3_data = [
     ['Japan', '27.5', '31.4', '+3.9', '\u221213.0', '~28'],
     ['Korea', '26.1', '33.4', '+7.3', '\u221221.9', '~45'],
     ['Italy', '27.2', '31.6', '+4.4', '\u221214.6', '~31'],
@@ -431,9 +489,9 @@ t2_data = [
     ['China', '29.2', '28.4', '\u22120.8', '+2.8', 'n/a'],
     ['DRC', '24.8', '24.8', '0.0', '0.0', 'n/a'],
 ]
-for i, rd in enumerate(t2_data):
+for i, rd in enumerate(t3_data):
     for j, val in enumerate(rd):
-        tbl2.rows[i + 1].cells[j].text = val
+        tbl3.rows[i + 1].cells[j].text = val
 add_para(doc, "", size=6, space_after=4)
 add_para(doc,
     "Note: Tempo effect on SLP = percentage difference between baseline model (MAC evolves "
@@ -448,7 +506,7 @@ add_para(doc,
     "pronounced. Korea, where MAC rose by 7.3 years (from 26.1 to 33.4), experienced the "
     "largest tempo-driven SLP reduction (21.9%). Czechia (\u0394MAC = 5.7 years, \u221218.9%) "
     "demonstrates that the post-socialist fertility delay\u2014well documented by Sobotka{5} "
-    "and Kohler, Billari, and Ortega{12}\u2014had population-level consequences far beyond "
+    "and Kohler, Billari, and Ortega{13}\u2014had population-level consequences far beyond "
     "the period TFR decline that attracted most scholarly attention.",
     size=12, space_after=12)
 
@@ -474,22 +532,22 @@ add_heading_styled(doc, "4.3 Decomposing population change: quantum, tempo, and 
 add_para(doc,
     "The counterfactual framework allows systematic decomposition of total population change "
     "into three components. For each country, we compute the difference between the baseline "
-    "trajectory and each single-parameter counterfactual. Table 3 shows the decomposition "
+    "trajectory and each single-parameter counterfactual. Table 4 shows the decomposition "
     "for 10 countries representing distinct demographic profiles.",
     size=12, space_after=6)
 
-# Table 3: Decomposition
-add_para(doc, "Table 3: Decomposition of modelled population change (1970\u20132023) into "
+# Table 4: Decomposition
+add_para(doc, "Table 4: Decomposition of modelled population change (1970\u20132023) into "
          "quantum, tempo, and survival components",
          bold=True, size=11, space_after=4)
 
-tbl3 = doc.add_table(rows=11, cols=6)
-tbl3.style = 'Light Shading Accent 1'
-h3 = ['Country', 'Total pop.\nchange (%)', 'Quantum\neffect (%)',
+tbl4 = doc.add_table(rows=11, cols=6)
+tbl4.style = 'Light Shading Accent 1'
+h4 = ['Country', 'Total pop.\nchange (%)', 'Quantum\neffect (%)',
       'Tempo\neffect (%)', 'Survival\neffect (%)', 'Interaction\n(%)']
-for i, h in enumerate(h3):
-    tbl3.rows[0].cells[i].text = h
-t3_data = [
+for i, h in enumerate(h4):
+    tbl4.rows[0].cells[i].text = h
+t4_data = [
     ['Japan', '\u221212.8', '\u221232.1', '\u221213.0', '+28.4', '+3.9'],
     ['Korea', '+7.3', '\u221238.5', '\u221221.9', '+55.2', '+12.5'],
     ['Italy', '\u22124.2', '\u221228.7', '\u221214.6', '+34.8', '+4.3'],
@@ -501,9 +559,9 @@ t3_data = [
     ['China', '+56.1', '\u221248.2', '+2.8', '+84.9', '+16.6'],
     ['DRC', '+296.4', '+156.2', '0.0', '+95.8', '+44.4'],
 ]
-for i, rd in enumerate(t3_data):
+for i, rd in enumerate(t4_data):
     for j, val in enumerate(rd):
-        tbl3.rows[i + 1].cells[j].text = val
+        tbl4.rows[i + 1].cells[j].text = val
 add_para(doc, "", size=6, space_after=4)
 add_para(doc,
     "Note: Quantum effect = difference between baseline and TFR-frozen counterfactual. "
@@ -637,7 +695,7 @@ add_para(doc,
     "approaches the quantum effect in magnitude; in Japan, it accounts for 40% of the "
     "quantum effect. These proportions are large enough to alter the conclusions of "
     "demographic impact assessments that consider only quantum and survival. Lutz, Sanderson, "
-    "and Scherbov{13} projected the end of world population growth; our analysis shows that "
+    "and Scherbov{14} projected the end of world population growth; our analysis shows that "
     "the tempo channel is a substantial driver of how rapidly that endpoint is approached.",
     size=12, space_after=12)
 
@@ -648,17 +706,17 @@ add_para(doc,
     "increase births?\u2019 but also \u2018how do we manage the speed of demographic transition?\u2019 "
     "Tempo-sensitive interventions\u2014affordable housing for young families, universal "
     "childcare, restructured educational pathways that do not penalise early "
-    "parenthood{14}\u2014could slow the pace of population decline and expand the window for "
+    "parenthood{15}\u2014could slow the pace of population decline and expand the window for "
     "institutional adjustment, even without raising TFR.",
     size=12, space_after=12)
 
 add_para(doc,
-    "Bongaarts and Sobotka{15} showed that some European countries had begun to reverse "
+    "Bongaarts and Sobotka{16} showed that some European countries had begun to reverse "
     "postponement trends, with period TFR recovering as tempo distortions subsided. Our "
     "framework suggests that even partial reversal of postponement has substantial "
     "population-level effects: a 2-year reduction in MAC from current levels would increase "
     "SLP by 5\u20137% in most OECD countries\u2014a demographic dividend achievable without "
-    "increasing the number of births per woman. Myrskyl\u00e4, Kohler, and Billari{16} "
+    "increasing the number of births per woman. Myrskyl\u00e4, Kohler, and Billari{17} "
     "demonstrated that advanced development can reverse fertility declines; our results "
     "complement this by showing that even where quantum remains low, tempo adjustments "
     "alter the population trajectory.",
@@ -671,23 +729,125 @@ add_para(doc,
     "the model\u2019s \u2018error\u2019 in these countries is itself informative, quantifying the "
     "migration component of population change. For example, Australia\u2019s 13.5% MAPE implies "
     "that net immigration added approximately 13\u201314% to the population beyond what natural "
-    "increase would produce\u2014consistent with ABS estimates. Similarly, our natural experiments "
-    "analysis (Supplementary Material) demonstrates that Germany\u2019s model misfit quantifies "
-    "the demographic footprint of reunification as a migration shock.",
+    "increase would produce\u2014consistent with ABS estimates. Our natural experiments analysis "
+    "(Appendix A) demonstrates that Germany\u2019s model misfit quantifies the demographic "
+    "footprint of reunification as a migration shock.",
     size=12, space_after=12)
 
-# --- 5.1 Limitations ---
-add_heading_styled(doc, "5.1 Limitations", level=2)
+# --- 5.1 National projection systems: the tempo gap ---
+add_heading_styled(doc, "5.1 National projection systems and the tempo gap", level=2)
+
+add_para(doc,
+    "To assess whether the tempo channel is accounted for in practice, we reviewed the "
+    "official population projection methodologies of 15 national statistical offices and "
+    "international organisations covering all 40 countries in our sample (Table 5). The "
+    "review reveals a uniform finding: none explicitly decomposes population change into "
+    "quantum and tempo components.",
+    size=12, space_after=6)
+
+# Table 5: National projection methods
+add_para(doc, "Table 5: Summary of official population projection methods and tempo "
+         "treatment by country/organisation",
+         bold=True, size=11, space_after=4)
+
+tbl5 = doc.add_table(rows=16, cols=5)
+tbl5.style = 'Light Shading Accent 1'
+hdr5 = ['Country /\nOrganisation', 'Method', 'Fertility\nassumption',
+        'Mortality\nassumption', 'Tempo\ndecomposition?']
+for i, h in enumerate(hdr5):
+    tbl5.rows[0].cells[i].text = h
+
+t5_data = [
+    ['UN WPP 2024\n(All countries)', 'Cohort-component;\nprobabilistic (Bayesian)',
+     'Bayesian hierarchical;\nTFR trajectories',
+     'Lee\u2013Carter variant;\ncountry-specific drift', 'No'],
+    ['Japan (IPSS)', 'Cohort-component;\n3\u00d73 variants',
+     'Cohort fertility model;\nMAC = 32.8',
+     'Lee\u2013Carter; e\u2080 = 85.9/91.8', 'No'],
+    ['USA (Census)', 'Cohort-component;\nmain + 3 migration',
+     'Race-specific ASFRs;\nTFR ~ 1.75 by 2060',
+     'Cause-of-death model;\ne\u2080 ~ 83.9 by 2100', 'No'],
+    ['Germany\n(Destatis)', 'Cohort-component;\n27 variants',
+     'TFR 1.29\u20131.65;\nMAC ~ 31.7\u201332.1',
+     'e\u2080 82.6\u201386.4 (M)\n85.9\u201389.3 (F)', 'No'],
+    ['UK (ONS)', 'Cohort-component;\nprincipal + 9 variants',
+     'ASFRs; TFR ~ 1.59\nlong-term',
+     'Age-period-cohort;\ne\u2080 ~ 83.9/86.3', 'No'],
+    ['France\n(INSEE)', 'Cohort-component;\ncentral + 3 variants',
+     'TFR ~ 1.80 central',
+     'Trend extrapolation;\ne\u2080 ~ 87.5/90.0', 'No'],
+    ['Korea\n(KOSTAT)', 'Cohort-component;\n3 scenarios',
+     'Cohort model;\nTFR 1.08 by 2040',
+     'Lee\u2013Carter;\ne\u2080 = 88.0/91.4', 'No'],
+    ['Italy (ISTAT)', 'Cohort-component;\nmedian + 4 scenarios',
+     'TFR ~ 1.40 median',
+     'Lee\u2013Carter;\ne\u2080 ~ 85.8/89.2', 'No'],
+    ['Australia\n(ABS)', 'Cohort-component;\n3 series',
+     'TFR 1.55\u20131.85',
+     'Mortality improvement;\ne\u2080 ~ 87/89', 'No'],
+    ['Canada\n(StatCan)', 'Cohort-component;\nmicrosimulation',
+     'TFR 1.40\u20131.60',
+     'Lee\u2013Carter variant;\ne\u2080 ~ 86/89', 'No'],
+    ['Eurostat\n(EU members)', 'Cohort-component;\nconvergence model',
+     'Partial convergence\nof TFR across EU',
+     'Convergence of\nmortality improvement', 'No'],
+    ['China (NBS)', 'Cohort-component\n(not regularly published)',
+     'TFR 1.0\u20131.2;\nrecovery assumed',
+     'Model life table;\ne\u2080 ~ 78.6', 'No'],
+    ['DRC', 'Relies on UN WPP;\nno national projection',
+     'TFR ~ 6.1; gradual\ndecline assumed',
+     'Model life table;\ne\u2080 ~ 60.7', 'No'],
+    ['Mexico\n(CONAPO)', 'Cohort-component;\n3 variants',
+     'TFR ~ 1.7 by 2050',
+     'Trend extrapolation;\ne\u2080 ~ 79/83', 'No'],
+    ['T\u00fcrkiye\n(TurkStat)', 'Cohort-component;\n3 scenarios',
+     'TFR declining to\n~1.60 long-term',
+     'Improvement model;\ne\u2080 ~ 80/84', 'No'],
+]
+for i, rd in enumerate(t5_data):
+    for j, val in enumerate(rd):
+        tbl5.rows[i + 1].cells[j].text = val
+add_para(doc, "", size=6, space_after=4)
+add_para(doc,
+    "Source: UN DESA (2024), IPSS Japan (2023), US Census Bureau (2023), Destatis (2025), "
+    "ONS UK (2025), INSEE France (2021), KOSTAT Korea (2023), ISTAT Italy (2023), "
+    "ABS Australia (2018), Statistics Canada (2024), Eurostat (2024), CONAPO Mexico (2018), "
+    "TurkStat (2023).",
+    italic=True, size=9, space_after=12)
+
+add_para(doc,
+    "All 15 systems share the cohort-component method as their foundational structure. "
+    "Fertility timing enters implicitly through age-specific fertility rate schedules, and "
+    "some systems (Japan, Korea) use cohort fertility models that track timing shifts. "
+    "However, the independent contribution of MAC to simultaneously living population is not "
+    "isolated in any system. This is not a limitation of the cohort-component method "
+    "itself\u2014it is a reporting and analytical gap. National projections could, in principle, "
+    "run the same counterfactual decomposition we present here, using their more detailed "
+    "models to separate the quantum and tempo channels. That none do so reinforces the "
+    "\u2018forgotten\u2019 status of the tempo\u2013population link.",
+    size=12, space_after=12)
+
+add_para(doc,
+    "Our 4-parameter model is not designed to replace these national projection systems but "
+    "to complement them by making the tempo\u2013quantum\u2013survival decomposition explicit. The "
+    "model achieves median MAPE of 4.6% (dynamic) against these same populations\u2014"
+    "performance sufficient to establish the quantitative significance of the tempo channel, "
+    "even though it cannot match the precision of full-parameterisation national models "
+    "that include migration.{18,19}",
+    size=12, space_after=12)
+
+# --- 5.2 Limitations ---
+add_heading_styled(doc, "5.2 Limitations", level=2)
 add_para(doc,
     "Several limitations warrant acknowledgement. First, the normal fertility schedule is a "
-    "simplification; actual ASFRs may be skewed or bimodal.{17} Second, decadal parameter "
+    "simplification; actual ASFRs may be skewed or bimodal.{20} Second, decadal parameter "
     "updates may miss rapid within-decade transitions (e.g., Korea\u2019s fertility collapse in "
     "the 2010s). Third, the Gompertz survival function fits adult mortality well but "
     "approximates infant and child mortality less precisely; national projections typically "
-    "use more flexible models.{18} Fourth, the decomposition is necessarily model-dependent: "
+    "use more flexible models.{21} Fourth, the decomposition is necessarily model-dependent: "
     "the counterfactual \u2018MAC frozen at 1970\u2019 is a thought experiment, not a prediction "
     "of what would have occurred in the absence of postponement, since MAC changes are "
-    "endogenous to broader social and economic shifts.{19} Despite these limitations, the "
+    "endogenous to broader social and economic shifts.{22} Despite these limitations, the "
     "model\u2019s parsimonious structure is a feature: it makes the tempo\u2013quantum\u2013survival "
     "decomposition transparent and allows the magnitudes of each component to be compared "
     "directly.",
@@ -712,9 +872,11 @@ add_heading_styled(doc, "6. Conclusion", level=1)
 
 add_para(doc,
     "The tempo effect on simultaneously living population is well-established in demographic "
-    "theory but has never been systematically quantified across countries. We provide this "
-    "quantification using a parsimonious model validated against observed trajectories for "
-    "40 countries over 1970\u20132023. Three findings emerge.",
+    "theory but has never been systematically quantified across countries. Meanwhile, "
+    "bibliometric evidence shows that the concept has essentially disappeared from the health "
+    "and policy literature, and no national projection system decomposes the tempo channel "
+    "explicitly. We provide this quantification using a parsimonious model validated against "
+    "observed trajectories for 40 countries over 1970\u20132023. Three findings emerge.",
     size=12, space_after=12)
 
 add_para(doc,
@@ -729,12 +891,29 @@ add_para(doc,
 
 add_para(doc,
     "These findings call for the systematic incorporation of tempo effects into demographic "
-    "impact assessments and population policy design. Pronatalist policies that address only "
-    "birth quantum will overestimate their demographic impact and miss the tempo channel "
-    "through which birth timing independently shapes population size and the pace of "
-    "demographic change. Tempo-sensitive interventions offer a complementary policy lever\u2014"
-    "one that operates on the speed of demographic transition rather than its ultimate "
-    "endpoint.",
+    "impact assessments and population policy design. The tools to do so already exist within "
+    "national cohort-component projection systems; what is needed is the analytical step of "
+    "decomposing quantum and tempo contributions\u2014a step that is straightforward in principle "
+    "but has been absent in practice. Pronatalist policies that address only birth quantum "
+    "will overestimate their demographic impact and miss the tempo channel through which "
+    "birth timing independently shapes population size and the pace of demographic change. "
+    "Tempo-sensitive interventions offer a complementary policy lever\u2014one that operates on "
+    "the speed of demographic transition rather than its ultimate endpoint.",
+    size=12, space_after=18)
+
+# ==============================================================
+# GATHER compliance statement
+# ==============================================================
+add_heading_styled(doc, "GATHER compliance statement", level=2)
+add_para(doc,
+    "This study reports population estimates and follows the Guidelines for Accurate and "
+    "Transparent Health Estimates Reporting (GATHER).{12} All input data are from UN WPP "
+    "2024, publicly available at https://population.un.org/wpp/. No primary data collection "
+    "was undertaken. The Gompertz survival model, normal fertility schedule, and endogenous "
+    "renewal model are described in Section 3. Four parameters per period (TFR, e\u2080, MAC, "
+    "\u03c3) are used. MAPE and final ratio are reported as fit metrics. No formal uncertainty "
+    "intervals; the model is deterministic. Analytical code is available from the authors "
+    "upon request and will be deposited in a public repository upon acceptance.",
     size=12, space_after=18)
 
 # ==============================================================
@@ -787,65 +966,203 @@ refs = [
     'United Nations, Department of Economic and Social Affairs, Population Division. '
     'World Population Prospects 2024. New York: United Nations; 2024.',
     # 12
-    'Kohler H-P, Billari FC, Ortega JA. The emergence of lowest-low fertility in Europe '
-    'during the 1990s. Population and Development Review 2002; 28(4): 641\u2013680.',
-    # 13
-    'Lutz W, Sanderson W, Scherbov S. The end of world population growth. '
-    'Nature 2001; 412: 543\u2013545.',
-    # 14
-    'McDonald P. Gender equity in theories of fertility transition. Population and '
-    'Development Review 2000; 26(3): 427\u2013439.',
-    # 15
-    'Bongaarts J, Sobotka T. A demographic explanation for the recent rise in European '
-    'fertility. Population and Development Review 2012; 38(1): 83\u2013120.',
-    # 16
-    'Myrskyl\u00e4 M, Kohler H-P, Billari FC. Advances in development reverse fertility '
-    'declines. Nature 2009; 460: 741\u2013743.',
-    # 17
-    'Frejka T, Sobotka T. Fertility in Europe: Diverse, delayed and below replacement. '
-    'Demographic Research 2008; 19(3): 15\u201346.',
-    # 18
-    'Lee RD, Carter LR. Modeling and forecasting U.S. mortality. Journal of the American '
-    'Statistical Association 1992; 87(419): 659\u2013671.',
-    # 19
-    'Lesthaeghe R. The unfolding story of the Second Demographic Transition. Population '
-    'and Development Review 2010; 36(2): 211\u2013251.',
-    # 20
-    'Lutz W, Skirbekk V, Testa MR. The low-fertility trap hypothesis. Vienna Yearbook '
-    'of Population Research 2006; 4: 167\u2013192.',
-    # 21
-    'Goldstein JR, Kreyenfeld M. Has East Germany overtaken West Germany? Recent trends '
-    'in order-specific fertility. Population and Development Review 2011; 37(3): 453\u2013472.',
-    # 22
-    'Witte JC, Wagner GG. Declining fertility in East Germany after unification. '
-    'Population and Development Review 1995; 21(2): 387\u2013397.',
-    # 23
-    'Gauthier AH. The impact of family policies on fertility in industrialized countries. '
-    'Population Research and Policy Review 2007; 26(3): 323\u2013346.',
-    # 24
-    'Gonand F. Assessing the robustness of demographic projections in OECD countries. '
-    'OECD Economics Department Working Papers No. 464. Paris: OECD Publishing; 2005.',
-    # 25
     'Stevens GA, Alkema L, Black RE, et al. Guidelines for Accurate and Transparent '
     'Health Estimates Reporting: The GATHER statement. The Lancet 2016; 388(10062): '
     'e19\u2013e23.',
+    # 13
+    'Kohler H-P, Billari FC, Ortega JA. The emergence of lowest-low fertility in Europe '
+    'during the 1990s. Population and Development Review 2002; 28(4): 641\u2013680.',
+    # 14
+    'Lutz W, Sanderson W, Scherbov S. The end of world population growth. '
+    'Nature 2001; 412: 543\u2013545.',
+    # 15
+    'McDonald P. Gender equity in theories of fertility transition. Population and '
+    'Development Review 2000; 26(3): 427\u2013439.',
+    # 16
+    'Bongaarts J, Sobotka T. A demographic explanation for the recent rise in European '
+    'fertility. Population and Development Review 2012; 38(1): 83\u2013120.',
+    # 17
+    'Myrskyl\u00e4 M, Kohler H-P, Billari FC. Advances in development reverse fertility '
+    'declines. Nature 2009; 460: 741\u2013743.',
+    # 18
+    'Gonand F. Assessing the robustness of demographic projections in OECD countries. '
+    'OECD Economics Department Working Papers No. 464. Paris: OECD Publishing; 2005.',
+    # 19
+    'Lee RD, Carter LR. Modeling and forecasting U.S. mortality. Journal of the American '
+    'Statistical Association 1992; 87(419): 659\u2013671.',
+    # 20
+    'Frejka T, Sobotka T. Fertility in Europe: Diverse, delayed and below replacement. '
+    'Demographic Research 2008; 19(3): 15\u201346.',
+    # 21
+    'Wilmoth JR, Zureick S, Canudas-Romo V, Inoue M, Sawyer C. A flexible two-dimensional '
+    'mortality model for use in indirect estimation. Population Studies 2012; 66(1): 1\u201328.',
+    # 22
+    'Lesthaeghe R. The unfolding story of the Second Demographic Transition. Population '
+    'and Development Review 2010; 36(2): 211\u2013251.',
+    # 23
+    'Lutz W, Skirbekk V, Testa MR. The low-fertility trap hypothesis. Vienna Yearbook '
+    'of Population Research 2006; 4: 167\u2013192.',
+    # 24
+    'Goldstein JR, Kreyenfeld M. Has East Germany overtaken West Germany? Recent trends '
+    'in order-specific fertility. Population and Development Review 2011; 37(3): 453\u2013472.',
+    # 25
+    'Witte JC, Wagner GG. Declining fertility in East Germany after unification. '
+    'Population and Development Review 1995; 21(2): 387\u2013397.',
+    # 26
+    'Gauthier AH. The impact of family policies on fertility in industrialized countries. '
+    'Population Research and Policy Review 2007; 26(3): 323\u2013346.',
 ]
 for i, r in enumerate(refs):
     add_para(doc, f'{i + 1}. {r}', size=11, space_after=4)
 
 # ==============================================================
-# Supplementary Material header
+# Appendix A: Natural Experiments
 # ==============================================================
 doc.add_page_break()
-add_heading_styled(doc, "Supplementary Material", level=1)
+add_heading_styled(doc, "Appendix A: Natural experiments \u2014 Political and border "
+                   "changes as exogenous shocks", level=1)
+
 add_para(doc,
-    "The following supplementary materials are available online:",
-    size=12, space_after=8)
+    "Our model deliberately excludes migration. This design choice enables isolation of the "
+    "pure quantum\u2013tempo\u2013survival mechanism, but raises an important question: how does the "
+    "model perform when large-scale population redistribution occurs as a result of political "
+    "events? Countries that experienced major border changes or state dissolution between 1970 "
+    "and 2023 provide natural experiments in which exogenous migration shocks were effectively "
+    "imposed on populations. We analyse five such cases.",
+    size=12, space_after=12)
+
+# --- A.1 Germany ---
+add_heading_styled(doc, "A.1 Germany: Reunification as a migration shock (1990)", level=2)
 add_para(doc,
-    "\u2022 Table S1: Full model validation results for all 40 countries\n"
-    "\u2022 Table S2: Full counterfactual decomposition for all 40 countries\n"
-    "\u2022 Appendix A: National population projection methods comparison\n"
-    "\u2022 Appendix B: Natural experiments \u2014 political and border changes as exogenous shocks",
+    "German reunification on 3 October 1990 merged two populations that had evolved under "
+    "sharply different demographic regimes for 41 years. East Germany had lower life "
+    "expectancy (~74.5 versus ~76.0 in the West in 1990), earlier childbearing (MAC \u2248 25.1 "
+    "vs. 28.3), and higher but declining TFR (1.52 vs. 1.45). The immediate aftermath saw "
+    "massive East-to-West migration (~1.9 million between 1989 and 1992) and a dramatic "
+    "fertility collapse in the East (TFR fell to 0.77 in 1994).{24,25}",
+    size=12, space_after=6)
+
+add_para(doc,
+    "We model East and West Germany separately, run both forward from 1970, and construct "
+    "a synthetic combined trajectory. This represents the counterfactual: what would "
+    "Germany\u2019s population have looked like without reunification-related migration?",
+    size=12, space_after=6)
+
+# Table A1
+add_para(doc, "Table A1: Germany reunification \u2014 synthetic East+West versus "
+         "observed trajectory",
+         bold=True, size=11, space_after=4)
+
+tbl_a1 = doc.add_table(rows=6, cols=4)
+tbl_a1.style = 'Light Shading Accent 1'
+for i, h in enumerate(['Year', 'Synthetic E+W (M)', 'Observed (M)',
+                        'Deviation (%)']):
+    tbl_a1.rows[0].cells[i].text = h
+a1_data = [
+    ['1990', '76.5', '79.4', '\u22123.6'],
+    ['2000', '75.3', '82.2', '\u22128.4'],
+    ['2010', '73.7', '81.8', '\u22129.9'],
+    ['2020', '71.0', '83.2', '\u221214.6'],
+    ['2023', '70.1', '83.3', '\u221215.8'],
+]
+for i, rd in enumerate(a1_data):
+    for j, val in enumerate(rd):
+        tbl_a1.rows[i + 1].cells[j].text = val
+add_para(doc, "", size=6, space_after=6)
+
+add_para(doc,
+    "The widening gap (3.6% to 15.8%) reflects three compounding processes absent from the "
+    "closed model: (a) net immigration to unified Germany averaging ~300,000\u2013400,000 per "
+    "year; (b) internal East-to-West migration; and (c) convergence of East German fertility "
+    "toward Western patterns. The overall MAPE of 6.4% confirms that Germany\u2019s relatively "
+    "poor fit in the main analysis is attributable to reunification\u2019s migration effects, "
+    "not structural model failure.",
+    size=12, space_after=6)
+
+add_figure(doc, os.path.join(FIG_DIR, 'fig_germany_reunification.png'),
+    "Figure A-1: Germany reunification analysis",
+    note="Note: (a) Modelled East and West Germany with synthetic combined trajectory "
+    "versus observed unified Germany. (b) Percentage deviation over time.",
+    width=6.5)
+
+# --- A.2 Other cases ---
+add_heading_styled(doc, "A.2 Czechoslovakia: The Velvet Divorce (1993)", level=2)
+add_para(doc,
+    "The peaceful dissolution of Czechoslovakia on 1 January 1993 created Czechia and "
+    "Slovakia with relatively limited cross-border migration. MAPE: Czechia 6.3%, Slovakia "
+    "9.9%. Slovakia\u2019s higher error reflects emigration to Czechia and Western Europe "
+    "following EU accession (2004).",
+    size=12, space_after=12)
+
+add_heading_styled(doc, "A.3 Yugoslavia: Dissolution and conflict (1991\u20132001)", level=2)
+add_para(doc,
+    "The breakup of Yugoslavia involved armed conflict and massive refugee flows. Model "
+    "performance varies: Croatia (4.1%), North Macedonia (6.4%) show reasonable fit; "
+    "Bosnia and Herzegovina (8.1%) and Slovenia (12.2%) show larger errors. The range "
+    "illustrates how conflict-driven migration creates heterogeneous deviations from the "
+    "endogenous renewal baseline.",
+    size=12, space_after=12)
+
+add_heading_styled(doc, "A.4 Baltic States: USSR dissolution (1991)", level=2)
+add_para(doc,
+    "Estonia, Latvia, and Lithuania gained independence in 1991. MAPE ranges from 4.8% "
+    "(Estonia) to 7.1% (Lithuania), reflecting persistent emigration. Even moderate but "
+    "sustained net emigration (~0.5\u20131.0% annually) accumulates substantially over "
+    "three decades.",
+    size=12, space_after=12)
+
+add_heading_styled(doc, "A.5 Ethiopia and Eritrea: Separation (1993)", level=2)
+add_para(doc,
+    "Eritrean independence separated two populations in high-fertility transition. Ethiopia "
+    "(MAPE 16.5%) shows overprojection from rapid fertility decline. Eritrea (37.8%) shows "
+    "the largest error, driven by conflict and data uncertainty.",
+    size=12, space_after=6)
+
+add_figure(doc, os.path.join(FIG_DIR, 'fig_natural_experiments_summary.png'),
+    "Figure A-2: Natural experiments summary",
+    note="Note: Population trajectories for five cases of major political/border change. "
+    "Red vertical lines mark the year of political change.",
+    width=6.5)
+
+# --- Synthesis table ---
+add_heading_styled(doc, "A.6 Synthesis", level=2)
+add_para(doc, "Table A2: Model performance across natural experiment cases",
+         bold=True, size=11, space_after=4)
+
+tbl_a2 = doc.add_table(rows=15, cols=4)
+tbl_a2.style = 'Light Shading Accent 1'
+for i, h in enumerate(['Country', 'Event (year)', 'MAPE (%)',
+                        'Primary misfit source']):
+    tbl_a2.rows[0].cells[i].text = h
+a2_data = [
+    ['Germany (synth. E+W)', 'Reunification (1990)', '6.4',
+     'Immigration + internal migration'],
+    ['Czechia', 'Velvet Divorce (1993)', '6.3', 'Post-EU emigration'],
+    ['Slovakia', 'Velvet Divorce (1993)', '9.9', 'Emigration to EU/West'],
+    ['Croatia', 'Yugoslav breakup (1991)', '4.1', 'Post-conflict stabilisation'],
+    ['Slovenia', 'Yugoslav breakup (1991)', '12.2', 'Immigration (EU member)'],
+    ['Bosnia & Herz.', 'Yugoslav breakup (1991)', '8.1', 'War displacement'],
+    ['Serbia', 'Yugoslav breakup (1991)', '7.1', 'Refugee flows, emigration'],
+    ['N. Macedonia', 'Yugoslav breakup (1991)', '6.4', 'Modest migration'],
+    ['Montenegro', 'Yugoslav breakup (1991)', '8.1', 'Small state, volatile'],
+    ['Estonia', 'USSR dissolution (1991)', '4.8', 'Ethnic Russian emigration'],
+    ['Latvia', 'USSR dissolution (1991)', '6.6', 'Emigration (ethnic + EU)'],
+    ['Lithuania', 'USSR dissolution (1991)', '7.1', 'Sustained emigration'],
+    ['Ethiopia', 'Eritrean indep. (1993)', '16.5', 'Rapid fertility decline'],
+    ['Eritrea', 'Eritrean indep. (1993)', '37.8', 'Conflict, data uncertainty'],
+]
+for i, rd in enumerate(a2_data):
+    for j, val in enumerate(rd):
+        tbl_a2.rows[i + 1].cells[j].text = val
+add_para(doc, "", size=6, space_after=6)
+
+add_para(doc,
+    "These natural experiments yield three key insights. First, the model performs reasonably "
+    "(MAPE < 8%) even for countries with major political upheaval, provided post-event "
+    "migration was moderate. Second, the model\u2013observation divergence provides a direct "
+    "estimate of the migration component: Germany\u2019s 15.8% gap implies ~13.5 million persons "
+    "added by immigration. Third, the model\u2019s limitations are most acute in conflict-affected, "
+    "data-sparse settings (Eritrea: 37.8%).",
     size=12, space_after=12)
 
 # ==============================================================
