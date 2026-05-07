@@ -136,9 +136,11 @@ add_para(doc,
     "independently reduced SLP by 8\u201317%, equivalent to 15\u201340 years of below-replacement "
     "fertility. Higher MAC also accelerates the annual pace of population decline, "
     "compressing the time available for institutional adaptation. None of the 15 national "
-    "projection systems we reviewed explicitly decomposes this tempo channel. These "
-    "findings establish the quantitative case for incorporating birth timing into "
-    "demographic assessment and policy.",
+    "projection systems we reviewed explicitly decomposes this tempo channel. "
+    "Population policy currently operates on two levers\u2014boosting births (quantum) "
+    "and extending lives (survival)\u2014while ignoring the third: the timing of births. "
+    "Our findings establish that tempo-sensitive interventions deserve a place alongside "
+    "pronatalist and health policies as tools for managing demographic change.",
     size=12, space_after=12)
 
 add_para(doc,
@@ -702,24 +704,40 @@ add_para(doc,
 add_para(doc,
     "Third, the pace dimension has direct policy implications. Higher MAC accelerates the "
     "annual rate of population decline, compressing the time available for institutional "
-    "adaptation. This reframes the policy problem: the question is not only \u2018how do we "
-    "increase births?\u2019 but also \u2018how do we manage the speed of demographic transition?\u2019 "
-    "Tempo-sensitive interventions\u2014affordable housing for young families, universal "
-    "childcare, restructured educational pathways that do not penalise early "
-    "parenthood{15}\u2014could slow the pace of population decline and expand the window for "
-    "institutional adjustment, even without raising TFR.",
+    "adaptation. This reframes the policy problem. Population policy currently operates "
+    "on two levers: boosting births (quantum interventions such as child allowances, "
+    "parental leave, and pronatalist incentives) and extending lives (survival interventions "
+    "such as healthcare investment and disease prevention). Our results demonstrate that a "
+    "third lever exists: interventions that influence the timing of births. Tempo-sensitive "
+    "policies\u2014affordable housing that enables family formation at younger ages, universal "
+    "childcare that reduces the opportunity cost of early parenthood, restructured "
+    "educational and career pathways that do not penalise combining parenthood with "
+    "professional development{15}\u2014could slow the pace of population decline and expand "
+    "the window for institutional adjustment, even without raising TFR.",
+    size=12, space_after=12)
+
+add_para(doc,
+    "The distinction between quantum and tempo interventions is not merely semantic. "
+    "Quantum-focused policies (e.g., South Korea\u2019s 47 trillion won package, Japan\u2019s child "
+    "allowance expansion) aim to increase the number of births. Tempo-focused policies aim "
+    "to reduce the age at which existing births occur\u2014a fundamentally different target. "
+    "Gauthier{26} showed that pronatalist cash transfers have modest and often transient "
+    "effects on quantum; our analysis suggests that even if quantum remains unchanged, a "
+    "2-year reduction in MAC from current levels would increase SLP by 5\u20137% in most OECD "
+    "countries\u2014equivalent to roughly 10 years of moderate pronatalist success. This is a "
+    "demographic dividend achievable without increasing the number of births per woman.",
     size=12, space_after=12)
 
 add_para(doc,
     "Bongaarts and Sobotka{16} showed that some European countries had begun to reverse "
-    "postponement trends, with period TFR recovering as tempo distortions subsided. Our "
-    "framework suggests that even partial reversal of postponement has substantial "
-    "population-level effects: a 2-year reduction in MAC from current levels would increase "
-    "SLP by 5\u20137% in most OECD countries\u2014a demographic dividend achievable without "
-    "increasing the number of births per woman. Myrskyl\u00e4, Kohler, and Billari{17} "
-    "demonstrated that advanced development can reverse fertility declines; our results "
-    "complement this by showing that even where quantum remains low, tempo adjustments "
-    "alter the population trajectory.",
+    "postponement trends, with period TFR recovering as tempo distortions subsided. "
+    "Myrskyl\u00e4, Kohler, and Billari{17} demonstrated that advanced development can "
+    "reverse fertility declines. Our results complement both findings by showing that "
+    "even where quantum remains low, tempo adjustments independently alter the population "
+    "trajectory. The policy implication is that the demographic response to population "
+    "decline should not be framed as a binary choice between \u2018more births\u2019 and "
+    "\u2018more immigration\u2019 but as a three-dimensional problem in which birth quantum, "
+    "birth timing, and survival each constitute independent and actionable levers.",
     size=12, space_after=12)
 
 add_para(doc,
@@ -890,15 +908,18 @@ add_para(doc,
     size=12, space_after=12)
 
 add_para(doc,
-    "These findings call for the systematic incorporation of tempo effects into demographic "
-    "impact assessments and population policy design. The tools to do so already exist within "
-    "national cohort-component projection systems; what is needed is the analytical step of "
-    "decomposing quantum and tempo contributions\u2014a step that is straightforward in principle "
-    "but has been absent in practice. Pronatalist policies that address only birth quantum "
-    "will overestimate their demographic impact and miss the tempo channel through which "
-    "birth timing independently shapes population size and the pace of demographic change. "
-    "Tempo-sensitive interventions offer a complementary policy lever\u2014one that operates on "
-    "the speed of demographic transition rather than its ultimate endpoint.",
+    "These findings have two practical implications. For demographic assessment, the tools "
+    "to decompose quantum and tempo already exist within national cohort-component projection "
+    "systems; what is needed is the analytical step of reporting their separate contributions\u2014"
+    "a step that is straightforward in principle but absent in all 15 systems we reviewed. "
+    "For population policy, the current framework operates on two levers\u2014boosting births "
+    "and extending lives\u2014while ignoring the third. Our results demonstrate that birth "
+    "timing constitutes an independent and quantitatively significant policy lever. "
+    "Tempo-sensitive interventions\u2014housing, childcare, educational reform\u2014offer a "
+    "complementary approach that operates not on the ultimate size of the population but on "
+    "the speed at which demographic change unfolds. In an era where pronatalist policies "
+    "have shown limited effectiveness in raising quantum,{26} the tempo channel deserves "
+    "systematic attention as a means of managing the pace of demographic transition.",
     size=12, space_after=18)
 
 # ==============================================================
