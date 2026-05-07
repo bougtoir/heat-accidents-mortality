@@ -273,7 +273,8 @@ add_para(doc,
     "contributions. First, we demonstrate that the standard period total fertility rate "
     "(TFR) absorbs most tempo distortion, rendering the tempo channel invisible: a "
     "tempo-invariant model (MAC fixed) and a tempo-responsive model (MAC updated) yield "
-    "nearly identical fit (median MAPE 4.5% versus 4.6%), because TFR itself already "
+    "nearly identical fit (median absolute percentage error [MAPE] 4.5% versus 4.6%), "
+    "because TFR itself already "
     "reflects postponement. Second, we show that explicit tempo decomposition via the "
     "Bongaarts\u2013Feeney tempo-adjusted TFR (TFR*){3} restores visibility: the tempo-adjusted "
     "model achieves the best overall fit (median MAPE 4.3%), with the largest gains in "
@@ -847,7 +848,7 @@ add_para(doc,
     "Quantum-focused policies (e.g., South Korea\u2019s 47 trillion won package, Japan\u2019s child "
     "allowance expansion) aim to increase the number of births. Tempo-focused policies aim "
     "to reduce the age at which existing births occur\u2014a fundamentally different target. "
-    "Gauthier{26} showed that pronatalist cash transfers have modest and often transient "
+    "Gauthier{16} showed that pronatalist cash transfers have modest and often transient "
     "effects on quantum; our analysis suggests that even if quantum remains unchanged, a "
     "2-year reduction in MAC from current levels would increase SLP by 5\u20137% in most OECD "
     "countries\u2014equivalent to roughly 10 years of moderate pronatalist success. This is a "
@@ -855,9 +856,9 @@ add_para(doc,
     size=12, space_after=12)
 
 add_para(doc,
-    "Bongaarts and Sobotka{16} showed that some European countries had begun to reverse "
+    "Bongaarts and Sobotka{17} showed that some European countries had begun to reverse "
     "postponement trends, with period TFR recovering as tempo distortions subsided. "
-    "Myrskyl\u00e4, Kohler, and Billari{17} demonstrated that advanced development can "
+    "Myrskyl\u00e4, Kohler, and Billari{18} demonstrated that advanced development can "
     "reverse fertility declines. Our results complement both findings by showing that "
     "even where quantum remains low, tempo adjustments independently alter the population "
     "trajectory. The policy implication is that the demographic response to population "
@@ -994,14 +995,14 @@ add_para(doc,
     "tempo-adjusted model (TFR*) achieves median MAPE of 4.3% against these same "
     "populations\u2014performance sufficient to establish the quantitative significance of the "
     "tempo channel, even though it cannot match the precision of full-parameterisation "
-    "national models that include migration.{18,19}",
+    "national models that include migration.{19,20}",
     size=12, space_after=12)
 
 # --- 5.2 Limitations ---
 add_heading_styled(doc, "5.2 Limitations", level=2)
 add_para(doc,
     "Several limitations warrant acknowledgement. First, the normal fertility schedule is a "
-    "simplification; actual ASFRs may be skewed or bimodal.{20} Second, our decadal update "
+    "simplification; actual ASFRs may be skewed or bimodal.{21} Second, our decadal update "
     "interval does not match the varying revision cycles of national statistical offices, "
     "which update their projections at intervals ranging from two years (Japan\u2019s IPSS) to "
     "five or more years (Eurostat, US Census Bureau). We adopt the 10-year interval as a "
@@ -1015,10 +1016,10 @@ add_para(doc,
     "tempo decomposition. Third, the Gompertz survival function fits "
     "adult mortality well but "
     "approximates infant and child mortality less precisely; national projections typically "
-    "use more flexible models.{21} Fourth, the decomposition is necessarily model-dependent: "
+    "use more flexible models.{22} Fourth, the decomposition is necessarily model-dependent: "
     "the counterfactual \u2018MAC frozen at 1970\u2019 is a thought experiment, not a prediction "
     "of what would have occurred in the absence of postponement, since MAC changes are "
-    "endogenous to broader social and economic shifts.{22} Despite these limitations, the "
+    "endogenous to broader social and economic shifts.{23} Despite these limitations, the "
     "model\u2019s parsimonious structure is a feature: it makes the tempo\u2013quantum\u2013survival "
     "decomposition transparent and allows the magnitudes of each component to be compared "
     "directly.",
@@ -1078,7 +1079,7 @@ add_para(doc,
     "Tempo-sensitive interventions\u2014housing, childcare, educational reform\u2014offer a "
     "complementary approach that operates not on the ultimate size of the population but on "
     "the speed at which demographic change unfolds. In an era where pronatalist policies "
-    "have shown limited effectiveness in raising quantum,{26} the tempo channel deserves "
+    "have shown limited effectiveness in raising quantum,{16} the tempo channel deserves "
     "systematic attention as a means of managing the pace of demographic transition.",
     size=12, space_after=18)
 
@@ -1115,84 +1116,57 @@ add_heading_styled(doc, "References", level=1)
 
 refs = [
     # 1
-    'Th\u00e9venon O. Family policies in OECD countries: A comparative analysis. '
-    'Population and Development Review 2011; 37(1): 57\u201387.',
+    'Th\u00e9venon O. Family policies in OECD countries: A comparative analysis. ' 'Population and Development Review 2011; 37(1): 57\u201387.',
     # 2
     'Ryder NB. The process of demographic translation. Demography 1964; 1(1): 74\u201382.',
     # 3
-    'Bongaarts J, Feeney G. On the quantum and tempo of fertility. '
-    'Population and Development Review 1998; 24(2): 271\u2013291.',
+    'Bongaarts J, Feeney G. On the quantum and tempo of fertility. ' 'Population and Development Review 1998; 24(2): 271\u2013291.',
     # 4
-    'Kohler H-P, Ortega JA. Tempo-adjusted period parity progression measures, fertility '
-    'postponement and completed cohort fertility. Demographic Research 2002; 6(6): 91\u2013144.',
+    'Kohler H-P, Ortega JA. Tempo-adjusted period parity progression measures, fertility ' 'postponement and completed cohort fertility. Demographic Research 2002; 6(6): 91\u2013144.',
     # 5
-    'Sobotka T. Is lowest-low fertility in Europe explained by the postponement of '
-    'childbearing? Population and Development Review 2004; 30(2): 195\u2013220.',
+    'Sobotka T. Is lowest-low fertility in Europe explained by the postponement of ' 'childbearing? Population and Development Review 2004; 30(2): 195\u2013220.',
     # 6
-    'Bongaarts J, Feeney G. The quantum and tempo of life-cycle events. '
-    'Vienna Yearbook of Population Research 2006; 4: 115\u2013151.',
+    'Bongaarts J, Feeney G. The quantum and tempo of life-cycle events. ' 'Vienna Yearbook of Population Research 2006; 4: 115\u2013151.',
     # 7
-    'Goldstein JR, Lutz W, Scherbov S. Long-term population decline in Europe: The '
-    'relative importance of tempo effects and generational length. Population and '
-    'Development Review 2003; 29(4): 699\u2013707.',
+    'Goldstein JR, Lutz W, Scherbov S. Long-term population decline in Europe: The ' 'relative importance of tempo effects and generational length. Population and ' 'Development Review 2003; 29(4): 699\u2013707.',
     # 8
     'Keyfitz N. On the momentum of population growth. Demography 1971; 8(1): 71\u201380.',
     # 9
-    'Preston SH, Heuveline P, Guillot M. Demography: Measuring and modeling population '
-    'processes. Oxford: Blackwell; 2001.',
+    'Preston SH, Heuveline P, Guillot M. Demography: Measuring and modeling population ' 'processes. Oxford: Blackwell; 2001.',
     # 10
-    'Gompertz B. On the nature of the function expressive of the law of human mortality. '
-    'Philosophical Transactions of the Royal Society of London 1825; 115: 513\u2013583.',
+    'Gompertz B. On the nature of the function expressive of the law of human mortality. ' 'Philosophical Transactions of the Royal Society of London 1825; 115: 513\u2013583.',
     # 11
-    'United Nations, Department of Economic and Social Affairs, Population Division. '
-    'World Population Prospects 2024. New York: United Nations; 2024.',
+    'United Nations, Department of Economic and Social Affairs, Population Division. ' 'World Population Prospects 2024. New York: United Nations; 2024.',
     # 12
-    'Stevens GA, Alkema L, Black RE, et al. Guidelines for Accurate and Transparent '
-    'Health Estimates Reporting: The GATHER statement. The Lancet 2016; 388(10062): '
-    'e19\u2013e23.',
+    'Stevens GA, Alkema L, Black RE, et al. Guidelines for Accurate and Transparent ' 'Health Estimates Reporting: The GATHER statement. The Lancet 2016; 388(10062): ' 'e19\u2013e23.',
     # 13
-    'Kohler H-P, Billari FC, Ortega JA. The emergence of lowest-low fertility in Europe '
-    'during the 1990s. Population and Development Review 2002; 28(4): 641\u2013680.',
+    'Kohler H-P, Billari FC, Ortega JA. The emergence of lowest-low fertility in Europe ' 'during the 1990s. Population and Development Review 2002; 28(4): 641\u2013680.',
     # 14
-    'Lutz W, Sanderson W, Scherbov S. The end of world population growth. '
-    'Nature 2001; 412: 543\u2013545.',
+    'Lutz W, Sanderson W, Scherbov S. The end of world population growth. ' 'Nature 2001; 412: 543\u2013545.',
     # 15
-    'McDonald P. Gender equity in theories of fertility transition. Population and '
-    'Development Review 2000; 26(3): 427\u2013439.',
+    'McDonald P. Gender equity in theories of fertility transition. Population and ' 'Development Review 2000; 26(3): 427\u2013439.',
     # 16
-    'Bongaarts J, Sobotka T. A demographic explanation for the recent rise in European '
-    'fertility. Population and Development Review 2012; 38(1): 83\u2013120.',
+    'Gauthier AH. The impact of family policies on fertility in industrialized countries. ' 'Population Research and Policy Review 2007; 26(3): 323\u2013346.',
     # 17
-    'Myrskyl\u00e4 M, Kohler H-P, Billari FC. Advances in development reverse fertility '
-    'declines. Nature 2009; 460: 741\u2013743.',
+    'Bongaarts J, Sobotka T. A demographic explanation for the recent rise in European ' 'fertility. Population and Development Review 2012; 38(1): 83\u2013120.',
     # 18
-    'Gonand F. Assessing the robustness of demographic projections in OECD countries. '
-    'OECD Economics Department Working Papers No. 464. Paris: OECD Publishing; 2005.',
+    'Myrskyl\u00e4 M, Kohler H-P, Billari FC. Advances in development reverse fertility ' 'declines. Nature 2009; 460: 741\u2013743.',
     # 19
-    'Lee RD, Carter LR. Modeling and forecasting U.S. mortality. Journal of the American '
-    'Statistical Association 1992; 87(419): 659\u2013671.',
+    'Gonand F. Assessing the robustness of demographic projections in OECD countries. ' 'OECD Economics Department Working Papers No. 464. Paris: OECD Publishing; 2005.',
     # 20
-    'Frejka T, Sobotka T. Fertility in Europe: Diverse, delayed and below replacement. '
-    'Demographic Research 2008; 19(3): 15\u201346.',
+    'Lee RD, Carter LR. Modeling and forecasting U.S. mortality. Journal of the American ' 'Statistical Association 1992; 87(419): 659\u2013671.',
     # 21
-    'Wilmoth JR, Zureick S, Canudas-Romo V, Inoue M, Sawyer C. A flexible two-dimensional '
-    'mortality model for use in indirect estimation. Population Studies 2012; 66(1): 1\u201328.',
+    'Frejka T, Sobotka T. Fertility in Europe: Diverse, delayed and below replacement. ' 'Demographic Research 2008; 19(3): 15\u201346.',
     # 22
-    'Lesthaeghe R. The unfolding story of the Second Demographic Transition. Population '
-    'and Development Review 2010; 36(2): 211\u2013251.',
+    'Wilmoth JR, Zureick S, Canudas-Romo V, Inoue M, Sawyer C. A flexible two-dimensional ' 'mortality model for use in indirect estimation. Population Studies 2012; 66(1): 1\u201328.',
     # 23
-    'Lutz W, Skirbekk V, Testa MR. The low-fertility trap hypothesis. Vienna Yearbook '
-    'of Population Research 2006; 4: 167\u2013192.',
+    'Lesthaeghe R. The unfolding story of the Second Demographic Transition. Population ' 'and Development Review 2010; 36(2): 211\u2013251.',
     # 24
-    'Goldstein JR, Kreyenfeld M. Has East Germany overtaken West Germany? Recent trends '
-    'in order-specific fertility. Population and Development Review 2011; 37(3): 453\u2013472.',
+    'Goldstein JR, Kreyenfeld M. Has East Germany overtaken West Germany? Recent trends ' 'in order-specific fertility. Population and Development Review 2011; 37(3): 453\u2013472.',
     # 25
-    'Witte JC, Wagner GG. Declining fertility in East Germany after unification. '
-    'Population and Development Review 1995; 21(2): 387\u2013397.',
-    # 26
-    'Gauthier AH. The impact of family policies on fertility in industrialized countries. '
-    'Population Research and Policy Review 2007; 26(3): 323\u2013346.',
+    'Witte JC, Wagner GG. Declining fertility in East Germany after unification. ' 'Population and Development Review 1995; 21(2): 387\u2013397.',
 ]
+
 for i, r in enumerate(refs):
     add_para(doc, f'{i + 1}. {r}', size=11, space_after=4)
 
