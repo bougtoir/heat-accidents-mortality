@@ -487,7 +487,8 @@ for i,cn in enumerate(showcase):
     ax.set_ylim(bottom=0)
 fig.suptitle('Five Model Variants vs Observed Population, 1970\u20132023',fontsize=16,fontweight='bold',y=0.99)
 fig.tight_layout(rect=[0, 0, 1, 0.95])
-fig.savefig(os.path.join(FIG_DIR,'fig1_showcase.png'),dpi=150,bbox_inches='tight')
+fig.savefig(os.path.join(FIG_DIR,'fig1_showcase.png'),dpi=300,bbox_inches='tight')
+fig.savefig(os.path.join(FIG_DIR,'Figure_1.eps'),dpi=300,bbox_inches='tight',format='eps')
 plt.close()
 print("  Fig1 done", flush=True)
 
@@ -516,7 +517,8 @@ for i,cn in enumerate(sorted(country_ids.keys())):
 fig.suptitle('All Countries: Observed (black) Responsive (blue) Invariant (orange) Adjusted (green) Fixed (red)',
              fontsize=13,fontweight='bold',y=0.995)
 fig.tight_layout(rect=[0, 0, 1, 0.98])
-fig.savefig(os.path.join(FIG_DIR,'fig2_all_countries.png'),dpi=120,bbox_inches='tight')
+fig.savefig(os.path.join(FIG_DIR,'fig2_all_countries.png'),dpi=300,bbox_inches='tight')
+fig.savefig(os.path.join(FIG_DIR,'Figure_2.eps'),dpi=300,bbox_inches='tight',format='eps')
 plt.close()
 print("  Fig2 done", flush=True)
 
@@ -552,7 +554,8 @@ if len(static_csv) > 0:
     ax.set_title('Fixed-Parameter Model MAPE (%) by Country \u00d7 Base Year',fontsize=14,fontweight='bold')
     ax.set_xlabel('Base Year')
     plt.tight_layout()
-    plt.savefig(os.path.join(FIG_DIR,'fig3_heatmap.png'),dpi=150,bbox_inches='tight')
+    plt.savefig(os.path.join(FIG_DIR,'fig3_heatmap.png'),dpi=300,bbox_inches='tight')
+    plt.savefig(os.path.join(FIG_DIR,'Figure_3.eps'),dpi=300,bbox_inches='tight',format='eps')
     plt.close()
     print("  Fig3 done", flush=True)
     static_csv.to_csv(os.path.join(DATA_DIR,'model_fit_results.csv'),index=False)
@@ -589,7 +592,8 @@ ax2.set_xlabel('Comparator: Final Ratio'); ax2.set_ylabel('Tempo-responsive: Fin
 ax2.set_title('Final Population Ratio (Model / Observed, 2023)',fontweight='bold')
 ax2.legend(fontsize=8); ax2.grid(True,alpha=0.3)
 plt.tight_layout()
-plt.savefig(os.path.join(FIG_DIR,'fig4_comparison.png'),dpi=150,bbox_inches='tight')
+plt.savefig(os.path.join(FIG_DIR,'fig4_comparison.png'),dpi=300,bbox_inches='tight')
+plt.savefig(os.path.join(FIG_DIR,'Figure_4.eps'),dpi=300,bbox_inches='tight',format='eps')
 plt.close()
 print("  Fig4 done", flush=True)
 
@@ -623,7 +627,8 @@ if len(static_csv) > 0:
             if 'Bias' in title: ax.axhline(1,color='gray',ls='--',alpha=0.5)
         plt.suptitle('Model Bias Analysis (Fixed-Parameter, Base Year=2000)',fontsize=14,fontweight='bold')
         plt.tight_layout()
-        plt.savefig(os.path.join(FIG_DIR,'fig5_bias.png'),dpi=150,bbox_inches='tight')
+        plt.savefig(os.path.join(FIG_DIR,'fig5_bias.png'),dpi=300,bbox_inches='tight')
+        plt.savefig(os.path.join(FIG_DIR,'Figure_5.eps'),dpi=300,bbox_inches='tight',format='eps')
         plt.close()
         print("  Fig5 done", flush=True)
 
