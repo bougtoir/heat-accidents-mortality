@@ -608,17 +608,25 @@ var_data = {
 
 fig, ax = plt.subplots(figsize=(12, 8))
 
+# Custom label offsets to avoid overlap with y-axis and each other
+label_offsets = {
+    'Age':          {'dx':  0.015, 'dy': 0.04, 'ha': 'left',  'int_dy': -0.04},
+    'MaxHR':        {'dx':  0.015, 'dy': 0.04, 'ha': 'left',  'int_dy': -0.06},
+    'STDepression': {'dx':  0.015, 'dy': 0.04, 'ha': 'left',  'int_dy': -0.04},
+    'Cholesterol':  {'dx':  0.015, 'dy': 0.04, 'ha': 'left',  'int_dy': -0.04},
+    'RestingBP':    {'dx': -0.015, 'dy': 0.04, 'ha': 'right', 'int_dy': -0.04},
+}
+
 for name, d in var_data.items():
     ax.scatter(d['phi'], d['iota'], s=600, c=d['color'], edgecolors='k',
               linewidth=2, zorder=5, alpha=0.9)
-    # Name label
-    offset_x = 0.015 if d['phi'] > -0.2 else -0.015
-    ha = 'left' if offset_x > 0 else 'right'
-    ax.annotate(name, (d['phi'] + offset_x, d['iota'] + 0.04),
-                fontsize=12, fontweight='bold', ha=ha, va='bottom')
-    # Intervention label
-    ax.annotate(d['intervention'], (d['phi'] + offset_x, d['iota'] - 0.04),
-                fontsize=9, ha=ha, va='top', color='gray', style='italic')
+    lo = label_offsets[name]
+    # Name label (inside graph, to the right of point)
+    ax.annotate(name, (d['phi'] + lo['dx'], d['iota'] + lo['dy']),
+                fontsize=12, fontweight='bold', ha=lo['ha'], va='bottom', zorder=6)
+    # Intervention label (inside graph, below name)
+    ax.annotate(d['intervention'], (d['phi'] + lo['dx'], d['iota'] + lo['int_dy']),
+                fontsize=9, ha=lo['ha'], va='top', color='gray', style='italic', zorder=6)
 
 # Trend line (conceptual)
 phi_range = np.linspace(-0.35, 0.02, 50)
