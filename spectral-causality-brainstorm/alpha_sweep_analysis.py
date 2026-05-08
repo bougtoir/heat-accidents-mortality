@@ -266,7 +266,7 @@ def main():
     print("Alpha Sweep Results")
     print("=" * 80)
     for _, row in df.iterrows():
-        if row['alpha'] in [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]:
+        if any(abs(row['alpha'] - v) < 1e-6 for v in [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]):
             print(f"  α={row['alpha']:.1f}: r_grad={row['r_gradient']:.3f}, "
                   f"edges={row['n_edges']:.0f}, agree={row['agreement']:.2f}, "
                   f"asym_norm={row['asym_norm']:.4f}, fiedler={row['fiedler']:.4f}, "

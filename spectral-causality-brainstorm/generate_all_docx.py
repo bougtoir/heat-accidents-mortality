@@ -69,7 +69,7 @@ OPERATOR_MAP = {
 def preprocess_latex(s):
     """Replace LaTeX commands with Unicode equivalents."""
     # \left, \right, \bigl, \bigr → remove
-    s = re.sub(r'\\(?:left|right|bigl|bigr|Bigl|Bigr)', '', s)
+    s = re.sub(r'\\(?:left|right|bigl|bigr|Bigl|Bigr)(?![a-zA-Z])', '', s)
 
     # \text{...}, \mathrm{...}, \mathbf{...}, \textbf{...}, \operatorname{...}
     s = re.sub(r'\\text\{([^}]*)\}', r'\1', s)
