@@ -1,0 +1,104 @@
+\documentclass[11pt]{letter}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{xcolor}
+
+\signature{Tatsuki Onishi, MD\\
+Department of Anesthesiology\\
+University Hospital, Japan\\
+\texttt{bougtoir@gmail.com}}
+
+\address{Tatsuki Onishi\\
+Department of Anesthesiology\\
+University Hospital, Japan\\
+\texttt{bougtoir@gmail.com}}
+
+\date{\today}
+
+\begin{document}
+
+\begin{letter}{%
+Editors\\
+Journal of Machine Learning Research}
+
+\opening{Dear Editors,}
+
+I am writing to submit our manuscript entitled
+\textbf{``Spectral Causality: Causal Direction Estimation via Magnetic
+Laplacians and Hodge Decomposition''}
+for consideration as a regular article in the
+\emph{Journal of Machine Learning Research}.
+
+\paragraph{Summary.}
+This paper introduces \emph{spectral causality}, a framework that
+estimates causal directions among observed variables by exploiting the
+spectral structure of the magnetic Laplacian.  Unlike classical
+Laplacian methods, the magnetic Laplacian's complex-valued eigenvectors
+encode edge directionality as phase, enabling causal direction
+estimation from spectral structure alone.  Our principal contributions
+are:
+
+\begin{enumerate}
+\item A \textbf{Directional Predictability Index (DPI)} that resolves
+  the circularity in earlier utility-based causal formulations, with
+  partial identifiability guarantees under the additive noise model and
+  explicit convergence rates for each component.
+
+\item A \textbf{Hodge-theoretic decomposition} of causal edge flows
+  into gradient (DAG-compatible), curl (feedback), and harmonic
+  components, yielding a gradient energy ratio
+  $r_{\mathrm{gradient}}$ that serves as a quantitative DAG-adequacy
+  diagnostic---a capability absent from existing causal discovery
+  methods.
+
+\item A \textbf{scale invariance theorem} establishing that causal
+  structure emergence depends on knowledge \emph{quality} (sign
+  pattern) rather than quantity (magnitude), together with a
+  phase-transition analysis characterizing a U-shaped knowledge
+  quality curve.
+
+\item Comprehensive \textbf{multi-dataset validation} on synthetic
+  random DAGs ($n{=}5$--$20$, $N{=}200$--$1000$), the Sachs protein
+  signaling network ($n{=}11$, 17 ground-truth edges), and the UCI
+  Heart Disease dataset ($n{=}5$, $N{=}297$), benchmarked against
+  DirectLiNGAM, the PC algorithm, GES, and NOTEARS.
+\end{enumerate}
+
+\paragraph{Relevance to JMLR.}
+The manuscript presents a new principled algorithm (spectral causality)
+grounded in spectral graph theory and Hodge theory, with sound
+empirical validation on both synthetic and real-world benchmarks.  The
+theoretical analysis (17 theorem-like statements with formal proofs)
+advances understanding of the relationship between spectral structure
+and causal ordering.  We believe the work is of broad interest to the
+machine learning community, as causal discovery is a central topic
+spanning methodology, theory, and applications.
+
+\paragraph{Originality.}
+This work has not been published previously in any journal or
+conference proceedings.  A preprint may be made available on arXiv
+concurrent with this submission.
+
+\paragraph{Disclosure.}
+No external funding was received for this work.  The author declares
+no conflicts of interest.
+
+\paragraph{Suggested action editors.}
+Based on their expertise in causal discovery and spectral methods, we
+suggest the following action editors who may be suitable to handle this
+submission:
+
+\begin{itemize}
+\item \textbf{Bernhard Sch\"olkopf} --- causal inference, kernel methods
+\item \textbf{Jonas Peters} --- causal discovery, additive noise models
+\item \textbf{Peter Spirtes} --- constraint-based causal discovery
+\item \textbf{Kun Zhang} --- causal discovery methodology
+\end{itemize}
+
+Thank you for considering this manuscript.  I look forward to receiving
+your editorial decision.
+
+\closing{Sincerely,}
+
+\end{letter}
+\end{document}
