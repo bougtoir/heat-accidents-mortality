@@ -64,7 +64,7 @@ add_para(doc,
     "timing of births. When childbearing is postponed, generational spacing widens, fewer "
     "generations overlap at any given moment, and the simultaneously living population "
     "(SLP) shrinks\u2014even if the number of children per woman remains unchanged. This tempo "
-    "channel, identified by Goldstein, Lutz, and Scherbov (2003), has received remarkably "
+    "channel, identified by Goldstein et al. (2003), has received remarkably "
     "little empirical follow-up.",
     size=12, space_after=12)
 
