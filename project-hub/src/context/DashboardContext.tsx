@@ -152,10 +152,11 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
           // For YAML, we use js-yaml
           import('js-yaml').then((yaml) => {
             try {
-              const parsed = yaml.load(data) as { projects: Paper[] };
-              if (parsed?.projects && Array.isArray(parsed.projects)) {
-                setPapers(parsed.projects);
-                if (parsed.projects.length > 0) setSelectedPaperId(parsed.projects[0].id);
+              const parsed = yaml.load(data) as { projects?: Paper[]; papers?: Paper[] };
+              const items = parsed?.projects ?? parsed?.papers;
+              if (items && Array.isArray(items)) {
+                setPapers(items);
+                if (items.length > 0) setSelectedPaperId(items[0].id);
               }
             } catch (e) {
               console.error('YAML import failed:', e);
