@@ -88,8 +88,8 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
   const exportJson = useCallback(() => JSON.stringify(papers, null, 2), [papers]);
 
   const exportYaml = useCallback(() => {
-    // Simple YAML serializer for paper data
-    const yamlLines: string[] = ['papers:'];
+    // Simple YAML serializer for project data
+    const yamlLines: string[] = ['projects:'];
     for (const paper of papers) {
       yamlLines.push(`  - id: "${paper.id}"`);
       yamlLines.push(`    title: "${paper.title}"`);
@@ -152,10 +152,10 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
           // For YAML, we use js-yaml
           import('js-yaml').then((yaml) => {
             try {
-              const parsed = yaml.load(data) as { papers: Paper[] };
-              if (parsed?.papers && Array.isArray(parsed.papers)) {
-                setPapers(parsed.papers);
-                if (parsed.papers.length > 0) setSelectedPaperId(parsed.papers[0].id);
+              const parsed = yaml.load(data) as { projects: Paper[] };
+              if (parsed?.projects && Array.isArray(parsed.projects)) {
+                setPapers(parsed.projects);
+                if (parsed.projects.length > 0) setSelectedPaperId(parsed.projects[0].id);
               }
             } catch (e) {
               console.error('YAML import failed:', e);
