@@ -5,15 +5,15 @@ import { useServerEvents } from '../hooks/useServerEvents';
 import { samplePapers } from '../data/sample-papers';
 
 const DEFAULT_PANES: PaneConfig[] = [
-  { id: 'title-authors', label: 'Project & Team', number: 1, docked: true },
+  { id: 'title-authors', label: 'Title & Co-authors', number: 1, docked: true },
   { id: 'progress', label: 'Progress Timeline', number: 2, docked: true },
   { id: 'links', label: 'Links', number: 3, docked: true },
   { id: 'deliverables', label: 'Deliverables', number: 4, docked: true },
   { id: 'deadlines', label: 'Deadlines', number: 5, docked: true },
   { id: 'notes-todo', label: 'Notes & TODO', number: 6, docked: true },
-  { id: 'statistics', label: 'Metrics', number: 7, docked: true },
-  { id: 'costs-funding', label: 'Budget & Funding', number: 8, docked: false, floatingPosition: { x: 100, y: 100 }, floatingSize: { width: 480, height: 360 } },
-  { id: 'coauthor-tasks', label: 'Team Tasks', number: 9, docked: false, floatingPosition: { x: 200, y: 150 }, floatingSize: { width: 500, height: 400 } },
+  { id: 'statistics', label: 'Statistics', number: 7, docked: true },
+  { id: 'costs-funding', label: 'Costs & Funding', number: 8, docked: false, floatingPosition: { x: 100, y: 100 }, floatingSize: { width: 480, height: 360 } },
+  { id: 'coauthor-tasks', label: 'Co-author Tasks', number: 9, docked: false, floatingPosition: { x: 200, y: 150 }, floatingSize: { width: 500, height: 400 } },
 ];
 
 interface DashboardContextType {
@@ -42,10 +42,10 @@ interface DashboardContextType {
 const DashboardContext = createContext<DashboardContextType | null>(null);
 
 export function DashboardProvider({ children }: { children: ReactNode }) {
-  const [papers, setPapers] = useLocalStorage<Paper[]>('projecthub-projects', samplePapers);
-  const [selectedPaperId, setSelectedPaperId] = useLocalStorage<string>('projecthub-selected', samplePapers[0]?.id ?? '');
-  const [panes, setPanes] = useLocalStorage<PaneConfig[]>('projecthub-panes', DEFAULT_PANES);
-  const [settingsOpen, setSettingsOpen] = useLocalStorage<boolean>('projecthub-settings', false);
+  const [papers, setPapers] = useLocalStorage<Paper[]>('paperhub-papers', samplePapers);
+  const [selectedPaperId, setSelectedPaperId] = useLocalStorage<string>('paperhub-selected', samplePapers[0]?.id ?? '');
+  const [panes, setPanes] = useLocalStorage<PaneConfig[]>('paperhub-panes', DEFAULT_PANES);
+  const [settingsOpen, setSettingsOpen] = useLocalStorage<boolean>('paperhub-settings', false);
   const [addPaperDialogOpen, setAddPaperDialogOpen] = useState(false);
   const [editingPaper, setEditingPaper] = useState<Paper | null>(null);
 
@@ -113,8 +113,8 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
   const exportJson = useCallback(() => JSON.stringify(papers, null, 2), [papers]);
 
   const exportYaml = useCallback(() => {
-    // Simple YAML serializer for project data
-    const yamlLines: string[] = ['projects:'];
+    // Simple YAML serializer for paper data
+    const yamlLines: string[] = ['papers:'];
     for (const paper of papers) {
       yamlLines.push(`  - id: "${paper.id}"`);
       yamlLines.push(`    title: "${paper.title}"`);
@@ -176,17 +176,12 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
         } else {
           // For YAML, we use js-yaml
           import('js-yaml').then((yaml) => {
-            try {
-              const parsed = yaml.load(data) as { projects?: Paper[]; papers?: Paper[] };
-              const items = parsed?.projects ?? parsed?.papers;
-              if (items && Array.isArray(items)) {
-                setPapers(items);
-                if (items.length > 0) setSelectedPaperId(items[0].id);
-              }
-            } catch (e) {
-              console.error('YAML import failed:', e);
+            const parsed = yaml.load(data) as { papers: Paper[] };
+            if (parsed?.papers && Array.isArray(parsed.papers)) {
+              setPapers(parsed.papers);
+              if (parsed.papers.length > 0) setSelectedPaperId(parsed.papers[0].id);
             }
-          }).catch((e) => console.error('Failed to load js-yaml:', e));
+          });
         }
       } catch (e) {
         console.error('Import failed:', e);

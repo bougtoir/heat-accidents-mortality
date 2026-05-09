@@ -1,14 +1,14 @@
 {
-  "name": "project-hub",
+  "name": "paper-dashboard",
   "private": true,
   "version": "1.0.0",
   "type": "module",
   "main": "electron/main.cjs",
   "author": {
-    "name": "ProjectHub",
+    "name": "PaperHub",
     "email": "bougtoir@gmail.com"
   },
-  "description": "Project management dashboard",
+  "description": "Paper management dashboard",
   "homepage": "https://github.com/bougtoir/wip",
   "scripts": {
     "dev": "vite",
@@ -21,8 +21,8 @@
     "electron:build:win": "tsc -b && vite build && electron-builder --win"
   },
   "build": {
-    "appId": "com.projecthub.app",
-    "productName": "ProjectHub",
+    "appId": "com.paperhub.app",
+    "productName": "PaperHub",
     "directories": {
       "output": "release"
     },
