@@ -1,11 +1,11 @@
 import type { TimelineEvent } from '../../types/paper';
 
 const BAR_COLORS: Record<string, string> = {
-  drafting: 'linear-gradient(90deg, #e0a040, #e8b860)',
-  submission: 'linear-gradient(90deg, #5090d0, #70a8e0)',
+  planning: 'linear-gradient(90deg, #e0a040, #e8b860)',
+  development: 'linear-gradient(90deg, #5090d0, #70a8e0)',
   review: 'linear-gradient(90deg, #9070c0, #a888d0)',
-  revision: 'linear-gradient(90deg, #d08050, #e09868)',
-  decision: 'linear-gradient(90deg, #40a060, #58b878)',
+  testing: 'linear-gradient(90deg, #d08050, #e09868)',
+  deployment: 'linear-gradient(90deg, #40a060, #58b878)',
   milestone: 'linear-gradient(90deg, #6090a0, #80b0c0)',
 };
 

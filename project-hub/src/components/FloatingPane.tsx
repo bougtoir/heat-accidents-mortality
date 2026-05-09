@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, type ReactNode } from 'react';
+import { useState, useRef, useCallback, useEffect, type ReactNode } from 'react';
 import type { PaneId } from '../types/paper';
 import { useDashboard } from '../context/DashboardContext';
 
@@ -25,6 +25,10 @@ export function FloatingPane({
   const [minimized, setMinimized] = useState(false);
   const dragRef = useRef<{ startX: number; startY: number; origX: number; origY: number } | null>(null);
   const resizeRef = useRef<{ startX: number; startY: number; origW: number; origH: number } | null>(null);
+  const posRef = useRef(pos);
+  const sizeRef = useRef(size);
+  useEffect(() => { posRef.current = pos; }, [pos]);
+  useEffect(() => { sizeRef.current = size; }, [size]);
 
   const onDragStart = useCallback(
     (e: React.MouseEvent) => {
@@ -53,7 +57,7 @@ export function FloatingPane({
     (e: React.MouseEvent) => {
       e.preventDefault();
       e.stopPropagation();
-      resizeRef.current = { startX: e.clientX, startY: e.clientY, origW: size.width, origH: size.height };
+      resizeRef.current = { startX: e.clientX, startY: e.clientY, origW: sizeRef.current.width, origH: sizeRef.current.height };
 
       const onMove = (ev: MouseEvent) => {
         if (!resizeRef.current) return;
@@ -68,7 +72,7 @@ export function FloatingPane({
         setPanes((prev) =>
           prev.map((p) =>
             p.id === paneId
-              ? { ...p, floatingPosition: pos, floatingSize: size }
+              ? { ...p, floatingPosition: posRef.current, floatingSize: sizeRef.current }
               : p,
           ),
         );
@@ -76,7 +80,7 @@ export function FloatingPane({
       document.addEventListener('mousemove', onMove);
       document.addEventListener('mouseup', onUp);
     },
-    [size, paneId, pos, setPanes],
+    [paneId, setPanes],
   );
 
   return (
