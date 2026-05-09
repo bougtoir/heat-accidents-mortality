@@ -27,6 +27,9 @@ export const samplePapers: Paper[] = [
         { label: 'Revision', startDate: '2026-05-01', type: 'revision' },
       ],
     },
+    submissionHistory: [
+      { journal: 'Anesthesiology', impactFactor: 8.8, submissionDate: '2025-11-10', decisionDate: '2026-01-03', decision: 'rejected', editorComment: 'Interesting concept but insufficient sample size for primary endpoint.' },
+    ],
     links: [
       { label: 'BJA ScholarOne Manuscripts', url: 'https://mc.manuscriptcentral.com/bja', category: 'submission' },
       { label: 'Session: PMEA manuscript draft', url: 'https://app.devin.ai/sessions/example1', category: 'devin' },
@@ -89,6 +92,7 @@ export const samplePapers: Paper[] = [
         { label: 'Submission', startDate: '2026-05-08', endDate: '2026-05-08', type: 'submission' },
       ],
     },
+    submissionHistory: [],
     links: [
       { label: 'RIW Editorial Manager', url: 'https://www.editorialmanager.com/roiw', category: 'submission' },
       { label: 'bougtoir/wip (GDP branch)', url: 'https://github.com/bougtoir/wip/tree/devin/1776760815-gdp-tempo-poc', category: 'repository' },
@@ -128,6 +132,7 @@ export const samplePapers: Paper[] = [
         { label: 'Peer Review', startDate: '2026-04-15', type: 'review' },
       ],
     },
+    submissionHistory: [],
     links: [
       { label: 'Pharm Res Editorial Manager', url: 'https://www.editorialmanager.com/pham', category: 'submission' },
       { label: 'bougtoir/wip (Weibull branch)', url: 'https://github.com/bougtoir/wip/tree/weibull-clinical-trial-dropout', category: 'repository' },
@@ -162,6 +167,7 @@ export const samplePapers: Paper[] = [
         { label: 'Drafting', startDate: '2026-04-20', type: 'drafting' },
       ],
     },
+    submissionHistory: [],
     links: [
       { label: 'bougtoir/wip (spectral branch)', url: 'https://github.com/bougtoir/wip/tree/devin/1777462980-spectral-causality-brainstorm', category: 'repository' },
     ],
@@ -200,6 +206,7 @@ export const samplePapers: Paper[] = [
         { label: 'Submission', startDate: '2026-05-05', endDate: '2026-05-05', type: 'submission' },
       ],
     },
+    submissionHistory: [],
     links: [
       { label: 'Lancet EES', url: 'https://ees.elsevier.com/thelancet', category: 'submission' },
       { label: 'bougtoir/wip (sapir branch)', url: 'https://github.com/bougtoir/wip/tree/devin/1777545460-medical-sapir-whorf-paper', category: 'repository' },
@@ -239,6 +246,7 @@ export const samplePapers: Paper[] = [
         { label: 'Accepted', startDate: '2026-04-30', endDate: '2026-04-30', type: 'decision' },
       ],
     },
+    submissionHistory: [],
     links: [
       { label: 'bougtoir/wip (cryo branch)', url: 'https://github.com/bougtoir/wip/tree/devin/1774686640-cryoanesthesia-scoping-review', category: 'repository' },
     ],
@@ -271,6 +279,7 @@ export const samplePapers: Paper[] = [
         { label: 'Drafting', startDate: '2026-04-01', type: 'drafting' },
       ],
     },
+    submissionHistory: [],
     links: [
       { label: 'bougtoir/wip (regional branch)', url: 'https://github.com/bougtoir/wip/tree/devin/1774690359-anesthesia-regional-variation-japan', category: 'repository' },
     ],

@@ -104,12 +104,22 @@ export interface CoauthorTask {
   color?: string;
 }
 
+export interface SubmissionRecord {
+  journal: string;
+  impactFactor?: number;
+  submissionDate: string;
+  decisionDate?: string;
+  decision: 'rejected' | 'withdrawn' | 'desk-reject';
+  editorComment?: string;
+}
+
 export interface Paper {
   id: string;
   title: string;
   shortTitle: string;
   authors: Author[];
   progress: Progress;
+  submissionHistory: SubmissionRecord[];
   links: Link[];
   deliverables: Deliverable[];
   deadlines: Deadline[];

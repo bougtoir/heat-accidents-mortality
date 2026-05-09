@@ -106,6 +106,17 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
       if (paper.progress.impactFactor) yamlLines.push(`      impactFactor: ${paper.progress.impactFactor}`);
       if (paper.progress.submissionDate) yamlLines.push(`      submissionDate: "${paper.progress.submissionDate}"`);
       if (paper.progress.revisionDueDate) yamlLines.push(`      revisionDueDate: "${paper.progress.revisionDueDate}"`);
+      if (paper.submissionHistory?.length) {
+        yamlLines.push(`    submissionHistory:`);
+        for (const sh of paper.submissionHistory) {
+          yamlLines.push(`      - journal: "${sh.journal}"`);
+          if (sh.impactFactor) yamlLines.push(`        impactFactor: ${sh.impactFactor}`);
+          yamlLines.push(`        submissionDate: "${sh.submissionDate}"`);
+          if (sh.decisionDate) yamlLines.push(`        decisionDate: "${sh.decisionDate}"`);
+          yamlLines.push(`        decision: "${sh.decision}"`);
+          if (sh.editorComment) yamlLines.push(`        editorComment: "${sh.editorComment}"`);
+        }
+      }
       yamlLines.push(`    links:`);
       for (const l of paper.links) {
         yamlLines.push(`      - label: "${l.label}"`);
