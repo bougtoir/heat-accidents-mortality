@@ -43,8 +43,8 @@ const { server } = await startServer({ rootDir: __dirname, distDir, port, config
 if (config.openBrowser !== false) {
   const url = `http://localhost:${port}`;
   const cmd =
-    process.platform === 'darwin' ? 'open' :
-    process.platform === 'win32' ? 'start' :
-    'xdg-open';
-  exec(`${cmd} ${url}`);
+    process.platform === 'darwin' ? `open "${url}"` :
+    process.platform === 'win32' ? `start "" "${url}"` :
+    `xdg-open "${url}"`;
+  exec(cmd, (err) => { if (err) console.log('  Could not open browser automatically. Open manually:', url); });
 }

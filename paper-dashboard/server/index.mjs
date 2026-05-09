@@ -10,7 +10,7 @@
 
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
-import { join, extname } from 'node:path';
+import { join, extname, resolve, sep } from 'node:path';
 import { Store } from './store.mjs';
 import { SSEBroadcaster } from './sse.mjs';
 import { PluginManager } from './plugin-manager.mjs';
@@ -159,10 +159,12 @@ export async function startServer({ rootDir, distDir, port, config }) {
     // ── Static files ────────────────────────────────
 
     let filePath = path === '/' ? '/index.html' : path;
-    const fullPath = join(distDir, filePath);
+    // Normalize URL forward slashes to OS path separators
+    filePath = filePath.split('/').join(sep);
+    const fullPath = resolve(join(distDir, filePath));
 
-    // Prevent directory traversal
-    if (!fullPath.startsWith(distDir)) {
+    // Prevent directory traversal (use resolve to normalize both paths)
+    if (!fullPath.startsWith(resolve(distDir))) {
       res.writeHead(403);
       res.end();
       return;

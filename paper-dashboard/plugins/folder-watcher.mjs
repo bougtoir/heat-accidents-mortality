@@ -21,7 +21,7 @@
  */
 
 import { watch } from 'node:fs';
-import { basename, relative, resolve } from 'node:path';
+import { basename, relative, resolve, sep } from 'node:path';
 import { existsSync, statSync, readdirSync } from 'node:fs';
 
 let ctx = null;
@@ -39,7 +39,7 @@ function debounce(fn, ms) {
 /** Try to match a file change to an existing project by folder name. */
 function findProjectByPath(watchRoot, filePath) {
   const rel = relative(watchRoot, filePath);
-  const topFolder = rel.split('/')[0] || rel.split('\\')[0];
+  const topFolder = rel.split(/[\\/]/)[0];
   const projects = ctx.store.getAll();
   return projects.find(
     (p) =>
@@ -81,7 +81,7 @@ function handleChange(watchRoot, eventType, filename) {
   // ── Auto-progress logic (extend as needed) ──────────────
   // Example: count files to auto-update statistics
   const rel = relative(watchRoot, fullPath);
-  const topFolder = rel.split('/')[0] || rel.split('\\')[0];
+  const topFolder = rel.split(/[\\/]/)[0];
   const projectDir = resolve(watchRoot, topFolder);
   const fileCount = countFiles(projectDir);
 

@@ -1,6 +1,6 @@
-# ProjectHub
+# PaperHub
 
-Project management dashboard with 9-pane grid layout, real-time updates, and plugin system.
+Paper management dashboard with 9-pane grid layout, real-time updates, and plugin system.
 
 ## Requirements
 
@@ -22,7 +22,7 @@ start.bat
 node start.mjs
 ```
 
-ブラウザが自動的に `http://localhost:3457` を開きます。
+ブラウザが自動的に `http://localhost:3456` を開きます。
 
 ## Options
 
@@ -37,7 +37,7 @@ node start.mjs --no-open       # ブラウザ自動起動を無効化
 
 ```json
 {
-  "port": 3457,
+  "port": 3456,
   "openBrowser": true,
   "plugins": {
     "folder-watcher": {
@@ -56,7 +56,7 @@ node start.mjs --no-open       # ブラウザ自動起動を無効化
 
 ## Data
 
-プロジェクトデータは `data/projects.json` に自動保存されます。
+論文データは `data/projects.json` に自動保存されます。
 
 ## Development
 
