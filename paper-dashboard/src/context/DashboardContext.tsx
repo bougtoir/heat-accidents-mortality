@@ -1,4 +1,4 @@
-import { createContext, useContext, useCallback, type ReactNode } from 'react';
+import { createContext, useContext, useCallback, useState, type ReactNode } from 'react';
 import type { Paper, PaneConfig, PaneId } from '../types/paper';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { samplePapers } from '../data/sample-papers';
@@ -45,8 +45,8 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
   const [selectedPaperId, setSelectedPaperId] = useLocalStorage<string>('paperhub-selected', samplePapers[0]?.id ?? '');
   const [panes, setPanes] = useLocalStorage<PaneConfig[]>('paperhub-panes', DEFAULT_PANES);
   const [settingsOpen, setSettingsOpen] = useLocalStorage<boolean>('paperhub-settings', false);
-  const [addPaperDialogOpen, setAddPaperDialogOpen] = useLocalStorage<boolean>('paperhub-add-dialog', false);
-  const [editingPaper, setEditingPaper] = useLocalStorage<Paper | null>('paperhub-editing', null);
+  const [addPaperDialogOpen, setAddPaperDialogOpen] = useState(false);
+  const [editingPaper, setEditingPaper] = useState<Paper | null>(null);
 
   const selectedPaper = papers.find((p) => p.id === selectedPaperId);
 
