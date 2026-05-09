@@ -1,5 +1,5 @@
 import { useDashboard } from '../context/DashboardContext';
-import { STATUS_DOT_COLORS } from './common/StatusBadge';
+import { STATUS_DOT_COLORS } from './common/statusColors';
 
 export function Sidebar() {
   const { papers, selectedPaperId, setSelectedPaperId, setAddPaperDialogOpen, setEditingPaper } = useDashboard();

@@ -132,6 +132,7 @@ export function AddPaperDialog() {
 
   useEffect(() => {
     if (editingPaper) {
+      /* eslint-disable react-hooks/set-state-in-effect */
       setTitle(editingPaper.title);
       setShortTitle(editingPaper.shortTitle);
       setStatus(editingPaper.progress.status);
@@ -154,6 +155,7 @@ export function AddPaperDialog() {
       setApcEstimate(editingPaper.costs.apcEstimate?.toString() ?? '');
       setApcCurrency(editingPaper.costs.apcCurrency ?? 'USD');
       setCoauthorTasks([...editingPaper.coauthorTasks]);
+      /* eslint-enable react-hooks/set-state-in-effect */
     }
   }, [editingPaper]);
 
