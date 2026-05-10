@@ -1084,6 +1084,29 @@ p = doc.add_paragraph()
 add_ref_runs(p, d6b)
 disc_parts.append(d6b)
 
+add_heading_text('Regional stigma in an era of mobility', level=2)
+d_mob = (
+    'Beyond the statistical evidence, the very premise of region-based stereotyping is '
+    'increasingly untenable in contemporary Japan and across the Western Pacific. '
+    'Domestic migration, urbanisation, and an ageing workforce have fundamentally reshaped '
+    'the demographic composition of every prefecture. '
+    'A patient presenting in a Tokyo emergency department may have been born in Aomori, '
+    'educated in Osaka, and working in Yokohama\u2014rendering any assumption based on '
+    'their prefecture of residence meaningless. '
+    'Internationally, the growth of medical tourism and expatriate healthcare in the '
+    'Asia-Pacific region means that clinicians encounter patients from diverse cultural '
+    'backgrounds with increasing frequency. In this context, applying regional or national '
+    'stereotypes\u2014whether \u201cTohoku patients are stoic\u201d or \u201cJapanese patients '
+    'tolerate pain well\u201d\u2014is not merely inaccurate but potentially harmful. '
+    'Medicine is, and must remain, an encounter between a clinician and an individual '
+    'patient\u2014not between a clinician and a cultural category. '
+    'Individualised assessment\u2014through structured pain scales, functional outcome '
+    'measures, and, where available, objective nociception monitoring\u2014provides the '
+    'only reliable basis for analgesic decision-making in a mobile, multicultural world.'
+)
+doc.add_paragraph(d_mob)
+disc_parts.append(d_mob)
+
 add_heading_text('Implications and future directions', level=2)
 d7pre = (
     'This exploratory study demonstrates that Japan\u2019s NDB Open Data can serve as '
@@ -1096,12 +1119,7 @@ d7pre = (
     'in other nations with national claims databases (eg, South Korea, Taiwan, the UK) '
     'would test whether within-country prescribing heterogeneity is the rule rather than '
     'the exception\u2014further undermining the validity of national-level cultural '
-    'stereotypes in clinical decision-making. '
-    'Prospective studies examining how cultural assumptions influence analgesic '
-    'prescribing in multicultural clinical settings would directly test whether '
-    'stereotyped labels translate into therapeutic disadvantage. Such research is '
-    'increasingly urgent as global migration and medical tourism expose more patients '
-    'to healthcare systems unfamiliar with their cultural background.'
+    'stereotypes in clinical decision-making.'
 )
 doc.add_paragraph(d7pre)
 disc_parts.append(d7pre)
