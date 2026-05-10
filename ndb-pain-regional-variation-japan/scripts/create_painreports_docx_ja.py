@@ -23,6 +23,10 @@ OUTPUT_DIR = '/home/ubuntu/analysis/output/'
 with open(OUTPUT_DIR + 'cpsp_regression_summary.json', 'r') as f:
     reg = json.load(f)
 
+_unadj_d = reg["model1_unadjusted"]["cohens_d"]
+_adj_d = reg["adjusted_cpsp_test"]["cohens_d"]
+_attenuation_pct = (1 - _adj_d / _unadj_d) * 100
+
 # ============================================================
 # REFERENCES — alphabetical by first-author surname (PAIN Reports = PAIN style)
 # ============================================================
@@ -551,7 +555,7 @@ doc.add_paragraph(
     f'（未調整d = {reg["model1_unadjusted"]["cohens_d"]:.2f}）が'
     f'交絡疾患プロキシで大部分説明された。'
     f'糖尿病薬処方だけでr = 0.87であり、糖尿病性神経障害との関連を反映する。'
-    f'調整後、東北効果は62%減弱し有意でなくなった。'
+    f'調整後、東北効果は{_attenuation_pct:.0f}%減弱し有意でなくなった。'
     f'神経障害性疼痛薬処方をCPSPプロキシとして使用する研究は、'
     f'交絡疾患を考慮しなければならない。'
 )

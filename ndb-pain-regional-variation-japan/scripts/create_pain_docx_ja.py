@@ -47,6 +47,10 @@ paragraph_format.line_spacing = 2.0
 with open(OUTPUT_DIR + 'cpsp_regression_summary.json', 'r') as f:
     reg = json.load(f)
 
+_unadj_d = reg["model1_unadjusted"]["cohens_d"]
+_adj_d = reg["adjusted_cpsp_test"]["cohens_d"]
+_attenuation_pct = (1 - _adj_d / _unadj_d) * 100
+
 def add_heading_text(text, level=1):
     h = doc.add_heading(text, level=level)
     for run in h.runs:
@@ -628,7 +632,7 @@ doc.add_paragraph(
     f'（東北 vs その他の未調整d = {reg["model1_unadjusted"]["cohens_d"]:.2f}）が、交絡疾患プロキシによって大部分説明されたことである。'
     '糖尿病薬処方だけでr = 0.87の相関を示し、'
     'これは糖尿病性神経障害とガバペンチノイド使用の既知の関連を反映する。'
-    '調整後、東北効果は62%減弱し有意でなくなった。')
+    f'調整後、東北効果は{_attenuation_pct:.0f}%減弱し有意でなくなった。')
 
 doc.add_paragraph(
     'これは生態学的疼痛研究に重要な含意を持つ。'
