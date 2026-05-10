@@ -29,6 +29,9 @@ FIG_DIR = OUTPUT_DIR
 with open(os.path.join(OUTPUT_DIR, 'cpsp_regression_summary.json'), 'r') as f:
     reg = json.load(f)
 
+with open(os.path.join(OUTPUT_DIR, 'scr_summary.json'), 'r') as f:
+    scr = json.load(f)
+
 rows = []
 with open(os.path.join(OUTPUT_DIR, 'cpsp_integrated_results.csv'), 'r', encoding='utf-8') as f:
     for r in csv.DictReader(f):
@@ -142,6 +145,14 @@ def add_inline_figure(fig_path, caption_text, fig_num):
 unadj_d = reg["model1_unadjusted"]["cohens_d"]
 adj_d = reg["adjusted_cpsp_test"]["cohens_d"]
 attenuation = (1 - adj_d / unadj_d) * 100
+
+scr_analgesic_range = scr['analgesic_inpatient']['scr_range']
+scr_analgesic_ratio = scr['analgesic_inpatient']['variation_ratio']
+scr_neuro_range = scr['neuropathic_outpatient']['scr_range']
+scr_neuro_ratio = scr['neuropathic_outpatient']['variation_ratio']
+scr_neuro_tohoku = scr['neuropathic_outpatient']['scr_tohoku_mean']
+scr_neuro_non_tohoku = scr['neuropathic_outpatient']['scr_non_tohoku_mean']
+
 region_data = defaultdict(list)
 for r in rows:
     region_data[r['region']].append(r['acute_analgesic_per_surgery'])
@@ -195,6 +206,7 @@ abs_sections = [
         f'Phase 2では外来神経障害性疼痛薬処方（プレガバリン、ミロガバリン、デュロキセチン、'
         f'トラマドール、ノイロトロピン）を慢性術後痛（CPSP）のプロキシとし、'
         f'交絡疾患（糖尿病性神経障害、帯状疱疹後神経痛、うつ病、不安障害）で調整した。'
+        f'間接年齢性別標準化による標準化請求比（SCR）で人口構成の影響を確認した。'
     )),
     ('結果', (
         f'Phase 1では、鎮痛薬／手術指数は1.97倍の都道府県間変動を示した'
@@ -204,6 +216,7 @@ abs_sections = [
         f'Phase 2では、未調整の神経障害性疼痛処方に大きな東北の超過が見られたが'
         f'（d={unadj_d:.2f}）、交絡疾患調整後、東北効果は{attenuation:.0f}%減弱し'
         f'非有意となった（P={reg["adjusted_cpsp_test"]["p_value"]:.2f}）。'
+        f'SCRは鎮痛薬処方に年齢性別標準化後も{scr_analgesic_ratio:.2f}倍の変動を確認した。'
     )),
     ('解釈', (
         '国内で約2倍の疼痛関連処方変動は、文化的ラベルが集団レベルで鎮痛薬の必要性を予測しないことを示す。'
@@ -245,7 +258,7 @@ p.add_run(
     'NDBオープンデータ（約1億2500万人の全被保険者をカバー）を用い、急性周術期鎮痛薬処方に'
     '1.97倍の変動と有意な地域クラスタリングを見出した。伝統的に最も忍耐強いとされる東北は、'
     '鎮痛薬処方が多かった。神経障害性疼痛処方の東北超過は交絡疾患（特に糖尿病）で'
-    '大部分が説明された。'
+    '大部分が説明された。年齢性別標準化請求比（SCR）でも処方の異質性は同様に確認された。'
 )
 
 p = doc.add_paragraph()
@@ -317,7 +330,7 @@ p = doc.add_paragraph()
 add_ref_runs(p, m1)
 
 add_heading_text('データソース', level=2)
-m2 = f'NDBオープンデータ第10回（2023年4月〜2024年3月）を使用した。{cite(11)}NDBは日本の国民皆保険制度下の全保険者の請求データを収集し、約1億2500万人の被保険者を網羅する。集計データは都道府県レベルで公表され、10件未満のセルは秘匿される。人口当たりの割合算出には総務省統計局の都道府県別人口推計を用いた。'
+m2 = f'NDBオープンデータ第10回（2023年4月〜2024年3月）を使用した。{cite(11)}NDBは日本の国民皆保険制度下の全保険者の請求データを収集し、約1億2500万人の被保険者を網羅する。集計データは都道府県レベルで公表され、10件未満のセルは秘匿される。人口当たりの割合および標準化請求比（SCR）の算出には、総務省統計局の都道府県別5歳階級・男女別人口推計（2023年10月）を用いた。'
 p = doc.add_paragraph()
 add_ref_runs(p, m2)
 
@@ -360,6 +373,15 @@ doc.add_paragraph(
     '調整後CPSP指数は4交絡プロキシへの回帰残差として算出した。'
     'Python 3.11（NumPy 1.24, SciPy 1.11）で全解析を実施した。'
 )
+
+add_heading_text('年齢性別標準化', level=2)
+m_scr = (
+    f'Taira et al{cite(14)}の方法に従い、間接年齢性別標準化により標準化請求比（SCR）を算出した。'
+    f'NDBの性別・年齢階級別テーブルから全国の年齢性別別処方率（18の5歳階級×2性別）を計算し、'
+    f'各都道府県の人口構成に適用した。SCR = (観測値 / 期待値) × 100。'
+)
+p = doc.add_paragraph()
+add_ref_runs(p, m_scr)
 
 # ============================================================
 # 結果
@@ -493,6 +515,15 @@ doc.add_paragraph(
     f'東北効果は非有意であった。調整後、東北効果は{attenuation:.0f}%減弱した。'
 )
 
+add_heading_text('年齢性別標準化請求比', level=2)
+doc.add_paragraph(
+    f'間接年齢性別標準化後、入院鎮痛薬SCRは{scr_analgesic_range[0]:.1f}〜{scr_analgesic_range[1]:.1f}'
+    f'（{scr_analgesic_ratio:.2f}倍の変動）であり、処方の異質性が都道府県の人口構成の違いでは'
+    f'説明できないことを確認した。外来神経障害性疼痛薬SCRは{scr_neuro_range[0]:.1f}〜'
+    f'{scr_neuro_range[1]:.1f}（{scr_neuro_ratio:.2f}倍）。東北は神経障害性疼痛SCRが高く'
+    f'（平均{scr_neuro_tohoku:.1f} vs 非東北{scr_neuro_non_tohoku:.1f}）、粗解析と一致した。'
+)
+
 # ============================================================
 # 考察
 # ============================================================
@@ -552,8 +583,8 @@ add_heading_text('強みと限界', level=2)
 d6b = (
     f'主な限界は生態学的デザインに固有のものである。分析単位は個人ではなく都道府県（生態学的誤謬）。'
     f'NDBオープンデータは診断コードを含まず、CPSPを直接同定できない。'
-    f'年齢・性別層別化データが現在のNDBリリースの薬剤-都道府県レベルで利用できず、'
-    f'Taira et al{cite(14)}が用いた標準化請求比の算出は不可能であった。'
+    f'SCRによる間接年齢性別標準化は人口構成の影響を除外したが、'
+    f'個人レベルの交絡因子は集計NDBデータでは測定不能である。'
 )
 p = doc.add_paragraph()
 add_ref_runs(p, d6b)

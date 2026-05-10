@@ -44,6 +44,9 @@ FIG_DIR = OUTPUT_DIR  # EN figures already here
 with open(os.path.join(OUTPUT_DIR, 'cpsp_regression_summary.json'), 'r') as f:
     reg = json.load(f)
 
+with open(os.path.join(OUTPUT_DIR, 'scr_summary.json'), 'r') as f:
+    scr = json.load(f)
+
 rows = []
 with open(os.path.join(OUTPUT_DIR, 'cpsp_integrated_results.csv'), 'r', encoding='utf-8') as f:
     for r in csv.DictReader(f):
@@ -264,6 +267,14 @@ unadj_d = reg["model1_unadjusted"]["cohens_d"]
 adj_d = reg["adjusted_cpsp_test"]["cohens_d"]
 attenuation = (1 - adj_d / unadj_d) * 100
 
+# SCR computed values
+scr_analgesic_range = scr['analgesic_inpatient']['scr_range']
+scr_analgesic_ratio = scr['analgesic_inpatient']['variation_ratio']
+scr_neuro_range = scr['neuropathic_outpatient']['scr_range']
+scr_neuro_ratio = scr['neuropathic_outpatient']['variation_ratio']
+scr_neuro_tohoku = scr['neuropathic_outpatient']['scr_tohoku_mean']
+scr_neuro_non_tohoku = scr['neuropathic_outpatient']['scr_non_tohoku_mean']
+
 # Regional summaries for Table 1
 region_data = defaultdict(list)
 for r in rows:
@@ -314,12 +325,11 @@ add_heading_text('Abstract', level=1)
 
 abstract_bg = (
     'Clinicians frequently rely on cultural labels\u2014such as \u201cJapanese patients are '
-    'stoic\u201d\u2014when estimating analgesic requirements. '
-    'Yet whether pain-related prescribing actually varies within Japan has not been examined '
+    'stoic\u201d\u2014when estimating analgesic requirements, '
+    'yet whether pain-related prescribing varies within Japan has not been examined '
     'at the population level. '
     'Japan\u2019s National Database of Health Insurance Claims (NDB) provides population-complete '
-    'prescribing data that enables direct testing of whether cultural labels predict analgesic use '
-    'across all 47 prefectures.'
+    'prescribing data enabling direct testing of whether cultural labels predict analgesic use.'
 )
 
 abstract_methods = (
@@ -331,7 +341,8 @@ abstract_methods = (
     'Phase 2 examined outpatient neuropathic pain drug prescribing (pregabalin, mirogabalin, '
     'duloxetine, tramadol, neurotropin) as a chronic postsurgical pain (CPSP) proxy, '
     'adjusted for confounding diseases (diabetic neuropathy, postherpetic neuralgia, depression, '
-    'anxiety) using multiple regression. Per-capita rates supplemented per-surgery indices.'
+    'anxiety) using multiple regression. Standardised claim ratios (SCR) using indirect '
+    'age-sex standardisation confirmed findings independent of demographic composition.'
 )
 
 abstract_findings = (
@@ -344,7 +355,9 @@ abstract_findings = (
     f'(d={unadj_d:.2f}), but diabetes drug prescribing was a strong confounder (r=0\u00b787). '
     f'After adjustment for all four disease proxies, the Tohoku effect was attenuated by '
     f'{attenuation:.0f}% and became nonsignificant '
-    f'(P={reg["adjusted_cpsp_test"]["p_value"]:.2f}).'
+    f'(P={reg["adjusted_cpsp_test"]["p_value"]:.2f}). '
+    f'SCR confirmed {scr_analgesic_ratio:.2f}-fold variation in analgesic prescribing '
+    f'after age-sex standardisation.'
 )
 
 abstract_interpretation = (
@@ -404,7 +417,8 @@ ric_added = (
     'The apparent Tohoku excess in neuropathic pain prescribing was largely explained '
     'by confounding disease prevalence (especially diabetes), '
     'demonstrating that ecological pain studies must adjust for disease confounders. '
-    'Per-capita neuropathic pain prescribing rates confirmed the prefecture-level heterogeneity.'
+    'Per-capita neuropathic pain prescribing rates and age-sex standardised claim ratios '
+    'confirmed the prefecture-level heterogeneity.'
 )
 
 ric_implications = (
@@ -539,8 +553,9 @@ m2 = (
     f'encompassing approximately 125 million insured individuals. '
     f'Aggregate prescription and procedure data are published at the prefecture level (n=47) '
     f'with suppression of cells containing fewer than ten events. '
-    f'Prefecture-level population estimates from the Statistics Bureau of Japan were used '
-    f'to compute per-capita rates.'
+    f'Prefecture-level population estimates (October 2023, by five-year age group and sex) '
+    f'from the Statistics Bureau of Japan were used to compute per-capita rates and '
+    f'standardised claim ratios (SCR).'
 )
 add_heading_text('Data source', level=2)
 p = doc.add_paragraph()
@@ -637,6 +652,20 @@ m7b = (
 )
 doc.add_paragraph(m7b)
 methods_parts.append(m7b)
+
+m7c = (
+    'Standardised claim ratios (SCR) were computed by indirect age-sex standardisation, '
+    'following the method of Taira et al.{14} '
+    'National age-sex-specific prescription rates (18 five-year age groups \u00d7 2 sexes) '
+    'from the NDB sex-age table were applied to each prefecture\u2019s population structure '
+    'from the October 2023 population estimates. '
+    f'SCR = (observed / expected) \u00d7 100, where expected is the sum of national age-sex rates '
+    f'weighted by the prefecture\u2019s demographic composition.'
+)
+add_heading_text('Age-sex standardisation', level=2)
+p = doc.add_paragraph()
+add_ref_runs(p, m7c)
+methods_parts.append(m7c)
 
 m8 = 'The funder had no role in study design, data collection, analysis, interpretation, or writing.'
 add_heading_text('Role of the funding source', level=2)
@@ -873,6 +902,21 @@ r6 = (
 doc.add_paragraph(r6)
 results_parts.append(r6)
 
+add_heading_text('Age-sex standardised claim ratios', level=2)
+r7 = (
+    f'After indirect age-sex standardisation, inpatient analgesic SCR ranged from '
+    f'{scr_analgesic_range[0]:.1f} to {scr_analgesic_range[1]:.1f} '
+    f'({scr_analgesic_ratio:.2f}-fold variation), confirming that the prescribing heterogeneity '
+    f'was not attributable to differences in prefectural age-sex composition. '
+    f'Outpatient neuropathic pain drug SCR ranged from {scr_neuro_range[0]:.1f} to '
+    f'{scr_neuro_range[1]:.1f} ({scr_neuro_ratio:.2f}-fold). '
+    f'Tohoku retained elevated neuropathic pain SCR (mean {scr_neuro_tohoku:.1f}) '
+    f'relative to non-Tohoku prefectures ({scr_neuro_non_tohoku:.1f}), consistent with '
+    f'the crude analysis.'
+)
+doc.add_paragraph(r7)
+results_parts.append(r7)
+
 results_total = sum(wc(t) for t in results_parts)
 print(f'Results word count: {results_total}')
 
@@ -1031,11 +1075,10 @@ d6b = (
     f'(eg, fibromyalgia has no specific drug proxy and shares pregabalin as first-line '
     f'treatment). The cross-sectional design cannot distinguish temporal sequences '
     f'(surgery \u2192 acute pain \u2192 CPSP), and unmeasured confounders such as '
-    f'age distribution, surgical case mix, and regional prescribing culture may '
-    f'contribute to residual variation. Age-sex stratified data were not available '
-    f'at the drug-prefecture level in the current NDB release, precluding computation '
-    f'of standardised claim ratios as used by Taira et al;{cite(14)} future editions '
-    f'may enable this refinement.'
+    f'surgical case mix and regional prescribing culture may '
+    f'contribute to residual variation. Although indirect age-sex standardisation via SCR '
+    f'confirmed that demographic composition did not explain the observed heterogeneity, '
+    f'individual-level confounders remain unmeasured in the aggregate NDB data.'
 )
 p = doc.add_paragraph()
 add_ref_runs(p, d6b)
