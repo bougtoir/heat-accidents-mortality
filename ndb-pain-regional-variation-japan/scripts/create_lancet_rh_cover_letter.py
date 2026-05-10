@@ -54,19 +54,20 @@ doc.add_paragraph()
 body_paras = [
     (
         'I am pleased to submit the enclosed manuscript entitled '
-        '\u201cRegional Heterogeneity in Pain-Related Prescribing Across Japan\u2019s '
-        '47 Prefectures Challenges a Stoic Monolithic Patient Stereotype: '
-        'an ecological study\u201d '
+        '\u201cDo Cultural Labels Predict Analgesic Need? '
+        'A 47-Prefecture Ecological Study of Pain Prescribing '
+        'Variation in Japan\u201d '
         'for consideration as an Original Article in '
         'The Lancet Regional Health \u2013 Western Pacific.'
     ),
     (
-        'Cross-cultural research consistently characterises Japanese people as stoic toward pain, '
-        'yet all prior comparisons have treated Japan as a culturally homogeneous unit. '
+        'Clinicians frequently rely on cultural labels\u2014such as \u201cJapanese patients '
+        'are stoic\u201d\u2014when making analgesic prescribing decisions. '
+        'Yet all prior comparisons have treated Japan as a culturally homogeneous unit. '
         'Using population-complete insurance claims data from Japan\u2019s National Database '
         '(NDB Open Data, 10th edition, covering approximately 125 million insured individuals), '
         'we mapped perioperative and chronic pain-related prescribing across all 47 prefectures '
-        'for the first time.'
+        'for the first time to test whether cultural labels predict analgesic use.'
     ),
     (
         'Our principal findings are:'
@@ -88,8 +89,9 @@ findings = [
     f'confounding disease prevalence (especially diabetes; r=0\u00b787), with '
     f'{attenuation:.0f}% attenuation after adjustment.',
 
-    f'These findings demonstrate that Japan\u2019s pain culture is not monolithic, with '
-    f'implications for individualised pain assessment across the Western Pacific region.',
+    f'These findings demonstrate that cultural labels do not predict analgesic need '
+    f'at the population level, with implications for any clinician\u2014surgeon, internist, '
+    f'or pain specialist\u2014who prescribes analgesics across the Western Pacific region.',
 ]
 
 for finding in findings:

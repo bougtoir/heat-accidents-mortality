@@ -275,9 +275,9 @@ for r in rows:
 title_p = doc.add_paragraph()
 title_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
 run = title_p.add_run(
-    'Regional Heterogeneity in Pain-Related Prescribing Across Japan\u2019s '
-    '47 Prefectures Challenges a Stoic Monolithic Patient Stereotype: '
-    'an ecological study'
+    'Do Cultural Labels Predict Analgesic Need? '
+    'A 47-Prefecture Ecological Study of Pain Prescribing '
+    'Variation in Japan'
 )
 run.bold = True
 run.font.size = Pt(14)
@@ -313,11 +313,13 @@ doc.add_page_break()
 add_heading_text('Abstract', level=1)
 
 abstract_bg = (
-    'Cross-cultural research characterises Japanese people as stoic toward pain, '
-    'yet whether this endurance varies regionally within Japan remains unexplored. '
+    'Clinicians frequently rely on cultural labels\u2014such as \u201cJapanese patients are '
+    'stoic\u201d\u2014when estimating analgesic requirements. '
+    'Yet whether pain-related prescribing actually varies within Japan has not been examined '
+    'at the population level. '
     'Japan\u2019s National Database of Health Insurance Claims (NDB) provides population-complete '
-    'prescribing data that enables mapping of pain-related healthcare utilisation across all '
-    '47 prefectures.'
+    'prescribing data that enables direct testing of whether cultural labels predict analgesic use '
+    'across all 47 prefectures.'
 )
 
 abstract_methods = (
@@ -346,12 +348,13 @@ abstract_findings = (
 )
 
 abstract_interpretation = (
-    'Nearly twofold within-country variation in pain-related prescribing challenges the assumption '
-    'that \u201cJapanese\u201d constitutes a uniform category for pain behaviour. '
+    'Nearly twofold within-country variation demonstrates that cultural labels '
+    'do not predict analgesic need at the population level. '
     'Confounding diseases, particularly diabetes, substantially modified the apparent regional '
     'pattern, underscoring the need for confounder adjustment in ecological pain studies. '
-    'Individualised pain assessment should replace culturally stereotyped assumptions '
-    'in clinical practice throughout the Western Pacific region and beyond.'
+    'Any clinician\u2014whether surgeon, internist, or pain specialist\u2014who adjusts '
+    'prescribing based on a patient\u2019s cultural background rather than individual assessment '
+    'risks both over- and under-treatment.'
 )
 
 abstract_funding = 'None.'
@@ -388,7 +391,7 @@ ric_evidence = (
     'Wakaizumi et al (2024) reported 1\u00b76-fold regional variation in chronic pain prevalence '
     'across Japanese prefectures using an internet survey, and Matsuoka et al (2025) found '
     '4-fold variation in cancer opioid prescribing. '
-    'No study has mapped perioperative analgesic or neuropathic pain prescribing across all '
+    'No study has tested whether cultural labels predict actual analgesic prescribing across all '
     '47 prefectures using population-complete claims data.'
 )
 
@@ -405,12 +408,12 @@ ric_added = (
 )
 
 ric_implications = (
-    'These findings demonstrate that pain-related prescribing is not uniform within Japan, '
-    'undermining the assumption that national cultural labels predict individual pain behaviour. '
-    'Clinicians in the Western Pacific region and beyond should avoid ethnic stereotyping when '
-    'assessing pain in Japanese and other East Asian patients. The within-database '
-    'confounder-adjustment framework demonstrated here is replicable in other countries '
-    'with national claims databases.'
+    'Cultural labels do not predict analgesic need: pain-related prescribing is not uniform '
+    'within Japan despite the widespread perception of uniform stoicism. '
+    'Clinicians\u2014surgeons, internists, and pain specialists alike\u2014should base '
+    'analgesic decisions on individual patient assessment rather than cultural assumptions. '
+    'The within-database confounder-adjustment framework demonstrated here is replicable '
+    'in other countries with national claims databases.'
 )
 
 p = doc.add_paragraph()
@@ -441,17 +444,18 @@ add_heading_text('Introduction', level=1)
 intro_parts = []
 
 intro1 = (
-    f'Pain is a universal experience, yet its expression and management are profoundly shaped '
-    f'by culture.{cite(1,2)} Since Zborowski\u2019s landmark observation that ethnic groups '
+    f'When prescribing analgesics, clinicians routinely make assumptions about how much pain '
+    f'a patient can tolerate. These assumptions are often anchored to cultural '
+    f'labels.{cite(1,2)} Since Zborowski\u2019s landmark observation that ethnic groups '
     f'differ in pain behaviour,{cite(3)} a large body of literature has established that '
     f'cultural norms influence pain reporting, treatment-seeking, and analgesic use.{cite(4)} '
-    f'Japan is consistently characterised as stoic toward pain: Hobara found that Japanese '
-    f'respondents rated pain behaviours as less appropriate than Euro-Americans,{cite(5)} '
-    f'and Feng et al showed that Japanese participants were far less willing to trade time '
-    f'to avoid pain on the EQ-5D than respondents in the UK and the Netherlands.{cite(6)} '
-    f'This culturally mediated endurance, encapsulated by the Japanese concept of gaman '
-    f'(\u6211\u6162, patient endurance), carries clinical risk when clinicians assume '
-    f'that a stoic presentation indicates lower analgesic need.'
+    f'Japan is a case in point: Hobara found that Japanese respondents rated pain behaviours '
+    f'as less appropriate than Euro-Americans,{cite(5)} and Feng et al showed that Japanese '
+    f'participants were far less willing to trade time to avoid pain on the EQ-5D than '
+    f'respondents in the UK and the Netherlands.{cite(6)} '
+    f'The resulting cultural label\u2014\u201cJapanese patients are stoic\u201d\u2014carries '
+    f'clinical risk whenever a clinician\u2014whether surgeon, internist, or anaesthesiologist\u2014'
+    f'assumes that a stoic presentation indicates lower analgesic need.'
 )
 p = doc.add_paragraph()
 add_ref_runs(p, intro1)
@@ -882,13 +886,14 @@ disc_parts = []
 d1 = (
     'This study is the first to map perioperative and chronic pain-related prescribing across '
     'all 47 prefectures of Japan, leveraging freely available NDB Open Data that capture '
-    'virtually the entire insured population. Three principal findings have implications '
-    'for clinical practice and health policy across the Western Pacific region.'
+    'virtually the entire insured population. The answer to the question posed in the title '
+    'is no: cultural labels do not predict analgesic need. Three principal findings support '
+    'this conclusion and carry implications for any clinician who prescribes analgesics.'
 )
 doc.add_paragraph(d1)
 disc_parts.append(d1)
 
-add_heading_text('Regional variation challenges the monolithic stereotype', level=2)
+add_heading_text('Cultural labels fail: 1\u00b797-fold variation within one culture', level=2)
 d2 = (
     f'Despite Japan\u2019s well-documented cultural stoicism toward pain,{cite(5,6)} '
     f'we found 1\u00b797-fold variation in acute perioperative analgesic prescribing '
@@ -904,25 +909,28 @@ p = doc.add_paragraph()
 add_ref_runs(p, d2)
 disc_parts.append(d2)
 
-add_heading_text('Clinical implications: beyond cultural stereotyping', level=2)
+add_heading_text('Why this matters for every prescriber', level=2)
 d3 = (
-    f'The 1\u00b797-fold within-Japan variation has direct clinical relevance beyond the domestic '
-    f'context. A large body of evidence demonstrates that ethnic and cultural stereotypes '
-    f'influence clinician pain assessment and analgesic prescribing. Anderson et al showed that '
-    f'racial and ethnic minorities in the United States consistently receive less adequate pain '
-    f'management across acute, chronic, cancer, and palliative settings.{cite(17)} '
-    f'Campbell and Edwards identified that clinician expectations about a patient\u2019s cultural '
-    f'pain behaviour can lead to systematic under- or over-treatment.{cite(18)} Rogger et al '
-    f'emphasised that cultural framing affects not only patient reporting but also how '
-    f'clinicians interpret and respond to pain cues.{cite(2)}'
+    f'The 1\u00b797-fold within-Japan variation has direct clinical relevance for any physician '
+    f'who writes an analgesic prescription\u2014not only pain specialists but also surgeons, '
+    f'internists, and general practitioners. A large body of evidence demonstrates that '
+    f'cultural stereotypes influence clinician pain assessment and prescribing behaviour. '
+    f'Anderson et al showed that racial and ethnic minorities in the United States consistently '
+    f'receive less adequate pain management across acute, chronic, cancer, and palliative '
+    f'settings.{cite(17)} Campbell and Edwards identified that clinician expectations about '
+    f'a patient\u2019s cultural pain behaviour can lead to systematic under- or '
+    f'over-treatment.{cite(18)} Rogger et al emphasised that cultural framing affects not '
+    f'only patient reporting but also how clinicians interpret and respond to pain cues.{cite(2)}'
 )
 p = doc.add_paragraph()
 add_ref_runs(p, d3)
 disc_parts.append(d3)
 
 d3b = (
-    f'This risk is compounded by the widespread perception of Japan as a culturally and '
-    f'ethnically homogeneous society. The nihonjinron discourse (theories of Japanese '
+    f'The broader lesson is that within-country heterogeneity in pain prescribing '
+    f'challenges the use of national cultural stereotypes in clinical practice\u2014'
+    f'not only in Japan but in any country where cultural generalisations guide prescribing '
+    f'decisions. The nihonjinron discourse (theories of Japanese '
     f'uniqueness) has long promoted the notion that Japanese people constitute a uniform '
     f'population sharing a single set of behavioural norms.{cite(19)} Yet this '
     f'\u201chegemony of homogeneity,\u201d as Befu termed it, is an ideological construct '
@@ -932,7 +940,12 @@ d3b = (
     f'stereotypes\u2014\u201cJapanese are stoic\u201d and \u201cJapanese are '
     f'homogeneous\u201d\u2014creates a doubly misleading assumption: that all Japanese '
     f'patients will tolerate pain equally and require less analgesia. '
-    f'Our finding of 1\u00b797-fold within-Japan variation directly refutes this assumption.'
+    f'Our finding of 1\u00b797-fold within-Japan variation directly refutes this assumption. '
+    f'If this degree of heterogeneity exists within a society widely regarded as culturally '
+    f'uniform, the same fragility of cultural labels likely applies to every other '
+    f'national-level pain stereotype\u2014\u201cStoic Scandinavians,\u201d '
+    f'\u201cexpressive Mediterranean patients,\u201d or any similar generalisation '
+    f'that reduces a diverse population to a single behavioural expectation.'
 )
 p = doc.add_paragraph()
 add_ref_runs(p, d3b)
@@ -1036,28 +1049,32 @@ d7pre = (
     'individual-level longitudinal tracking from surgery to new neuropathic pain prescriptions, '
     'providing a direct CPSP measure. Procedure-specific analyses (eg, total knee arthroplasty, '
     'mastectomy) would reduce surgical case-mix confounding. '
-    'From an international perspective, prospective studies examining how cultural '
-    'stereotypes influence analgesic prescribing for Japanese patients in multicultural clinical '
-    'settings would directly test whether the \u201cstoic Japanese\u201d label translates into '
-    'therapeutic disadvantage. Such research is increasingly urgent as global migration and '
-    'medical tourism expose more patients to healthcare systems unfamiliar with their '
-    'cultural background.'
+    'From an international perspective, replicating this within-country ecological framework '
+    'in other nations with national claims databases (eg, South Korea, Taiwan, the UK) '
+    'would test whether within-country prescribing heterogeneity is the rule rather than '
+    'the exception\u2014further undermining the validity of national-level cultural '
+    'stereotypes in clinical decision-making. '
+    'Prospective studies examining how cultural assumptions influence analgesic '
+    'prescribing in multicultural clinical settings would directly test whether '
+    'stereotyped labels translate into therapeutic disadvantage. Such research is '
+    'increasingly urgent as global migration and medical tourism expose more patients '
+    'to healthcare systems unfamiliar with their cultural background.'
 )
 doc.add_paragraph(d7pre)
 disc_parts.append(d7pre)
 
 add_heading_text('Conclusion', level=2)
 d7 = (
-    'Despite Japan\u2019s culturally ingrained norm of pain endurance (gaman), '
+    'Do cultural labels predict analgesic need? Our population-complete data show '
+    'they do not. Despite Japan\u2019s culturally ingrained norm of pain endurance (gaman), '
     'perioperative and chronic pain-related prescribing varies up to 1\u00b797-fold '
     'across prefectures. Confounding diseases, particularly diabetes, substantially '
     'modify the apparent regional pattern of neuropathic pain prescribing. '
-    'These findings demonstrate that Japan\u2019s pain culture is not monolithic. '
-    'Treating \u201cJapanese\u201d as a uniform category for pain behaviour risks '
-    'inadequate analgesia for Japanese patients treated domestically and abroad\u2014'
-    'and the same principle applies to every cultural label applied to any patient '
-    'population. Individualised pain assessment should replace culturally stereotyped '
-    'assumptions to ensure equitable perioperative care across all clinical settings '
+    'Any clinician\u2014surgeon, internist, or anaesthesiologist\u2014who adjusts '
+    'analgesic dosing based on the label \u201cJapanese patient\u201d risks both over- '
+    'and under-treatment. The same principle applies to every cultural label applied '
+    'to any patient population. Individualised pain assessment should replace '
+    'culturally stereotyped assumptions to ensure equitable care across all clinical settings '
     'in the Western Pacific region and beyond.'
 )
 doc.add_paragraph(d7)
