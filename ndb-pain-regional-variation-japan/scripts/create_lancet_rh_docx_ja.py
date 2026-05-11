@@ -129,13 +129,16 @@ def set_table_borders(table):
     tblPr.append(borders)
 
 def add_inline_figure(fig_path, caption_text, fig_num):
-    if os.path.exists(fig_path):
-        p = doc.add_paragraph()
-        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        run = p.add_run()
-        run.add_picture(fig_path, width=Inches(5.5))
+    """図のプレースホルダーとキャプションを挿入（図は独立TIFFファイルとして投稿）"""
+    p = doc.add_paragraph()
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p.paragraph_format.space_before = Pt(24)
+    p.paragraph_format.space_after = Pt(6)
+    r0 = p.add_run(f'[図{fig_num}をここに挿入]')
+    r0.font.size = Pt(10)
+    r0.font.color.rgb = RGBColor(128, 128, 128)
     cap = doc.add_paragraph()
-    cap.paragraph_format.space_before = Pt(14)
+    cap.paragraph_format.space_before = Pt(6)
     cap.paragraph_format.space_after = Pt(12)
     r = cap.add_run(f'図{fig_num}. ')
     r.bold = True
