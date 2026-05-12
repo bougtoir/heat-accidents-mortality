@@ -2,20 +2,24 @@
 Generate EJA (European Journal of Anaesthesiology) format English paper as editable .docx file.
 Target journal: European Journal of Anaesthesiology (EJA), Lippincott Williams & Wilkins
 
-Key EJA format requirements:
-  - Structured abstract (~250 words): BACKGROUND, OBJECTIVE, DESIGN, SETTING,
-    MAIN OUTCOME MEASURES, RESULTS, CONCLUSION
-  - ~3000 words body text (excluding abstract, references, tables, figure legends)
-  - IMRaD structure: Introduction, Methods, Results, Discussion
-  - Vancouver numbered references (in order of appearance)
+Key EJA format requirements (from Instructions for Authors + Style Guide):
+  - Structured abstract (max 300 words): Background, Objective(s), Design, Setting,
+    Main outcome measures, Results, Conclusions
+  - Max 3500 words body text (excluding abstract, references, tables, figure legends)
+  - 1.5 line spacing, margins >= 3 cm
+  - Sections each starting on a separate page
+  - IMRaD: Introduction, Methods (incl. Ethics), Results, Discussion (incl. Conclusion)
+  - Vancouver numbered references as SUPERSCRIPT after punctuation, no spaces (1,2,4,6)
   - STROBE checklist required for observational studies
   - Ethics statement at beginning of Methods
-  - Title page: running head, word counts, keywords
-  - Figures/tables: max 6 combined
-  - British/European spelling (vaporiser, anaesthesia, etc.)
-  - No "What this study adds" box
-  - Data availability statement
-  - CRediT author contributions
+  - Title page: full title + running head, study design in title
+  - Figures: SEPARATE files, NOT embedded; figure legends on separate page
+  - UK spelling (vaporiser, anaesthesia, -ise not -ize)
+  - P uppercase italic, n lowercase italic
+  - Mean +/- SD, median [IQR], n=34 (no spaces), P<0.05 (no spaces)
+  - Acknowledgements heading: "Acknowledgements relating to this article"
+    with: Assistance, Financial support, Conflicts of interest, Presentation
+  - NOT double-blind (author names on title page)
 """
 import pandas as pd
 import numpy as np
@@ -216,12 +220,12 @@ def setup_doc():
     font.name = 'Times New Roman'
     font.size = Pt(11)
     pf = style.paragraph_format
-    pf.line_spacing = 2.0
+    pf.line_spacing = 1.5  # EJA requires 1.5 spacing
     for section in doc.sections:
-        section.top_margin = Cm(2.54)
-        section.bottom_margin = Cm(2.54)
-        section.left_margin = Cm(2.54)
-        section.right_margin = Cm(2.54)
+        section.top_margin = Cm(3.0)  # EJA: margins not less than 3 cm
+        section.bottom_margin = Cm(3.0)
+        section.left_margin = Cm(3.0)
+        section.right_margin = Cm(3.0)
     return doc
 
 
@@ -301,12 +305,12 @@ def write_eja_paper():
     doc.add_paragraph()
 
     # Word counts
-    add_para(doc, 'Abstract word count: 248', size=Pt(10))
-    add_para(doc, 'Main text word count: ~3000 (excluding abstract, references, '
+    add_para(doc, 'Abstract word count: ~290 (max 300)', size=Pt(10))
+    add_para(doc, 'Main text word count: ~2200 (max 3500, excluding abstract, references, '
              'tables, figure legends)', size=Pt(10))
-    add_para(doc, 'Number of references: 20', size=Pt(10))
+    add_para(doc, 'Number of references: 18', size=Pt(10))
     add_para(doc, 'Number of tables: 2 (+1 supplementary)', size=Pt(10))
-    add_para(doc, 'Number of figures: 6', size=Pt(10))
+    add_para(doc, 'Number of figures: 6 (submitted as separate files)', size=Pt(10))
 
     doc.add_paragraph()
 
@@ -320,74 +324,78 @@ def write_eja_paper():
     doc.add_page_break()
 
     # ============================================================
-    # STRUCTURED ABSTRACT
+    # STRUCTURED ABSTRACT (max 300 words; EJA headings italic)
     # ============================================================
     add_heading_styled(doc, 'Abstract', level=1)
 
-    # BACKGROUND
+    # Background:
     p = doc.add_paragraph()
-    add_run_styled(p, 'BACKGROUND ', bold=True)
+    add_run_styled(p, 'Background: ', bold=True, italic=True)
     add_run_styled(p,
         'Desflurane possesses a global warming potential approximately 2540 times that of '
-        'CO\u2082, making it the most environmentally harmful volatile anaesthetic agent. '
-        'The European Union prohibited desflurane for routine anaesthesia from 1 January 2026 '
-        'under Regulation (EU) 2024/573. The economic consequences of this regulation for '
-        'existing equipment have not been studied.')
+        'CO\u2082, making it the most environmentally harmful volatile anaesthetic agent in '
+        'routine clinical use. The European Union prohibited desflurane for routine anaesthesia '
+        'from 1 January 2026 under Regulation (EU) 2024/573. The economic consequences of this '
+        'regulation for existing anaesthetic equipment have not been studied.')
 
-    # OBJECTIVE
+    # Objective(s):
     p = doc.add_paragraph()
-    add_run_styled(p, 'OBJECTIVE ', bold=True)
+    add_run_styled(p, 'Objective: ', bold=True, italic=True)
     add_run_styled(p,
         'To investigate whether the EU desflurane regulation was associated with changes in '
         'secondary market prices of anaesthetic vaporisers, and whether such changes were '
         'agent-specific.')
 
-    # DESIGN
+    # Design:
     p = doc.add_paragraph()
-    add_run_styled(p, 'DESIGN ', bold=True)
+    add_run_styled(p, 'Design: ', bold=True, italic=True)
     add_run_styled(p, 'Cross-sectional time-series analysis of completed online sales.')
 
-    # SETTING
+    # Setting:
     p = doc.add_paragraph()
-    add_run_styled(p, 'SETTING ', bold=True)
+    add_run_styled(p, 'Setting: ', bold=True, italic=True)
     add_run_styled(p,
-        'eBay (www.ebay.com), using Terapeak product research to retrieve three years of '
-        'historical completed sale data (March 2023 to March 2026).')
+        'eBay (www.ebay.com), the world\u2019s largest online marketplace. Data retrieved using '
+        'Terapeak product research for three years of historical completed sales '
+        '(March 2023 to March 2026).')
 
-    # MAIN OUTCOME MEASURES
+    # Main outcome measures:
     p = doc.add_paragraph()
-    add_run_styled(p, 'MAIN OUTCOME MEASURES ', bold=True)
+    add_run_styled(p, 'Main outcome measures: ', bold=True, italic=True)
     add_run_styled(p,
         'Sale prices (US dollars) of desflurane, sevoflurane and isoflurane vaporisers. '
         'Temporal trends assessed by Spearman rank correlation and Kendall \u03c4 across '
         'ordered regulatory phases. Pre-/post-ban comparison by Mann\u2013Whitney U test '
         'with Cohen\u2019s d effect size.')
 
-    # RESULTS
+    # Results:
     p = doc.add_paragraph()
-    add_run_styled(p, 'RESULTS ', bold=True)
+    add_run_styled(p, 'Results: ', bold=True, italic=True)
     add_run_styled(p,
         f'{total_n} completed sales were analysed ({des["total_n"]} desflurane, '
         f'{sevo["total_n"]} sevoflurane, {iso["total_n"]} isoflurane). '
         f'Desflurane vaporiser prices showed a significant downward trend '
-        f'(Spearman \u03c1\u2009=\u2009{des_tr["spearman_rho"]:.2f}, P\u2009<\u20090.001; '
-        f'Kendall \u03c4\u2009=\u2009{des_tr["kendall_tau"]:.2f}, '
-        f'P\u2009=\u2009{fmt_p(des_tr["kendall_p"])}), '
-        f'with a {des_pct:.0f}% decline from pre-ban (mean US${des["pre_mean"]:.0f}) '
-        f'to post-ban (US${des["post_mean"]:.0f}; Cohen\u2019s d\u2009=\u2009{des_d:.2f}). '
-        f'Neither sevoflurane (\u03c1\u2009=\u2009{sevo_tr["spearman_rho"]:.2f}, '
-        f'P\u2009=\u2009{fmt_p(sevo_tr["spearman_p"])}) nor isoflurane '
-        f'(\u03c1\u2009=\u2009{iso_tr["spearman_rho"]:.2f}, '
-        f'P\u2009=\u2009{fmt_p(iso_tr["spearman_p"])}) showed significant trends.')
+        f'(Spearman \u03c1={des_tr["spearman_rho"]:.2f}, P<0.001; '
+        f'Kendall \u03c4={des_tr["kendall_tau"]:.2f}, '
+        f'P={fmt_p(des_tr["kendall_p"])}), '
+        f'with a {des_pct:.0f}% decline from pre-ban (mean US${des["pre_mean"]:.0f} '
+        f'\u00b1 {des["pre_sd"]:.0f}) to post-ban (US${des["post_mean"]:.0f} '
+        f'\u00b1 {des["post_sd"]:.0f}; Cohen\u2019s d={des_d:.2f}). '
+        f'Neither sevoflurane (\u03c1={sevo_tr["spearman_rho"]:.2f}, '
+        f'P={fmt_p(sevo_tr["spearman_p"])}) nor isoflurane '
+        f'(\u03c1={iso_tr["spearman_rho"]:.2f}, '
+        f'P={fmt_p(iso_tr["spearman_p"])}) showed significant temporal trends. '
+        f'The price decline began during the legislative process, suggesting anticipatory '
+        f'market responses.')
 
-    # CONCLUSION
+    # Conclusions:
     p = doc.add_paragraph()
-    add_run_styled(p, 'CONCLUSION ', bold=True)
+    add_run_styled(p, 'Conclusions: ', bold=True, italic=True)
     add_run_styled(p,
         'The EU desflurane regulation was associated with a progressive, agent-specific '
         'decline in secondary market vaporiser prices. These findings provide the first '
         'empirical evidence that environmental regulation of anaesthetic agents has measurable '
-        'economic consequences for the secondary equipment market.')
+        'economic consequences for the secondary medical equipment market.')
 
     doc.add_page_break()
 
@@ -413,7 +421,7 @@ def write_eja_paper():
         'in February 2024 and entered into force in March 2024, with the prohibition on desflurane '
         'use in routine anaesthesia taking effect on 1 January 2026.{2} In parallel, NHS England '
         'announced the decommissioning of desflurane by 2024, and NHS Scotland became the first '
-        'health system to ban desflurane purchases in March 2023.{8,12}')
+        'health system to ban desflurane purchases in March 2023.{8,9}')
 
     add_para_with_refs(doc,
         'Anaesthetic vaporisers are agent-specific devices with typical lifespans of 10\u201315 years '
@@ -423,12 +431,12 @@ def write_eja_paper():
         'their vaporiser prices should be unaffected, providing a natural comparator group.')
 
     add_para_with_refs(doc,
-        'Previous studies have addressed the financial rationale for discontinuing desflurane,{16} '
-        'the clinical and policy implications of desflurane decommissioning,{17,18} and the '
-        'effectiveness of vaporiser removal programmes at the institutional level.{15} Economic '
-        'analyses have estimated cost savings from reduced volatile anaesthetic consumption,{9,19} '
+        'Previous studies have addressed the financial rationale for discontinuing desflurane,{10} '
+        'the clinical and policy implications of desflurane decommissioning,{11,12} and the '
+        'effectiveness of vaporiser removal programmes at the institutional level.{13} Economic '
+        'analyses have estimated cost savings from reduced volatile anaesthetic consumption,{14,15} '
         'and the secondary market for pre-owned medical equipment has been characterised for other '
-        'device categories.{20} However, to our knowledge, no study has examined the impact of '
+        'device categories.{16} However, to our knowledge, no study has examined the impact of '
         'environmental regulation on the secondary market values of anaesthetic equipment. '
         'We hypothesised that the EU desflurane regulation would be associated with a progressive '
         'decrease in secondary market prices for desflurane vaporisers specifically, while prices '
@@ -452,7 +460,7 @@ def write_eja_paper():
     add_para_with_refs(doc,
         'This study is reported in accordance with the Strengthening the Reporting of '
         'Observational Studies in Epidemiology (STROBE) guidelines for cross-sectional '
-        'studies.{11} The completed STROBE checklist is provided as supplementary material.')
+        'studies.{17} The completed STROBE checklist is provided as supplementary material.')
 
     add_heading_styled(doc, 'Study design and data source', level=2)
     doc.add_paragraph(
@@ -609,48 +617,48 @@ def write_eja_paper():
         add_table_data_row(t2, data)
     doc.add_paragraph()
 
-    # Results narrative
+    # Results narrative (EJA Style: no spaces around = < > for stats; P italic uppercase)
     des_pct_val = (des['post_mean'] - des['pre_mean']) / des['pre_mean'] * 100
     doc.add_paragraph(
         f'Desflurane vaporiser prices showed a statistically significant downward trend over '
         f'the three-year study period. Spearman rank correlation demonstrated a significant '
         f'negative monotonic association between sale date and price '
-        f'(\u03c1\u2009=\u2009{des_tr["spearman_rho"]:.2f}, P\u2009<\u20090.001), indicating that '
+        f'(\u03c1={des_tr["spearman_rho"]:.2f}, P<0.001), indicating that '
         f'desflurane vaporiser prices declined progressively over time. Kendall \u03c4 analysis '
         f'confirmed that prices decreased across successive regulatory phases '
-        f'(\u03c4\u2009=\u2009{des_tr["kendall_tau"]:.2f}, '
-        f'P\u2009=\u2009{fmt_p(des_tr["kendall_p"])}). '
+        f'(\u03c4={des_tr["kendall_tau"]:.2f}, '
+        f'P={fmt_p(des_tr["kendall_p"])}). '
         f'At the aggregated level, quarterly median prices also showed a significant downward trend '
-        f'(\u03c1\u2009=\u2009{des_tr["quarterly_rho"]:.2f}, '
-        f'P\u2009=\u2009{fmt_p(des_tr["quarterly_p"])}).')
+        f'(\u03c1={des_tr["quarterly_rho"]:.2f}, '
+        f'P={fmt_p(des_tr["quarterly_p"])}).')
     doc.add_paragraph(
         f'In the direct pre-/post-ban comparison, the post-ban mean price '
-        f'(US${des["post_mean"]:.0f}, SD ${des["post_sd"]:.0f}) was {abs(des_pct_val):.0f}% '
-        f'lower than the pre-ban mean (US${des["pre_mean"]:.0f}, SD ${des["pre_sd"]:.0f}). '
+        f'(US${des["post_mean"]:.0f} \u00b1 {des["post_sd"]:.0f}) was {abs(des_pct_val):.0f}% '
+        f'lower than the pre-ban mean (US${des["pre_mean"]:.0f} \u00b1 {des["pre_sd"]:.0f}). '
         f'This difference was statistically significant on Welch\u2019s t-test '
-        f'(P\u2009=\u2009{fmt_p(des_t_pval)}) but did not reach significance on the '
-        f'Mann\u2013Whitney U test (P\u2009=\u2009{fmt_p(des_u_pval)}), likely reflecting the '
-        f'small post-ban sample (n\u2009=\u2009{des["post_n"]}). The effect size was medium '
-        f'(Cohen\u2019s d\u2009=\u2009{des_d:.2f}).')
+        f'(P={fmt_p(des_t_pval)}) but did not reach significance on the '
+        f'Mann\u2013Whitney U test (P={fmt_p(des_u_pval)}), likely reflecting the '
+        f'small post-ban sample (n={des["post_n"]}). The effect size was medium '
+        f'(Cohen\u2019s d={des_d:.2f}).')
 
     sevo_pct = (sevo['post_mean'] - sevo['pre_mean']) / sevo['pre_mean'] * 100
     iso_pct = (iso['post_mean'] - iso['pre_mean']) / iso['pre_mean'] * 100
     doc.add_paragraph(
         f'In marked contrast, sevoflurane vaporiser prices showed no significant '
-        f'temporal trend (Spearman \u03c1\u2009=\u2009{sevo_tr["spearman_rho"]:.2f}, '
-        f'P\u2009=\u2009{fmt_p(sevo_tr["spearman_p"])}; '
-        f'Kendall \u03c4\u2009=\u2009{sevo_tr["kendall_tau"]:.2f}, '
-        f'P\u2009=\u2009{fmt_p(sevo_tr["kendall_p"])}). '
+        f'temporal trend (Spearman \u03c1={sevo_tr["spearman_rho"]:.2f}, '
+        f'P={fmt_p(sevo_tr["spearman_p"])}; '
+        f'Kendall \u03c4={sevo_tr["kendall_tau"]:.2f}, '
+        f'P={fmt_p(sevo_tr["kendall_p"])}). '
         f'Pre-/post-ban comparison showed a non-significant {abs(sevo_pct):.0f}% increase '
-        f'(P\u2009=\u2009{fmt_p(sevo_u_pval)}, Mann\u2013Whitney U).')
+        f'(P={fmt_p(sevo_u_pval)}, Mann\u2013Whitney U).')
     doc.add_paragraph(
         f'Isoflurane vaporiser prices were similarly stable. Although Spearman correlation '
-        f'reached nominal significance (\u03c1\u2009=\u2009{iso_tr["spearman_rho"]:.2f}, '
-        f'P\u2009=\u2009{fmt_p(iso_tr["spearman_p"])}), the magnitude was small and the quarterly '
-        f'median trend was not significant (\u03c1\u2009=\u2009{iso_tr["quarterly_rho"]:.2f}, '
-        f'P\u2009=\u2009{fmt_p(iso_tr["quarterly_p"])}). '
+        f'reached nominal significance (\u03c1={iso_tr["spearman_rho"]:.2f}, '
+        f'P={fmt_p(iso_tr["spearman_p"])}), the magnitude was small and the quarterly '
+        f'median trend was not significant (\u03c1={iso_tr["quarterly_rho"]:.2f}, '
+        f'P={fmt_p(iso_tr["quarterly_p"])}). '
         f'The pre-/post-ban comparison showed a non-significant {abs(iso_pct):.0f}% decline '
-        f'(P\u2009=\u2009{fmt_p(iso_u_pval)}, Mann\u2013Whitney U). '
+        f'(P={fmt_p(iso_u_pval)}, Mann\u2013Whitney U). '
         f'The stability of sevoflurane and isoflurane prices strengthens the inference that '
         f'the desflurane price decline was specifically attributable to the EU regulation '
         f'rather than to broader market forces.')
@@ -669,7 +677,7 @@ def write_eja_paper():
             f'(US${ask["Sevoflurane"]["median"]:.0f}) '
             f'and one-third that of isoflurane '
             f'(US${ask["Isoflurane"]["median"]:.0f}; '
-            f'Kruskal\u2013Wallis H\u2009=\u2009{kw["H"]:.1f}, P\u2009<\u20090.001). '
+            f'Kruskal\u2013Wallis H={kw["H"]:.1f}, P<0.001). '
             f'The desflurane asking\u2013sold price spread ({spr["Desflurane"]["spread_pct"]:.0f}%) '
             f'was substantially narrower than for sevoflurane '
             f'({spr["Sevoflurane"]["spread_pct"]:.0f}%) or isoflurane '
@@ -692,26 +700,26 @@ def write_eja_paper():
     doc.add_paragraph(
         'The convergence of evidence from multiple analytical approaches strengthens these findings. '
         'Spearman rank correlation demonstrated a highly significant monotonic decline in desflurane '
-        'prices over time (P\u2009<\u20090.001), while the same test showed no significant trend for '
-        'sevoflurane (P\u2009=\u20090.86). Kendall \u03c4 confirmed that prices declined across '
-        'ordered regulatory phases for desflurane (P\u2009=\u20090.049) but not sevoflurane '
-        '(P\u2009=\u20090.36). Taken together, these results indicate a robust, progressive and '
+        'prices over time (P<0.001), while the same test showed no significant trend for '
+        'sevoflurane (P=0.86). Kendall \u03c4 confirmed that prices declined across '
+        'ordered regulatory phases for desflurane (P=0.049) but not sevoflurane '
+        '(P=0.36). Taken together, these results indicate a robust, progressive and '
         'agent-specific price decline.')
 
     add_para_with_refs(doc,
         'To our knowledge, no previous study has examined the secondary market impact of '
-        'environmental regulation on anaesthetic equipment. Lehmann et al.{15} demonstrated '
+        'environmental regulation on anaesthetic equipment. Lehmann et al.{13} demonstrated '
         'that a hospital-level intervention combining education with physical removal of '
         'desflurane vaporisers reduced desflurane-attributable CO\u2082 equivalent emissions by 86%; '
         'however, their study measured drug consumption rather than equipment resale values. '
-        'Meyer{16} and Mohammed and Metta{18} articulated the global and financial rationale for '
-        'desflurane discontinuation, while Moonesinghe{17} discussed the broader implications of '
+        'Meyer{10} and Mohammed and Metta{12} articulated the global and financial rationale for '
+        'desflurane discontinuation, while Moonesinghe{11} discussed the broader implications of '
         'decommissioning programmes, but none examined downstream effects on the secondary equipment '
         'market.')
 
     add_para_with_refs(doc,
         'Our findings are consistent with the broader economic literature on regulatory '
-        'obsolescence,{14} where anticipated government restrictions lead to anticipatory price '
+        'obsolescence,{18} where anticipated government restrictions lead to anticipatory price '
         'declines in secondary markets. The pattern of gradual price erosion during the legislative '
         'process (2022\u20132024), followed by a more pronounced decline post-ban, parallels findings '
         'from studies of vehicle emission regulations and their impact on used car markets. '
@@ -765,11 +773,11 @@ def write_eja_paper():
         'secondary medical equipment market.')
 
     # ============================================================
-    # ACKNOWLEDGEMENTS
+    # ACKNOWLEDGEMENTS (EJA format: "Acknowledgements relating to this article")
     # ============================================================
-    add_heading_styled(doc, 'Acknowledgements', level=1)
+    add_heading_styled(doc, 'Acknowledgements relating to this article', level=1)
     add_para(doc,
-        'Assistance with publication: None declared.',
+        'Assistance with the article: None.',
         size=Pt(11))
     add_para(doc,
         'Financial support and sponsorship: None.',
@@ -806,48 +814,64 @@ def write_eja_paper():
     # REFERENCES (Vancouver style, numbered in order of appearance)
     # ============================================================
     add_heading_styled(doc, 'References', level=1)
+    # References numbered in order of first appearance (Vancouver style)
     references = [
+        # 1 - Intro para1 {1-3}
         'Varughese S, Ahmed R. Environmental and occupational considerations of anesthesia: '
         'a narrative review and update. Anesth Analg 2021; 133: 826\u201335.',
+        # 2 - Intro para1 {1-3}, para2 {2}
         'Regulation (EU) 2024/573 of the European Parliament and of the Council of '
         '7 February 2024 on fluorinated greenhouse gases. Official Journal of the European '
         'Union 2024; L 2024/573.',
+        # 3 - Intro para1 {1-3}
         'Sherman JD, Chesebro BB. Inhaled anesthetic climate and ozone effects: a narrative '
         'review. Anesth Analg 2023; 137: 201\u201315.',
+        # 4 - Intro para1 {4,5}
         'European Society of Anaesthesiology and Intensive Care. ESAIC position statement on '
         'the use of desflurane. Eur J Anaesthesiol 2024; 41: 1\u20133.',
+        # 5 - Intro para1 {4,5}
         'Association of Anaesthetists. Environmental sustainability in anaesthesia and '
         'perioperative medicine. Anaesthesia 2023; 78: 219\u201330.',
+        # 6 - Intro para1 {6,7}
         'Sulbaek Andersen MP, Sander SP, Nielsen OJ, et al. Inhalation anaesthetics and '
         'climate change. Br J Anaesth 2010; 105: 760\u20136.',
+        # 7 - Intro para1 {6,7}
         'Ryan SM, Nielsen CJ. Global warming potential of inhaled anesthetics: application '
         'to clinical use. Anesth Analg 2010; 111: 92\u20138.',
+        # 8 - Intro para2 {8,9}
         'McGain F, Muret J, Guen CL, et al. Environmental sustainability in anaesthesia '
         'and critical care. Br J Anaesth 2020; 125: 680\u201392.',
-        'Rauchenwald V, Heuss-Azeez R, Ganter MT, et al. Sevoflurane versus desflurane\u2014'
-        'an economic analysis. BMC Anesthesiol 2020; 20: 272.',
-        'Zuegge KL, Bunsen SK, Engel JM, et al. APW-AVE. Anesth Analg 2023; 137: 1219\u201325.',
-        'von Elm E, Altman DG, Egger M, et al. The Strengthening the Reporting of '
-        'Observational Studies in Epidemiology (STROBE) statement: guidelines for reporting '
-        'observational studies. BMJ 2007; 335: 806\u20138.',
+        # 9 - Intro para2 {8,9}
         'NHS England. Decommissioning of desflurane in the NHS. 2023.',
-        'Richter H, Weixler S, Ganter MT. Environmental sustainability in anaesthesia: the '
-        'role of desflurane. Curr Opin Anaesthesiol 2024; 37: 183\u20138.',
-        'Davis G, Patel N. Regulatory obsolescence and secondary market asset depreciation. '
-        'J Environ Econ Manage 2019; 95: 142\u201360.',
+        # 10 - Intro para4 {10}
+        'Meyer MJ. Desflurane should des-appear: global and financial rationale. Anesth Analg '
+        '2020; 131: 1317\u201322.',
+        # 11 - Intro para4 {11,12}
+        'Moonesinghe SR. Desflurane decommissioning: more than meets the eye. Anaesthesia '
+        '2024; 79: 237\u201341.',
+        # 12 - Intro para4 {11,12}
+        'Mohammed A, Metta H. Is it time to bid adieu to desflurane? J Anaesthesiol Clin '
+        'Pharmacol 2025; 41: 211\u20132.',
+        # 13 - Intro para4 {13}
         'Lehmann H, Werning J, Baschnegger H, et al. Minimising the usage of desflurane '
         'only by education and removal of the vaporisers \u2013 a before-and-after-trial. '
         'BMC Anesthesiol 2025; 25: 108.',
-        'Meyer MJ. Desflurane should des-appear: global and financial rationale. Anesth Analg '
-        '2020; 131: 1317\u201322.',
-        'Moonesinghe SR. Desflurane decommissioning: more than meets the eye. Anaesthesia '
-        '2024; 79: 237\u201341.',
-        'Mohammed A, Metta H. Is it time to bid adieu to desflurane? J Anaesthesiol Clin '
-        'Pharmacol 2025; 41: 211\u20132.',
+        # 14 - Intro para4 {14,15}
+        'Rauchenwald V, Heuss-Azeez R, Ganter MT, et al. Sevoflurane versus desflurane\u2014'
+        'an economic analysis. BMC Anesthesiol 2020; 20: 272.',
+        # 15 - Intro para4 {14,15}
         'Beard D, Aston W, Black S, et al. Environmental and economic impacts of end-tidal '
         'control of volatile anaesthetics. Open Anaesth J 2025; 19: e18742126.',
+        # 16 - Intro para4 {16}
         'Buckhead Fair Market Value. 2025 Benchmark Report on Pre-Owned Medical Equipment '
         'Prices. Atlanta, GA: BFMV, 2025.',
+        # 17 - Methods STROBE {17}
+        'von Elm E, Altman DG, Egger M, et al. The Strengthening the Reporting of '
+        'Observational Studies in Epidemiology (STROBE) statement: guidelines for reporting '
+        'observational studies. BMJ 2007; 335: 806\u20138.',
+        # 18 - Discussion {18}
+        'Davis G, Patel N. Regulatory obsolescence and secondary market asset depreciation. '
+        'J Environ Econ Manage 2019; 95: 142\u201360.',
     ]
     for i, ref in enumerate(references, 1):
         p = doc.add_paragraph()
