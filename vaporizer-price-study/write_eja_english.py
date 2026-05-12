@@ -275,7 +275,7 @@ def write_eja_paper():
     # Running head
     p = doc.add_paragraph()
     add_run_styled(p, 'Running head: ', bold=True, size=Pt(10))
-    add_run_styled(p, 'EU desflurane ban and vaporiser secondary market prices', size=Pt(10))
+    add_run_styled(p, 'EU desflurane ban and anaesthetic equipment economics', size=Pt(10))
 
     doc.add_paragraph()
 
@@ -283,9 +283,9 @@ def write_eja_paper():
     title_p = doc.add_paragraph()
     title_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
     run = title_p.add_run(
-        'Impact of the European Union desflurane regulation on secondary market '
-        'prices of anaesthetic vaporisers: a cross-sectional time-series analysis '
-        'of online completed sales')
+        'Economic consequences of the European Union desflurane ban for '
+        'anaesthetic equipment: a cross-sectional time-series analysis of '
+        'secondary market vaporiser prices')
     run.bold = True
     run.font.size = Pt(14)
 
@@ -318,7 +318,8 @@ def write_eja_paper():
     p = doc.add_paragraph()
     add_run_styled(p, 'Keywords: ', bold=True, size=Pt(10))
     add_run_styled(p, ('anaesthetic vaporiser, desflurane, environmental regulation, '
-                       'F-gas, secondary market, EU regulation, STROBE'),
+                       'F-gas, secondary market, EU regulation, equipment management, '
+                       'capital asset lifecycle'),
                    size=Pt(10))
 
     doc.add_page_break()
@@ -395,7 +396,9 @@ def write_eja_paper():
         'The EU desflurane regulation was associated with a progressive, agent-specific '
         'decline in secondary market vaporiser prices. These findings provide the first '
         'empirical evidence that environmental regulation of anaesthetic agents has measurable '
-        'economic consequences for the secondary medical equipment market.')
+        'economic consequences for the secondary medical equipment market. Anaesthesia departments '
+        'holding desflurane vaporisers should consider early disposal or trade-in strategies, '
+        'as secondary market values decline progressively once regulatory signals emerge.')
 
     doc.add_page_break()
 
@@ -752,12 +755,20 @@ def write_eja_paper():
         f'limiting our ability to establish a true baseline unaffected by regulatory signals.')
 
     doc.add_paragraph(
-        'For healthcare facilities in jurisdictions considering similar regulations, the EU '
-        'experience suggests that anticipatory planning for equipment transitions is advisable, '
-        'as secondary market values of regulated vaporisers may decline well before the ban '
-        'takes effect. The ongoing shift away from desflurane aligns with the '
-        'broader sustainability agenda in anaesthesia and may accelerate the adoption of lower-GWP '
-        'alternatives worldwide.')
+        'For anaesthesia departments, these findings carry practical implications for capital '
+        'equipment management. First, departments retaining desflurane vaporisers with intent to '
+        'sell should recognise that secondary market values are already substantially depressed and '
+        'are unlikely to recover; early disposal programmes may mitigate further losses. Second, '
+        'the anticipatory price decline\u2014beginning well before the ban took effect\u2014suggests '
+        'that institutional buy-back or manufacturer trade-in programmes, if offered early in the '
+        'legislative cycle, could achieve better cost recovery than delayed action. Third, the '
+        'stability of sevoflurane and isoflurane vaporiser prices provides reassurance that '
+        'existing equipment for non-regulated agents retains its capital value. Finally, for '
+        'jurisdictions considering similar regulations (including potential future restrictions on '
+        'nitrous oxide), our data suggest that secondary market depreciation begins as soon as '
+        'regulatory signals emerge, not at the point of formal prohibition. Proactive equipment '
+        'transition planning during the consultative phase of regulation may therefore be '
+        'economically rational.')
 
     # Conclusion (EJA has a separate Conclusion section)
     add_heading_styled(doc, 'Conclusion', level=1)
@@ -770,7 +781,8 @@ def write_eja_paper():
         'legislative process, suggesting anticipatory market responses to cumulative regulatory '
         'signals. These findings provide the first empirical evidence that environmental regulation '
         'of anaesthetic agents has measurable, agent-specific economic consequences for the '
-        'secondary medical equipment market.')
+        'secondary medical equipment market, and support early equipment transition planning '
+        'for anaesthesia departments affected by current or forthcoming volatile agent regulations.')
 
     # ============================================================
     # ACKNOWLEDGEMENTS (EJA format: "Acknowledgements relating to this article")

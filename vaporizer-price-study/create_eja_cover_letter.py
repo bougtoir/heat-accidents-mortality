@@ -59,9 +59,9 @@ def write_eja_cover_letter():
     run.bold = True
     run = p.add_run(
         'Submission of original article \u2013 '
-        '\u201cImpact of the European Union desflurane regulation on secondary market '
-        'prices of anaesthetic vaporisers: a cross-sectional time-series analysis '
-        'of online completed sales\u201d')
+        '\u201cEconomic consequences of the European Union desflurane ban for '
+        'anaesthetic equipment: a cross-sectional time-series analysis of '
+        'secondary market vaporiser prices\u201d')
     run.font.size = Pt(11)
     p.paragraph_format.space_after = Pt(12)
 
