@@ -87,19 +87,28 @@ def write_eja_cover_letter():
         '(desflurane, sevoflurane and isoflurane) over three years, spanning the full legislative '
         'trajectory from the EC proposal through to post-ban implementation. Using complementary '
         'statistical approaches (Spearman rank correlation, Kendall \u03c4 trend test, '
-        'Mann\u2013Whitney U), we provide the first empirical evidence that the EU desflurane '
-        'regulation was associated with a progressive, agent-specific decline in secondary market '
-        'vaporiser prices. Crucially, sevoflurane and isoflurane vaporiser prices remained stable, '
-        'serving as natural controls and strengthening the causal inference.',
+        'Mann\u2013Whitney U and between-agent effect size comparison), we provide the first '
+        'empirical evidence that the EU desflurane regulation was associated with a progressive, '
+        'agent-specific decline in secondary market vaporiser prices. The desflurane effect size '
+        'was significantly larger than that of sevoflurane (P=0.043), and sevoflurane and isoflurane '
+        'vaporiser prices remained stable throughout, serving as natural controls.',
+        space_after=Pt(8))
+
+    add_para(doc,
+        'Critically, a substantial proportion of the price depreciation occurred during the '
+        'legislative process itself, before the ban took effect. This finding has direct practical '
+        'implications: anaesthesia departments seeking to recover residual capital value from '
+        'regulated equipment should consider divestment during the regulatory cycle rather than '
+        'waiting for formal prohibition.',
         space_after=Pt(8))
 
     add_para(doc,
         'We believe this work is particularly well suited for EJA because: (1) it directly '
         'addresses the consequences of European anaesthesia policy, specifically the EU F-gas '
         'Regulation which is of primary relevance to EJA\u2019s readership; (2) it provides '
-        'evidence-based guidance for healthcare facilities managing equipment transitions; and '
-        '(3) it bridges anaesthesiology, environmental policy and health economics\u2014an '
-        'interdisciplinary perspective aligned with EJA\u2019s scope.',
+        'actionable guidance on the timing of equipment divestment for anaesthesia departments; '
+        'and (3) it offers a generalisable framework for anticipating equipment depreciation under '
+        'future environmental regulations (e.g. nitrous oxide).',
         space_after=Pt(8))
 
     add_para(doc,
