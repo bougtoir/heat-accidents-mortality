@@ -192,7 +192,8 @@ for agent in ['Desflurane', 'Sevoflurane', 'Isoflurane']:
 
 # Pairwise comparisons
 es_comparisons = {}
-for a1, a2 in [('Desflurane', 'Sevoflurane'), ('Desflurane', 'Isoflurane')]:
+for a1, a2 in [('Desflurane', 'Sevoflurane'), ('Desflurane', 'Isoflurane'),
+               ('Sevoflurane', 'Isoflurane')]:
     e1, e2 = effect_sizes[a1], effect_sizes[a2]
     diff, se, z, p = z_test_d_diff(e1['d'], e1['n_pre'], e1['n_post'],
                                     e2['d'], e2['n_pre'], e2['n_post'])
@@ -677,7 +678,8 @@ def write_eja_paper():
     add_table_header(t2b, ['Comparison', '\u0394d', 'SE', 'z', 'P value'])
 
     for key, label in [('Desflurane_vs_Sevoflurane', 'Desflurane vs Sevoflurane'),
-                        ('Desflurane_vs_Isoflurane', 'Desflurane vs Isoflurane')]:
+                        ('Desflurane_vs_Isoflurane', 'Desflurane vs Isoflurane'),
+                        ('Sevoflurane_vs_Isoflurane', 'Sevoflurane vs Isoflurane')]:
         c = es_comparisons[key]
         data = [
             (label, WD_ALIGN_PARAGRAPH.LEFT),
