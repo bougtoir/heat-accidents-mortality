@@ -179,7 +179,7 @@ def z_test_d_diff(d1, n1a, n1b, d2, n2a, n2b):
     return diff, se, z, p
 
 
-# Compute effect size comparisons for Table 1
+# Compute effect size comparisons for Table 2
 effect_sizes = {}
 for agent in ['Desflurane', 'Sevoflurane', 'Isoflurane']:
     d = get_stat(agent, 'cohens_d')
@@ -599,10 +599,38 @@ def write_eja_paper():
         f'models; isoflurane vaporisers included Ohmeda Tec 3, Tec 5, Tec 7 and Dr\u00e4ger '
         f'Vapor 2000 models.')
 
-    # Table 1 — Redesigned: effect size comparison as main result
+    # Table 1 — Time-series trend analysis (first mentioned in Results narrative)
     doc.add_paragraph()
     p = doc.add_paragraph()
     add_run_styled(p, 'Table 1. ', bold=True, size=Pt(10))
+    add_run_styled(p, ('Time-series trend analysis of vaporiser prices by agent type. Spearman rank '
+                       'correlation tests monotonic association between sale date and price; '
+                       'Kendall \u03c4 tests association between ordered regulatory phase and price.'),
+                   italic=True, size=Pt(10))
+
+    t1 = doc.add_table(rows=1, cols=7)
+    t1.style = 'Table Grid'
+    t1.alignment = WD_TABLE_ALIGNMENT.CENTER
+    add_table_header(t1, ['Agent', 'Spearman \u03c1', 'P value', 'Kendall \u03c4', 'P value',
+                          'Quarterly \u03c1', 'P value'])
+
+    for agent in ['Desflurane', 'Sevoflurane', 'Isoflurane']:
+        tr = trend_results[agent]
+        data = [
+            (agent, WD_ALIGN_PARAGRAPH.LEFT),
+            (f'{tr["spearman_rho"]:.3f}', WD_ALIGN_PARAGRAPH.CENTER),
+            (fmt_p(tr['spearman_p']), WD_ALIGN_PARAGRAPH.CENTER),
+            (f'{tr["kendall_tau"]:.3f}', WD_ALIGN_PARAGRAPH.CENTER),
+            (fmt_p(tr['kendall_p']), WD_ALIGN_PARAGRAPH.CENTER),
+            (f'{tr["quarterly_rho"]:.3f}', WD_ALIGN_PARAGRAPH.CENTER),
+            (fmt_p(tr['quarterly_p']), WD_ALIGN_PARAGRAPH.CENTER),
+        ]
+        add_table_data_row(t1, data)
+    doc.add_paragraph()
+
+    # Table 2 — Pre-/post-ban comparison with effect size analysis
+    p = doc.add_paragraph()
+    add_run_styled(p, 'Table 2. ', bold=True, size=Pt(10))
     add_run_styled(p, ('Pre- and post-ban vaporiser prices by agent type with between-agent '
                        'effect size comparison. Values are mean \u00b1 SD in US dollars.'),
                    italic=True, size=Pt(10))
@@ -643,10 +671,10 @@ def write_eja_paper():
                    "Cohen\u2019s d)",
                    italic=True, size=Pt(9))
 
-    t1b = doc.add_table(rows=1, cols=5)
-    t1b.style = 'Table Grid'
-    t1b.alignment = WD_TABLE_ALIGNMENT.CENTER
-    add_table_header(t1b, ['Comparison', '\u0394d', 'SE', 'z', 'P value'])
+    t2b = doc.add_table(rows=1, cols=5)
+    t2b.style = 'Table Grid'
+    t2b.alignment = WD_TABLE_ALIGNMENT.CENTER
+    add_table_header(t2b, ['Comparison', '\u0394d', 'SE', 'z', 'P value'])
 
     for key, label in [('Desflurane_vs_Sevoflurane', 'Desflurane vs Sevoflurane'),
                         ('Desflurane_vs_Isoflurane', 'Desflurane vs Isoflurane')]:
@@ -658,9 +686,9 @@ def write_eja_paper():
             (f'{c["z"]:.2f}', WD_ALIGN_PARAGRAPH.CENTER),
             (fmt_p(c['p']), WD_ALIGN_PARAGRAPH.CENTER),
         ]
-        add_table_data_row(t1b, data)
+        add_table_data_row(t2b, data)
 
-    # Table 1 footnote
+    # Table 2 footnote
     p = doc.add_paragraph()
     add_run_styled(p, 'Within-agent P values (Mann\u2013Whitney U): ', bold=False, italic=True,
                    size=Pt(8))
@@ -670,34 +698,6 @@ def write_eja_paper():
         t_p = fmt_p(get_pval(agent, 't_pval'))
         footnote_parts.append(f'{agent} U P={u_p}, t P={t_p}')
     add_run_styled(p, '; '.join(footnote_parts) + '.', italic=True, size=Pt(8))
-    doc.add_paragraph()
-
-    # Table 2
-    p = doc.add_paragraph()
-    add_run_styled(p, 'Table 2. ', bold=True, size=Pt(10))
-    add_run_styled(p, ('Time-series trend analysis of vaporiser prices by agent type. Spearman rank '
-                       'correlation tests monotonic association between sale date and price; '
-                       'Kendall \u03c4 tests association between ordered regulatory phase and price.'),
-                   italic=True, size=Pt(10))
-
-    t2 = doc.add_table(rows=1, cols=7)
-    t2.style = 'Table Grid'
-    t2.alignment = WD_TABLE_ALIGNMENT.CENTER
-    add_table_header(t2, ['Agent', 'Spearman \u03c1', 'P value', 'Kendall \u03c4', 'P value',
-                          'Quarterly \u03c1', 'P value'])
-
-    for agent in ['Desflurane', 'Sevoflurane', 'Isoflurane']:
-        tr = trend_results[agent]
-        data = [
-            (agent, WD_ALIGN_PARAGRAPH.LEFT),
-            (f'{tr["spearman_rho"]:.3f}', WD_ALIGN_PARAGRAPH.CENTER),
-            (fmt_p(tr['spearman_p']), WD_ALIGN_PARAGRAPH.CENTER),
-            (f'{tr["kendall_tau"]:.3f}', WD_ALIGN_PARAGRAPH.CENTER),
-            (fmt_p(tr['kendall_p']), WD_ALIGN_PARAGRAPH.CENTER),
-            (f'{tr["quarterly_rho"]:.3f}', WD_ALIGN_PARAGRAPH.CENTER),
-            (fmt_p(tr['quarterly_p']), WD_ALIGN_PARAGRAPH.CENTER),
-        ]
-        add_table_data_row(t2, data)
     doc.add_paragraph()
 
     # Results narrative (EJA Style: no spaces around = < > for stats; P italic uppercase)
@@ -754,7 +754,7 @@ def write_eja_paper():
     iso_es = effect_sizes['Isoflurane']
     doc.add_paragraph(
         f'Between-agent comparison of effect sizes confirmed the agent-specificity of the '
-        f'price decline (Table 1, Panel B). The effect size for desflurane '
+        f'price decline (Table 2, Panel B). The effect size for desflurane '
         f'(d={des_es["d"]:.2f}; 95% CI {des_es["ci_lo"]:.2f} to {des_es["ci_hi"]:.2f}) '
         f'was significantly larger than that for sevoflurane '
         f'(d={sevo_es["d"]:.2f}; 95% CI {sevo_es["ci_lo"]:.2f} to {sevo_es["ci_hi"]:.2f}; '
