@@ -72,7 +72,8 @@ export function GanttChart({ events }: Props) {
       <div style={{ position: 'relative' }}>
         {events.map((ev, i) => {
           const start = toPercent(new Date(ev.startDate));
-          const end = ev.endDate ? toPercent(new Date(ev.endDate)) : toPercent(now);
+          const hasDistinctEnd = ev.endDate != null && ev.endDate !== ev.startDate;
+          const end = hasDistinctEnd ? toPercent(new Date(ev.endDate!)) : toPercent(now);
           const width = Math.max(end - start, 2);
 
           return (

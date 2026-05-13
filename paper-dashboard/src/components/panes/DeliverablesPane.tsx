@@ -41,6 +41,12 @@ export function DeliverablesPane({ paper }: Props) {
   const [newVersion, setNewVersion] = useState('');
   const [newStatus, setNewStatus] = useState<Deliverable['status']>('pending');
 
+  // Edit state
+  const [editingIdx, setEditingIdx] = useState<number | null>(null);
+  const [editName, setEditName] = useState('');
+  const [editType, setEditType] = useState<Deliverable['type']>('manuscript');
+  const [editVersion, setEditVersion] = useState('');
+
   const cycleStatus = (index: number) => {
     const d = paper.deliverables[index];
     const curIdx = STATUS_CYCLE.indexOf(d.status);
@@ -77,6 +83,23 @@ export function DeliverablesPane({ paper }: Props) {
     updatePaper({ ...paper, deliverables: paper.deliverables.filter((_, i) => i !== index) });
   };
 
+  const startEdit = (i: number) => {
+    const d = paper.deliverables[i];
+    setEditName(d.name);
+    setEditType(d.type);
+    setEditVersion(d.version ?? '');
+    setEditingIdx(i);
+  };
+
+  const saveEdit = () => {
+    if (editingIdx === null || !editName.trim()) return;
+    const updated = paper.deliverables.map((d, i) =>
+      i === editingIdx ? { ...d, name: editName.trim(), type: editType, version: editVersion || undefined, lastUpdated: new Date().toISOString().slice(0, 10) } : d,
+    );
+    updatePaper({ ...paper, deliverables: updated });
+    setEditingIdx(null);
+  };
+
   if (paper.deliverables.length === 0 && !showAdd) {
     return (
       <div>
@@ -95,6 +118,29 @@ export function DeliverablesPane({ paper }: Props) {
     <div>
       {paper.deliverables.map((d, i) => {
         const st = STATUS_STYLES[d.status] ?? STATUS_STYLES.pending;
+        if (editingIdx === i) {
+          return (
+            <div key={i} style={{ padding: 6, background: '#faf8f3', borderRadius: 4, border: '1px solid #e8e4da', marginBottom: 4 }}>
+              <div style={{ display: 'flex', gap: 4, marginBottom: 4 }}>
+                <input value={editName} onChange={(e) => setEditName(e.target.value)} placeholder="Name" style={{ ...inputStyle, flex: 1 }} />
+                <select value={editType} onChange={(e) => setEditType(e.target.value as Deliverable['type'])} style={inputStyle}>
+                  <option value="manuscript">Manuscript</option>
+                  <option value="figure">Figure</option>
+                  <option value="table">Table</option>
+                  <option value="supplement">Supplement</option>
+                  <option value="cover-letter">Cover Letter</option>
+                  <option value="response">Response</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div style={{ display: 'flex', gap: 4 }}>
+                <input value={editVersion} onChange={(e) => setEditVersion(e.target.value)} placeholder="Version (opt)" style={{ ...inputStyle, flex: 1 }} />
+                <button onClick={saveEdit} style={{ ...inputStyle, background: '#2a7a8a', color: 'white', border: 'none', cursor: 'pointer', fontWeight: 600 }}>Save</button>
+                <button onClick={() => setEditingIdx(null)} style={{ ...inputStyle, cursor: 'pointer' }}>Cancel</button>
+              </div>
+            </div>
+          );
+        }
         return (
           <div
             key={i}
@@ -108,7 +154,11 @@ export function DeliverablesPane({ paper }: Props) {
             }}
           >
             <span style={{ fontSize: 16 }}>{TYPE_ICONS[d.type] ?? TYPE_ICONS.other}</span>
-            <div style={{ flex: 1 }}>
+            <div
+              style={{ flex: 1, cursor: 'pointer' }}
+              onClick={() => startEdit(i)}
+              title="Click to edit"
+            >
               <div style={{ fontSize: 12, fontWeight: 600 }}>{d.name}</div>
               <div style={{ fontSize: 10, color: '#999' }}>
                 {d.version && `${d.version} \u2022 `}
@@ -146,7 +196,7 @@ export function DeliverablesPane({ paper }: Props) {
             </select>
           </div>
           <div style={{ display: 'flex', gap: 4 }}>
-            <input value={newVersion} onChange={(e) => setNewVersion(e.target.value)} placeholder="Version (e.g. v1.0)" style={{ ...inputStyle, flex: 1 }} />
+            <input value={newVersion} onChange={(e) => setNewVersion(e.target.value)} placeholder="Version (opt)" style={{ ...inputStyle, flex: 1 }} />
             <select value={newStatus} onChange={(e) => setNewStatus(e.target.value as Deliverable['status'])} style={inputStyle}>
               <option value="pending">Pending</option>
               <option value="in-progress">In Progress</option>

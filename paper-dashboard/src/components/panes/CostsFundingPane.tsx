@@ -39,6 +39,14 @@ export function CostsFundingPane({ paper }: Props) {
   const [fsCurrency, setFsCurrency] = useState('JPY');
   const [fsStatus, setFsStatus] = useState<FundingSource['status']>('pending');
 
+  // Edit funding source state
+  const [editingFsIdx, setEditingFsIdx] = useState<number | null>(null);
+  const [editFsName, setEditFsName] = useState('');
+  const [editFsBudget, setEditFsBudget] = useState('');
+  const [editFsAllocated, setEditFsAllocated] = useState('');
+  const [editFsCurrency, setEditFsCurrency] = useState('JPY');
+  const [editFsStatus, setEditFsStatus] = useState<FundingSource['status']>('pending');
+
   const saveApc = () => {
     updatePaper({
       ...paper,
@@ -86,6 +94,27 @@ export function CostsFundingPane({ paper }: Props) {
         fundingSources: paper.costs.fundingSources.filter((_, i) => i !== index),
       },
     });
+  };
+
+  const startEditFunding = (i: number) => {
+    const fs = c.fundingSources[i];
+    setEditFsName(fs.name);
+    setEditFsBudget(String(fs.budget));
+    setEditFsAllocated(String(fs.allocated));
+    setEditFsCurrency(fs.currency);
+    setEditFsStatus(fs.status);
+    setEditingFsIdx(i);
+  };
+
+  const saveEditFunding = () => {
+    if (editingFsIdx === null || !editFsName.trim()) return;
+    const updated = c.fundingSources.map((fs, i) =>
+      i === editingFsIdx
+        ? { ...fs, name: editFsName.trim(), budget: parseFloat(editFsBudget) || 0, allocated: parseFloat(editFsAllocated) || 0, currency: editFsCurrency, status: editFsStatus }
+        : fs,
+    );
+    updatePaper({ ...paper, costs: { ...paper.costs, fundingSources: updated } });
+    setEditingFsIdx(null);
   };
 
   return (
@@ -162,21 +191,51 @@ export function CostsFundingPane({ paper }: Props) {
             </tr>
           </thead>
           <tbody>
-            {c.fundingSources.map((fs, i) => (
-              <tr key={i}>
-                <td style={{ padding: '7px 8px', fontSize: 12, borderBottom: '1px solid #f0ede6', background: i % 2 === 1 ? '#faf8f3' : undefined }}>{fs.name}</td>
-                <td style={{ padding: '7px 8px', fontSize: 12, borderBottom: '1px solid #f0ede6', background: i % 2 === 1 ? '#faf8f3' : undefined }}>{formatCurrency(fs.budget, fs.currency)}</td>
-                <td style={{ padding: '7px 8px', fontSize: 12, borderBottom: '1px solid #f0ede6', background: i % 2 === 1 ? '#faf8f3' : undefined }}>{formatCurrency(fs.allocated, fs.currency)}</td>
-                <td style={{ padding: '7px 8px', fontSize: 12, borderBottom: '1px solid #f0ede6', background: i % 2 === 1 ? '#faf8f3' : undefined }}>
-                  <span style={{ color: fs.status === 'approved' ? '#40a060' : fs.status === 'pending' ? '#d09030' : '#c04040', fontWeight: 600 }}>
-                    {fs.status.charAt(0).toUpperCase() + fs.status.slice(1)}
-                  </span>
-                </td>
-                <td style={{ padding: '7px 8px', fontSize: 12, borderBottom: '1px solid #f0ede6', background: i % 2 === 1 ? '#faf8f3' : undefined }}>
-                  <button onClick={() => removeFunding(i)} style={{ background: 'none', border: 'none', color: '#ccc', cursor: 'pointer', fontSize: 12 }} title="Remove">&times;</button>
-                </td>
-              </tr>
-            ))}
+            {c.fundingSources.map((fs, i) => {
+              if (editingFsIdx === i) {
+                return (
+                  <tr key={i}>
+                    <td colSpan={5} style={{ padding: '4px', borderBottom: '1px solid #f0ede6' }}>
+                      <div style={{ padding: 6, background: '#faf8f3', borderRadius: 4, border: '1px solid #e8e4da' }}>
+                        <div style={{ display: 'flex', gap: 4, marginBottom: 4 }}>
+                          <input value={editFsName} onChange={(e) => setEditFsName(e.target.value)} placeholder="Source name" style={{ ...inputStyle, flex: 1 }} />
+                          <select value={editFsCurrency} onChange={(e) => setEditFsCurrency(e.target.value)} style={inputStyle}>
+                            <option value="JPY">JPY</option><option value="USD">USD</option><option value="GBP">GBP</option><option value="EUR">EUR</option>
+                          </select>
+                        </div>
+                        <div style={{ display: 'flex', gap: 4, marginBottom: 4 }}>
+                          <input value={editFsBudget} onChange={(e) => setEditFsBudget(e.target.value)} placeholder="Budget" type="number" style={{ ...inputStyle, flex: 1 }} />
+                          <input value={editFsAllocated} onChange={(e) => setEditFsAllocated(e.target.value)} placeholder="Allocated" type="number" style={{ ...inputStyle, flex: 1 }} />
+                          <select value={editFsStatus} onChange={(e) => setEditFsStatus(e.target.value as FundingSource['status'])} style={inputStyle}>
+                            <option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option>
+                          </select>
+                        </div>
+                        <div style={{ display: 'flex', gap: 4, justifyContent: 'flex-end' }}>
+                          <button onClick={saveEditFunding} style={{ ...inputStyle, background: '#2a7a8a', color: 'white', border: 'none', cursor: 'pointer', fontWeight: 600 }}>Save</button>
+                          <button onClick={() => setEditingFsIdx(null)} style={{ ...inputStyle, cursor: 'pointer' }}>Cancel</button>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              }
+              const tdStyle: React.CSSProperties = { padding: '7px 8px', fontSize: 12, borderBottom: '1px solid #f0ede6', background: i % 2 === 1 ? '#faf8f3' : undefined, cursor: 'pointer' };
+              return (
+                <tr key={i} onClick={() => startEditFunding(i)} title="Click to edit">
+                  <td style={tdStyle}>{fs.name}</td>
+                  <td style={tdStyle}>{formatCurrency(fs.budget, fs.currency)}</td>
+                  <td style={tdStyle}>{formatCurrency(fs.allocated, fs.currency)}</td>
+                  <td style={tdStyle}>
+                    <span style={{ color: fs.status === 'approved' ? '#40a060' : fs.status === 'pending' ? '#d09030' : '#c04040', fontWeight: 600 }}>
+                      {fs.status.charAt(0).toUpperCase() + fs.status.slice(1)}
+                    </span>
+                  </td>
+                  <td style={{ ...tdStyle, cursor: 'default' }}>
+                    <button onClick={(e) => { e.stopPropagation(); removeFunding(i); }} style={{ background: 'none', border: 'none', color: '#ccc', cursor: 'pointer', fontSize: 12 }} title="Remove">&times;</button>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       ) : (

@@ -17,6 +17,8 @@ interface Props {
 
 export function TitleAuthorsPane({ paper }: Props) {
   const { updatePaper } = useDashboard();
+  const [editingTitle, setEditingTitle] = useState(false);
+  const [titleDraft, setTitleDraft] = useState('');
   const [editingIdx, setEditingIdx] = useState<number | null>(null);
   const [showAddAuthor, setShowAddAuthor] = useState(false);
   const [newName, setNewName] = useState('');
@@ -69,11 +71,40 @@ export function TitleAuthorsPane({ paper }: Props) {
     updatePaper({ ...paper, authors: paper.authors.filter((_, i) => i !== index) });
   };
 
+  const startEditTitle = () => {
+    setTitleDraft(paper.title);
+    setEditingTitle(true);
+  };
+
+  const saveTitle = () => {
+    if (titleDraft.trim()) {
+      updatePaper({ ...paper, title: titleDraft.trim(), shortTitle: paper.shortTitle || titleDraft.trim().slice(0, 30) });
+    }
+    setEditingTitle(false);
+  };
+
   return (
     <div>
-      <div style={{ fontSize: 16, fontWeight: 700, color: '#1a3a4a', marginBottom: 8, lineHeight: 1.4 }}>
-        {paper.title}
-      </div>
+      {editingTitle ? (
+        <textarea
+          value={titleDraft}
+          onChange={(e) => setTitleDraft(e.target.value)}
+          onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); saveTitle(); } if (e.key === 'Escape') setEditingTitle(false); }}
+          onBlur={saveTitle}
+          autoFocus
+          style={{ ...inputStyle, width: '100%', fontSize: 16, fontWeight: 700, color: '#1a3a4a', lineHeight: 1.4, resize: 'vertical', minHeight: 48, boxSizing: 'border-box' }}
+        />
+      ) : (
+        <div
+          onClick={startEditTitle}
+          style={{ fontSize: 16, fontWeight: 700, color: '#1a3a4a', marginBottom: 8, lineHeight: 1.4, cursor: 'pointer', borderBottom: '1px dashed transparent' }}
+          onMouseEnter={(e) => (e.currentTarget.style.borderBottomColor = '#ccc')}
+          onMouseLeave={(e) => (e.currentTarget.style.borderBottomColor = 'transparent')}
+          title="Click to edit title"
+        >
+          {paper.title}
+        </div>
+      )}
       <div style={{ margin: '8px 0 6px', fontSize: 11, color: '#888' }}>Authors</div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
         {paper.authors.map((a, i) => (
