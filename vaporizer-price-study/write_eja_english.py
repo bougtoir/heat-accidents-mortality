@@ -445,9 +445,11 @@ def write_eja_paper():
     add_run_styled(p,
         'The EU desflurane regulation was associated with a progressive, agent-specific '
         'decline in secondary market vaporiser prices that began during the legislative process, '
-        'before formal prohibition. Early divestment during the regulatory cycle\u2014rather than '
-        'at the point of prohibition\u2014may offer better cost recovery for anaesthesia departments '
-        'holding regulated equipment.')
+        'before formal prohibition. This anticipatory market response suggests that '
+        'well-signalled, evidence-based regulation generates predictable economic consequences; '
+        'early compliance during the regulatory cycle was associated with better cost recovery, '
+        'potentially freeing capital for reinvestment in alternative equipment and supporting '
+        'broader anaesthetic choice.')
 
     doc.add_page_break()
 
@@ -857,39 +859,52 @@ def write_eja_paper():
         f'limiting our ability to establish a true baseline unaffected by regulatory signals.')
 
     doc.add_paragraph(
-        'For anaesthesia departments, these findings carry practical implications for the timing '
-        'of equipment divestment. Our data show that secondary market values eroded progressively '
-        'as the regulatory process advanced: median desflurane vaporiser prices fell by roughly '
-        'half between the post-proposal period and the post-ban period, whereas sevoflurane and '
-        'isoflurane prices remained stable over the same interval. Crucially, a substantial '
-        'proportion of this depreciation occurred before the ban took effect, during the '
-        'legislative process itself. This suggests that departments seeking to recover residual '
-        'capital value from regulated equipment should act early in the regulatory cycle\u2014'
-        'ideally during the consultative or legislative phase\u2014rather than waiting for formal '
-        'prohibition. Institutional buy-back or manufacturer trade-in programmes, if offered '
-        'during this window, could achieve meaningfully better cost recovery than delayed action.')
+        'From a policy perspective, the anticipatory decline in desflurane vaporiser prices '
+        'provides empirical support for the view that evidence-based, transparently enacted '
+        'regulation generates predictable economic consequences. Secondary market values eroded '
+        'progressively as the regulatory process advanced\u2014median desflurane vaporiser prices '
+        'fell by roughly half between the post-proposal and post-ban periods\u2014while sevoflurane '
+        'and isoflurane prices remained stable. Crucially, a substantial proportion of this '
+        'depreciation occurred before the ban took effect, during the legislative process itself. '
+        'This orderly, anticipatory pattern of market adjustment suggests that stakeholders '
+        'recognised the regulation as credible and rationally grounded, and had adequate time '
+        'to respond.')
     doc.add_paragraph(
-        'Two further observations are relevant. First, the stability of sevoflurane and isoflurane '
-        'vaporiser prices provides reassurance that existing equipment for non-regulated agents '
-        'retains its capital value; the depreciation is specific to the targeted agent, not a '
-        'general market effect. Second, for jurisdictions considering similar regulations\u2014'
-        'including potential future restrictions on nitrous oxide\u2014our data suggest that '
-        'secondary market depreciation begins as soon as regulatory signals emerge, not at the '
-        'point of formal prohibition. Proactive equipment transition planning during the earliest '
-        'stages of the regulatory process may therefore be economically rational.')
+        'For anaesthesia departments, these findings indicate that early compliance with '
+        'well-designed regulation is not merely a legal obligation but an economic advantage. '
+        'Institutions that transitioned away from desflurane during the consultative or '
+        'legislative phase\u2014rather than waiting for formal prohibition\u2014would have achieved '
+        'meaningfully better cost recovery on the secondary market. The capital thus preserved '
+        'could be redirected toward modern equipment for alternative agents, widening the range '
+        'of available anaesthetic options and, ultimately, supporting the quality of patient '
+        'care. Institutional buy-back or manufacturer trade-in programmes, if offered during '
+        'this early regulatory window, could further facilitate such a cycle of timely '
+        'compliance, reinvestment and clinical improvement.')
+    doc.add_paragraph(
+        'Two further observations reinforce this interpretation. First, the stability of '
+        'sevoflurane and isoflurane vaporiser prices confirms that the economic impact was '
+        'confined to the targeted agent; the regulation did not destabilise the broader '
+        'anaesthetic equipment market. This specificity is reassuring for policymakers '
+        'contemplating analogous measures\u2014including potential future restrictions on nitrous '
+        'oxide\u2014and suggests that well-targeted environmental regulation can achieve its '
+        'objectives without unintended collateral damage to non-regulated equipment markets. '
+        'Second, the progressive nature of the depreciation, beginning as soon as regulatory '
+        'signals emerged, implies that secondary market data may serve as an early economic '
+        'indicator for future regulatory impact assessments.')
 
     # Conclusion (EJA has a separate Conclusion section)
     add_heading_styled(doc, 'Conclusion', level=1)
     doc.add_paragraph(
         'The EU desflurane regulation was associated with a progressive, agent-specific decline '
-        'in secondary market vaporiser prices. This decline was unique to the regulated agent\u2014'
-        'sevoflurane and isoflurane prices remained stable\u2014and began during the legislative '
-        'process, well before formal prohibition. These findings provide the first empirical '
-        'evidence that environmental regulation of anaesthetic agents has measurable economic '
-        'consequences for secondary medical equipment markets. For anaesthesia departments holding '
-        'regulated equipment, early divestment during the legislative phase of regulation\u2014rather '
-        'than at the point of prohibition\u2014may offer the best opportunity to recover residual '
-        'capital value.')
+        'in secondary market vaporiser prices that began during the legislative process, well '
+        'before formal prohibition. This anticipatory pattern of market adjustment suggests '
+        'that the regulation was perceived as credible and well signalled, generating predictable '
+        'economic consequences. These findings provide the first empirical evidence that '
+        'environmental regulation of anaesthetic agents has measurable downstream effects on '
+        'secondary equipment markets. Importantly, early compliance during the legislative '
+        'phase\u2014rather than delayed action at the point of prohibition\u2014was associated with '
+        'better cost recovery, freeing capital for reinvestment in alternative equipment and '
+        'thereby supporting broader anaesthetic choice and patient care.')
 
     # ============================================================
     # ACKNOWLEDGEMENTS (EJA format: "Acknowledgements relating to this article")

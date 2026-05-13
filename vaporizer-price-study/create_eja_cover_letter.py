@@ -96,19 +96,25 @@ def write_eja_cover_letter():
 
     add_para(doc,
         'Critically, a substantial proportion of the price depreciation occurred during the '
-        'legislative process itself, before the ban took effect. This finding has direct practical '
-        'implications: anaesthesia departments seeking to recover residual capital value from '
-        'regulated equipment should consider divestment during the regulatory cycle rather than '
-        'waiting for formal prohibition.',
+        'legislative process itself, before the ban took effect. This anticipatory market '
+        'response suggests that the regulation was perceived as credible and well signalled, '
+        'generating predictable economic consequences. Our data indicate that early compliance '
+        'during the legislative phase\u2014rather than delayed action at the point of '
+        'prohibition\u2014was associated with better cost recovery, freeing capital for '
+        'reinvestment in alternative equipment and thereby supporting broader anaesthetic '
+        'choice and patient care.',
         space_after=Pt(8))
 
     add_para(doc,
         'We believe this work is particularly well suited for EJA because: (1) it directly '
         'addresses the consequences of European anaesthesia policy, specifically the EU F-gas '
         'Regulation which is of primary relevance to EJA\u2019s readership; (2) it provides '
-        'actionable guidance on the timing of equipment divestment for anaesthesia departments; '
-        'and (3) it offers a generalisable framework for anticipating equipment depreciation under '
-        'future environmental regulations (e.g. nitrous oxide).',
+        'empirical evidence that well-designed environmental regulation produces predictable, '
+        'measurable economic outcomes\u2014a finding of interest to both clinicians and '
+        'policymakers; (3) it demonstrates that early compliance yields economic advantages '
+        'that can support equipment reinvestment and patient care; and (4) it offers a '
+        'generalisable framework for anticipating equipment depreciation under future '
+        'environmental regulations (e.g. nitrous oxide).',
         space_after=Pt(8))
 
     add_para(doc,
