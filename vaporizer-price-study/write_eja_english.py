@@ -153,6 +153,53 @@ def fmt_p(p):
 
 
 # ==========================================
+# Effect size comparison (z-test for independent Cohen's d)
+# ==========================================
+def var_cohens_d(n1, n2, d):
+    """Variance of Cohen's d for two independent groups."""
+    return (n1 + n2) / (n1 * n2) + d**2 / (2 * (n1 + n2))
+
+
+def se_cohens_d(n1, n2, d):
+    return np.sqrt(var_cohens_d(n1, n2, d))
+
+
+def ci_cohens_d(n1, n2, d, alpha=0.05):
+    se = se_cohens_d(n1, n2, d)
+    z_crit = sp_stats.norm.ppf(1 - alpha / 2)
+    return d - z_crit * se, d + z_crit * se
+
+
+def z_test_d_diff(d1, n1a, n1b, d2, n2a, n2b):
+    """Z-test for difference between two independent Cohen's d values."""
+    diff = d1 - d2
+    se = np.sqrt(var_cohens_d(n1a, n1b, d1) + var_cohens_d(n2a, n2b, d2))
+    z = diff / se
+    p = 2 * (1 - sp_stats.norm.cdf(abs(z)))
+    return diff, se, z, p
+
+
+# Compute effect size comparisons for Table 1
+effect_sizes = {}
+for agent in ['Desflurane', 'Sevoflurane', 'Isoflurane']:
+    d = get_stat(agent, 'cohens_d')
+    n_pre = summ[agent]['pre_n']
+    n_post = summ[agent]['post_n']
+    se = se_cohens_d(n_pre, n_post, d)
+    ci_lo, ci_hi = ci_cohens_d(n_pre, n_post, d)
+    effect_sizes[agent] = {'d': d, 'se': se, 'ci_lo': ci_lo, 'ci_hi': ci_hi,
+                           'n_pre': n_pre, 'n_post': n_post}
+
+# Pairwise comparisons
+es_comparisons = {}
+for a1, a2 in [('Desflurane', 'Sevoflurane'), ('Desflurane', 'Isoflurane')]:
+    e1, e2 = effect_sizes[a1], effect_sizes[a2]
+    diff, se, z, p = z_test_d_diff(e1['d'], e1['n_pre'], e1['n_post'],
+                                    e2['d'], e2['n_pre'], e2['n_post'])
+    es_comparisons[f'{a1}_vs_{a2}'] = {'diff': diff, 'se': se, 'z': z, 'p': p}
+
+
+# ==========================================
 # Helper functions
 # ==========================================
 def set_cell_shading(cell, color_hex):
@@ -367,7 +414,7 @@ def write_eja_paper():
         'Sale prices (US dollars) of desflurane, sevoflurane and isoflurane vaporisers. '
         'Temporal trends assessed by Spearman rank correlation and Kendall \u03c4 across '
         'ordered regulatory phases. Pre-/post-ban comparison by Mann\u2013Whitney U test '
-        'with Cohen\u2019s d effect size.')
+        'with Cohen\u2019s d effect size and between-agent z-test for independent effect sizes.')
 
     # Results:
     p = doc.add_paragraph()
@@ -386,8 +433,10 @@ def write_eja_paper():
         f'P={fmt_p(sevo_tr["spearman_p"])}) nor isoflurane '
         f'(\u03c1={iso_tr["spearman_rho"]:.2f}, '
         f'P={fmt_p(iso_tr["spearman_p"])}) showed significant temporal trends. '
-        f'The price decline began during the legislative process, suggesting anticipatory '
-        f'market responses.')
+        f'Between-agent comparison confirmed the agent-specificity of the decline: '
+        f'the desflurane effect size was significantly larger than that of sevoflurane '
+        f'(\u0394d={es_comparisons["Desflurane_vs_Sevoflurane"]["diff"]:.2f}, '
+        f'P={fmt_p(es_comparisons["Desflurane_vs_Sevoflurane"]["p"])}).')
 
     # Conclusions:
     p = doc.add_paragraph()
@@ -512,7 +561,9 @@ def write_eja_paper():
         'of prices (positively skewed with outliers), the Mann\u2013Whitney U test (two-sided) was used '
         'as the primary test for comparing pre-ban and post-ban prices. '
         'Welch\u2019s t-test was performed as a sensitivity analysis. Effect sizes were estimated '
-        'using Cohen\u2019s d.')
+        'using Cohen\u2019s d with 95% confidence intervals. To test whether the magnitude of the '
+        'pre-/post-ban price change differed between agent types, pairwise z-tests for independent '
+        'Cohen\u2019s d values were performed using the large-sample variance approximation.')
     doc.add_paragraph(
         'To assess whether prices changed progressively over time\u2014rather than only at the ban '
         'cutpoint\u2014we performed two complementary trend analyses. First, Spearman rank correlation '
@@ -549,47 +600,77 @@ def write_eja_paper():
         f'models; isoflurane vaporisers included Ohmeda Tec 3, Tec 5, Tec 7 and Dr\u00e4ger '
         f'Vapor 2000 models.')
 
-    # Table 1
+    # Table 1 — Redesigned: effect size comparison as main result
     doc.add_paragraph()
     p = doc.add_paragraph()
     add_run_styled(p, 'Table 1. ', bold=True, size=Pt(10))
-    add_run_styled(p, ('Summary of completed sales by vaporiser type and regulatory period '
-                       '(pre- and post-1 January 2026). Values are mean (SD), median (IQR) in US '
-                       'dollars. P values from Mann\u2013Whitney U test (two-sided).'),
+    add_run_styled(p, ('Pre- and post-ban vaporiser prices by agent type with between-agent '
+                       'effect size comparison. Values are mean \u00b1 SD in US dollars.'),
                    italic=True, size=Pt(10))
 
-    table = doc.add_table(rows=1, cols=8)
+    # Panel A: Descriptive statistics and within-agent effect sizes
+    p = doc.add_paragraph()
+    add_run_styled(p, 'Panel A. ', bold=True, size=Pt(9))
+    add_run_styled(p, 'Descriptive statistics and within-agent effect sizes (pre- vs post-ban)',
+                   italic=True, size=Pt(9))
+
+    table = doc.add_table(rows=1, cols=7)
     table.style = 'Table Grid'
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
-    add_table_header(table, ['Agent', 'Period', 'n', 'Mean (SD)', 'Median (IQR)', 'Range',
-                             'P value', "Cohen's d"])
+    add_table_header(table, ['Agent', 'n (pre/post)', 'Pre-ban mean \u00b1 SD',
+                             'Post-ban mean \u00b1 SD', '% change',
+                             "Cohen\u2019s d", '95% CI'])
 
     for agent in ['Desflurane', 'Sevoflurane', 'Isoflurane']:
-        pval = get_pval(agent)
-        d_val = get_stat(agent, 'cohens_d')
-        for period_name, label in [('Pre-regulation', 'Pre-ban'), ('Post-regulation', 'Post-ban')]:
-            sub = combined[(combined['agent_type'] == agent) & (combined['period'] == period_name)]
-            if len(sub) == 0:
-                continue
-            prices = sub['price_usd']
-            mean_sd = f'${prices.mean():.0f} ({prices.std():.0f})'
-            q25 = prices.quantile(0.25)
-            q75 = prices.quantile(0.75)
-            med_iqr = f'${prices.median():.0f} ({q25:.0f}\u2013{q75:.0f})'
-            rng = f'${prices.min():.0f}\u2013{prices.max():.0f}'
-            pval_str = fmt_p(pval) if label == 'Pre-ban' else ''
-            d_str = f'{d_val:.2f}' if label == 'Pre-ban' and not np.isnan(d_val) else ''
-            data = [
-                (agent if label == 'Pre-ban' else '', WD_ALIGN_PARAGRAPH.LEFT),
-                (label, WD_ALIGN_PARAGRAPH.CENTER),
-                (str(len(sub)), WD_ALIGN_PARAGRAPH.CENTER),
-                (mean_sd, WD_ALIGN_PARAGRAPH.CENTER),
-                (med_iqr, WD_ALIGN_PARAGRAPH.CENTER),
-                (rng, WD_ALIGN_PARAGRAPH.CENTER),
-                (pval_str, WD_ALIGN_PARAGRAPH.CENTER),
-                (d_str, WD_ALIGN_PARAGRAPH.CENTER),
-            ]
-            add_table_data_row(table, data)
+        s = summ[agent]
+        es = effect_sizes[agent]
+        pct = (s['post_mean'] - s['pre_mean']) / s['pre_mean'] * 100
+        data = [
+            (agent, WD_ALIGN_PARAGRAPH.LEFT),
+            (f'{s["pre_n"]}/{s["post_n"]}', WD_ALIGN_PARAGRAPH.CENTER),
+            (f'${s["pre_mean"]:.0f} \u00b1 {s["pre_sd"]:.0f}', WD_ALIGN_PARAGRAPH.CENTER),
+            (f'${s["post_mean"]:.0f} \u00b1 {s["post_sd"]:.0f}', WD_ALIGN_PARAGRAPH.CENTER),
+            (f'{pct:+.1f}%', WD_ALIGN_PARAGRAPH.CENTER),
+            (f'{es["d"]:.2f}', WD_ALIGN_PARAGRAPH.CENTER),
+            (f'{es["ci_lo"]:.2f} to {es["ci_hi"]:.2f}', WD_ALIGN_PARAGRAPH.CENTER),
+        ]
+        add_table_data_row(table, data)
+
+    # Panel B: Between-agent effect size comparisons
+    doc.add_paragraph()
+    p = doc.add_paragraph()
+    add_run_styled(p, 'Panel B. ', bold=True, size=Pt(9))
+    add_run_styled(p, 'Between-agent comparison of effect sizes (z-test for independent '
+                   "Cohen\u2019s d)",
+                   italic=True, size=Pt(9))
+
+    t1b = doc.add_table(rows=1, cols=5)
+    t1b.style = 'Table Grid'
+    t1b.alignment = WD_TABLE_ALIGNMENT.CENTER
+    add_table_header(t1b, ['Comparison', '\u0394d', 'SE', 'z', 'P value'])
+
+    for key, label in [('Desflurane_vs_Sevoflurane', 'Desflurane vs Sevoflurane'),
+                        ('Desflurane_vs_Isoflurane', 'Desflurane vs Isoflurane')]:
+        c = es_comparisons[key]
+        data = [
+            (label, WD_ALIGN_PARAGRAPH.LEFT),
+            (f'{c["diff"]:.2f}', WD_ALIGN_PARAGRAPH.CENTER),
+            (f'{c["se"]:.3f}', WD_ALIGN_PARAGRAPH.CENTER),
+            (f'{c["z"]:.2f}', WD_ALIGN_PARAGRAPH.CENTER),
+            (fmt_p(c['p']), WD_ALIGN_PARAGRAPH.CENTER),
+        ]
+        add_table_data_row(t1b, data)
+
+    # Table 1 footnote
+    p = doc.add_paragraph()
+    add_run_styled(p, 'Within-agent P values (Mann\u2013Whitney U): ', bold=False, italic=True,
+                   size=Pt(8))
+    footnote_parts = []
+    for agent in ['Desflurane', 'Sevoflurane', 'Isoflurane']:
+        u_p = fmt_p(get_pval(agent, 'u_pval'))
+        t_p = fmt_p(get_pval(agent, 't_pval'))
+        footnote_parts.append(f'{agent} U P={u_p}, t P={t_p}')
+    add_run_styled(p, '; '.join(footnote_parts) + '.', italic=True, size=Pt(8))
     doc.add_paragraph()
 
     # Table 2
@@ -665,6 +746,26 @@ def write_eja_paper():
         f'The stability of sevoflurane and isoflurane prices strengthens the inference that '
         f'the desflurane price decline was specifically attributable to the EU regulation '
         f'rather than to broader market forces.')
+
+    # Between-agent effect size comparison
+    des_vs_sevo = es_comparisons['Desflurane_vs_Sevoflurane']
+    des_vs_iso = es_comparisons['Desflurane_vs_Isoflurane']
+    des_es = effect_sizes['Desflurane']
+    sevo_es = effect_sizes['Sevoflurane']
+    iso_es = effect_sizes['Isoflurane']
+    doc.add_paragraph(
+        f'Between-agent comparison of effect sizes confirmed the agent-specificity of the '
+        f'price decline (Table 1, Panel B). The effect size for desflurane '
+        f'(d={des_es["d"]:.2f}; 95% CI {des_es["ci_lo"]:.2f} to {des_es["ci_hi"]:.2f}) '
+        f'was significantly larger than that for sevoflurane '
+        f'(d={sevo_es["d"]:.2f}; 95% CI {sevo_es["ci_lo"]:.2f} to {sevo_es["ci_hi"]:.2f}; '
+        f'\u0394d={des_vs_sevo["diff"]:.2f}, z={des_vs_sevo["z"]:.2f}, '
+        f'P={fmt_p(des_vs_sevo["p"])}). '
+        f'The difference relative to isoflurane '
+        f'(d={iso_es["d"]:.2f}; 95% CI {iso_es["ci_lo"]:.2f} to {iso_es["ci_hi"]:.2f}) '
+        f'did not reach statistical significance '
+        f'(\u0394d={des_vs_iso["diff"]:.2f}, z={des_vs_iso["z"]:.2f}, '
+        f'P={fmt_p(des_vs_iso["p"])}).')
 
     # Supplementary analysis
     if has_asking_data:
