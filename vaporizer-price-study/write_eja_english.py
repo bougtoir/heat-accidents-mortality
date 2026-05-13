@@ -443,11 +443,10 @@ def write_eja_paper():
     add_run_styled(p, 'Conclusions: ', bold=True, italic=True)
     add_run_styled(p,
         'The EU desflurane regulation was associated with a progressive, agent-specific '
-        'decline in secondary market vaporiser prices. These findings provide the first '
-        'empirical evidence that environmental regulation of anaesthetic agents has measurable '
-        'economic consequences for the secondary medical equipment market. Anaesthesia departments '
-        'holding desflurane vaporisers should consider early disposal or trade-in strategies, '
-        'as secondary market values decline progressively once regulatory signals emerge.')
+        'decline in secondary market vaporiser prices that began during the legislative process, '
+        'before formal prohibition. Early divestment during the regulatory cycle\u2014rather than '
+        'at the point of prohibition\u2014may offer better cost recovery for anaesthesia departments '
+        'holding regulated equipment.')
 
     doc.add_page_break()
 
@@ -856,34 +855,39 @@ def write_eja_paper():
         f'limiting our ability to establish a true baseline unaffected by regulatory signals.')
 
     doc.add_paragraph(
-        'For anaesthesia departments, these findings carry practical implications for capital '
-        'equipment management. First, departments retaining desflurane vaporisers with intent to '
-        'sell should recognise that secondary market values are already substantially depressed and '
-        'are unlikely to recover; early disposal programmes may mitigate further losses. Second, '
-        'the anticipatory price decline\u2014beginning well before the ban took effect\u2014suggests '
-        'that institutional buy-back or manufacturer trade-in programmes, if offered early in the '
-        'legislative cycle, could achieve better cost recovery than delayed action. Third, the '
-        'stability of sevoflurane and isoflurane vaporiser prices provides reassurance that '
-        'existing equipment for non-regulated agents retains its capital value. Finally, for '
-        'jurisdictions considering similar regulations (including potential future restrictions on '
-        'nitrous oxide), our data suggest that secondary market depreciation begins as soon as '
-        'regulatory signals emerge, not at the point of formal prohibition. Proactive equipment '
-        'transition planning during the consultative phase of regulation may therefore be '
-        'economically rational.')
+        'For anaesthesia departments, these findings carry practical implications for the timing '
+        'of equipment divestment. Our data show that secondary market values eroded progressively '
+        'as the regulatory process advanced: median desflurane vaporiser prices fell by roughly '
+        'half between the post-proposal period and the post-ban period, whereas sevoflurane and '
+        'isoflurane prices remained stable over the same interval. Crucially, a substantial '
+        'proportion of this depreciation occurred before the ban took effect, during the '
+        'legislative process itself. This suggests that departments seeking to recover residual '
+        'capital value from regulated equipment should act early in the regulatory cycle\u2014'
+        'ideally during the consultative or legislative phase\u2014rather than waiting for formal '
+        'prohibition. Institutional buy-back or manufacturer trade-in programmes, if offered '
+        'during this window, could achieve meaningfully better cost recovery than delayed action.')
+    doc.add_paragraph(
+        'Two further observations are relevant. First, the stability of sevoflurane and isoflurane '
+        'vaporiser prices provides reassurance that existing equipment for non-regulated agents '
+        'retains its capital value; the depreciation is specific to the targeted agent, not a '
+        'general market effect. Second, for jurisdictions considering similar regulations\u2014'
+        'including potential future restrictions on nitrous oxide\u2014our data suggest that '
+        'secondary market depreciation begins as soon as regulatory signals emerge, not at the '
+        'point of formal prohibition. Proactive equipment transition planning during the earliest '
+        'stages of the regulatory process may therefore be economically rational.')
 
     # Conclusion (EJA has a separate Conclusion section)
     add_heading_styled(doc, 'Conclusion', level=1)
     doc.add_paragraph(
-        'The EU desflurane regulation was associated with a progressive, '
-        'statistically significant decline in secondary market values of desflurane vaporisers. '
-        'Time-series trend analysis demonstrated that this decline was unique to the '
-        'regulated agent: sevoflurane and isoflurane vaporiser prices remained stable throughout '
-        'the study period, serving as natural controls. The price decline began during the '
-        'legislative process, suggesting anticipatory market responses to cumulative regulatory '
-        'signals. These findings provide the first empirical evidence that environmental regulation '
-        'of anaesthetic agents has measurable, agent-specific economic consequences for the '
-        'secondary medical equipment market, and support early equipment transition planning '
-        'for anaesthesia departments affected by current or forthcoming volatile agent regulations.')
+        'The EU desflurane regulation was associated with a progressive, agent-specific decline '
+        'in secondary market vaporiser prices. This decline was unique to the regulated agent\u2014'
+        'sevoflurane and isoflurane prices remained stable\u2014and began during the legislative '
+        'process, well before formal prohibition. These findings provide the first empirical '
+        'evidence that environmental regulation of anaesthetic agents has measurable economic '
+        'consequences for secondary medical equipment markets. For anaesthesia departments holding '
+        'regulated equipment, early divestment during the legislative phase of regulation\u2014rather '
+        'than at the point of prohibition\u2014may offer the best opportunity to recover residual '
+        'capital value.')
 
     # ============================================================
     # ACKNOWLEDGEMENTS (EJA format: "Acknowledgements relating to this article")
