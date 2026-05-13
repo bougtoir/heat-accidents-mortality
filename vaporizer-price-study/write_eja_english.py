@@ -602,106 +602,15 @@ def write_eja_paper():
         f'models; isoflurane vaporisers included Ohmeda Tec 3, Tec 5, Tec 7 and Dr\u00e4ger '
         f'Vapor 2000 models.')
 
-    # Table 1 — Time-series trend analysis (first mentioned in Results narrative)
+    # Table 1 placeholder (table uploaded as separate file per EJA requirements)
     doc.add_paragraph()
     p = doc.add_paragraph()
-    add_run_styled(p, 'Table 1. ', bold=True, size=Pt(10))
-    add_run_styled(p, ('Time-series trend analysis of vaporiser prices by agent type. Spearman rank '
-                       'correlation tests monotonic association between sale date and price; '
-                       'Kendall \u03c4 tests association between ordered regulatory phase and price.'),
-                   italic=True, size=Pt(10))
-
-    t1 = doc.add_table(rows=1, cols=7)
-    t1.style = 'Table Grid'
-    t1.alignment = WD_TABLE_ALIGNMENT.CENTER
-    add_table_header(t1, ['Agent', 'Spearman \u03c1', 'P value', 'Kendall \u03c4', 'P value',
-                          'Quarterly \u03c1', 'P value'])
-
-    for agent in ['Desflurane', 'Sevoflurane', 'Isoflurane']:
-        tr = trend_results[agent]
-        data = [
-            (agent, WD_ALIGN_PARAGRAPH.LEFT),
-            (f'{tr["spearman_rho"]:.3f}', WD_ALIGN_PARAGRAPH.CENTER),
-            (fmt_p(tr['spearman_p']), WD_ALIGN_PARAGRAPH.CENTER),
-            (f'{tr["kendall_tau"]:.3f}', WD_ALIGN_PARAGRAPH.CENTER),
-            (fmt_p(tr['kendall_p']), WD_ALIGN_PARAGRAPH.CENTER),
-            (f'{tr["quarterly_rho"]:.3f}', WD_ALIGN_PARAGRAPH.CENTER),
-            (fmt_p(tr['quarterly_p']), WD_ALIGN_PARAGRAPH.CENTER),
-        ]
-        add_table_data_row(t1, data)
+    add_run_styled(p, '[Insert Table 1 here]', bold=True, italic=True, size=Pt(11))
     doc.add_paragraph()
 
-    # Table 2 — Pre-/post-ban comparison with effect size analysis
+    # Table 2 placeholder (table uploaded as separate file per EJA requirements)
     p = doc.add_paragraph()
-    add_run_styled(p, 'Table 2. ', bold=True, size=Pt(10))
-    add_run_styled(p, ('Pre- and post-ban vaporiser prices by agent type with between-agent '
-                       'effect size comparison. Values are mean \u00b1 SD in US dollars.'),
-                   italic=True, size=Pt(10))
-
-    # Panel A: Descriptive statistics and within-agent effect sizes
-    p = doc.add_paragraph()
-    add_run_styled(p, 'Panel A. ', bold=True, size=Pt(9))
-    add_run_styled(p, 'Descriptive statistics and within-agent effect sizes (pre- vs post-ban)',
-                   italic=True, size=Pt(9))
-
-    table = doc.add_table(rows=1, cols=7)
-    table.style = 'Table Grid'
-    table.alignment = WD_TABLE_ALIGNMENT.CENTER
-    add_table_header(table, ['Agent', 'n (pre/post)', 'Pre-ban mean \u00b1 SD',
-                             'Post-ban mean \u00b1 SD', '% change',
-                             "Cohen\u2019s d", '95% CI'])
-
-    for agent in ['Desflurane', 'Sevoflurane', 'Isoflurane']:
-        s = summ[agent]
-        es = effect_sizes[agent]
-        pct = (s['post_mean'] - s['pre_mean']) / s['pre_mean'] * 100
-        data = [
-            (agent, WD_ALIGN_PARAGRAPH.LEFT),
-            (f'{s["pre_n"]}/{s["post_n"]}', WD_ALIGN_PARAGRAPH.CENTER),
-            (f'${s["pre_mean"]:.0f} \u00b1 {s["pre_sd"]:.0f}', WD_ALIGN_PARAGRAPH.CENTER),
-            (f'${s["post_mean"]:.0f} \u00b1 {s["post_sd"]:.0f}', WD_ALIGN_PARAGRAPH.CENTER),
-            (f'{pct:+.1f}%', WD_ALIGN_PARAGRAPH.CENTER),
-            (f'{es["d"]:.2f}', WD_ALIGN_PARAGRAPH.CENTER),
-            (f'{es["ci_lo"]:.2f} to {es["ci_hi"]:.2f}', WD_ALIGN_PARAGRAPH.CENTER),
-        ]
-        add_table_data_row(table, data)
-
-    # Panel B: Between-agent effect size comparisons
-    doc.add_paragraph()
-    p = doc.add_paragraph()
-    add_run_styled(p, 'Panel B. ', bold=True, size=Pt(9))
-    add_run_styled(p, 'Between-agent comparison of effect sizes (z-test for independent '
-                   "Cohen\u2019s d)",
-                   italic=True, size=Pt(9))
-
-    t2b = doc.add_table(rows=1, cols=5)
-    t2b.style = 'Table Grid'
-    t2b.alignment = WD_TABLE_ALIGNMENT.CENTER
-    add_table_header(t2b, ['Comparison', '\u0394d', 'SE', 'z', 'P value'])
-
-    for key, label in [('Desflurane_vs_Sevoflurane', 'Desflurane vs Sevoflurane'),
-                        ('Desflurane_vs_Isoflurane', 'Desflurane vs Isoflurane'),
-                        ('Sevoflurane_vs_Isoflurane', 'Sevoflurane vs Isoflurane')]:
-        c = es_comparisons[key]
-        data = [
-            (label, WD_ALIGN_PARAGRAPH.LEFT),
-            (f'{c["diff"]:.2f}', WD_ALIGN_PARAGRAPH.CENTER),
-            (f'{c["se"]:.3f}', WD_ALIGN_PARAGRAPH.CENTER),
-            (f'{c["z"]:.2f}', WD_ALIGN_PARAGRAPH.CENTER),
-            (fmt_p(c['p']), WD_ALIGN_PARAGRAPH.CENTER),
-        ]
-        add_table_data_row(t2b, data)
-
-    # Table 2 footnote
-    p = doc.add_paragraph()
-    add_run_styled(p, 'Within-agent P values (Mann\u2013Whitney U): ', bold=False, italic=True,
-                   size=Pt(8))
-    footnote_parts = []
-    for agent in ['Desflurane', 'Sevoflurane', 'Isoflurane']:
-        u_p = fmt_p(get_pval(agent, 'u_pval'))
-        t_p = fmt_p(get_pval(agent, 't_pval'))
-        footnote_parts.append(f'{agent} U P={u_p}, t P={t_p}')
-    add_run_styled(p, '; '.join(footnote_parts) + '.', italic=True, size=Pt(8))
+    add_run_styled(p, '[Insert Table 2 here]', bold=True, italic=True, size=Pt(11))
     doc.add_paragraph()
 
     # Results narrative (EJA Style: no spaces around = < > for stats; P italic uppercase)
@@ -1052,38 +961,13 @@ def write_eja_paper():
         add_run_styled(p, fig_label, bold=True, size=Pt(10))
         add_run_styled(p, fig_text, size=Pt(10))
 
-    # Supplementary table
+    # Supplementary table placeholder
     if has_asking_data:
         doc.add_page_break()
         add_heading_styled(doc, 'Supplementary Digital Content', level=1)
-
-        ask = asking_results['asking_summary']
-        kw = asking_results['kruskal_wallis']
         p = doc.add_paragraph()
-        add_run_styled(p, 'Table S1. ', bold=True, size=Pt(10))
-        add_run_styled(p, ('Current eBay asking prices (active listings) by vaporiser type, '
-                           'collected 27 March 2026. Values are mean (SD), median (IQR) in US dollars. '
-                           'P value from Kruskal\u2013Wallis test across three agent types.'),
-                       italic=True, size=Pt(10))
-
-        et = doc.add_table(rows=1, cols=6)
-        et.style = 'Table Grid'
-        et.alignment = WD_TABLE_ALIGNMENT.CENTER
-        add_table_header(et, ['Agent', 'n', 'Mean (SD)', 'Median (IQR)', 'Range', 'P value'])
-
-        for i, agent_cap in enumerate(['Desflurane', 'Sevoflurane', 'Isoflurane']):
-            a = ask[agent_cap]
-            pval_str = fmt_p(kw['P']) if i == 0 else ''
-            data = [
-                (agent_cap, WD_ALIGN_PARAGRAPH.LEFT),
-                (str(a['n']), WD_ALIGN_PARAGRAPH.CENTER),
-                (f'${a["mean"]:.0f} ({a["sd"]:.0f})', WD_ALIGN_PARAGRAPH.CENTER),
-                (f'${a["median"]:.0f} ({a["q25"]:.0f}\u2013{a["q75"]:.0f})',
-                 WD_ALIGN_PARAGRAPH.CENTER),
-                (f'${a["min"]:.0f}\u2013{a["max"]:.0f}', WD_ALIGN_PARAGRAPH.CENTER),
-                (pval_str, WD_ALIGN_PARAGRAPH.CENTER),
-            ]
-            add_table_data_row(et, data)
+        add_run_styled(p, '[Insert Table S1 here \u2014 uploaded as separate file]',
+                       bold=True, italic=True, size=Pt(11))
 
     path = os.path.join(out_dir, 'eja_manuscript_english.docx')
     doc.save(path)
