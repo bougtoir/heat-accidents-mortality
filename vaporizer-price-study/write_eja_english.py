@@ -880,13 +880,14 @@ def write_eja_paper():
         'care. Institutional buy-back or manufacturer trade-in programmes, if offered during '
         'this early regulatory window, could further facilitate such a cycle of timely '
         'compliance, reinvestment and clinical improvement.')
-    doc.add_paragraph(
+    add_para_with_refs(doc,
         'Two further observations reinforce this interpretation. First, the stability of '
         'sevoflurane and isoflurane vaporiser prices confirms that the economic impact was '
         'confined to the targeted agent; the regulation did not destabilise the broader '
         'anaesthetic equipment market. This specificity is reassuring for policymakers '
-        'contemplating analogous measures\u2014including potential future restrictions on nitrous '
-        'oxide\u2014and suggests that well-targeted environmental regulation can achieve its '
+        'contemplating analogous measures. Nitrous oxide, for example, is already subject to '
+        'emerging regulatory and institutional restrictions on environmental grounds{19}\u2014'
+        'and our findings suggest that well-targeted environmental regulation can achieve its '
         'objectives without unintended collateral damage to non-regulated equipment markets. '
         'Second, the progressive nature of the depreciation, beginning as soon as regulatory '
         'signals emerged, implies that secondary market data may serve as an early economic '
@@ -1006,6 +1007,10 @@ def write_eja_paper():
         # 18 - Discussion {18}
         'Davis G, Patel N. Regulatory obsolescence and secondary market asset depreciation. '
         'J Environ Econ Manage 2019; 95: 142\u201360.',
+        # 19 - Discussion {19} (N2O restrictions)
+        'American Society of Anesthesiologists Committee on Environmental Health. Statement on '
+        'deactivating central piped nitrous oxide to mitigate avoidable health care pollution. '
+        'Schaumburg, IL: ASA, 2024.',
     ]
     for i, ref in enumerate(references, 1):
         p = doc.add_paragraph()
