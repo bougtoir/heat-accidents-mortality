@@ -89,7 +89,7 @@ export const samplePapers: Paper[] = [
       submissionDate: '2026-05-08',
       timeline: [
         { label: 'Drafting', startDate: '2026-03-01', endDate: '2026-05-05', type: 'drafting' },
-        { label: 'Submission', startDate: '2026-05-08', endDate: '2026-05-08', type: 'submission' },
+        { label: 'Submission', startDate: '2026-05-08', type: 'submission' },
       ],
     },
     submissionHistory: [],
@@ -203,7 +203,7 @@ export const samplePapers: Paper[] = [
       submissionDate: '2026-05-05',
       timeline: [
         { label: 'Drafting', startDate: '2026-03-15', endDate: '2026-05-03', type: 'drafting' },
-        { label: 'Submission', startDate: '2026-05-05', endDate: '2026-05-05', type: 'submission' },
+        { label: 'Submission', startDate: '2026-05-05', type: 'submission' },
       ],
     },
     submissionHistory: [],

@@ -36,7 +36,7 @@ export function StatisticsPane({ paper }: Props) {
     const val = draft ? parseInt(draft) : undefined;
     updatePaper({
       ...paper,
-      statistics: { ...paper.statistics, [editingField]: val ?? 0 },
+      statistics: { ...paper.statistics, [editingField]: editingField.includes('Limit') ? val : (val ?? 0) },
     });
     setEditingField(null);
   };
