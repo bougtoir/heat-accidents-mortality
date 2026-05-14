@@ -127,15 +127,22 @@ def build_cover_letter():
 
     doc.add_paragraph()
 
+    # COI confirmation
+    p = doc.add_paragraph()
+    p.add_run(
+        "As the corresponding (and sole) author, I confirm that I have no "
+        "conflict of interest with the action editors and referees suggested above."
+    )
+
+    doc.add_paragraph()
+
     # Disclosure
     p = doc.add_paragraph()
     run = p.add_run("Disclosure of funding and competing interests. ")
     run.bold = True
     p.add_run(
         "No external funding was received for this work. "
-        "The author declares no competing interests. "
-        "The author has no conflict of interest with any of the suggested "
-        "action editors or referees listed above."
+        "The author declares no competing interests."
     )
 
     doc.add_paragraph()
@@ -148,8 +155,9 @@ def build_cover_letter():
 
     p = doc.add_paragraph()
     p.add_run(
-        "Tatsuki Onishi "
-        "(Data Science and AI Innovation Research Promotion Center, Shiga University, Japan)"
+        "Tatsuki Onishi\n"
+        "Data Science and AI Innovation Research Promotion Center\n"
+        "Shiga University, Japan"
     )
 
     out = "cover_letter.docx"
