@@ -97,7 +97,7 @@ def build_cover_letter():
     run.bold = True
 
     reviewers = [
-        "Shohei Shimizu, Shiga University, Japan \u2014 LiNGAM, causal discovery",
+        "Joris Mooij, University of Amsterdam \u2014 causal discovery, structural causal models",
         "Dominik Janzing, Amazon T\u00fcbingen \u2014 causal inference, "
         "information-theoretic methods",
         "Biwei Huang, UC San Diego \u2014 causal discovery, latent variable models",
