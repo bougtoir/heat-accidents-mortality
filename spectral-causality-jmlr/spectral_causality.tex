@@ -37,9 +37,9 @@
 \newcommand{\ECD}{\mathrm{ECD}}
 
 % JMLR heading (placeholders for submission)
-\jmlrheading{}{2026}{1-\pageref{LastPage}}{5/26}{}{}{}
+\jmlrheading{}{2026}{1-\pageref{LastPage}}{5/26}{}{}{Tatsuki Onishi}
 
-\ShortHeadings{Spectral Causality via Magnetic Laplacians and Hodge Decomposition}{Onishi}
+\ShortHeadings{Spectral Causality via Magnetic Laplacians}{Onishi}
 \firstpageno{1}
 
 \begin{document}
@@ -55,59 +55,31 @@ Magnetic Laplacians and Hodge Decomposition}
 
 \maketitle
 
-\begin{abstract}
-We introduce \emph{spectral causality}, a framework for estimating causal
-directions among observed variables by exploiting the spectral structure of
-the \emph{magnetic Laplacian}, an Hermitian matrix that encodes edge
-directionality as complex phase.  Whereas classical Laplacian methods discard
-directional information, the magnetic Laplacian's eigenvectors carry
-direction-dependent phases that separate causal upstream from downstream
-nodes.  We define two complementary indices---the symmetric \emph{Spectral
-Causal Coupling} (SCC) and the skew-symmetric \emph{Spectral Causal
-Direction} (SCD)---and prove that they arise as the real and imaginary parts
-of a single complex-valued causal index derived from the spectral
-decomposition.
-
-A central theoretical contribution is the \emph{Directional Predictability
-Index} (DPI), a data-driven asymmetric statistic composed of regression
-coefficient asymmetry, additive-noise-model residual independence, and
-conditional entropy reduction.  We prove that DPI resolves the circularity
-problem of earlier utility-based formulations: under the additive noise model
-assumption, DPI provides a consistent estimator of causal direction without
-external domain knowledge.
-
-We connect our framework to \emph{Hodge decomposition} on graphs, proving
-that the gradient--curl--harmonic decomposition of causal edge flows yields a
-\emph{causal potential} whose ordering recovers a topological sort under directed acyclic graph (DAG)
-structure.  We establish the \emph{scale invariance} of the gradient energy
-ratio $r_{\mathrm{gradient}}$ and characterize a phase-transition phenomenon
-in causal structure emergence governed by knowledge quality rather than
-quantity.
-
-Experiments on synthetic random DAGs ($n=5$--$20$, $N=200$--$1000$),
-the Sachs protein signaling network ($n=11$, 17 ground-truth edges;
-\citealp{Sachs2005}), and the UCI Heart Disease dataset ($N=297$, 5
-clinical variables) demonstrate competitive structural recovery against
-Direct Linear Non-Gaussian Acyclic Model (DirectLiNGAM;
-\citealp{Shimizu2011}), the Peter--Clark (PC) algorithm,
-Greedy Equivalence Search (GES), and Non-combinatorial Optimization
-via Trace Exponential and Augmented lagRangian for Structure learning
-(NOTEARS).  On the
-Sachs network, spectral causality with partial domain knowledge (5 of
-17 edges) achieves a true positive rate (TPR) of~$0.56$ and a false
-discovery rate (FDR) of~$0.27$, outperforming NOTEARS,
-while providing a unique DAG-adequacy diagnostic via
-$r_{\mathrm{gradient}}$.  Hodge decomposition reveals clinically
-meaningful feedback loops invisible to DAG-based methods.  We propose
-the \emph{Ensemble Causal Direction} (ECD) pipeline that integrates
-LiNGAM's identifiability guarantees with spectral causality's feedback
-quantification, achieving comprehensive coverage of Hill's nine
-criteria for causal inference.
+\begin{abstract}%
+We introduce \emph{spectral causality}, a framework for causal direction
+estimation via the \emph{magnetic Laplacian}, an Hermitian matrix whose
+complex-valued eigenvectors encode edge directionality as phase.  We define
+a \emph{Directional Predictability Index} (DPI) that resolves the
+circularity of earlier utility-based formulations: under additive noise
+model assumptions, DPI consistently estimates causal direction without
+domain knowledge.  Connecting the framework to \emph{Hodge decomposition},
+we prove that gradient--curl--harmonic separation of edge flows yields a
+causal potential recovering topological order under directed acyclic graph
+(DAG) structure, and establish \emph{scale invariance} of the gradient
+energy ratio $r_{\mathrm{gradient}}$, showing that causal structure
+emergence depends on knowledge \emph{quality} rather than quantity.
+Experiments on synthetic random DAGs ($n{=}5$--$20$, $N{=}200$--$1000$),
+the Sachs protein signaling network ($n{=}11$, 17~ground-truth edges),
+and the UCI Heart Disease dataset ($N{=}297$, 5~variables) demonstrate
+competitive recovery against DirectLiNGAM, the PC algorithm, GES, and
+NOTEARS.  On Sachs data with partial knowledge, spectral causality achieves
+a true positive rate (TPR) of~$0.56$ and a false discovery rate (FDR)
+of~$0.27$, while providing unique DAG-adequacy diagnostics and detecting
+feedback loops invisible to DAG-based methods.
 \end{abstract}
 
 \begin{keywords}
-Causal discovery, Magnetic Laplacian, Hodge decomposition, Spectral graph
-theory, Directed graphs, Causal inference
+Causal discovery, Magnetic Laplacian, Hodge decomposition, Spectral graph theory, Directed graphs
 \end{keywords}
 
 %% ============================================================
@@ -508,20 +480,6 @@ directional prior knowledge.
 Crucially, at $\alpha=0$ the DPI asymmetry preserves directional signal,
 unlike the $|\hat\rho|$-based formulation.
 Figure~\ref{fig:dpi-architecture} illustrates this modular architecture.
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=0.85\textwidth]{figures/fig_dpi_architecture.png}
-\caption{Architecture of the Directional Predictability Index (DPI).
-  Three independent asymmetric statistics---regression coefficient
-  asymmetry~$\hat{A}_{\mathrm{reg}}$, ANM residual independence~$\hat{A}_{\mathrm{ANM}}$,
-  and conditional entropy reduction~$\hat{A}_{\mathrm{ent}}$---are normalized
-  and averaged to produce~$\bar{A}(i,j)$, which modulates the symmetric
-  correlation~$|\hat\rho_{ij}|$ into the asymmetric DPI score.
-  The modular design allows each component to be replaced or extended
-  independently.}
-\label{fig:dpi-architecture}
-\end{figure}
 
 \begin{figure}[t]
 \centering
@@ -1950,11 +1908,8 @@ is $O(n^2\cdot N)$ for $N$ observations.
 \end{enumerate}
 
 %% ============================================================
-\section*{Acknowledgments and Disclosure of Funding}
-
-The author thanks the anonymous reviewers for their constructive
-comments.  This work was not supported by external funding.  The author
-declares no competing interests.
+\acks{This work was not supported by external funding.
+The author declares no competing interests.}
 
 \appendix
 \section{Proof of Phase--Direction Correspondence (Theorem~\ref{thm:phase-direction})}

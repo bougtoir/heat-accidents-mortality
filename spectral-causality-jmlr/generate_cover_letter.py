@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Generate JMLR cover letter as DOCX."""
+"""Generate JMLR cover letter as DOCX (matches official JMLR template)."""
 
 from docx import Document
-from docx.shared import Pt, Inches
+from docx.shared import Pt
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from datetime import date
 
@@ -15,175 +15,135 @@ def build_cover_letter():
     font.name = "Times New Roman"
     font.size = Pt(11)
 
-    # Sender info
-    p = doc.add_paragraph()
-    p.alignment = WD_ALIGN_PARAGRAPH.LEFT
-    run = p.add_run(
-        "Tatsuki Onishi, MD\n"
-        "Department of Anesthesiology\n"
-        "University Hospital, Japan\n"
-        "bougtoir@gmail.com"
-    )
-    run.font.size = Pt(11)
-
     # Date
     p = doc.add_paragraph()
+    p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
     p.add_run(date.today().strftime("%B %d, %Y"))
 
     # Recipient
     p = doc.add_paragraph()
-    p.add_run(
-        "Editors\n"
-        "Journal of Machine Learning Research"
-    )
+    p.add_run("Journal of Machine Learning Research")
+
+    doc.add_paragraph()
 
     # Opening
-    doc.add_paragraph()
     p = doc.add_paragraph()
-    p.add_run("Dear Editors,")
+    p.add_run("Dear Editors:")
 
-    # Body
     doc.add_paragraph()
-    p = doc.add_paragraph()
-    p.add_run(
-        "I am writing to submit our manuscript entitled "
-    )
-    run = p.add_run(
-        "\u201cSpectral Causality: Causal Direction Estimation via "
-        "Magnetic Laplacians and Hodge Decomposition\u201d"
-    )
-    run.bold = True
-    p.add_run(
-        " for consideration as a regular article in the "
-        "Journal of Machine Learning Research."
-    )
 
     # Summary
     p = doc.add_paragraph()
-    run = p.add_run("Summary. ")
-    run.bold = True
     p.add_run(
-        "This paper introduces spectral causality, a framework that "
-        "estimates causal directions among observed variables by exploiting the "
-        "spectral structure of the magnetic Laplacian. Unlike classical "
-        "Laplacian methods, the magnetic Laplacian\u2019s complex-valued eigenvectors "
-        "encode edge directionality as phase, enabling causal direction "
-        "estimation from spectral structure alone. Our principal contributions are:"
+        'We are writing to submit our manuscript '
+        '\u201cSpectral Causality: Causal Direction Estimation via '
+        'Magnetic Laplacians and Hodge Decomposition\u201d '
+        'to the Journal of Machine Learning Research.'
     )
 
-    # Contributions list
-    contributions = [
-        (
-            "Directional Predictability Index (DPI)",
-            " that resolves the circularity in earlier utility-based causal "
-            "formulations, with partial identifiability guarantees under the "
-            "additive noise model and explicit convergence rates for each component."
-        ),
-        (
-            "Hodge-theoretic decomposition",
-            " of causal edge flows into gradient (DAG-compatible), curl "
-            "(feedback), and harmonic components, yielding a gradient energy "
-            "ratio r_gradient that serves as a quantitative DAG-adequacy "
-            "diagnostic\u2014a capability absent from existing causal discovery methods."
-        ),
-        (
-            "Scale invariance theorem",
-            " establishing that causal structure emergence depends on knowledge "
-            "quality (sign pattern) rather than quantity (magnitude), together "
-            "with a phase-transition analysis characterizing a U-shaped knowledge "
-            "quality curve."
-        ),
-        (
-            "Comprehensive multi-dataset validation",
-            " on synthetic random DAGs (n=5\u201320, N=200\u20131000), the Sachs "
-            "protein signaling network (n=11, 17 ground-truth edges), and the "
-            "UCI Heart Disease dataset (n=5, N=297), benchmarked against "
-            "DirectLiNGAM, the PC algorithm, GES, and NOTEARS."
-        ),
-    ]
-    for i, (bold_part, rest) in enumerate(contributions, 1):
-        p = doc.add_paragraph(style="List Number")
-        run = p.add_run(bold_part)
-        run.bold = True
-        p.add_run(rest)
+    doc.add_paragraph()
 
-    # Relevance
     p = doc.add_paragraph()
-    run = p.add_run("Relevance to JMLR. ")
-    run.bold = True
     p.add_run(
-        "The manuscript presents a new principled algorithm (spectral causality) "
-        "grounded in spectral graph theory and Hodge theory, with sound "
-        "empirical validation on both synthetic and real-world benchmarks. "
-        "The theoretical analysis (17 theorem-like statements with formal proofs) "
-        "advances understanding of the relationship between spectral structure "
-        "and causal ordering. We believe the work is of broad interest to the "
-        "machine learning community, as causal discovery is a central topic "
-        "spanning methodology, theory, and applications."
+        "Our manuscript introduces spectral causality, a principled framework "
+        "that estimates causal directions by exploiting the spectral structure "
+        "of the magnetic Laplacian. We define a Directional Predictability Index "
+        "(DPI) that resolves circularity in earlier utility-based formulations, "
+        "connect the framework to Hodge decomposition to separate DAG-compatible "
+        "and feedback components of causal flow, and establish scale-invariance "
+        "and phase-transition results. The approach is validated on synthetic DAGs, "
+        "the Sachs protein signaling network, and the UCI Heart Disease dataset, "
+        "with benchmarks against DirectLiNGAM, PC, GES, and NOTEARS."
     )
 
-    # Originality
+    doc.add_paragraph()
+
     p = doc.add_paragraph()
-    run = p.add_run("Originality. ")
-    run.bold = True
     p.add_run(
-        "This work has not been published previously in any journal or "
+        "This paper has not been published previously in any journal or "
         "conference proceedings. A preprint may be made available on arXiv "
         "concurrent with this submission."
     )
 
+    doc.add_paragraph()
+
+    # Suggested AEs and reviewers
+    p = doc.add_paragraph()
+    p.add_run(
+        "We suggest the following action editors and referees for our submission."
+    )
+
+    doc.add_paragraph()
+    p = doc.add_paragraph()
+    run = p.add_run("Action Editors:")
+    run.bold = True
+
+    action_editors = [
+        "Bryon Aragam, University of Chicago \u2014 causality, graphical models",
+        "Elias Bareinboim, Columbia University \u2014 causal inference, generalizability",
+        "Silvia Chiappa, DeepMind \u2014 causal inference, variational inference",
+        "Kenji Fukumizu, The Institute of Statistical Mathematics, Japan "
+        "\u2014 kernel methods, dimension reduction",
+        "Mladen Kolar, University of Southern California "
+        "\u2014 graphical models, high-dimensional statistics",
+    ]
+    for ae in action_editors:
+        p = doc.add_paragraph(style="List Bullet")
+        p.add_run(ae)
+
+    doc.add_paragraph()
+    p = doc.add_paragraph()
+    run = p.add_run("Reviewers:")
+    run.bold = True
+
+    reviewers = [
+        "Shohei Shimizu, Shiga University, Japan \u2014 LiNGAM, causal discovery",
+        "Dominik Janzing, Amazon T\u00fcbingen \u2014 causal inference, "
+        "information-theoretic methods",
+        "Biwei Huang, UC San Diego \u2014 causal discovery, latent variable models",
+        "Murat Kocaoglu, Purdue University \u2014 causal inference, graphical models",
+        "Frederick Eberhardt, California Institute of Technology "
+        "\u2014 causal inference, Bayesian networks",
+    ]
+    for rv in reviewers:
+        p = doc.add_paragraph(style="List Bullet")
+        p.add_run(rv)
+
+    doc.add_paragraph()
+
+    # Keywords
+    p = doc.add_paragraph()
+    p.add_run(
+        "Our submission has the following keywords: "
+        "causal discovery, magnetic Laplacian, Hodge decomposition, "
+        "spectral graph theory, directed graphs."
+    )
+
+    doc.add_paragraph()
+
     # Disclosure
     p = doc.add_paragraph()
-    run = p.add_run("Disclosure. ")
+    run = p.add_run("Disclosure of funding and competing interests. ")
     run.bold = True
     p.add_run(
-        "No external funding was received for this work. The author declares "
-        "no conflicts of interest."
+        "No external funding was received for this work. "
+        "The author declares no competing interests. "
+        "The author has no conflict of interest with any of the suggested "
+        "action editors or referees listed above."
     )
 
-    # Suggested action editors
-    p = doc.add_paragraph()
-    run = p.add_run("Suggested action editors. ")
-    run.bold = True
-    p.add_run(
-        "Based on their expertise in causal discovery and spectral methods, "
-        "we suggest the following action editors who may be suitable to handle "
-        "this submission:"
-    )
-
-    editors = [
-        ("Bernhard Sch\u00f6lkopf", "causal inference, kernel methods"),
-        ("Jonas Peters", "causal discovery, additive noise models"),
-        ("Peter Spirtes", "constraint-based causal discovery"),
-        ("Kun Zhang", "causal discovery methodology"),
-    ]
-    for name, expertise in editors:
-        p = doc.add_paragraph(style="List Bullet")
-        run = p.add_run(name)
-        run.bold = True
-        p.add_run(f" \u2014 {expertise}")
+    doc.add_paragraph()
 
     # Closing
-    doc.add_paragraph()
-    p = doc.add_paragraph()
-    p.add_run(
-        "Thank you for considering this manuscript. I look forward to receiving "
-        "your editorial decision."
-    )
-
-    doc.add_paragraph()
     p = doc.add_paragraph()
     p.add_run("Sincerely,")
 
     doc.add_paragraph()
+
     p = doc.add_paragraph()
-    run = p.add_run("Tatsuki Onishi, MD")
-    run.bold = True
-    p2 = doc.add_paragraph()
-    p2.add_run(
-        "Department of Anesthesiology\n"
-        "University Hospital, Japan\n"
-        "bougtoir@gmail.com"
+    p.add_run(
+        "Tatsuki Onishi "
+        "(Department of Anesthesiology, University Hospital, Japan)"
     )
 
     out = "cover_letter.docx"

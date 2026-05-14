@@ -233,54 +233,28 @@ def build_document():
     # ============================================================
     add_heading(doc, "Abstract", level=1)
     add_para(doc, (
-        "We introduce spectral causality, a framework for estimating causal "
-        "directions among observed variables by exploiting the spectral structure of "
-        "the magnetic Laplacian, an Hermitian matrix that encodes edge "
-        "directionality as complex phase. Whereas classical Laplacian methods discard "
-        "directional information, the magnetic Laplacian's eigenvectors carry "
-        "direction-dependent phases that separate causal upstream from downstream "
-        "nodes. We define two complementary indices\u2014the symmetric Spectral "
-        "Causal Coupling (SCC) and the skew-symmetric Spectral Causal "
-        "Direction (SCD)\u2014and prove that they arise as the real and imaginary parts "
-        "of a single complex-valued causal index derived from the spectral "
-        "decomposition."
-    ))
-    add_para(doc, (
-        "A central theoretical contribution is the Directional Predictability "
-        "Index (DPI), a data-driven asymmetric statistic composed of regression "
-        "coefficient asymmetry, additive-noise-model residual independence, and "
-        "conditional entropy reduction. We prove that DPI resolves the circularity "
-        "problem of earlier utility-based formulations: under the additive noise model "
-        "assumption, DPI provides a consistent estimator of causal direction without "
-        "external domain knowledge."
-    ))
-    add_para(doc, (
-        "We connect our framework to Hodge decomposition on graphs, proving "
-        "that the gradient\u2013curl\u2013harmonic decomposition of causal edge flows yields a "
-        "causal potential whose ordering recovers a topological sort under directed acyclic graph (DAG) "
-        "structure. We establish the scale invariance of the gradient energy "
-        "ratio r_gradient and characterize a phase-transition phenomenon "
-        "in causal structure emergence governed by knowledge quality rather than "
-        "quantity."
+        "We introduce spectral causality, a framework for causal direction "
+        "estimation via the magnetic Laplacian, an Hermitian matrix whose "
+        "complex-valued eigenvectors encode edge directionality as phase. We define "
+        "a Directional Predictability Index (DPI) that resolves the "
+        "circularity of earlier utility-based formulations: under additive noise "
+        "model assumptions, DPI consistently estimates causal direction without "
+        "domain knowledge. Connecting the framework to Hodge decomposition, "
+        "we prove that gradient\u2013curl\u2013harmonic separation of edge flows yields a "
+        "causal potential recovering topological order under directed acyclic graph "
+        "(DAG) structure, and establish scale invariance of the gradient "
+        "energy ratio r_gradient, showing that causal structure "
+        "emergence depends on knowledge quality rather than quantity."
     ))
     add_para(doc, (
         "Experiments on synthetic random DAGs (n=5\u201320, N=200\u20131000), "
-        "the Sachs protein signaling network (n=11, 17 ground-truth edges; "
-        "Sachs et al., 2005), and the UCI Heart Disease dataset (N=297, 5 "
-        "clinical variables) demonstrate competitive structural recovery against "
-        "Direct Linear Non-Gaussian Acyclic Model (DirectLiNGAM; Shimizu et al., 2011), "
-        "the Peter\u2013Clark (PC) algorithm, Greedy Equivalence Search (GES), and "
-        "Non-combinatorial Optimization via Trace Exponential and Augmented "
-        "lagRangian for Structure learning (NOTEARS). On the Sachs network, spectral "
-        "causality with partial domain knowledge (5 of 17 edges) achieves "
-        "a true positive rate (TPR) of 0.56 and a false discovery rate (FDR) of 0.27, "
-        "outperforming NOTEARS, while providing a unique "
-        "DAG-adequacy diagnostic via r_gradient. Hodge decomposition reveals "
-        "clinically meaningful feedback loops invisible to DAG-based methods. "
-        "We propose the Ensemble Causal Direction (ECD) pipeline that integrates "
-        "LiNGAM's identifiability guarantees with spectral causality's feedback "
-        "quantification, achieving comprehensive coverage of Hill's nine criteria "
-        "for causal inference."
+        "the Sachs protein signaling network (n=11, 17 ground-truth edges), "
+        "and the UCI Heart Disease dataset (N=297, 5 variables) demonstrate "
+        "competitive recovery against DirectLiNGAM, the PC algorithm, GES, and "
+        "NOTEARS. On Sachs data with partial knowledge, spectral causality achieves "
+        "a true positive rate (TPR) of 0.56 and a false discovery rate (FDR) "
+        "of 0.27, while providing unique DAG-adequacy diagnostics and detecting "
+        "feedback loops invisible to DAG-based methods."
     ))
 
     kw = doc.add_paragraph()
@@ -288,7 +262,7 @@ def build_document():
     run.bold = True
     kw.add_run(
         "Causal discovery, Magnetic Laplacian, Hodge decomposition, "
-        "Spectral graph theory, Directed graphs, Causal inference"
+        "Spectral graph theory, Directed graphs"
     )
 
     # ============================================================
@@ -1604,8 +1578,7 @@ def build_document():
     # ============================================================
     add_heading(doc, "Acknowledgments and Disclosure of Funding", level=1)
     add_para(doc, (
-        "The author thanks the anonymous reviewers for their constructive "
-        "comments. This work was not supported by external funding. The author "
+        "This work was not supported by external funding. The author "
         "declares no competing interests."
     ))
 
