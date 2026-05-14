@@ -35,7 +35,7 @@ def build_cover_letter():
     # Summary
     p = doc.add_paragraph()
     p.add_run(
-        'We are writing to submit our manuscript '
+        'I am writing to submit my manuscript '
         '\u201cSpectral Causality: Causal Direction Estimation via '
         'Magnetic Laplacians and Hodge Decomposition\u201d '
         'to the Journal of Machine Learning Research.'
@@ -45,9 +45,9 @@ def build_cover_letter():
 
     p = doc.add_paragraph()
     p.add_run(
-        "Our manuscript introduces spectral causality, a principled framework "
+        "The manuscript introduces spectral causality, a principled framework "
         "that estimates causal directions by exploiting the spectral structure "
-        "of the magnetic Laplacian. We define a Directional Predictability Index "
+        "of the magnetic Laplacian. I define a Directional Predictability Index "
         "(DPI) that resolves circularity in earlier utility-based formulations, "
         "connect the framework to Hodge decomposition to separate DAG-compatible "
         "and feedback components of causal flow, and establish scale-invariance "
@@ -70,7 +70,7 @@ def build_cover_letter():
     # Suggested AEs and reviewers
     p = doc.add_paragraph()
     p.add_run(
-        "We suggest the following action editors and referees for our submission."
+        "I suggest the following action editors and referees for this submission."
     )
 
     doc.add_paragraph()
@@ -114,7 +114,7 @@ def build_cover_letter():
     # Keywords
     p = doc.add_paragraph()
     p.add_run(
-        "Our submission has the following keywords: "
+        "This submission has the following keywords: "
         "causal discovery, magnetic Laplacian, Hodge decomposition, "
         "spectral graph theory, directed graphs."
     )
@@ -143,7 +143,7 @@ def build_cover_letter():
     p = doc.add_paragraph()
     p.add_run(
         "Tatsuki Onishi "
-        "(Department of Anesthesiology, University Hospital, Japan)"
+        "(Data Science and AI Innovation Research Promotion Center, Shiga University, Japan)"
     )
 
     out = "cover_letter.docx"

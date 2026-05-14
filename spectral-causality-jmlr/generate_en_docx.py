@@ -218,7 +218,7 @@ def build_document():
 
     affil = doc.add_paragraph()
     affil.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run = affil.add_run("Department of Anesthesiology\nUniversity Hospital, Japan")
+    run = affil.add_run("Data Science and AI Innovation Research Promotion Center\nShiga University, Japan")
     run.font.size = Pt(10)
     affil.paragraph_format.space_after = Pt(12)
 
@@ -233,14 +233,14 @@ def build_document():
     # ============================================================
     add_heading(doc, "Abstract", level=1)
     add_para(doc, (
-        "We introduce spectral causality, a framework for causal direction "
+        "I introduce spectral causality, a framework for causal direction "
         "estimation via the magnetic Laplacian, an Hermitian matrix whose "
-        "complex-valued eigenvectors encode edge directionality as phase. We define "
+        "complex-valued eigenvectors encode edge directionality as phase. I define "
         "a Directional Predictability Index (DPI) that resolves the "
         "circularity of earlier utility-based formulations: under additive noise "
         "model assumptions, DPI consistently estimates causal direction without "
         "domain knowledge. Connecting the framework to Hodge decomposition, "
-        "we prove that gradient\u2013curl\u2013harmonic separation of edge flows yields a "
+        "I prove that gradient\u2013curl\u2013harmonic separation of edge flows yields a "
         "causal potential recovering topological order under directed acyclic graph "
         "(DAG) structure, and establish scale invariance of the gradient "
         "energy ratio r_gradient, showing that causal structure "
@@ -281,7 +281,7 @@ def build_document():
     add_para(doc, (
         "This paper proposes a fundamentally different principle: reading causal "
         "directions from the spectral structure (eigenvalues and eigenvectors) of a "
-        "graph Laplacian. We call this approach spectral causality."
+        "graph Laplacian. I call this approach spectral causality."
     ))
 
     add_para(doc, "Basic idea.", bold=True)
@@ -309,18 +309,18 @@ def build_document():
         "asymmetric statistic that enables causal direction estimation at \u03b1=0 "
         "(no domain knowledge), resolving the circularity in earlier utility-based "
         "formulations (Section 4).\n"
-        "(2) DAG-free causal inference. Via Hodge decomposition, we "
+        "(2) DAG-free causal inference. Via Hodge decomposition, I "
         "separate DAG-compatible flow (gradient) from feedback (curl), providing "
         "the gradient energy ratio r_gradient as a quantitative "
         "measure of DAG adequacy (Section 5).\n"
-        "(3) Scale invariance theorem. We prove that "
+        "(3) Scale invariance theorem. I prove that "
         "r_gradient depends only on the structure (sign "
         "pattern) of the asymmetric component of the utility matrix, not on its "
         "magnitude (Section 8).\n"
         "(4) Ensemble Causal Direction (ECD). Integrates LiNGAM's local "
         "identifiability with spectral causality's global structure analysis (Section 9).\n"
         "(5) DPI partial identifiability. Under the additive noise model (ANM) assumption, "
-        "we prove that DPI's ANM component consistently identifies causal "
+        "I prove that DPI's ANM component consistently identifies causal "
         "direction as N\u2192\u221e, with convergence rates characterized for each "
         "component (Section 10).\n"
         "(6) Multi-dataset validation. Experiments on synthetic random "
@@ -486,7 +486,7 @@ def build_document():
         "(1-\u03bb)u(v_k) = (-iw/d_{v_k})u(v_{k-1}) + (iw/d_{v_k})u(v_{k+1}). "
         "Writing u(v_k) = r_k exp(i\u03b8_k) and taking the real part shows that "
         "1-\u03bb_2 > 0 and r_k > 0 require \u03b8_{k+1}-\u03b8_k > 0, giving monotone phase ordering. "
-        "Stage 2 (Theorem A.1): For tree DAGs, we use structural induction on depth. "
+        "Stage 2 (Theorem A.1): For tree DAGs, I use structural induction on depth. "
         "The base case (star graph) gives \u03b8_2(c_j) = \u03b8_2(r) + \u03c0/2 for each child c_j. "
         "The inductive step combines this with the subtree hypothesis via transitivity. "
         "A perturbation argument extends the result to non-uniform weights. "
@@ -523,7 +523,7 @@ def build_document():
         "For observed data X \u2208 R^{N\u00d7n}, the DPI matrix D_DPI \u2208 R^{n\u00d7n} "
         "is defined by:\n"
         "D_DPI(i\u2192j) = |\u03c1\u0302_{ij}| \u00b7 (1 + \u03b3 \u00b7 \u0100(i,j))\n"
-        "where \u03b3 > 0 is a directional strength parameter (we use \u03b3=1) "
+        "where \u03b3 > 0 is a directional strength parameter (I use \u03b3=1) "
         "and \u0100(i,j) is the mean of three normalized asymmetric statistics:\n"
         "\u0100(i,j) = (1/3)[\u00c2_reg(i,j) + \u00c2_ANM(i,j) + \u00c2_ent(i,j)]"
     ))
@@ -548,7 +548,7 @@ def build_document():
     ))
     add_para(doc, (
         "Proof. Since each component satisfies \u00c2_k(j,i) = -\u00c2_k(i,j) "
-        "(antisymmetry), we have \u0100(j,i) = -\u0100(i,j). Therefore, "
+        "(antisymmetry), I have \u0100(j,i) = -\u0100(i,j). Therefore, "
         "D_DPI(j\u2192i) = |\u03c1\u0302_{ij}|(1-\u03b3\u0100(i,j)) "
         "\u2260 |\u03c1\u0302_{ij}|(1+\u03b3\u0100(i,j)) = D_DPI(i\u2192j) "
         "whenever \u0100(i,j) \u2260 0. \u25a1"
@@ -689,7 +689,7 @@ def build_document():
         "components are zero), then the ordering of nodes by \u03c6 coincides "
         "with a topological sort of the DAG.\n"
         "Proof. When \u03c9 = \u03b4_0\u03c6 (pure gradient), for every directed edge "
-        "i\u2192j we have \u03c9(i\u2192j) = \u03c6(j) - \u03c6(i) > 0, hence "
+        "i\u2192j I have \u03c9(i\u2192j) = \u03c6(j) - \u03c6(i) > 0, hence "
         "\u03c6(j) > \u03c6(i). This is precisely the topological ordering condition. \u25a1"
     ))
 
@@ -712,7 +712,7 @@ def build_document():
         "de Resende & da Costa (2020) characterized large directed networks via "
         "the magnetic Laplacian spectrum. Zhang et al. (2022) proposed MagNet, "
         "a GNN based on the magnetic Laplacian. These works establish the "
-        "magnetic Laplacian's ability to encode directionality; our contribution "
+        "magnetic Laplacian's ability to encode directionality; my contribution "
         "is its application to causal inference."
     ))
     add_para(doc, (
@@ -720,13 +720,13 @@ def build_document():
         "decomposition to statistical ranking. Maehara & Ohkawa (2025) applied "
         "Hodge decomposition (ddHodge) to single-cell RNA-seq data. Their "
         "demonstration that developmental processes are governed by potential "
-        "landscapes directly supports the biological plausibility of our causal potential."
+        "landscapes directly supports the biological plausibility of my causal potential."
     ))
     add_para(doc, (
         "Signal processing on DAGs. Seifert et al. (2023) defined causal Fourier "
         "analysis on DAGs. Misiakos et al. (2024) extended this to time-series "
-        "graph data. Our approach is complementary: these methods recover signals "
-        "given a known DAG; we estimate causal direction from spectral structure."
+        "graph data. My approach is complementary: these methods recover signals "
+        "given a known DAG; I estimate causal direction from spectral structure."
     ))
     add_para(doc, (
         "Continuous DAG learning. NOTEARS (Zheng et al., 2018) reformulated the "
@@ -738,7 +738,7 @@ def build_document():
         "LiNGAM and medical applications. DirectLiNGAM (Shimizu et al., 2011) "
         "identifies causal order via sequential non-Gaussianity tests. "
         "Kotoku (2020) applied it to Osaka health checkup data (n\u224810\u2075). "
-        "Our ECD pipeline uses LiNGAM output as initialization for spectral causality."
+        "My ECD pipeline uses LiNGAM output as initialization for spectral causality."
     ))
     add_para(doc, (
         "Information-theoretic causality. Transfer entropy (Schreiber, 2000) and "
@@ -753,7 +753,7 @@ def build_document():
 
     add_heading(doc, "7.1 Data and Variables", level=2)
     add_para(doc, (
-        "We use the UCI Heart Disease Dataset (Cleveland subset; "
+        "I use the UCI Heart Disease Dataset (Cleveland subset; "
         "Detrano et al., 1989), selecting five continuous clinical variables:\n"
         "X = (X_1, X_2, X_3, X_4, X_5) = (Age, RestBP, Chol, MaxHR, STDep)\n"
         "Sample size N=297; all variables are standardized to zero mean and unit variance."
@@ -761,7 +761,7 @@ def build_document():
 
     add_para(doc, "Domain knowledge matrix.", bold=True)
     add_para(doc, (
-        "We construct C_domain from established cardiovascular physiology "
+        "I construct C_domain from established cardiovascular physiology "
         "(Table 7.0). Each entry C_domain(i,j) \u2208 [0,1] represents the strength of "
         "the believed causal influence of X_i on X_j, elicited from "
         "medical literature (Detrano et al., 1989). For example, "
@@ -798,7 +798,7 @@ def build_document():
 
     add_heading(doc, "7.3 Magnetic Laplacian Eigenvectors", level=2)
     add_para(doc, (
-        "We construct the utility directed graph (Eq. 4) with "
+        "I construct the utility directed graph (Eq. 4) with "
         "\u03b1=0.6, combining C_domain (Table 7.0) at 60% weight with data-driven DPI "
         "at 40% weight, and compute L^(q) for q \u2208 {0, 0.1, 0.25}.\n"
         "At q=0, all eigenvectors are real; no directional information is "
@@ -876,12 +876,12 @@ def build_document():
     add_heading(doc, "7.5 Synthetic Data Benchmark", level=2)
     add_para(doc, (
         "To evaluate spectral causality against established methods under "
-        "controlled conditions, we generate synthetic datasets from known causal "
+        "controlled conditions, I generate synthetic datasets from known causal "
         "structures and compare structural recovery performance."
     ))
     add_para(doc, "Data generation.", bold=True)
     add_para(doc, (
-        "We generate random DAGs with n \u2208 {5, 10, 20} nodes and expected "
+        "I generate random DAGs with n \u2208 {5, 10, 20} nodes and expected "
         "neighborhood size d \u2208 {1, 2, 4} using the Erd\u0151s\u2013R\u00e9nyi model, "
         "followed by DAG-enforcing topological ordering. Edge weights are drawn "
         "uniformly from [-2, -0.5] \u222a [0.5, 2]. Observations are generated from "
@@ -897,17 +897,17 @@ def build_document():
         "(iii) Greedy Equivalence Search (GES; Chickering, 2002): score-based greedy search with BIC scoring.\n"
         "(iv) NOTEARS (Non-combinatorial Optimization via Trace Exponential and Augmented "
         "lagRangian for Structure learning; Zheng et al., 2018): continuous optimization with acyclicity constraint.\n"
-        "(v) Spectral (DPI, \u03b1=0): our method with no domain knowledge, "
+        "(v) Spectral (DPI, \u03b1=0): my method with no domain knowledge, "
         "edges thresholded at |\u0100| > 0.1."
     ))
 
     add_para(doc, "Metrics.", bold=True)
     add_para(doc, (
-        "We report three standard metrics: "
+        "I report three standard metrics: "
         "Structural Hamming Distance (SHD, lower is better), "
         "True Positive Rate (TPR = TP/(TP+FN), higher is better), "
         "and False Discovery Rate (FDR = FP/(TP+FP), lower is better). "
-        "For spectral causality, which produces a DCG rather than a DAG, we "
+        "For spectral causality, which produces a DCG rather than a DAG, I "
         "extract the gradient component via Hodge decomposition and threshold to "
         "obtain a DAG for metric computation."
     ))
@@ -948,7 +948,7 @@ def build_document():
     add_heading(doc, "7.6 Sachs Protein Signaling Network", level=2)
     add_para(doc, (
         "To validate spectral causality on a widely used causal discovery "
-        "benchmark with established ground truth, we apply it to the Sachs "
+        "benchmark with established ground truth, I apply it to the Sachs "
         "protein signaling dataset (Sachs et al., 2005)."
     ))
     add_para(doc, "Dataset.", bold=True)
@@ -956,12 +956,12 @@ def build_document():
         "The Sachs dataset measures 11 phosphorylated proteins and phospholipids "
         "(Raf, Mek, Plcg, PIP2, PIP3, Erk, Akt, PKA, PKC, P38, Jnk) in "
         "primary human immune cells via flow cytometry. The consensus "
-        "ground-truth network contains 17 directed edges. We use the observational "
+        "ground-truth network contains 17 directed edges. I use the observational "
         "subset (N=853, anti-CD3/CD28 stimulation)."
     ))
     add_para(doc, "Domain knowledge.", bold=True)
     add_para(doc, (
-        "We construct C_domain from known MAPK/ERK and PI3K/AKT signaling "
+        "I construct C_domain from known MAPK/ERK and PI3K/AKT signaling "
         "cascades at two levels: (i) full knowledge (C from the 17-edge "
         "consensus network), and (ii) partial knowledge (C from only the 5 "
         "most well-established edges: PKC\u2192Raf, PKC\u2192Mek, PKC\u2192Jnk, "
@@ -1004,8 +1004,8 @@ def build_document():
     add_para(doc, (
         "To provide a quantitative benchmark on the UCI Heart Disease dataset "
         "parallel to the synthetic (\u00a77.5) and Sachs (\u00a77.6) experiments, "
-        "we compare the same five methods. Since no ground-truth DAG exists "
-        "for this observational clinical dataset, we follow the standard practice "
+        "I compare the same five methods. Since no ground-truth DAG exists "
+        "for this observational clinical dataset, I follow the standard practice "
         "of using DirectLiNGAM's output as the reference structure for computing "
         "SHD, TPR, and FDR\u2014acknowledging that this measures agreement rather "
         "than accuracy."
@@ -1382,7 +1382,7 @@ def build_document():
 
     add_para(doc, "Remark 10.1 (Sample size requirements).", bold=True, italic=True)
     add_para(doc, (
-        "The convergence rates have concrete implications for our experimental "
+        "The convergence rates have concrete implications for my experimental "
         "datasets. For the UCI Heart Disease dataset (N=297, d=2 per pair), the "
         "effective convergence rate O(N^{-1/3}) \u2248 0.15 suggests that "
         "DPI asymmetry estimates are within \u00b10.15 of their population "
@@ -1406,7 +1406,7 @@ def build_document():
 
     add_heading(doc, "11.1 Informational vs. Interventional Causality", level=2)
     add_para(doc, (
-        "Spectral causality operates at what we term \"Level 1.5\" on Pearl's "
+        "Spectral causality operates at what I term \"Level 1.5\" on Pearl's "
         "ladder of causation\u2014deeper than association (Level 1) but not "
         "interventional causality (Level 2). The disagreements with LiNGAM "
         "reflect this distinction: spectral causality captures informational "
@@ -1539,7 +1539,7 @@ def build_document():
 
     add_heading(doc, "11.6 Limitations", level=2)
     add_para(doc, (
-        "(1) Dataset scale. While we validate on synthetic DAGs (up to n=20), "
+        "(1) Dataset scale. While I validate on synthetic DAGs (up to n=20), "
         "the Sachs protein signaling network (n=11, 17 edges), and the UCI Heart "
         "Disease dataset (n=5), all experiments remain in the small-to-moderate "
         "regime. Validation on larger-scale datasets (MIMIC-IV with n>100 variables, "
@@ -1548,7 +1548,7 @@ def build_document():
         "significantly affects results; principled selection criteria require "
         "further development.\n"
         "(3) Identifiability gap. Full identifiability (Phase 3) remains an "
-        "open problem; our current guarantees cover only Phase 1 (DPI "
+        "open problem; my current guarantees cover only Phase 1 (DPI "
         "component-level consistency)."
     ))
 
@@ -1634,7 +1634,7 @@ def build_document():
     add_heading(doc, "Appendix A: Proof of Phase\u2013Direction Correspondence (Theorem 3.1)", level=1)
 
     add_para(doc, (
-        "We prove Theorem 3.1 in two stages: first for path graphs (Lemma A.1), "
+        "I prove Theorem 3.1 in two stages: first for path graphs (Lemma A.1), "
         "then for tree DAGs (Theorem A.1) via structural induction."
     ))
 
@@ -1674,7 +1674,7 @@ def build_document():
         "For uniform weights, symmetry yields a constant phase increment:\n"
         "\u0394\u03b8 = \u03b8_{k+1} - \u03b8_k = arctan(2\u03c0q\u00b7w\u0303/(1+w\u0303\u00b2)) > 0\n"
         "where w\u0303 = w/d_{v_k} is the normalized weight. "
-        "Since each \u0394\u03b8 > 0, we have "
+        "Since each \u0394\u03b8 > 0, I have "
         "\u03b8_2(v_1) < \u03b8_2(v_2) < ... < \u03b8_2(v_n). \u25a1"
     ))
 

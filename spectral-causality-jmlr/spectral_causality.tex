@@ -48,22 +48,22 @@
 Magnetic Laplacians and Hodge Decomposition}
 
 \author{\name Tatsuki Onishi \email bougtoir@gmail.com \\
-       \addr Department of Anesthesiology \\
-       University Hospital, Japan}
+       \addr Data Science and AI Innovation Research Promotion Center \\
+       Shiga University, Japan}
 
 \editor{TBD}
 
 \maketitle
 
 \begin{abstract}%
-We introduce \emph{spectral causality}, a framework for causal direction
+I introduce \emph{spectral causality}, a framework for causal direction
 estimation via the \emph{magnetic Laplacian}, an Hermitian matrix whose
-complex-valued eigenvectors encode edge directionality as phase.  We define
+complex-valued eigenvectors encode edge directionality as phase.  I define
 a \emph{Directional Predictability Index} (DPI) that resolves the
 circularity of earlier utility-based formulations: under additive noise
 model assumptions, DPI consistently estimates causal direction without
 domain knowledge.  Connecting the framework to \emph{Hodge decomposition},
-we prove that gradient--curl--harmonic separation of edge flows yields a
+I prove that gradient--curl--harmonic separation of edge flows yields a
 causal potential recovering topological order under directed acyclic graph
 (DAG) structure, and establish \emph{scale invariance} of the gradient
 energy ratio $r_{\mathrm{gradient}}$, showing that causal structure
@@ -95,7 +95,7 @@ models (SEMs) with the $do$-calculus \citep{Pearl2009}, potential outcomes
 
 This paper proposes a fundamentally different principle: \emph{reading causal
 directions from the spectral structure (eigenvalues and eigenvectors) of a
-graph Laplacian}.  We call this approach \textbf{spectral causality}.
+graph Laplacian}.  I call this approach \textbf{spectral causality}.
 
 \paragraph{Basic idea.}
 Given $n$ variables $\{X_1,\dots,X_n\}$ with putative causal relations
@@ -121,12 +121,12 @@ The main contributions of this paper are:
   (no domain knowledge), resolving the circularity in earlier utility-based
   formulations (Section~\ref{sec:formulation}).
 
-\item \textbf{DAG-free causal inference.}  Via Hodge decomposition, we
+\item \textbf{DAG-free causal inference.}  Via Hodge decomposition, I
   separate DAG-compatible flow (gradient) from feedback (curl), providing
   the gradient energy ratio $r_{\mathrm{gradient}}$ as a quantitative
   measure of DAG adequacy (Section~\ref{sec:hodge}).
 
-\item \textbf{Scale invariance theorem.}  We prove that
+\item \textbf{Scale invariance theorem.}  I prove that
   $r_{\mathrm{gradient}}$ depends only on the \emph{structure} (sign
   pattern) of the asymmetric component of the utility matrix, not on its
   magnitude---establishing that knowledge \emph{quality}, not quantity,
@@ -358,7 +358,7 @@ eigenequation $\mathcal{L}^{(q)}u_k=\lambda_k u_k$, the asymmetric
 phase factors force a strictly positive phase increment
 $\Delta\theta>0$ per directed edge.
 
-We prove this in two stages in Appendix~\ref{app:phase-proof}.
+I prove this in two stages in Appendix~\ref{app:phase-proof}.
 \emph{Stage~1} (Lemma~\ref{lem:path-phase}): For a path graph
 $v_1\to\cdots\to v_n$, the normalized magnetic Laplacian eigenequation
 yields the recursion
@@ -367,7 +367,7 @@ $(1-\lambda)u(v_k) = \frac{-iw}{d_{v_k}}u(v_{k-1})
 Writing $u(v_k)=r_k e^{i\theta_k}$ and taking the real part shows that
 $1-\lambda_2>0$ and $r_k>0$ require
 $\theta_{k+1}-\theta_k>0$, giving monotone phase ordering.
-\emph{Stage~2} (Theorem~\ref{thm:tree-phase}): For tree DAGs, we use
+\emph{Stage~2} (Theorem~\ref{thm:tree-phase}): For tree DAGs, I use
 structural induction on depth.  The base case (star graph) gives
 $\theta_2(c_j)=\theta_2(r)+\pi/2$ for each child~$c_j$ of root~$r$.
 The inductive step combines this with the subtree hypothesis via
@@ -412,7 +412,7 @@ $D_{\DPI}\in\R^{n\times n}$ is defined by
   D_{\DPI}(i\to j) = |\hat\rho_{ij}|\cdot
     \bigl(1+\gamma\cdot\bar{A}(i,j)\bigr),
 \end{equation}
-where $\gamma>0$ is a directional strength parameter (we use $\gamma=1$)
+where $\gamma>0$ is a directional strength parameter (I use $\gamma=1$)
 and $\bar{A}(i,j)$ is the mean of three normalized asymmetric statistics:
 \begin{equation}
 \label{eq:abar}
@@ -450,7 +450,7 @@ $D_{\DPI}(i\to j)\ne D_{\DPI}(j\to i)$ whenever $\bar{A}(i,j)\ne 0$.
 
 \begin{proof}
 Since each component satisfies $\hat{A}_k(j,i)=-\hat{A}_k(i,j)$
-(antisymmetry of normalized directional statistics), we have
+(antisymmetry of normalized directional statistics), I have
 $\bar{A}(j,i)=-\bar{A}(i,j)$.  Therefore,
 \[
   D_{\DPI}(j\to i) = |\hat\rho_{ij}|(1-\gamma\bar{A}(i,j))
@@ -679,7 +679,7 @@ with a topological sort of the DAG.
 
 \begin{proof}
 When $\omega=\delta_0\phi$ (pure gradient), for every directed edge
-$i\to j$ we have $\omega(i\to j)=\phi(j)-\phi(i)>0$, hence
+$i\to j$ I have $\omega(i\to j)=\phi(j)-\phi(i)>0$, hence
 $\phi(j)>\phi(i)$.  This is precisely the topological ordering
 condition.
 \end{proof}
@@ -716,7 +716,7 @@ progressively captures cyclic structure.  \citet{Zhang2022} proposed
 MagNet, a GNN based on the magnetic Laplacian, and \citet{Wein2024}
 applied graph neural networks to brain network causal inference.
 These works establish the
-magnetic Laplacian's ability to encode directionality; our contribution
+magnetic Laplacian's ability to encode directionality; my contribution
 is its application to \emph{causal inference}.
 
 \paragraph{Hodge decomposition in networks.}
@@ -727,15 +727,15 @@ Hodge decomposition, and \citet{Maehara2025} applied a discrete variant
 (ddHodge) to single-cell RNA-seq data, reconstructing gene expression
 dynamics on data manifolds.  Their demonstration that developmental
 processes are governed by potential landscapes directly supports the
-biological plausibility of our causal potential.
+biological plausibility of my causal potential.
 
 \paragraph{Signal processing on DAGs.}
 \citet{Seifert2023} defined causal Fourier analysis on DAGs under a
 ``few causes'' sparsity assumption.  \citet{Misiakos2024} extended this
 to time-series graph data.  \citet{Stankovic2024} proposed graph
 zero-padding to enable Fourier transforms on DAGs (whose adjacency
-matrices have all-zero eigenvalues).  Our approach is complementary:
-these methods recover signals given a known DAG; we \emph{estimate}
+matrices have all-zero eigenvalues).  My approach is complementary:
+these methods recover signals given a known DAG; I \emph{estimate}
 causal direction from spectral structure.
 
 \paragraph{Continuous DAG learning.}
@@ -743,7 +743,7 @@ NOTEARS \citep{Zheng2018} reformulated the acyclicity constraint as a
 continuous function $\tr(e^{W\circ W})-d=0$, enabling gradient-based
 structure learning.  GOLEM \citep{Ng2020} improved optimization
 efficiency.  \citet{Mcharrak2025} introduced a Fiedler-eigenvalue-based
-connectivity constraint for DAG learning.  Our spectral causality
+connectivity constraint for DAG learning.  My spectral causality
 encodes direction via the magnetic Laplacian's \emph{phase}, while
 M'Charrak et~al.\ use the standard Laplacian's \emph{smallest nonzero
 eigenvalue} for connectivity.
@@ -765,7 +765,7 @@ scoping review of causal discovery methods in observational medical
 research, noting the gap between algorithmic development and clinical
 adoption.  \citet{BernalGonzalez2024} used logical digraphs for
 regulatory network analysis, illustrating directed graph representations
-in biological systems.  Our ECD pipeline (Section~\ref{sec:ecd}) uses
+in biological systems.  My ECD pipeline (Section~\ref{sec:ecd}) uses
 LiNGAM output as initialization for spectral causality.
 
 \paragraph{LLMs and causal inference.}
@@ -780,7 +780,7 @@ $C_{\mathrm{domain}}$ as a future direction.
 
 \subsection{Data and Variables}
 
-We use the UCI Heart Disease Dataset (Cleveland subset;
+I use the UCI Heart Disease Dataset (Cleveland subset;
 \citealp{Detrano1989}), selecting five continuous clinical variables:
 \[
   \bx = (X_1,X_2,X_3,X_4,X_5)
@@ -790,7 +790,7 @@ Sample size $N=297$; all variables are standardized to zero mean and unit
 variance.
 
 \paragraph{Domain knowledge matrix.}
-We construct $C_{\mathrm{domain}}$ from established cardiovascular
+I construct $C_{\mathrm{domain}}$ from established cardiovascular
 physiology (Table~\ref{tab:clinical-knowledge}).  Each entry
 $C_{\mathrm{domain}}(i,j)\in[0,1]$ represents the strength of
 the believed causal influence of $X_i$ on $X_j$, elicited from
@@ -833,7 +833,7 @@ exercise-intolerance-induced ischemia).
 
 \subsection{Magnetic Laplacian Eigenvectors}
 
-We construct the utility directed graph (Eq.~\ref{eq:utility-hybrid}) with
+I construct the utility directed graph (Eq.~\ref{eq:utility-hybrid}) with
 $\alpha=0.6$, combining $C_{\mathrm{domain}}$
 (Table~\ref{tab:clinical-knowledge}) at 60\% weight with data-driven DPI
 at 40\% weight, and compute $\mathcal{L}^{(q)}$ for
@@ -925,11 +925,11 @@ Rank & Variable & $\phi$ \\
 \label{sec:synthetic}
 
 To evaluate spectral causality against established methods under
-controlled conditions, we generate synthetic datasets from known causal
+controlled conditions, I generate synthetic datasets from known causal
 structures and compare structural recovery performance.
 
 \paragraph{Data generation.}
-We generate random DAGs with $n\in\{5,10,20\}$ nodes and expected
+I generate random DAGs with $n\in\{5,10,20\}$ nodes and expected
 neighborhood size $d\in\{1,2,4\}$ using the Erd\H{o}s--R\'{e}nyi model,
 followed by DAG-enforcing topological ordering.  Edge weights are drawn
 uniformly from $[-2,-0.5]\cup[0.5,2]$.  Observations are generated from
@@ -939,7 +939,7 @@ sample size $N\in\{200,500,1000\}$, and 50 random graphs per
 configuration.
 
 \paragraph{Methods compared.}
-We compare five methods:
+I compare five methods:
 \begin{enumerate}
 \item[\emph{(i)}] \textbf{DirectLiNGAM} \citep{Shimizu2011}: linear
   non-Gaussian discovery.
@@ -951,16 +951,16 @@ We compare five methods:
 \item[\emph{(iv)}] \textbf{NOTEARS} (Non-combinatorial Optimization via Trace
   Exponential and Augmented lagRangian for Structure learning;
   \citealp{Zheng2018}): continuous optimization with acyclicity constraint.
-\item[\emph{(v)}] \textbf{Spectral (DPI, $\alpha=0$)}: our method with
+\item[\emph{(v)}] \textbf{Spectral (DPI, $\alpha=0$)}: my method with
   no domain knowledge, edges thresholded at $|\bar{A}|>0.1$.
 \end{enumerate}
 
 \paragraph{Metrics.}
-We report three standard metrics:
+I report three standard metrics:
 \emph{Structural Hamming Distance} (SHD, lower is better),
 \emph{True Positive Rate} (TPR $=$ TP/(TP+FN), higher is better),
 and \emph{False Discovery Rate} (FDR $=$ FP/(TP+FP), lower is better).
-For spectral causality, which produces a DCG rather than a DAG, we
+For spectral causality, which produces a DCG rather than a DAG, I
 extract the gradient component via Hodge decomposition and threshold to
 obtain a DAG for metric computation.
 
@@ -1039,7 +1039,7 @@ pipeline) is advantageous for larger graphs.
 \label{sec:sachs}
 
 To validate spectral causality on a widely used causal discovery
-benchmark with established ground truth, we apply it to the Sachs
+benchmark with established ground truth, I apply it to the Sachs
 protein signaling dataset \citep{Sachs2005}.
 
 \paragraph{Dataset.}
@@ -1047,12 +1047,12 @@ The Sachs dataset measures 11 phosphorylated proteins and phospholipids
 (Raf, Mek, Plcg, PIP2, PIP3, Erk, Akt, PKA, PKC, P38, Jnk) in
 primary human immune cells via flow cytometry.  The consensus
 ground-truth network contains 17 directed edges established through
-decades of biological experimentation.  We use the observational subset
+decades of biological experimentation.  I use the observational subset
 ($N=853$, anti-CD3/CD28 stimulation) to match the cross-sectional
-setting of our framework.
+setting of my framework.
 
 \paragraph{Domain knowledge.}
-Since our framework can incorporate external knowledge, we construct
+Since my framework can incorporate external knowledge, I construct
 $C_{\mathrm{domain}}$ from the known MAPK/ERK and PI3K/AKT signaling
 cascades at two levels: (i)~\emph{full knowledge} ($C$ from the
 17-edge consensus network), and (ii)~\emph{partial knowledge} ($C$
@@ -1112,9 +1112,9 @@ regulators of the signaling cascade.
 
 To provide a quantitative benchmark on the UCI Heart Disease dataset
 parallel to the synthetic (Section~\ref{sec:synthetic}) and Sachs
-(Section~\ref{sec:sachs}) experiments, we compare the same five
+(Section~\ref{sec:sachs}) experiments, I compare the same five
 methods.  Since no ground-truth DAG exists for this observational
-clinical dataset, we follow the standard practice of using
+clinical dataset, I follow the standard practice of using
 DirectLiNGAM's output as the reference structure for computing
 structural hamming distance (SHD), true positive rate (TPR), and false
 discovery rate (FDR)---acknowledging that this measures
@@ -1166,7 +1166,7 @@ causality} (Level 1.5: ``knowing $X$ informs about $Y$'').
 \subsection{Three-Condition Structural Comparison}
 \label{sec:three-condition}
 
-We compare three conditions on the same data:
+I compare three conditions on the same data:
 
 \begin{center}
 \begin{tabular}{llll}
@@ -1253,7 +1253,7 @@ $|\hat\rho|$-based model (Figure~\ref{fig:alpha-sweep}).
 \subsection{Knowledge Quality vs.\ Quantity}
 \label{sec:pflip}
 
-We define a \emph{knowledge quality} parameter $p_{\mathrm{flip}}$ as
+I define a \emph{knowledge quality} parameter $p_{\mathrm{flip}}$ as
 the fraction of edge directions randomly flipped in $C_{\mathrm{true}}$.
 
 \begin{theorem}[U-shaped quality curve]
@@ -1565,7 +1565,7 @@ utility graph is well-defined without domain knowledge.
 
 \subsection{Identifiability Roadmap}
 
-We outline three phases of increasing identifiability:
+I outline three phases of increasing identifiability:
 
 \paragraph{Phase 1: Component-level (achieved).}
 Each DPI component has established identifiability guarantees under its
@@ -1609,7 +1609,7 @@ useful causal structure:
 \subsection{Convergence Rates}
 \label{sec:convergence}
 
-The practical utility of DPI depends on finite-sample behavior.  We
+The practical utility of DPI depends on finite-sample behavior.  I
 characterize the convergence rate of each component.
 
 \begin{theorem}[Convergence rates of DPI components]
@@ -1687,7 +1687,7 @@ of Theorem~\ref{thm:convergence}.
 
 \begin{remark}[Sample size requirements]
 \label{rem:sample-size}
-The convergence rates have concrete implications for our experimental
+The convergence rates have concrete implications for my experimental
 datasets.
 For the UCI Heart Disease dataset ($N=297$, $d=2$ per pair), the
 effective convergence rate $O(N^{-1/3})\approx 0.15$ suggests that
@@ -1713,7 +1713,7 @@ Bootstrap analysis (200 resamples) on the UCI dataset confirms that the
 
 \subsection{Informational vs.\ Interventional Causality}
 
-Spectral causality operates at what we term ``Level 1.5'' on Pearl's
+Spectral causality operates at what I term ``Level 1.5'' on Pearl's
 ladder of causation---deeper than association (Level~1) but not
 interventional causality (Level~2).  The disagreements with LiNGAM
 reflect this distinction: spectral causality captures \emph{informational
@@ -1846,7 +1846,7 @@ general DAGs is lacking.
 \emph{Fixed charge parameter $q$.}  The spectral analysis depends on the
 charge parameter $q$, which controls the trade-off between symmetric
 coupling information ($q=0$) and directional phase information ($q>0$).
-Our experiments use $q=0.25$ for eigenvector analysis and $q=0.15$ for
+My experiments use $q=0.25$ for eigenvector analysis and $q=0.15$ for
 CCI computation (to avoid SCC degeneracy at $q=0.25$).  A principled
 $q$-selection procedure---analogous to bandwidth selection in kernel
 methods---would strengthen the practical applicability of the framework.
@@ -1872,7 +1872,7 @@ is $O(n^2\cdot N)$ for $N$ observations.
 \subsection{Limitations}
 
 \begin{enumerate}
-\item \emph{Dataset scale.}  While we validate on synthetic DAGs (up to
+\item \emph{Dataset scale.}  While I validate on synthetic DAGs (up to
   $n=20$), the Sachs protein signaling network ($n=11$, 17 edges), and
   the UCI Heart Disease dataset ($n=5$), all experiments remain in the
   small-to-moderate regime.  Validation on larger-scale datasets
@@ -1883,7 +1883,7 @@ is $O(n^2\cdot N)$ for $N$ observations.
   (cross-validation against LiNGAM, stability analysis) require further
   development.
 \item \emph{Identifiability gap.}  Full identifiability (Phase~3) remains
-  an open problem; our current guarantees cover only Phase~1 (DPI
+  an open problem; my current guarantees cover only Phase~1 (DPI
   component-level consistency).
 \end{enumerate}
 
@@ -1927,7 +1927,7 @@ The author declares no competing interests.}
 \section{Proof of Phase--Direction Correspondence (Theorem~\ref{thm:phase-direction})}
 \label{app:phase-proof}
 
-We prove Theorem~\ref{thm:phase-direction} in two stages: first for
+I prove Theorem~\ref{thm:phase-direction} in two stages: first for
 path graphs (Lemma~\ref{lem:path-phase}), then for tree DAGs
 (Theorem~\ref{thm:tree-phase}) via structural induction.
 
@@ -1962,7 +1962,7 @@ normalized magnetic Laplacian row for interior node~$v_k$ gives
   = \frac{-iw}{d_{v_k}}\,u(v_{k-1})
   + \frac{iw}{d_{v_k}}\,u(v_{k+1}),
 \end{equation}
-where we suppress the eigenvector index and write $u=u_2$.  Writing
+where I suppress the eigenvector index and write $u=u_2$.  Writing
 $u(v_k)=r_k e^{i\theta_k}$ and substituting into
 \eqref{eq:path-recursion}, the imaginary part of the equation (after
 dividing by $r_k$) gives
@@ -1999,7 +1999,7 @@ constant phase increment
   > 0,
 \end{equation}
 where $\tilde{w}=w/d_{v_k}$ is the normalized weight.  Since each
-$\Delta\theta>0$, we have $\theta_2(v_1)<\theta_2(v_2)<\cdots<\theta_2(v_n)$.
+$\Delta\theta>0$, I have $\theta_2(v_1)<\theta_2(v_2)<\cdots<\theta_2(v_n)$.
 \end{proof}
 
 \subsection{Stage 2: Extension to Tree DAGs}
@@ -2024,7 +2024,7 @@ For leaf $c_j$ with $d_{c_j}=w$:
   (1-\lambda)u(c_j) = \frac{-iw}{\sqrt{w\cdot mw}}\,u(r)
   = \frac{-i}{\sqrt{m}}\,u(r).
 \]
-Writing $u(r)=r_0 e^{i\theta_0}$, we obtain
+Writing $u(r)=r_0 e^{i\theta_0}$, I obtain
 $u(c_j)=\frac{r_0}{\sqrt{m}(1-\lambda)}\cdot e^{i(\theta_0-\pi/2)}$,
 so $\theta_2(c_j)=\theta_0-\pi/2+\pi=\theta_0+\pi/2>\theta_0$ (modulo
 $2\pi$, choosing the principal branch where all phases lie in
