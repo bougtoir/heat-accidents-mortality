@@ -702,20 +702,28 @@ dominant feedback structure.
 \label{sec:related}
 
 \paragraph{Magnetic Laplacian on directed graphs.}
+\citet{Chung2005} introduced the directed Laplacian using stationary
+distributions, establishing Cheeger-type inequalities for directed graphs.
+\citet{Singer2012} generalized scalar diffusion to vector diffusion maps
+via the connection Laplacian, and \citet{Bandeira2014} proved Cheeger
+inequalities for this operator.  Building on these foundations,
 \citet{Fanuel2017a} pioneered applying deformed Laplacians to spectral
 ranking in directed networks, connecting to PageRank via group
 synchronization.  \citet{Fanuel2017b} used magnetic eigenmaps for
 community detection.  \citet{deResende2020} characterized large directed
 networks via the magnetic Laplacian spectrum, showing that $q$
 progressively captures cyclic structure.  \citet{Zhang2022} proposed
-MagNet, a GNN based on the magnetic Laplacian.  These works establish the
+MagNet, a GNN based on the magnetic Laplacian, and \citet{Wein2024}
+applied graph neural networks to brain network causal inference.
+These works establish the
 magnetic Laplacian's ability to encode directionality; our contribution
 is its application to \emph{causal inference}.
 
 \paragraph{Hodge decomposition in networks.}
 \citet{Jiang2011} applied Hodge decomposition to statistical ranking,
 using the gradient component for global ranking and the curl for
-intransitivity.  \citet{Maehara2025} applied Hodge decomposition
+intransitivity.  \citet{Maehara2019} modeled latent flows on single-cell data using the
+Hodge decomposition, and \citet{Maehara2025} applied a discrete variant
 (ddHodge) to single-cell RNA-seq data, reconstructing gene expression
 dynamics on data manifolds.  Their demonstration that developmental
 processes are governed by potential landscapes directly supports the
@@ -752,9 +760,13 @@ $X_j$'') is conceptually analogous to transfer entropy.
 DirectLiNGAM \citep{Shimizu2011} identifies causal order via sequential
 non-Gaussianity tests.  \citet{Kotoku2020} applied it to Osaka health
 checkup data ($n\approx 10^5$), and \citet{Okuda2023} proposed
-workflow-constrained longitudinal LiNGAM.  Our ECD pipeline
-(Section~\ref{sec:ecd}) uses LiNGAM output as initialization for
-spectral causality.
+workflow-constrained longitudinal LiNGAM.  \citet{Liu2024} provided a
+scoping review of causal discovery methods in observational medical
+research, noting the gap between algorithmic development and clinical
+adoption.  \citet{BernalGonzalez2024} used logical digraphs for
+regulatory network analysis, illustrating directed graph representations
+in biological systems.  Our ECD pipeline (Section~\ref{sec:ecd}) uses
+LiNGAM output as initialization for spectral causality.
 
 \paragraph{LLMs and causal inference.}
 \citet{Le2024} proposed multi-agent causal discovery (MAC).
