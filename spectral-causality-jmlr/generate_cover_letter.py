@@ -15,9 +15,15 @@ def build_cover_letter():
     font.name = "Times New Roman"
     font.size = Pt(11)
 
-    # Date
+    # Sender
     p = doc.add_paragraph()
     p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+    p.add_run("Tatsuki Onishi\n")
+    p.add_run(
+        "Data Science and AI Innovation Research Promotion Center\n"
+        "Shiga University, Japan\n"
+        "bougtoir@gmail.com\n"
+    )
     p.add_run(date.today().strftime("%B %d, %Y"))
 
     # Recipient
