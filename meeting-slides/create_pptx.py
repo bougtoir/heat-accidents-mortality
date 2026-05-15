@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
-"""入職後初面談スライド (10枚) を PowerPoint (.pptx) で生成するスクリプト"""
+"""入職後初面談スライド (16枚) を PowerPoint (.pptx) で生成するスクリプト"""
 
 from pptx import Presentation
 from pptx.util import Inches, Pt, Emu
 from pptx.dml.color import RGBColor
-from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
+from pptx.enum.text import PP_ALIGN
 from pptx.enum.shapes import MSO_SHAPE
 import os
 
-# ===== Color palette =====
+# ===== Colors =====
 PRIMARY = RGBColor(0x1A, 0x36, 0x5D)
 ACCENT = RGBColor(0x2B, 0x6C, 0xB0)
-ACCENT_LIGHT = RGBColor(0xBE, 0xE3, 0xF8)
 BG = RGBColor(0xF7, 0xFA, 0xFC)
 TEXT_COLOR = RGBColor(0x1A, 0x20, 0x2C)
 TEXT_LIGHT = RGBColor(0x4A, 0x55, 0x68)
@@ -21,30 +20,26 @@ GREEN = RGBColor(0x27, 0x67, 0x49)
 GREEN_LIGHT = RGBColor(0xC6, 0xF6, 0xD5)
 RED = RGBColor(0x9B, 0x2C, 0x2C)
 RED_LIGHT = RGBColor(0xFE, 0xD7, 0xD7)
+PURPLE = RGBColor(0x55, 0x3C, 0x9A)
+PURPLE_LIGHT = RGBColor(0xE9, 0xD8, 0xFD)
 WHITE = RGBColor(0xFF, 0xFF, 0xFF)
 DARK_BG = RGBColor(0x1A, 0x36, 0x5D)
-DARK_BG2 = RGBColor(0x2A, 0x4A, 0x7F)
+TEAL = RGBColor(0x2C, 0x7A, 0x7B)
 
 prs = Presentation()
 prs.slide_width = Inches(13.333)
 prs.slide_height = Inches(7.5)
 
-SLIDE_W = prs.slide_width
-SLIDE_H = prs.slide_height
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 def add_bg(slide, color):
-    """Set slide background color."""
-    background = slide.background
-    fill = background.fill
-    fill.solid()
-    fill.fore_color.rgb = color
+    slide.background.fill.solid()
+    slide.background.fill.fore_color.rgb = color
 
 
 def add_text_box(slide, left, top, width, height, text, font_size=18,
-                 color=TEXT_COLOR, bold=False, alignment=PP_ALIGN.LEFT,
-                 font_name="Yu Gothic"):
-    """Add a simple text box."""
+                 color=TEXT_COLOR, bold=False, alignment=PP_ALIGN.LEFT):
     txBox = slide.shapes.add_textbox(left, top, width, height)
     tf = txBox.text_frame
     tf.word_wrap = True
@@ -53,26 +48,22 @@ def add_text_box(slide, left, top, width, height, text, font_size=18,
     p.font.size = Pt(font_size)
     p.font.color.rgb = color
     p.font.bold = bold
-    p.font.name = font_name
+    p.font.name = "Yu Gothic"
     p.alignment = alignment
     return txBox
 
 
-def add_rich_text_box(slide, left, top, width, height):
-    """Add a text box and return the text frame for manual paragraph building."""
+def add_rich_tf(slide, left, top, width, height):
     txBox = slide.shapes.add_textbox(left, top, width, height)
     tf = txBox.text_frame
     tf.word_wrap = True
     return tf
 
 
-def add_bullet(tf, text, font_size=18, color=TEXT_COLOR, bold=False, level=0,
-               sub_text=None):
-    """Add a bullet point to a text frame."""
+def add_bullet(tf, text, font_size=17, color=TEXT_COLOR, bold=False, sub_text=None):
     p = tf.add_paragraph()
-    p.level = level
-    p.space_before = Pt(6)
-    p.space_after = Pt(4)
+    p.space_before = Pt(4)
+    p.space_after = Pt(3)
     run = p.add_run()
     run.text = text
     run.font.size = Pt(font_size)
@@ -81,17 +72,39 @@ def add_bullet(tf, text, font_size=18, color=TEXT_COLOR, bold=False, level=0,
     run.font.name = "Yu Gothic"
     if sub_text:
         p2 = tf.add_paragraph()
-        p2.level = level + 1
-        p2.space_before = Pt(2)
+        p2.space_before = Pt(1)
         run2 = p2.add_run()
-        run2.text = sub_text
-        run2.font.size = Pt(14)
+        run2.text = f"    {sub_text}"
+        run2.font.size = Pt(13)
         run2.font.color.rgb = TEXT_LIGHT
         run2.font.name = "Yu Gothic"
 
 
-def add_rounded_rect(slide, left, top, width, height, fill_color, border_color=None):
-    """Add a rounded rectangle."""
+def add_numbered_item(tf, num, text, num_color=ACCENT, font_size=16, sub_text=None):
+    p = tf.add_paragraph()
+    p.space_before = Pt(4)
+    r1 = p.add_run()
+    r1.text = f"{num}  "
+    r1.font.size = Pt(font_size - 1)
+    r1.font.color.rgb = num_color
+    r1.font.bold = True
+    r1.font.name = "Yu Gothic"
+    r2 = p.add_run()
+    r2.text = text
+    r2.font.size = Pt(font_size)
+    r2.font.color.rgb = TEXT_COLOR
+    r2.font.name = "Yu Gothic"
+    if sub_text:
+        p2 = tf.add_paragraph()
+        p2.space_before = Pt(1)
+        r3 = p2.add_run()
+        r3.text = f"      {sub_text}"
+        r3.font.size = Pt(12)
+        r3.font.color.rgb = TEXT_LIGHT
+        r3.font.name = "Yu Gothic"
+
+
+def add_rect(slide, left, top, width, height, fill_color, border_color=None):
     shape = slide.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, left, top, width, height)
     shape.fill.solid()
     shape.fill.fore_color.rgb = fill_color
@@ -103,447 +116,426 @@ def add_rounded_rect(slide, left, top, width, height, fill_color, border_color=N
     return shape
 
 
-def add_heading(slide, text, left=None, top=None):
-    """Add a slide heading with underline."""
-    if left is None:
-        left = Inches(0.8)
-    if top is None:
-        top = Inches(0.4)
-    add_text_box(slide, left, top, Inches(11), Inches(0.7),
-                 text, font_size=36, color=PRIMARY, bold=True)
-    # Underline
-    line = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, left, top + Inches(0.7),
+def add_heading(slide, text):
+    add_text_box(slide, Inches(0.7), Inches(0.35), Inches(11.5), Inches(0.6),
+                 text, font_size=32, color=PRIMARY, bold=True)
+    line = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(0.7), Inches(0.95),
                                   Inches(11.5), Pt(3))
     line.fill.solid()
     line.fill.fore_color.rgb = ACCENT
     line.line.fill.background()
 
 
-def add_flow_box(slide, left, top, title, subtitle, border_color=ACCENT):
-    """Add a flow diagram box."""
-    w, h = Inches(2.8), Inches(1.2)
-    box = add_rounded_rect(slide, left, top, w, h, WHITE, border_color)
-    # Title
-    add_text_box(slide, left + Inches(0.1), top + Inches(0.15),
-                 w - Inches(0.2), Inches(0.5),
-                 title, font_size=16, color=PRIMARY, bold=True,
-                 alignment=PP_ALIGN.CENTER)
-    # Subtitle
-    add_text_box(slide, left + Inches(0.1), top + Inches(0.6),
-                 w - Inches(0.2), Inches(0.4),
-                 subtitle, font_size=12, color=TEXT_LIGHT,
-                 alignment=PP_ALIGN.CENTER)
-
-
-def add_flow_arrow(slide, left, top):
-    """Add a flow arrow."""
-    add_text_box(slide, left, top, Inches(0.6), Inches(1.2),
-                 "→", font_size=28, color=ACCENT, alignment=PP_ALIGN.CENTER)
-
-
-def add_highlight_box(slide, left, top, width, label, text, label_color=ACCENT,
-                      bg_color=RGBColor(0xEB, 0xF8, 0xFF),
-                      border_color=ACCENT, emp_parts=None):
-    """Add a highlight box with label and text."""
-    h = Inches(1.2)
-    # Background rect
-    box = add_rounded_rect(slide, left, top, width, h, bg_color)
-    # Left border accent
-    border = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE,
-                                    left, top, Pt(5), h)
+def add_highlight_box(slide, left, top, width, height, label, text,
+                      label_color=ACCENT, bg_color=RGBColor(0xEB, 0xF8, 0xFF),
+                      border_color=ACCENT):
+    add_rect(slide, left, top, width, height, bg_color)
+    border = slide.shapes.add_shape(MSO_SHAPE.RECTANGLE, left, top, Pt(5), height)
     border.fill.solid()
     border.fill.fore_color.rgb = border_color
     border.line.fill.background()
-    # Label
-    add_text_box(slide, left + Inches(0.3), top + Inches(0.1),
-                 width - Inches(0.4), Inches(0.3),
-                 label, font_size=11, color=label_color, bold=True)
-    # Text
-    tf = add_rich_text_box(slide, left + Inches(0.3), top + Inches(0.4),
-                           width - Inches(0.4), Inches(0.7))
-    tf.paragraphs[0].clear()
-    if emp_parts:
-        for part_text, is_emp in emp_parts:
-            run = tf.paragraphs[0].add_run()
-            run.text = part_text
-            run.font.size = Pt(17)
-            run.font.name = "Yu Gothic"
-            if is_emp:
-                run.font.color.rgb = ACCENT
-                run.font.bold = True
-            else:
-                run.font.color.rgb = TEXT_COLOR
-    else:
-        run = tf.paragraphs[0].add_run()
-        run.text = text
-        run.font.size = Pt(17)
-        run.font.color.rgb = TEXT_COLOR
-        run.font.name = "Yu Gothic"
+    if label:
+        add_text_box(slide, left + Inches(0.25), top + Inches(0.08),
+                     width - Inches(0.3), Inches(0.25),
+                     label, font_size=10, color=label_color, bold=True)
+    add_text_box(slide, left + Inches(0.25), top + Inches(0.3 if label else 0.1),
+                 width - Inches(0.3), height - Inches(0.35),
+                 text, font_size=15, color=TEXT_COLOR)
+
+
+def add_flow_box(slide, left, top, title, subtitle, border_color=ACCENT):
+    w, h = Inches(2.5), Inches(1.0)
+    add_rect(slide, left, top, w, h, WHITE, border_color)
+    add_text_box(slide, left + Inches(0.05), top + Inches(0.1),
+                 w - Inches(0.1), Inches(0.4), title,
+                 font_size=14, color=PRIMARY, bold=True, alignment=PP_ALIGN.CENTER)
+    add_text_box(slide, left + Inches(0.05), top + Inches(0.5),
+                 w - Inches(0.1), Inches(0.35), subtitle,
+                 font_size=11, color=TEXT_LIGHT, alignment=PP_ALIGN.CENTER)
+
+
+def add_flow_arrow(slide, left, top):
+    add_text_box(slide, left, top, Inches(0.5), Inches(1.0),
+                 "→", font_size=24, color=ACCENT, alignment=PP_ALIGN.CENTER)
 
 
 def add_tag(slide, left, top, text, color=ACCENT):
-    """Add a tag/badge."""
-    w = Inches(0.2 + len(text) * 0.18)
-    tag = add_rounded_rect(slide, left, top, w, Inches(0.35), color)
-    add_text_box(slide, left, top + Inches(0.02), w, Inches(0.3),
-                 text, font_size=11, color=WHITE, bold=True,
-                 alignment=PP_ALIGN.CENTER)
+    w = Inches(0.18 + len(text) * 0.17)
+    add_rect(slide, left, top, w, Inches(0.3), color)
+    add_text_box(slide, left, top + Inches(0.01), w, Inches(0.28),
+                 text, font_size=10, color=WHITE, bold=True, alignment=PP_ALIGN.CENTER)
     return w
 
 
-def add_page_number(slide, num, total):
-    """Add page number to bottom-left."""
-    add_text_box(slide, Inches(0.5), Inches(6.9), Inches(1), Inches(0.4),
-                 f"{num} / {total}", font_size=11, color=TEXT_LIGHT)
+def add_page_num(slide, num, total):
+    add_text_box(slide, Inches(0.4), Inches(7.0), Inches(1), Inches(0.3),
+                 f"{num} / {total}", font_size=10, color=TEXT_LIGHT)
 
 
-# ===========================================================
-# Slide 1: Title
-# ===========================================================
-slide1 = prs.slides.add_slide(prs.slide_layouts[6])  # blank
-add_bg(slide1, DARK_BG)
+TOTAL = 16
 
-add_text_box(slide1, Inches(1), Inches(2.2), Inches(11.3), Inches(1.2),
-             "入職後初面談", font_size=54, color=WHITE, bold=True,
-             alignment=PP_ALIGN.CENTER)
 
-# Divider line
-div = slide1.shapes.add_shape(MSO_SHAPE.RECTANGLE,
-                               Inches(5.5), Inches(3.5), Inches(2.3), Pt(2))
-div.fill.solid()
-div.fill.fore_color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
-div.line.fill.background()
+# ===== 1. Title =====
+s = prs.slides.add_slide(prs.slide_layouts[6])
+add_bg(s, DARK_BG)
+add_text_box(s, Inches(1), Inches(2.0), Inches(11.3), Inches(1.2),
+             "入職後初面談", font_size=52, color=WHITE, bold=True, alignment=PP_ALIGN.CENTER)
+div = s.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(5.5), Inches(3.3), Inches(2.3), Pt(2))
+div.fill.solid(); div.fill.fore_color.rgb = WHITE; div.line.fill.background()
+add_text_box(s, Inches(1), Inches(3.6), Inches(11.3), Inches(0.5),
+             "キャリア・研究ビジョン・産学連携のご共有", font_size=20, color=RGBColor(0xCC,0xCC,0xCC), alignment=PP_ALIGN.CENTER)
+add_text_box(s, Inches(1), Inches(4.6), Inches(11.3), Inches(0.4),
+             "2026年5月15日", font_size=15, color=RGBColor(0x99,0x99,0x99), alignment=PP_ALIGN.CENTER)
+add_page_num(s, 1, TOTAL)
 
-add_text_box(slide1, Inches(1), Inches(3.8), Inches(11.3), Inches(0.6),
-             "研究・産学連携ビジョンのご共有", font_size=22, color=RGBColor(0xCC, 0xCC, 0xCC),
-             alignment=PP_ALIGN.CENTER)
 
-add_text_box(slide1, Inches(1), Inches(5.0), Inches(11.3), Inches(0.5),
-             "2026年5月15日", font_size=16, color=RGBColor(0x99, 0x99, 0x99),
-             alignment=PP_ALIGN.CENTER)
-
-add_page_number(slide1, 1, 10)
-
-# ===========================================================
-# Slide 2: Agenda
-# ===========================================================
-slide2 = prs.slides.add_slide(prs.slide_layouts[6])
-add_bg(slide2, BG)
-add_heading(slide2, "本日のアジェンダ")
-
-agenda_items = [
-    "自己紹介 — コーディング能力・コードレビュー実績",
-    "生成AI時代の研究支援 — Devin × 伊藤忠 × 滋賀大学",
-    "研究者としての目標",
-    "麻酔科の診療科特異性",
-    "大学発ベンチャー・法人補助金還流モデル",
-    "産学連携 — シフト最適化・学術支援の展開",
-]
-
-tf2 = add_rich_text_box(slide2, Inches(1.2), Inches(1.6), Inches(10), Inches(5))
-tf2.paragraphs[0].clear()
-for item in agenda_items:
-    add_bullet(tf2, f"◆  {item}", font_size=22, color=TEXT_COLOR)
-
-add_page_number(slide2, 2, 10)
-
-# ===========================================================
-# Slide 3: Code Ability
-# ===========================================================
-slide3 = prs.slides.add_slide(prs.slide_layouts[6])
-add_bg(slide3, BG)
-add_heading(slide3, "コーディング能力の証明")
-
-add_highlight_box(slide3, Inches(0.8), Inches(1.8), Inches(11.5),
-                  "課題認識", "生成AI時代においてはコード能力の客観的評価が困難に")
-
-add_highlight_box(slide3, Inches(0.8), Inches(3.3), Inches(11.5),
-                  "強み", "",
-                  label_color=GREEN,
-                  bg_color=GREEN_LIGHT,
-                  border_color=GREEN,
-                  emp_parts=[
-                      ("生成AI登場以前", True),
-                      ("のプログラミングコンペティションにおける受賞歴あり\n→ コーディング能力、および", False),
-                      ("コードレビュー能力", True),
-                      ("の客観的裏付け", False),
-                  ])
-
-# Tags
-x = Inches(0.8)
-y = Inches(4.9)
-tags = [("数値最適化", ACCENT), ("統計モデリング", ACCENT),
-        ("コードレビュー", ACCENT), ("AI前受賞実績", GREEN)]
-for text, color in tags:
-    w = add_tag(slide3, x, y, text, color)
-    x += w + Inches(0.15)
-
-add_page_number(slide3, 3, 10)
-
-# ===========================================================
-# Slide 4: Devin × Itochu × Shiga
-# ===========================================================
-slide4 = prs.slides.add_slide(prs.slide_layouts[6])
-add_bg(slide4, BG)
-add_heading(slide4, "Devin × 伊藤忠 × 滋賀大学")
-
-flow_y = Inches(2.2)
-add_flow_box(slide4, Inches(1.5), flow_y, "Cognition AI", "Devin 開発元", ACCENT)
-add_flow_arrow(slide4, Inches(4.3), flow_y)
-add_flow_box(slide4, Inches(5.0), flow_y, "伊藤忠テクノソリューションズ", "日本代理店", GOLD)
-add_flow_arrow(slide4, Inches(7.8), flow_y)
-add_flow_box(slide4, Inches(8.5), flow_y, "滋賀大学", "伊藤忠と縁あり", GREEN)
-
-add_highlight_box(slide4, Inches(0.8), Inches(3.8), Inches(11.5),
-                  "提案", "",
-                  label_color=GOLD, bg_color=GOLD_LIGHT, border_color=GOLD,
-                  emp_parts=[
-                      ("伊藤忠が日本におけるDevin代理店となった今、\n", False),
-                      ("滋賀大学でのDevin導入", True),
-                      ("を検討できないか？", False),
-                  ])
-
-tf4 = add_rich_text_box(slide4, Inches(1.2), Inches(5.3), Inches(10), Inches(1.5))
-tf4.paragraphs[0].clear()
-add_bullet(tf4, "AI駆動型ソフトウェアエンジニアリングによる研究加速",
-           sub_text="コーディング、データ分析、論文整備の自動化")
-add_bullet(tf4, "大学全体のDX推進の先行事例になり得る")
-
-add_page_number(slide4, 4, 10)
-
-# ===========================================================
-# Slide 5: Research Goal
-# ===========================================================
-slide5 = prs.slides.add_slide(prs.slide_layouts[6])
-add_bg(slide5, BG)
-add_heading(slide5, "研究者としての目標")
-
-add_text_box(slide5, Inches(1), Inches(2.5), Inches(11.3), Inches(1),
-             "蝋人形になること", font_size=42, color=PRIMARY, bold=True,
-             alignment=PP_ALIGN.CENTER)
-
-add_highlight_box(slide5, Inches(3), Inches(3.8), Inches(7.3),
-                  "", "",
-                  emp_parts=[
-                      ("後世に残る研究業績を確立し、\nその分野で", False),
-                      ("不朽の存在", True),
-                      ("として認知される", False),
-                  ])
-
-tf5 = add_rich_text_box(slide5, Inches(3), Inches(5.3), Inches(7.3), Inches(1.5))
-tf5.paragraphs[0].clear()
-add_bullet(tf5, "特定の研究領域で圧倒的な成果を積み上げる")
-add_bullet(tf5, "独自のアプローチで分野に永続的な貢献を残す")
-
-add_page_number(slide5, 5, 10)
-
-# ===========================================================
-# Slide 6: Anesthesiology Specificity
-# ===========================================================
-slide6 = prs.slides.add_slide(prs.slide_layouts[6])
-add_bg(slide6, BG)
-add_heading(slide6, "麻酔科の診療科特異性")
-
-# Left column
-box_l = add_rounded_rect(slide6, Inches(0.8), Inches(1.6), Inches(5.6), Inches(4.2),
-                         WHITE, RGBColor(0xE2, 0xE8, 0xF0))
-add_text_box(slide6, Inches(1.1), Inches(1.8), Inches(5), Inches(0.5),
-             "臨床面の特徴", font_size=22, color=PRIMARY, bold=True)
-tf6l = add_rich_text_box(slide6, Inches(1.1), Inches(2.5), Inches(5), Inches(3))
-tf6l.paragraphs[0].clear()
-for item in ["リアルタイムデータが豊富（生体モニター）",
-             "薬物動態（PK/PD）モデリングとの親和性",
-             "手術スケジュール管理の複雑さ",
-             "周術期管理のプロトコル標準化"]:
-    add_bullet(tf6l, f"▸ {item}", font_size=16)
-
-# Right column
-box_r = add_rounded_rect(slide6, Inches(6.8), Inches(1.6), Inches(5.6), Inches(4.2),
-                         WHITE, RGBColor(0xE2, 0xE8, 0xF0))
-add_text_box(slide6, Inches(7.1), Inches(1.8), Inches(5), Inches(0.5),
-             "研究面の特徴", font_size=22, color=PRIMARY, bold=True)
-tf6r = add_rich_text_box(slide6, Inches(7.1), Inches(2.5), Inches(5), Inches(3))
-tf6r.paragraphs[0].clear()
-for item in ["数理モデル・シミュレーションの需要大",
-             "多変量時系列データの宝庫",
-             "シフト制勤務 → 最適化問題と直結",
-             "他科連携が多く横断的研究が可能"]:
-    add_bullet(tf6r, f"▸ {item}", font_size=16)
-
-# Bottom highlight
-add_highlight_box(slide6, Inches(0.8), Inches(6.0), Inches(11.5),
-                  "", "",
-                  emp_parts=[
-                      ("データサイエンス × 麻酔科学", True),
-                      (" の交差点に大きなポテンシャル", False),
-                  ])
-
-add_page_number(slide6, 6, 10)
-
-# ===========================================================
-# Slide 7: Venture / Subsidy Model
-# ===========================================================
-slide7 = prs.slides.add_slide(prs.slide_layouts[6])
-add_bg(slide7, BG)
-add_heading(slide7, "法人補助金の大学還流モデル")
-
-flow_y7 = Inches(2.0)
-add_flow_box(slide7, Inches(1.5), flow_y7, "大学発ベンチャー", "技術・知見の事業化", GREEN)
-add_flow_arrow(slide7, Inches(4.3), flow_y7)
-add_flow_box(slide7, Inches(5.0), flow_y7, "法人補助金取得", "公的資金の獲得", GOLD)
-add_flow_arrow(slide7, Inches(7.8), flow_y7)
-add_flow_box(slide7, Inches(8.5), flow_y7, "大学への還流", "研究基盤の強化", ACCENT)
-
-add_highlight_box(slide7, Inches(0.8), Inches(3.6), Inches(11.5),
-                  "ビジョン", "",
-                  label_color=GOLD, bg_color=GOLD_LIGHT, border_color=GOLD,
-                  emp_parts=[
-                      ("大学発ベンチャーが獲得した法人補助金を\n", False),
-                      ("大学の研究基盤に還流させるサステナブルなモデル", True),
-                      ("を構築", False),
-                  ])
-
-tf7 = add_rich_text_box(slide7, Inches(1.2), Inches(5.2), Inches(10), Inches(1.5))
-tf7.paragraphs[0].clear()
-add_bullet(tf7, "産学連携の成果を大学運営に直接貢献させる仕組み")
-add_bullet(tf7, "ベンチャー → 補助金 → 大学 の好循環サイクル")
-
-add_page_number(slide7, 7, 10)
-
-# ===========================================================
-# Slide 8: Industry-Academia Collaboration
-# ===========================================================
-slide8 = prs.slides.add_slide(prs.slide_layouts[6])
-add_bg(slide8, BG)
-add_heading(slide8, "産学連携の展開")
-
-# Left column - Shift optimization
-box8l = add_rounded_rect(slide8, Inches(0.8), Inches(1.6), Inches(5.6), Inches(4.5),
-                         WHITE, RGBColor(0xE2, 0xE8, 0xF0))
-# Left accent border
-border8l = slide8.shapes.add_shape(MSO_SHAPE.RECTANGLE,
-                                    Inches(0.8), Inches(1.6), Pt(5), Inches(4.5))
-border8l.fill.solid()
-border8l.fill.fore_color.rgb = ACCENT
-border8l.line.fill.background()
-
-add_text_box(slide8, Inches(1.1), Inches(1.8), Inches(5), Inches(0.5),
-             "シフト作成の最適化", font_size=22, color=PRIMARY, bold=True)
-tf8l = add_rich_text_box(slide8, Inches(1.1), Inches(2.5), Inches(5), Inches(2.5))
-tf8l.paragraphs[0].clear()
-for item in ["アプローチ：数値最適化",
-             "実績：導入実績あり",
-             "制約充足（公平性・連続勤務制限）",
-             "医療機関特有の複雑な制約に対応",
-             "コスト削減と職員満足度の両立"]:
-    add_bullet(tf8l, f"▸ {item}", font_size=15)
-
-x8l = Inches(1.1)
-for text, color in [("最適化", ACCENT), ("OR", ACCENT), ("導入済", ACCENT)]:
-    w = add_tag(slide8, x8l, Inches(5.2), text, color)
-    x8l += w + Inches(0.1)
-
-# Right column - Academic support
-box8r = add_rounded_rect(slide8, Inches(6.8), Inches(1.6), Inches(5.6), Inches(4.5),
-                         WHITE, RGBColor(0xE2, 0xE8, 0xF0))
-border8r = slide8.shapes.add_shape(MSO_SHAPE.RECTANGLE,
-                                    Inches(6.8), Inches(1.6), Pt(5), Inches(4.5))
-border8r.fill.solid()
-border8r.fill.fore_color.rgb = GREEN
-border8r.line.fill.background()
-
-add_text_box(slide8, Inches(7.1), Inches(1.8), Inches(5), Inches(0.5),
-             "学術支援", font_size=22, color=PRIMARY, bold=True)
-tf8r = add_rich_text_box(slide8, Inches(7.1), Inches(2.5), Inches(5), Inches(2.5))
-tf8r.paragraphs[0].clear()
-for item in ["実績：導入実績あり",
-             "論文執筆・データ解析支援",
-             "統計コンサルティング",
-             "研究デザインのアドバイス",
-             "再現可能な研究環境構築"]:
-    add_bullet(tf8r, f"▸ {item}", font_size=15)
-
-x8r = Inches(7.1)
-for text, color in [("統計", GREEN), ("論文支援", GREEN), ("導入済", GREEN)]:
-    w = add_tag(slide8, x8r, Inches(5.2), text, color)
-    x8r += w + Inches(0.1)
-
-# Bottom highlight
-add_highlight_box(slide8, Inches(0.8), Inches(6.3), Inches(11.5),
-                  "目標", "",
-                  label_color=GREEN, bg_color=GREEN_LIGHT, border_color=GREEN,
-                  emp_parts=[
-                      ("両分野の", False),
-                      ("導入実績", True),
-                      ("を基盤に、学内外への展開を推進", False),
-                  ])
-
-add_page_number(slide8, 8, 10)
-
-# ===========================================================
-# Slide 9: Research Policy
-# ===========================================================
-slide9 = prs.slides.add_slide(prs.slide_layouts[6])
-add_bg(slide9, BG)
-add_heading(slide9, "研究上の方針")
-
-add_highlight_box(slide9, Inches(0.8), Inches(2.0), Inches(11.5),
-                  "留意事項", "",
-                  label_color=RED, bg_color=RED_LIGHT, border_color=RED,
-                  emp_parts=[
-                      ("特定の研究者（佐藤俊哉氏）との共同研究は", False),
-                      ("行わない", True),
-                      ("方針", False),
-                  ])
-
-tf9 = add_rich_text_box(slide9, Inches(1.2), Inches(3.8), Inches(10), Inches(3))
-tf9.paragraphs[0].clear()
-add_bullet(tf9, "独自の研究ラインを確立・維持する", font_size=20,
-           sub_text="研究の独立性と方向性を自ら決定")
-add_bullet(tf9, "共同研究は研究ビジョンが合致する相手と進める", font_size=20,
-           sub_text="相互補完的で建設的なパートナーシップを重視")
-
-add_page_number(slide9, 9, 10)
-
-# ===========================================================
-# Slide 10: Summary
-# ===========================================================
-slide10 = prs.slides.add_slide(prs.slide_layouts[6])
-add_bg(slide10, DARK_BG)
-
-add_text_box(slide10, Inches(1), Inches(1.2), Inches(11.3), Inches(1),
-             "まとめ", font_size=44, color=WHITE, bold=True,
-             alignment=PP_ALIGN.CENTER)
-
-# Divider
-div10 = slide10.shapes.add_shape(MSO_SHAPE.RECTANGLE,
-                                  Inches(5.5), Inches(2.3), Inches(2.3), Pt(2))
-div10.fill.solid()
-div10.fill.fore_color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
-div10.line.fill.background()
-
-summary_items = [
-    "AI前の実績に基づくコード能力の裏付け",
-    "Devin導入による大学DXの可能性",
-    "麻酔科 × データサイエンスの融合",
+# ===== 2. Agenda =====
+s = prs.slides.add_slide(prs.slide_layouts[6])
+add_bg(s, BG); add_heading(s, "本日のアジェンダ")
+tf = add_rich_tf(s, Inches(1), Inches(1.4), Inches(11), Inches(5.5))
+tf.paragraphs[0].clear()
+for item in [
+    "キャリア概要 — 医学部→麻酔科→医工連携→公衆衛生→起業→DS",
+    "麻酔科臨床期のハイライト",
+    "医工連携・公衆衛生・国際連携",
+    "データサイエンティストとしての現在",
+    "研究ビジョン — データ上流への遡行",
+    "Devin × 伊藤忠 × 滋賀大学",
+    "産学連携 — シフト最適化・学術支援・論文ダッシュボード",
     "法人補助金の大学還流モデル",
-    "シフト最適化・学術支援の実績を展開",
+]:
+    add_bullet(tf, f"◆  {item}", font_size=20)
+add_page_num(s, 2, TOTAL)
+
+
+# ===== 3. Career Overview =====
+s = prs.slides.add_slide(prs.slide_layouts[6])
+add_bg(s, BG); add_heading(s, "キャリア概要")
+# Career flow boxes
+phases = [
+    ("Phase 1", "医学部\n麻酔科臨床", "1-1〜1-5", ACCENT),
+    ("Phase 2", "医工連携", "2-1〜2-2", TEAL),
+    ("Phase 3", "公衆衛生\n学位取得", "3-1〜3-3", GREEN),
+    ("Phase 4", "起業\n国際連携", "4-1〜4-4", GOLD),
+    ("Phase 5", "データ\nサイエンティスト", "5-1〜5-8", PURPLE),
 ]
+x = Inches(0.8)
+for num, title, sub, color in phases:
+    w = Inches(2.2)
+    add_rect(s, x, Inches(1.5), w, Inches(1.3), color)
+    add_text_box(s, x, Inches(1.55), w, Inches(0.25), num,
+                 font_size=9, color=RGBColor(0xDD,0xDD,0xDD), bold=True, alignment=PP_ALIGN.CENTER)
+    add_text_box(s, x, Inches(1.8), w, Inches(0.6), title,
+                 font_size=14, color=WHITE, bold=True, alignment=PP_ALIGN.CENTER)
+    add_text_box(s, x, Inches(2.4), w, Inches(0.3), sub,
+                 font_size=10, color=RGBColor(0xDD,0xDD,0xDD), alignment=PP_ALIGN.CENTER)
+    x += w + Inches(0.25)
+# Specialty / motto / goal
+add_highlight_box(s, Inches(0.8), Inches(3.2), Inches(5.5), Inches(1.0),
+                  "専門", "「好奇心」", ACCENT)
+add_highlight_box(s, Inches(6.7), Inches(3.2), Inches(5.8), Inches(1.0),
+                  "座右の銘",
+                  "「大隠朝市」\n「未解決の課題は他の分野では90%解決されている」",
+                  GOLD, GOLD_LIGHT, GOLD)
+add_highlight_box(s, Inches(0.8), Inches(4.5), Inches(11.7), Inches(0.9),
+                  "研究者としての目標",
+                  "蝋人形になること — 後世に残る研究業績を確立し、不朽の存在として認知される",
+                  PURPLE, PURPLE_LIGHT, PURPLE)
+add_page_num(s, 3, TOTAL)
 
-tf10 = add_rich_text_box(slide10, Inches(3), Inches(2.8), Inches(7.3), Inches(3.5))
-tf10.paragraphs[0].clear()
-for item in summary_items:
-    add_bullet(tf10, f"◆  {item}", font_size=20, color=RGBColor(0xDD, 0xDD, 0xDD))
 
-add_text_box(slide10, Inches(1), Inches(6.2), Inches(11.3), Inches(0.6),
-             "ご清聴ありがとうございました", font_size=18,
-             color=RGBColor(0x99, 0x99, 0x99), alignment=PP_ALIGN.CENTER)
+# ===== 4. Phase 1: Anesthesiology =====
+s = prs.slides.add_slide(prs.slide_layouts[6])
+add_bg(s, BG); add_heading(s, "Phase 1：麻酔科臨床期")
+tf = add_rich_tf(s, Inches(0.8), Inches(1.3), Inches(8.5), Inches(5.5))
+tf.paragraphs[0].clear()
+add_numbered_item(tf, "1-1", "医学部卒業・麻酔科入局")
+add_numbered_item(tf, "1-2", "東京都立墨東病院（三次救命救急）麻酔科に勤務",
+                  sub_text="のべ200〜300名の医師の中で「他の医師に手に負えない症例は知識も技術も大西を呼ぶ」ルール")
+add_numbered_item(tf, "1-3", "酒井哲郎先生の著書で「東京の市中病院にいる天才麻酔科医」として紹介")
+add_numbered_item(tf, "1-4", "天野篤先生（上皇の執刀医）からお見合いを紹介されるほど気に入られる")
+add_numbered_item(tf, "1-5", "麻酔科でしたいことは全て終えて「卒業」")
+# Book cover image
+book_path = os.path.join(SCRIPT_DIR, "book_cover.png")
+if os.path.exists(book_path):
+    s.shapes.add_picture(book_path, Inches(9.8), Inches(1.3), height=Inches(5.0))
+add_page_num(s, 4, TOTAL)
 
-add_page_number(slide10, 10, 10)
 
-# ===========================================================
-# Save
-# ===========================================================
-output_path = os.path.join(os.path.dirname(__file__), "meeting_slides.pptx")
+# ===== 5. Phase 1 cont: Book quote =====
+s = prs.slides.add_slide(prs.slide_layouts[6])
+add_bg(s, BG); add_heading(s, "Phase 1：「天才麻酔科医」の紹介")
+page_path = os.path.join(SCRIPT_DIR, "book_page.jpg")
+if os.path.exists(page_path):
+    s.shapes.add_picture(page_path, Inches(0.8), Inches(1.3), height=Inches(5.2))
+add_highlight_box(s, Inches(7.0), Inches(1.5), Inches(5.8), Inches(2.0),
+                  "書籍より引用",
+                  "「例えば東京の市中病院で働く天才麻酔科医はおるのだが…」\n\n"
+                  "— 酒井哲郎先生\n"
+                  "『麻酔科診療にみる医学留学へのパスポート』",
+                  ACCENT)
+add_highlight_box(s, Inches(7.0), Inches(3.8), Inches(5.8), Inches(1.5),
+                  "天野篤先生との関係",
+                  "天野篤先生（上皇の心臓バイパス手術執刀医）から\n"
+                  "お見合いを紹介されるほどの信頼関係",
+                  GOLD, GOLD_LIGHT, GOLD)
+add_page_num(s, 5, TOTAL)
+
+
+# ===== 6. Phase 2: Medical Engineering =====
+s = prs.slides.add_slide(prs.slide_layouts[6])
+add_bg(s, BG); add_heading(s, "Phase 2：医工連携期")
+tf = add_rich_tf(s, Inches(0.8), Inches(1.3), Inches(11.5), Inches(2))
+tf.paragraphs[0].clear()
+add_numbered_item(tf, "2-1", "墨東病院在籍中、市中病院と医学部を持たない工学部での医工連携に着手", num_color=TEAL)
+add_numbered_item(tf, "2-2", "全身麻酔の機序研究 — 京都工業繊維大学（医学部なし）の論文が確信に最も近い", num_color=TEAL)
+add_highlight_box(s, Inches(0.8), Inches(3.0), Inches(11.5), Inches(1.2),
+                  "麻酔科の特異性",
+                  "全身麻酔の効く仕組みには十分な科学的根拠がまだない。\n"
+                  "医学部を持たない京都工業繊維大学の研究が最も核心に迫っている — 分野横断的アプローチの重要性",
+                  TEAL, RGBColor(0xE6,0xFF,0xFA), TEAL)
+# Two column
+col_l = add_rect(s, Inches(0.8), Inches(4.5), Inches(5.5), Inches(2.5), WHITE, RGBColor(0xE2,0xE8,0xF0))
+add_text_box(s, Inches(1.1), Inches(4.7), Inches(5), Inches(0.4), "臨床面の特徴", font_size=18, color=PRIMARY, bold=True)
+tf_l = add_rich_tf(s, Inches(1.1), Inches(5.2), Inches(5), Inches(1.5))
+tf_l.paragraphs[0].clear()
+for item in ["リアルタイム生体モニターデータ", "PK/PDモデリングとの親和性", "手術スケジュールの複雑な最適化"]:
+    add_bullet(tf_l, f"▸ {item}", font_size=14)
+col_r = add_rect(s, Inches(6.7), Inches(4.5), Inches(5.8), Inches(2.5), WHITE, RGBColor(0xE2,0xE8,0xF0))
+add_text_box(s, Inches(7.0), Inches(4.7), Inches(5), Inches(0.4), "研究面の特徴", font_size=18, color=PRIMARY, bold=True)
+tf_r = add_rich_tf(s, Inches(7.0), Inches(5.2), Inches(5), Inches(1.5))
+tf_r.paragraphs[0].clear()
+for item in ["数理モデル・シミュレーション需要大", "多変量時系列データの宝庫", "シフト制勤務 → 最適化問題と直結"]:
+    add_bullet(tf_r, f"▸ {item}", font_size=14)
+add_page_num(s, 6, TOTAL)
+
+
+# ===== 7. Phase 3: Public Health =====
+s = prs.slides.add_slide(prs.slide_layouts[6])
+add_bg(s, BG); add_heading(s, "Phase 3：公衆衛生・学位取得期")
+tf = add_rich_tf(s, Inches(0.8), Inches(1.3), Inches(11.5), Inches(2.5))
+tf.paragraphs[0].clear()
+add_numbered_item(tf, "3-1", "滋賀医科大学で感染症論文により学位（博士号）取得", num_color=GREEN,
+                  sub_text="生成AIのない時代に執筆。ChatGPTにコード改善を依頼したところデュアルユースを疑われ拒否された")
+add_numbered_item(tf, "3-2", "学位の縁で滋賀医科大学 救急集中治療講座 非常勤助教に就任", num_color=GREEN)
+add_numbered_item(tf, "3-3", "医療の (not so) big data を使った研究支援を推進したい", num_color=GREEN,
+                  sub_text="ドメイン知識を使って滋賀大学と滋賀医科大学の間の通訳を果たす")
+add_highlight_box(s, Inches(0.8), Inches(4.0), Inches(11.5), Inches(1.2),
+                  "通訳者としての役割",
+                  "データサイエンス（滋賀大学）× 臨床医学（滋賀医科大学）\n"
+                  "両大学の間でドメイン知識による橋渡しができる稀有なポジション",
+                  GREEN, GREEN_LIGHT, GREEN)
+add_highlight_box(s, Inches(0.8), Inches(5.5), Inches(11.5), Inches(1.2),
+                  "倫理と研究加速",
+                  "研究において倫理は再現性のパーツであるに過ぎないのに過大視されている。\n"
+                  "オープンデータを活用して研究を加速させるほうが生産的",
+                  ACCENT)
+add_page_num(s, 7, TOTAL)
+
+
+# ===== 8. Phase 4: Venture =====
+s = prs.slides.add_slide(prs.slide_layouts[6])
+add_bg(s, BG); add_heading(s, "Phase 4：起業・国際連携期")
+tf = add_rich_tf(s, Inches(0.8), Inches(1.3), Inches(11.5), Inches(3.5))
+tf.paragraphs[0].clear()
+add_numbered_item(tf, "4-1", "スリランカとのSATREPS計画 — 3年越しでスリランカ側が書類作成できず頓挫", num_color=GOLD,
+                  sub_text="現地JICAにも連絡を絶たれた。国内では文科省・前スリランカ大使・SATREPS発案者と知己を得た")
+add_numbered_item(tf, "4-2", "成育医療研究センターとの共同研究 — まさかの成育側の倫理審査が未了というサプライズ", num_color=GOLD)
+add_numbered_item(tf, "4-3", "シフト作成の最適化（数値最適化）— 導入実績あり", num_color=GOLD)
+add_numbered_item(tf, "4-4", "学術支援サービス — 導入実績あり", num_color=GOLD)
+add_highlight_box(s, Inches(0.8), Inches(5.2), Inches(11.5), Inches(1.2),
+                  "教訓",
+                  "国際連携は相手側の事務能力に大きく依存する。国内でのネットワーク構築は成果として残る。\n"
+                  "倫理審査の未了は共同研究における予測困難なリスク。",
+                  RED, RED_LIGHT, RED)
+add_page_num(s, 8, TOTAL)
+
+
+# ===== 9. Phase 5: Data Scientist =====
+s = prs.slides.add_slide(prs.slide_layouts[6])
+add_bg(s, BG); add_heading(s, "Phase 5：データサイエンティスト期（現在）")
+tf = add_rich_tf(s, Inches(0.8), Inches(1.3), Inches(11.5), Inches(5.5))
+tf.paragraphs[0].clear()
+add_numbered_item(tf, "5-1", "滋賀大学にデータサイエンティストとして入職", num_color=PURPLE)
+add_numbered_item(tf, "5-2", "hikone — 独自の因果推論手法論文を執筆、JMLRに投稿中", num_color=PURPLE)
+add_numbered_item(tf, "5-3", "論文管理ダッシュボードを自作 → センターのプロジェクト管理にも活用", num_color=PURPLE)
+add_numbered_item(tf, "5-4", "論文を100本書いてもいいですか？", num_color=PURPLE)
+add_numbered_item(tf, "5-5", "生成AI前のプログラミングコンペ受賞歴 → コーディング能力の客観的証明", num_color=PURPLE)
+add_numbered_item(tf, "5-6", "Devin × 伊藤忠 × 滋賀大学 — AI支援の大学導入提案", num_color=PURPLE)
+add_numbered_item(tf, "5-7", "大学発ベンチャー法人補助金の大学還流モデル構想", num_color=PURPLE)
+add_numbered_item(tf, "5-8", "産学連携 — シフト最適化・学術支援の展開", num_color=PURPLE)
+add_page_num(s, 9, TOTAL)
+
+
+# ===== 10. Research Vision =====
+s = prs.slides.add_slide(prs.slide_layouts[6])
+add_bg(s, BG); add_heading(s, "研究ビジョン — データの上流へ")
+fy = Inches(1.6)
+add_flow_box(s, Inches(0.8), fy, "医学", "エビデンスを使う立場", ACCENT)
+add_flow_arrow(s, Inches(3.3), fy)
+add_flow_box(s, Inches(3.8), fy, "公衆衛生", "手法を使う立場", GREEN)
+add_flow_arrow(s, Inches(6.3), fy)
+add_flow_box(s, Inches(6.8), fy, "DS・統計学", "手法をつくる立場", PURPLE)
+add_flow_arrow(s, Inches(9.3), fy)
+# hikone box with gold bg
+add_rect(s, Inches(9.8), fy, Inches(2.5), Inches(1.0), GOLD_LIGHT, GOLD)
+add_text_box(s, Inches(9.85), fy + Inches(0.1), Inches(2.4), Inches(0.4),
+             "hikone", font_size=14, color=PRIMARY, bold=True, alignment=PP_ALIGN.CENTER)
+add_text_box(s, Inches(9.85), fy + Inches(0.5), Inches(2.4), Inches(0.35),
+             "因果推論手法\nJMLR投稿中", font_size=10, color=TEXT_LIGHT, alignment=PP_ALIGN.CENTER)
+
+add_highlight_box(s, Inches(0.8), Inches(3.0), Inches(5.5), Inches(1.0),
+                  "データの下流＝医学の強み",
+                  "医学はデータの下流だが本人のプラクティスは変わる\n→ 必ず社会実装される")
+add_highlight_box(s, Inches(6.7), Inches(3.0), Inches(5.8), Inches(1.0),
+                  "エビデンスの階梯への異論",
+                  "エビデンスの階梯は誤解されている。\nケースリポートはRCTに劣らない",
+                  GOLD, GOLD_LIGHT, GOLD)
+add_highlight_box(s, Inches(0.8), Inches(4.3), Inches(11.7), Inches(1.0),
+                  "戦略",
+                  "データの上流に遡ってキャリアを積み、手法をつくる側へ。\n"
+                  "同時に臨床経験に基づく社会実装力を武器に、研究と実践の両輪を回す。",
+                  PURPLE, PURPLE_LIGHT, PURPLE)
+add_page_num(s, 10, TOTAL)
+
+
+# ===== 11. Coding Ability =====
+s = prs.slides.add_slide(prs.slide_layouts[6])
+add_bg(s, BG); add_heading(s, "コーディング能力の証明")
+add_highlight_box(s, Inches(0.8), Inches(1.5), Inches(11.5), Inches(1.0),
+                  "課題認識", "生成AI時代においてはコード能力の客観的評価が困難に")
+add_highlight_box(s, Inches(0.8), Inches(2.8), Inches(11.5), Inches(1.2),
+                  "強み",
+                  "生成AI登場以前のプログラミングコンペティションにおける受賞歴あり\n"
+                  "→ コーディング能力、およびコードレビュー能力の客観的裏付け",
+                  GREEN, GREEN_LIGHT, GREEN)
+x = Inches(0.8)
+for text, color in [("数値最適化", ACCENT), ("統計モデリング", ACCENT),
+                    ("コードレビュー", ACCENT), ("AI前受賞実績", GREEN),
+                    ("因果推論", PURPLE), ("論文ダッシュボード", GOLD)]:
+    w = add_tag(s, x, Inches(4.3), text, color)
+    x += w + Inches(0.1)
+add_page_num(s, 11, TOTAL)
+
+
+# ===== 12. Devin × Itochu =====
+s = prs.slides.add_slide(prs.slide_layouts[6])
+add_bg(s, BG); add_heading(s, "Devin × 伊藤忠 × 滋賀大学")
+fy = Inches(1.8)
+add_flow_box(s, Inches(1.2), fy, "Cognition AI", "Devin 開発元", ACCENT)
+add_flow_arrow(s, Inches(3.7), fy)
+add_flow_box(s, Inches(4.2), fy, "伊藤忠テクノソリューションズ", "日本代理店", GOLD)
+add_flow_arrow(s, Inches(6.7), fy)
+add_flow_box(s, Inches(7.2), fy, "滋賀大学", "伊藤忠と縁あり", GREEN)
+add_highlight_box(s, Inches(0.8), Inches(3.2), Inches(11.5), Inches(1.0),
+                  "提案",
+                  "伊藤忠が日本におけるDevin代理店となった今、滋賀大学でのDevin導入を検討できないか？",
+                  GOLD, GOLD_LIGHT, GOLD)
+tf = add_rich_tf(s, Inches(1.0), Inches(4.5), Inches(11), Inches(2))
+tf.paragraphs[0].clear()
+add_bullet(tf, "AI駆動型ソフトウェアエンジニアリングによる研究加速",
+           sub_text="コーディング、データ分析、論文整備の自動化")
+add_bullet(tf, "大学全体のDX推進の先行事例になり得る")
+add_page_num(s, 12, TOTAL)
+
+
+# ===== 13. Subsidy Model =====
+s = prs.slides.add_slide(prs.slide_layouts[6])
+add_bg(s, BG); add_heading(s, "法人補助金の大学還流モデル")
+fy = Inches(1.7)
+add_flow_box(s, Inches(1.2), fy, "大学発ベンチャー", "技術・知見の事業化", GREEN)
+add_flow_arrow(s, Inches(3.7), fy)
+add_flow_box(s, Inches(4.2), fy, "法人補助金取得", "公的資金の獲得", GOLD)
+add_flow_arrow(s, Inches(6.7), fy)
+add_flow_box(s, Inches(7.2), fy, "大学への還流", "研究基盤の強化", ACCENT)
+add_highlight_box(s, Inches(0.8), Inches(3.1), Inches(11.5), Inches(1.0),
+                  "ビジョン",
+                  "大学発ベンチャーが獲得した法人補助金を大学の研究基盤に還流させるサステナブルなモデルを構築",
+                  GOLD, GOLD_LIGHT, GOLD)
+tf = add_rich_tf(s, Inches(1.0), Inches(4.4), Inches(11), Inches(2))
+tf.paragraphs[0].clear()
+add_bullet(tf, "産学連携の成果を大学運営に直接貢献させる仕組み")
+add_bullet(tf, "ベンチャー → 補助金 → 大学 の好循環サイクル")
+add_page_num(s, 13, TOTAL)
+
+
+# ===== 14. Industry-Academia =====
+s = prs.slides.add_slide(prs.slide_layouts[6])
+add_bg(s, BG); add_heading(s, "産学連携の展開")
+# Three columns
+for (x, title, items, tags_list, bc) in [
+    (Inches(0.8), "シフト作成の最適化",
+     ["手法：数値最適化", "実績：導入済 ✓", "公平性・連続勤務制限", "コスト削減 + 満足度両立"],
+     [("最適化", ACCENT), ("OR", ACCENT)], ACCENT),
+    (Inches(4.9), "学術支援",
+     ["実績：導入済 ✓", "論文執筆・データ解析", "統計コンサルティング", "研究デザイン助言"],
+     [("統計", GREEN), ("論文支援", GREEN)], GREEN),
+    (Inches(9.0), "論文ダッシュボード",
+     ["論文管理用に自作", "センターのプロジェクト管理に活用", "目標：論文100本"],
+     [("管理ツール", PURPLE)], PURPLE),
+]:
+    add_rect(s, x, Inches(1.3), Inches(3.8), Inches(4.0), WHITE, RGBColor(0xE2,0xE8,0xF0))
+    border = s.shapes.add_shape(MSO_SHAPE.RECTANGLE, x, Inches(1.3), Pt(5), Inches(4.0))
+    border.fill.solid(); border.fill.fore_color.rgb = bc; border.line.fill.background()
+    add_text_box(s, x + Inches(0.2), Inches(1.5), Inches(3.4), Inches(0.4),
+                 title, font_size=17, color=PRIMARY, bold=True)
+    tf = add_rich_tf(s, x + Inches(0.2), Inches(2.0), Inches(3.4), Inches(2.5))
+    tf.paragraphs[0].clear()
+    for item in items:
+        add_bullet(tf, f"▸ {item}", font_size=13)
+    tx = x + Inches(0.2)
+    for ttext, tcolor in tags_list:
+        w = add_tag(s, tx, Inches(4.5), ttext, tcolor)
+        tx += w + Inches(0.08)
+
+add_highlight_box(s, Inches(0.8), Inches(5.6), Inches(11.7), Inches(0.8),
+                  "目標",
+                  "導入実績のあるシフト最適化・学術支援を基盤に学内外へ展開。論文ダッシュボードでセンター業務を効率化。",
+                  GREEN, GREEN_LIGHT, GREEN)
+add_page_num(s, 14, TOTAL)
+
+
+# ===== 15. Research Policy =====
+s = prs.slides.add_slide(prs.slide_layouts[6])
+add_bg(s, BG); add_heading(s, "研究上の方針")
+add_highlight_box(s, Inches(0.8), Inches(1.8), Inches(11.5), Inches(1.0),
+                  "留意事項",
+                  "特定の研究者（佐藤俊哉氏）との共同研究は行わない方針",
+                  RED, RED_LIGHT, RED)
+tf = add_rich_tf(s, Inches(1.0), Inches(3.2), Inches(11), Inches(3))
+tf.paragraphs[0].clear()
+add_bullet(tf, "独自の研究ラインを確立・維持する", font_size=18,
+           sub_text="研究の独立性と方向性を自ら決定")
+add_bullet(tf, "共同研究は研究ビジョンが合致する相手と進める", font_size=18,
+           sub_text="相互補完的で建設的なパートナーシップを重視")
+add_page_num(s, 15, TOTAL)
+
+
+# ===== 16. Summary =====
+s = prs.slides.add_slide(prs.slide_layouts[6])
+add_bg(s, DARK_BG)
+add_text_box(s, Inches(1), Inches(0.8), Inches(11.3), Inches(0.8),
+             "まとめ", font_size=42, color=WHITE, bold=True, alignment=PP_ALIGN.CENTER)
+div = s.shapes.add_shape(MSO_SHAPE.RECTANGLE, Inches(5.5), Inches(1.7), Inches(2.3), Pt(2))
+div.fill.solid(); div.fill.fore_color.rgb = WHITE; div.line.fill.background()
+tf = add_rich_tf(s, Inches(2.5), Inches(2.2), Inches(8.3), Inches(4.5))
+tf.paragraphs[0].clear()
+for item in [
+    "医学部→麻酔科→医工連携→公衆衛生→起業→DSのキャリア遷移",
+    "墨東病院「天才麻酔科医」— 麻酔科を卒業して新たな挑戦へ",
+    "データの上流に遡り手法をつくる側へ（hikone → JMLR）",
+    "滋賀大学 × 滋賀医科大学のドメイン知識通訳",
+    "Devin導入・法人補助金還流・シフト最適化・学術支援",
+    "論文100本を目標に、蝋人形を目指す",
+]:
+    add_bullet(tf, f"◆  {item}", font_size=18, color=RGBColor(0xDD,0xDD,0xDD))
+add_text_box(s, Inches(1), Inches(6.4), Inches(11.3), Inches(0.5),
+             "ご清聴ありがとうございました", font_size=16,
+             color=RGBColor(0x99,0x99,0x99), alignment=PP_ALIGN.CENTER)
+add_page_num(s, 16, TOTAL)
+
+
+# ===== Save =====
+output_path = os.path.join(SCRIPT_DIR, "meeting_slides.pptx")
 prs.save(output_path)
 print(f"Saved: {output_path}")
