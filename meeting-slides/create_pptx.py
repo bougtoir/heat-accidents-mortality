@@ -214,10 +214,10 @@ add_bg(s, BG); add_heading(s, "キャリア概要")
 # Career flow boxes
 phases = [
     ("Phase 1", "医学部\n麻酔科臨床", "1-1〜1-5", ACCENT),
-    ("Phase 2", "医工連携", "2-1〜2-2", TEAL),
+    ("Phase 2", "医工連携", "2-1〜2-3", TEAL),
     ("Phase 3", "公衆衛生\n学位取得", "3-1〜3-3", GREEN),
-    ("Phase 4", "起業\n国際連携", "4-1〜4-4", GOLD),
-    ("Phase 5", "データ\nサイエンティスト", "5-1〜5-8", PURPLE),
+    ("Phase 4", "起業\n国際連携", "4-1〜4-6", GOLD),
+    ("Phase 5", "データ\nサイエンティスト", "5-1〜5-5", PURPLE),
 ]
 x = Inches(0.8)
 for num, title, sub, color in phases:
@@ -289,6 +289,7 @@ tf = add_rich_tf(s, Inches(0.8), Inches(1.3), Inches(11.5), Inches(2))
 tf.paragraphs[0].clear()
 add_numbered_item(tf, "2-1", "墨東病院在籍中、市中病院と医学部を持たない工学部での医工連携に着手", num_color=TEAL)
 add_numbered_item(tf, "2-2", "全身麻酔の機序研究 — 京都工業繊維大学（医学部なし）の論文が確信に最も近い", num_color=TEAL)
+add_numbered_item(tf, "2-3", "生成AI前のプログラミングコンペ受賞歴 → コーディング能力の客観的証明", num_color=TEAL)
 add_highlight_box(s, Inches(0.8), Inches(3.0), Inches(11.5), Inches(1.2),
                   "麻酔科の特異性",
                   "全身麻酔の効く仕組みには十分な科学的根拠がまだない。\n"
@@ -343,6 +344,8 @@ add_numbered_item(tf, "4-1", "スリランカとのSATREPS計画 — 3年越し�
 add_numbered_item(tf, "4-2", "成育医療研究センターとの共同研究 — まさかの成育側の倫理審査が未了というサプライズ", num_color=GOLD)
 add_numbered_item(tf, "4-3", "シフト作成の最適化（数値最適化）— 導入実績あり", num_color=GOLD)
 add_numbered_item(tf, "4-4", "学術支援サービス — 導入実績あり", num_color=GOLD)
+add_numbered_item(tf, "4-5", "大学発ベンチャー法人補助金の大学還流モデル構想", num_color=GOLD)
+add_numbered_item(tf, "4-6", "産学連携 — シフト最適化・学術支援の展開", num_color=GOLD)
 add_highlight_box(s, Inches(0.8), Inches(5.2), Inches(11.5), Inches(1.2),
                   "教訓",
                   "国際連携は相手側の事務能力に大きく依存する。国内でのネットワーク構築は成果として残る。\n"
@@ -358,12 +361,9 @@ tf = add_rich_tf(s, Inches(0.8), Inches(1.3), Inches(11.5), Inches(5.5))
 tf.paragraphs[0].clear()
 add_numbered_item(tf, "5-1", "滋賀大学にデータサイエンティストとして入職", num_color=PURPLE)
 add_numbered_item(tf, "5-2", "hikone — 独自の因果推論手法論文を執筆、JMLRに投稿中", num_color=PURPLE)
-add_numbered_item(tf, "5-3", "論文管理ダッシュボードを自作 → センターのプロジェクト管理にも活用", num_color=PURPLE)
-add_numbered_item(tf, "5-4", "論文を100本書いてもいいですか？", num_color=PURPLE)
-add_numbered_item(tf, "5-5", "生成AI前のプログラミングコンペ受賞歴 → コーディング能力の客観的証明", num_color=PURPLE)
-add_numbered_item(tf, "5-6", "Devin × 伊藤忠 × 滋賀大学 — AI支援の大学導入提案", num_color=PURPLE)
-add_numbered_item(tf, "5-7", "大学発ベンチャー法人補助金の大学還流モデル構想", num_color=PURPLE)
-add_numbered_item(tf, "5-8", "産学連携 — シフト最適化・学術支援の展開", num_color=PURPLE)
+add_numbered_item(tf, "5-3", "論文を100本書いてもいいですか？", num_color=PURPLE)
+add_numbered_item(tf, "5-4", "論文管理ダッシュボードを自作 → センターのプロジェクト管理にも活用", num_color=PURPLE)
+add_numbered_item(tf, "5-5", "Devin × 伊藤忠 × 滋賀大学 — AI支援の大学導入提案", num_color=PURPLE)
 add_page_num(s, 9, TOTAL)
 
 
