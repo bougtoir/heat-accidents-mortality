@@ -231,9 +231,9 @@ os.makedirs(outdir, exist_ok=True)
 
 # ── 図-1: エネルギー収支コンター図（日本語）──
 fig1, ax1 = plt.subplots(figsize=(8, 6))
-HH, QQ = np.meshgrid(Q_range, H_range)
-cf = ax1.contourf(QQ, HH, P_gen / 1000,
-                  levels=np.arange(0, 180, 10), cmap="YlOrRd")
+QQ_grid, HH_grid = np.meshgrid(Q_range, H_range)  # QQ_grid=Q値, HH_grid=H値
+cf = ax1.contourf(QQ_grid, HH_grid, P_gen / 1000,
+                  levels=np.arange(0, 180, 10), cmap="YlOrRd", extend="both")
 cbar = plt.colorbar(cf, ax=ax1)
 cbar.set_label("発電出力 [MW]", fontsize=12)
 
@@ -342,14 +342,19 @@ plt.close(fig4)
 
 # ── Fig. 1 (EN): Energy balance contour ──
 fig1e, ax1e = plt.subplots(figsize=(8, 6))
-cf = ax1e.contourf(QQ, HH, P_gen / 1000,
-                   levels=np.arange(0, 180, 10), cmap="YlOrRd")
+cf = ax1e.contourf(QQ_grid, HH_grid, P_gen / 1000,
+                   levels=np.arange(0, 180, 10), cmap="YlOrRd", extend="both")
 cbar = plt.colorbar(cf, ax=ax1e)
 cbar.set_label("Power Output [MW]", fontsize=12)
 
+for Q_val in [10, 20, 30, 50, 80]:
+    H_break = P_pump * 1000 / (1000 * 9.81 * Q_val * 0.85)
+    if 20 <= H_break <= 200:
+        ax1e.plot(Q_val, H_break, "bD", markersize=6)
+
 ax1e.plot(Q_range[valid], H_breakeven[valid], "b--", linewidth=2,
           label=f"Pumping Power = {P_pump/1000:.1f} MW")
-ax1e.set_xlabel("Planned Discharge Q [m³/s]", fontsize=12)
+ax1e.set_xlabel("Planned Discharge Q [m\u00b3/s]", fontsize=12)
 ax1e.set_ylabel("Effective Head H [m]", fontsize=12)
 ax1e.set_title("Fig. 1  Hydropower Output vs Pumping Requirement", fontsize=13, fontweight="bold")
 ax1e.legend(loc="upper left", fontsize=10)
