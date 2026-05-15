@@ -198,6 +198,48 @@ add_body(
     "measures but as a complementary safety layer."
 )
 
+add_heading("Scaling up: Tokyo's Arakawa-Edogawa basin", level=1)
+
+add_body(
+    "If the Oda-Takahashi case demonstrates feasibility in a mid-sized basin, the true policy "
+    "significance lies in densely populated metropolitan areas. The Arakawa River basin "
+    "(drainage area 2,940 km2, main channel length 173 km) protects approximately 8.2 million "
+    "people within its projected inundation zone{13}. A levee breach would be catastrophic "
+    "for Japan's political and economic core."
+)
+
+add_body(
+    "Tokyo's flood defence already involves a remarkable multi-layered system: three upstream "
+    "dams (Urayama, Futase, Takizawa), the Arakawa First Retarding Basin (Saiko, capacity "
+    "39 x 10^6 m3){14}, the Iwabuchi Sluice Gate controlling flow between the Arakawa and "
+    "Sumida rivers, super levees (15% of lower reach completed), and the Metropolitan Area "
+    "Outer Underground Discharge Channel (6.3 km, 200 m3/s) serving the adjacent Edogawa "
+    "basin{15}. Despite this infrastructure, Typhoon Hagibis (2019) caused overbank flooding "
+    "and seven levee breaches on Arakawa tributaries{13}, exposing residual vulnerability."
+)
+
+add_body(
+    "The Kanto Plain beneath Tokyo holds alluvial deposits up to 80 m thick{16}, with "
+    "sand-gravel aquifers of substantial storage potential. Critically, decades of strict "
+    "groundwater extraction regulations (Industrial Water Law 1956, Building Water Law 1962) "
+    "have allowed water tables to recover significantly from mid-20th-century over-extraction "
+    "that caused severe land subsidence{17}. This recovered water table, paradoxically, "
+    "represents an opportunity: carefully managed drawdown within subsidence-safe limits could "
+    "create 'underground retarding basins' complementing the existing surface facilities. "
+    "A conservative estimate -- 30 km2 managed area, effective porosity 0.15, 3 m drawdown -- "
+    "yields 13.5 x 10^6 m3 of additional storage, augmenting the Saiko's 39 x 10^6 m3 "
+    "by over one-third."
+)
+
+add_body(
+    "Moreover, coupling aquifer storage with the Metropolitan Outer Discharge Channel -- "
+    "where the channel provides 'water transfer' and the aquifer provides 'water detention' -- "
+    "offers a functional division that could substantially reduce pump station loads during "
+    "extreme events. In land-constrained megacities where surface expansion of retarding "
+    "basins is prohibitively expensive, subsurface storage exploits an otherwise unused "
+    "dimension of urban infrastructure."
+)
+
 add_heading("Why Japan -- and why beyond Japan", level=1)
 
 add_body(
@@ -257,9 +299,11 @@ add_body(
 
 add_body(
     "Detailed validation using coupled surface-subsurface models (GSFLOW{10}, ParFlow{11}) "
-    "is essential to replace the simplified analysis presented here. Pilot projects in basins "
-    "with documented backwater flooding and accessible alluvial aquifers would test operational "
-    "feasibility. Institutional frameworks for 'subsurface flood detention' -- the underground "
+    "is essential to replace the simplified analysis presented here. Two pilot basins are "
+    "proposed: Oda-Takahashi (Mabi district, where confluence relocation is complete and "
+    "effect verification is ongoing) and the Arakawa middle reach (where metropolitan-scale "
+    "social impact maximizes the value of incremental safety improvements). "
+    "Institutional frameworks for 'subsurface flood detention' -- the underground "
     "equivalent of surface retarding basins -- need development within Japan's 'Watershed-based "
     "Flood Management' policy{12} and analogous frameworks internationally."
 )
@@ -300,13 +344,18 @@ refs = [
     "10. USGS. GSFLOW: Coupled Groundwater and Surface-Water Flow Model. https://water.usgs.gov/ogw/gsflow/",
     "11. Maxwell, R. M. et al. A high-resolution simulation of groundwater and surface water over most of the continental US with ParFlow v3. Geosci. Model Dev. 8, 923-937 (2015).",
     "12. Ministry of Land, Infrastructure, Transport and Tourism (MLIT). Watershed-based Flood Management Project. https://www.mlit.go.jp/river/kasen/ryuiki_pro/ (in Japanese).",
-    "13. Maeno, S. Effect of relocation of confluence site of the Takahashi River and the Oda River. J. Hydraul. Eng. JSCE 51, 613-618 (2007).",
-    "14. Berkowitz, J. F. et al. Forested wetland hydrology in a large Mississippi River tributary system. Wetlands (2019).",
-    "15. Li, A. & Tsai, F.T.-C. Understanding dynamics of groundwater flows in the Mississippi River Delta. J. Hydrol. 583, 124616 (2020).",
-    "16. Nishizawa Katazakai, S. & Zhang, J. Long-term flood control in central Japan. Groundw. Sustain. Dev. 33, 101585 (2026).",
-    "17. Cosgrove, B. et al. NOAA's National Water Model. JAWRA 60, 247-272 (2024).",
-    "18. Chang, J. et al. Flood resource utilization of cascade hydropower stations. EGU General Assembly 2025, EGU25-14374.",
-    "19. Dillon, P. et al. Managed aquifer recharge: rediscovering nature as a leading edge technology. Water Sci. Technol. 62, 2338-2345 (2010).",
+    "13. MLIT Water Management and National Land Conservation Bureau. Overview of the Revision of the Arakawa River Basin Flood Control Basic Policy. (November 2024).",
+    "14. MLIT Kanto Regional Development Bureau. Saiko (Arakawa First Retarding Basin). https://www.ktr.mlit.go.jp/arajo/arajo00161.html",
+    "15. MLIT Kanto Regional Development Bureau. Metropolitan Area Outer Underground Discharge Channel. https://www.ktr.mlit.go.jp/edogawa/gaikaku/",
+    "16. Komatsubara, J. Alluvial deposits of the Tokyo Lowland. GSJ Geol. News 10(7), 148-152 (2021).",
+    "17. MLIT Water Resources Department. Groundwater Conservation and Land Subsidence Status. https://www.mlit.go.jp/mizukokudo/mizsei/",
+    "18. Maeno, S. Effect of relocation of confluence site of the Takahashi River and the Oda River. J. Hydraul. Eng. JSCE 51, 613-618 (2007).",
+    "19. Berkowitz, J. F. et al. Forested wetland hydrology in a large Mississippi River tributary system. Wetlands (2019).",
+    "20. Li, A. & Tsai, F.T.-C. Understanding dynamics of groundwater flows in the Mississippi River Delta. J. Hydrol. 583, 124616 (2020).",
+    "21. Nishizawa Katazakai, S. & Zhang, J. Long-term flood control in central Japan. Groundw. Sustain. Dev. 33, 101585 (2026).",
+    "22. Cosgrove, B. et al. NOAA's National Water Model. JAWRA 60, 247-272 (2024).",
+    "23. Chang, J. et al. Flood resource utilization of cascade hydropower stations. EGU General Assembly 2025, EGU25-14374.",
+    "24. Dillon, P. et al. Managed aquifer recharge: rediscovering nature as a leading edge technology. Water Sci. Technol. 62, 2338-2345 (2010).",
 ]
 
 for ref in refs:
