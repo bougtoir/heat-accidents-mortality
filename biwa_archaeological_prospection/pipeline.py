@@ -40,6 +40,13 @@ from .paleo_biwa import (
     BIWA_SOUTH_LAKEBED,
     AWAZU_LAKEBED_SITE,
 )
+from .vegetation_analysis import (
+    fetch_ndvi_for_region,
+    detect_vegetation_anomalies,
+    compute_combined_score,
+    NDVIResult,
+    VegetationAnomaly,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -56,6 +63,9 @@ class RegionResult:
     linear_score: np.ndarray
     candidates: list[AnomalyCandidate]
     cell_size: float
+    ndvi_result: NDVIResult = None
+    vegetation_anomalies: list[VegetationAnomaly] = None
+    combined_terrain_ndvi_score: np.ndarray = None
 
 
 def analyze_region(
@@ -105,6 +115,27 @@ def analyze_region(
     )
     logger.info("Found %d candidates", len(candidates))
 
+    # NDVI vegetation analysis
+    ndvi_result = None
+    veg_anomalies = None
+    combined_terrain_ndvi = None
+    try:
+        logger.info("Fetching Sentinel-2 NDVI data...")
+        ndvi_result = fetch_ndvi_for_region(region)
+        if ndvi_result is not None:
+            logger.info("Detecting vegetation anomalies...")
+            veg_anomalies = detect_vegetation_anomalies(
+                ndvi_result.ndvi, ndvi_result.bbox, ndvi_result.resolution_m,
+            )
+            logger.info("Computing combined terrain+NDVI score...")
+            combined_terrain_ndvi = compute_combined_score(
+                combined, ndvi_result, actual_region,
+            )
+        else:
+            logger.info("No NDVI data available, using terrain analysis only")
+    except Exception as e:
+        logger.warning("NDVI analysis failed (non-fatal): %s", e)
+
     result = RegionResult(
         region=region,
         actual_region=actual_region,
@@ -115,6 +146,9 @@ def analyze_region(
         linear_score=lin_score,
         candidates=candidates,
         cell_size=cell_size,
+        ndvi_result=ndvi_result,
+        vegetation_anomalies=veg_anomalies or [],
+        combined_terrain_ndvi_score=combined_terrain_ndvi,
     )
 
     return result
@@ -142,8 +176,10 @@ def plot_region_results(result: RegionResult, output_dir: str) -> list[str]:
         result.actual_region.lat_min, result.actual_region.lat_max,
     ]
 
-    fig = plt.figure(figsize=(20, 24))
-    gs = GridSpec(4, 3, figure=fig, hspace=0.25, wspace=0.2)
+    has_ndvi = result.ndvi_result is not None
+    n_rows = 5 if has_ndvi else 4
+    fig = plt.figure(figsize=(20, 6 * n_rows))
+    gs = GridSpec(n_rows, 3, figure=fig, hspace=0.25, wspace=0.2)
     fig.suptitle(
         f"Archaeological Prospection: {result.region.name}\n"
         f"({result.actual_region.lat_min:.3f}–{result.actual_region.lat_max:.3f}°N, "
@@ -180,8 +216,6 @@ def plot_region_results(result: RegionResult, output_dir: str) -> list[str]:
     ax_rrim.set_ylabel("Latitude")
 
     ax_cand = fig.add_subplot(gs[3, 1:])
-    dem_display = result.dem.copy()
-    vmin, vmax = np.nanpercentile(dem_display[~np.isnan(dem_display)], [2, 98]) if np.any(~np.isnan(dem_display)) else (0, 1)
     ax_cand.imshow(
         result.visualizations["hillshade"], extent=extent,
         cmap="gray", aspect="auto", alpha=0.5,
@@ -213,6 +247,74 @@ def plot_region_results(result: RegionResult, output_dir: str) -> list[str]:
     ax_cand.set_title("Candidate Anomalies (top 20) + Known Sites", fontsize=10)
     ax_cand.set_xlabel("Longitude")
     ax_cand.set_ylabel("Latitude")
+
+    # Row 5: NDVI panels (if available)
+    if has_ndvi:
+        ndvi = result.ndvi_result.ndvi
+        ndvi_bbox = result.ndvi_result.bbox
+        ndvi_extent = [ndvi_bbox[0], ndvi_bbox[2], ndvi_bbox[1], ndvi_bbox[3]]
+
+        # Panel 1: NDVI map
+        ax_ndvi = fig.add_subplot(gs[4, 0])
+        valid = ndvi[~np.isnan(ndvi)]
+        if len(valid) > 0:
+            vmin_n, vmax_n = np.nanpercentile(valid, [2, 98])
+        else:
+            vmin_n, vmax_n = -1, 1
+        im_ndvi = ax_ndvi.imshow(
+            ndvi, extent=ndvi_extent, cmap="RdYlGn", vmin=vmin_n, vmax=vmax_n, aspect="auto",
+        )
+        plt.colorbar(im_ndvi, ax=ax_ndvi, shrink=0.7)
+        ax_ndvi.set_title(
+            f"NDVI (Sentinel-2, {result.ndvi_result.scene_date[:10]})\n"
+            f"clouds={result.ndvi_result.cloud_cover:.1f}%",
+            fontsize=10,
+        )
+        ax_ndvi.set_xlabel("Longitude")
+        ax_ndvi.set_ylabel("Latitude")
+
+        # Panel 2: Combined terrain+NDVI score
+        ax_combo = fig.add_subplot(gs[4, 1])
+        if result.combined_terrain_ndvi_score is not None:
+            combo = result.combined_terrain_ndvi_score
+            valid_c = combo[~np.isnan(combo)]
+            if len(valid_c) > 0:
+                vc_min, vc_max = np.nanpercentile(valid_c, [2, 98])
+            else:
+                vc_min, vc_max = 0, 1
+            im_combo = ax_combo.imshow(
+                combo, extent=extent, cmap="hot", vmin=vc_min, vmax=vc_max, aspect="auto",
+            )
+            plt.colorbar(im_combo, ax=ax_combo, shrink=0.7)
+            ax_combo.set_title("Combined Score\n(60% Terrain + 40% NDVI)", fontsize=10)
+        else:
+            ax_combo.text(0.5, 0.5, "N/A", ha="center", va="center", transform=ax_combo.transAxes)
+            ax_combo.set_title("Combined Score (N/A)", fontsize=10)
+        ax_combo.set_xlabel("Longitude")
+        ax_combo.set_ylabel("Latitude")
+
+        # Panel 3: Vegetation anomalies on hillshade
+        ax_veg = fig.add_subplot(gs[4, 2])
+        ax_veg.imshow(
+            result.visualizations["hillshade"], extent=extent,
+            cmap="gray", aspect="auto", alpha=0.5,
+        )
+        if result.vegetation_anomalies:
+            for va in result.vegetation_anomalies[:30]:
+                marker = "^" if va.anomaly_type == "high_ndvi" else "v"
+                color = "green" if va.anomaly_type == "high_ndvi" else "orange"
+                ax_veg.plot(va.lon, va.lat, marker, color=color, markersize=7, markeredgecolor="k", linewidth=0.5)
+            n_high = sum(1 for v in result.vegetation_anomalies if v.anomaly_type == "high_ndvi")
+            n_low = sum(1 for v in result.vegetation_anomalies if v.anomaly_type == "low_ndvi")
+            ax_veg.set_title(
+                f"Vegetation Anomalies ({len(result.vegetation_anomalies)} total)\n"
+                f"▲ High NDVI ({n_high}) ▼ Low NDVI ({n_low})",
+                fontsize=10,
+            )
+        else:
+            ax_veg.set_title("Vegetation Anomalies (none detected)", fontsize=10)
+        ax_veg.set_xlabel("Longitude")
+        ax_veg.set_ylabel("Latitude")
 
     path = os.path.join(output_dir, f"analysis_{region_slug}.png")
     fig.savefig(path, dpi=150, bbox_inches="tight")
@@ -311,6 +413,7 @@ def generate_report(results: list[RegionResult], output_dir: str) -> str:
         "",
         "### 使用データ",
         "- 国土地理院 標高タイル (DEM 5m/10m)",
+        "- Sentinel-2 L2A 衛星画像 (Band4 Red + Band8 NIR → NDVI, 10m解像度)",
         "- 産総研 シームレス地質図V2 (古琵琶湖層群の分布確認用)",
         "",
         "### 使用手法",
@@ -324,6 +427,9 @@ def generate_report(results: list[RegionResult], output_dir: str) -> str:
         "| 円形構造スコア | Circ | 古墳・環濠等の円形パターン検出 |",
         "| 線形構造スコア | Linear | 道路・堤防等の線形パターン検出 |",
         "| Z-score異常度 | Z-score | 統計的に有意な地形偏差 |",
+        "| 植生指標 | NDVI | 正規化植生指数 (Sentinel-2由来) |",
+        "| 植生異常検出 | Veg-Z | NDVIのZ-scoreによる植生異常検出 |",
+        "| 統合スコア | Combined | 地形異常(60%) + 植生異常(40%)の重ね合わせ |",
         "",
         "---",
         "",
@@ -381,6 +487,39 @@ def generate_report(results: list[RegionResult], output_dir: str) -> str:
                 )
             lines.append("")
 
+        # Vegetation analysis results
+        if result.ndvi_result is not None:
+            ndvi = result.ndvi_result
+            lines.extend([
+                "#### 植生解析 (NDVI)",
+                "",
+                f"- 使用シーン: {ndvi.scene_date[:10]}",
+                f"- 雲量: {ndvi.cloud_cover:.1f}%",
+                f"- 解像度: {ndvi.resolution_m:.0f}m",
+                f"- NDVI範囲: [{np.nanmin(ndvi.ndvi):.3f}, {np.nanmax(ndvi.ndvi):.3f}]",
+                f"- NDVI平均: {np.nanmean(ndvi.ndvi):.3f}",
+                f"- 植生異常検出数: {len(result.vegetation_anomalies)}",
+                "",
+            ])
+            if result.vegetation_anomalies:
+                n_high = sum(1 for v in result.vegetation_anomalies if v.anomaly_type == "high_ndvi")
+                n_low = sum(1 for v in result.vegetation_anomalies if v.anomaly_type == "low_ndvi")
+                lines.extend([
+                    f"  - 高NDVI異常 (植生が異常に活発): {n_high}件 — 栽培植物/人為的植栽の可能性",
+                    f"  - 低NDVI異常 (植生が異常に希薄): {n_low}件 — 埋没遺構による植生抑制の可能性",
+                    "",
+                    "| # | 緒度 | 経度 | NDVI | Z-score | 面積(m²) | タイプ |",
+                    "|---|------|------|------|---------|-----------|------|",
+                ])
+                for i, va in enumerate(result.vegetation_anomalies[:10]):
+                    atype = "高NDVI" if va.anomaly_type == "high_ndvi" else "低NDVI"
+                    lines.append(
+                        f"| {i+1} | {va.lat:.5f} | {va.lon:.5f} | "
+                        f"{va.ndvi_value:.3f} | {va.ndvi_zscore:.1f} | "
+                        f"{va.area_m2:.0f} | {atype} |"
+                    )
+                lines.append("")
+
     lines.extend([
         "---",
         "",
@@ -401,11 +540,18 @@ def generate_report(results: list[RegionResult], output_dir: str) -> str:
         "- 特に蒲生累層分布域は更新世の化石産地としても重要",
         "- 堅田累層付近は現琵琶湖と近く、水位変動による水没遺跡の可能性あり",
         "",
+        "### 植生解析の意義",
+        "- NDVI（正規化植生指数）により、地形異常だけでは検出できない遺跡痕跡を補完",
+        "- 高NDVI異常: 古代の栽培植物（クリ、クルミ等の縄文時代植物）の子孫が野生化している可能性",
+        "- 低NDVI異常: 地下の石構造物・埋没遺構が植生の成長を抑制している可能性",
+        "- 古琵琶湖各ステージの湖畔域で、狩猟採集から栽培生活への移行の痕跡を植生パターンから探索",
+        "",
         "### 次のステップ",
         "1. 候補地の現地踏査（地表面確認）",
         "2. UAV-LiDARによる高解像度DEM取得",
         "3. 地中レーダー(GPR)による埋没遺構確認",
         "4. シームレス地質図との重ね合わせによる古琵琶湖層群分布の精密化",
+        "5. 季節ごとのNDVI変動解析（植生の年周期パターンと遺跡痕跡の相関）",
         "",
         "---",
         "",
