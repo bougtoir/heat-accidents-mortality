@@ -75,26 +75,32 @@ REGION_ORDER = ['北海道', '東北', '関東', '北陸・甲信越', '東海',
 ref_list = [
     # 1 Callister
     'Callister LC. Cultural influences on pain perceptions and behaviors. '
-    'Home Health Care Manag Pract 2003;15:207\u201311.',
+    'Home Health Care Manag Pract 2003;15:207\u201311. '
+    'doi:10.1177/1084822303015004003',
     # 2 Rogger
     'Rogger R, Bello C, Romero CS, et al. '
     'Cultural framing and the impact on acute pain and pain services. '
-    'Curr Pain Headache Rep 2023;27:429\u201336.',
+    'Curr Pain Headache Rep 2023;27:429\u201336. '
+    'doi:10.1007/s11916-023-01134-3',
     # 3 Zborowski
     'Zborowski M. People in Pain. San Francisco: Jossey-Bass, 1969.',
     # 4 Okolo
     'Okolo CA, Olorunsogo T, Babawarun O. Cultural variability in pain perception: '
-    'a review of cross-cultural studies. Int J Sci Res Arch 2024;11:2550\u20136.',
+    'a review of cross-cultural studies. Int J Sci Res Arch 2024;11:2550\u20136. '
+    'doi:10.30574/ijsra.2024.11.1.0298',
     # 5 Hobara
     'Hobara M. Beliefs about appropriate pain behavior: cross-cultural and sex differences '
-    'between Japanese and Euro-Americans. Eur J Pain 2005;9:389\u201393.',
+    'between Japanese and Euro-Americans. Eur J Pain 2005;9:389\u201393. '
+    'doi:10.1016/j.ejpain.2004.09.006',
     # 6 Feng
     'Feng Y, Herdman M, van Nooten F, et al. An exploration of differences between Japan '
     'and two European countries in the self-reporting and valuation of pain and discomfort '
-    'on the EQ-5D. Qual Life Res 2017;26:2067\u201378.',
+    'on the EQ-5D. Qual Life Res 2017;26:2067\u201378. '
+    'doi:10.1007/s11136-017-1541-7',
     # 7 Cohen
     'Cohen D, Nisbett RE, Bowdle BF, et al. Insult, aggression, and the southern '
-    'culture of honor: an "experimental ethnography." J Pers Soc Psychol 1996;70:945\u201360.',
+    'culture of honor: an "experimental ethnography." J Pers Soc Psychol 1996;70:945\u201360. '
+    'doi:10.1037/0022-3514.70.5.945',
     # 8 Kumagai
     'Kumagai S. Media representations reproducing images of Tohoku: the Tohoku '
     'reconstruction corner in "Secret Kenmin SHOW." Kotoba 2020;41:21\u201338. [in Japanese]',
@@ -111,7 +117,8 @@ ref_list = [
     # 12 Wakaizumi
     'Wakaizumi K, Tanaka C, Shinohara Y, et al. Geographical variation in high-impact '
     'chronic pain and psychological associations at the regional level: a multilevel analysis '
-    'of a large-scale internet-based cross-sectional survey. Front Public Health 2024;12:1482177.',
+    'of a large-scale internet-based cross-sectional survey. Front Public Health 2024;12:1482177. '
+    'doi:10.3389/fpubh.2024.1482177',
     # 13 Matsuoka
     'Matsuoka Y, Morishima T, Sato A, et al. Population-based claims study '
     'of regional and hospital function differences in opioid prescribing for cancer patients '
@@ -119,21 +126,26 @@ ref_list = [
     # 14 Taira
     'Taira K, Mori T, Ishimaru M, et al. Regional inequality in dental care utilisation '
     'in Japan: an ecological study using the National Database of Health Insurance Claims. '
-    'Lancet Reg Health West Pac 2021;12:100170.',
+    'Lancet Reg Health West Pac 2021;12:100170. '
+    'doi:10.1016/j.lanwpc.2021.100170',
     # 15 von Elm (STROBE)
     'von Elm E, Altman DG, Egger M, et al. The Strengthening the Reporting of Observational '
     'Studies in Epidemiology (STROBE) statement: guidelines for reporting observational studies. '
-    'Lancet 2007;370:1453\u20137.',
+    'Lancet 2007;370:1453\u20137. '
+    'doi:10.1016/S0140-6736(07)61602-X',
     # 16 Benchimol (RECORD)
     'Benchimol EI, Smeeth L, Guttmann A, et al. The REporting of studies Conducted using '
     'Observational Routinely-collected health Data (RECORD) statement. '
-    'PLoS Med 2015;12:e1001885.',
+    'PLoS Med 2015;12:e1001885. '
+    'doi:10.1371/journal.pmed.1001885',
     # 17 Anderson
     'Anderson KO, Green CR, Payne R. Racial and ethnic disparities in pain: '
-    'causes and consequences of unequal care. J Pain 2009;10:1187\u2013204.',
+    'causes and consequences of unequal care. J Pain 2009;10:1187\u2013204. '
+    'doi:10.1016/j.jpain.2009.06.010',
     # 18 Campbell
     'Campbell CM, Edwards RR. Ethnic differences in pain and pain management. '
-    'Pain Manag 2012;2:219\u201330.',
+    'Pain Manag 2012;2:219\u201330. '
+    'doi:10.2217/pmt.12.7',
     # 19 Befu
     'Befu H. Hegemony of Homogeneity: An Anthropological Analysis of Nihonjinron. '
     'Melbourne: Trans Pacific Press, 2001.',
@@ -144,14 +156,17 @@ ref_list = [
     # 21 Raja (IASP)
     'Raja SN, Carr DB, Cohen M, et al. The revised International Association for the '
     'Study of Pain definition of pain: concepts, challenges, and compromises. '
-    'Pain 2020;161:1976\u201382.',
+    'Pain 2020;161:1976\u201382. '
+    'doi:10.1097/j.pain.0000000000001939',
     # 22 Onishi
     'Onishi T, Onishi Y. Normalized pulse volume as a superior predictor of respiration recovery '
     'and quantification of nociception anti-nociception balance compared to opioid effect site '
-    'concentration: a prospective, observational study. F1000Research 2024;13:233.',
+    'concentration: a prospective, observational study. F1000Research 2024;13:233. '
+    'doi:10.12688/f1000research.147085.2',
     # 23 Kehlet
     'Kehlet H, Jensen TS, Woolf CJ. Persistent postsurgical pain: risk factors and prevention. '
-    'Lancet 2006;367:1618\u201325.',
+    'Lancet 2006;367:1618\u201325. '
+    'doi:10.1016/S0140-6736(06)68700-X',
 ]
 
 
@@ -368,7 +383,7 @@ for label, text in [
     ('Background', abstract_bg),
     ('Methods', abstract_methods),
     ('Results', abstract_results),
-    ('Conclusions', abstract_conclusions),
+    ('Conclusion', abstract_conclusions),
 ]:
     p = doc.add_paragraph()
     r = p.add_run(f'{label}: ')
@@ -409,6 +424,22 @@ adds_items = [
     'cultural stereotype in clinical decision-making.',
 ]
 for item in adds_items:
+    doc.add_paragraph(item, style='List Bullet')
+
+add_heading_text('How this study might affect research, practice or policy', level=2)
+
+policy_items = [
+    'Clinicians should base analgesic decisions on individual assessment rather than '
+    'cultural assumptions about pain tolerance\u2014the nearly twofold within-Japan variation '
+    'demonstrates that no national-level stereotype reliably predicts prescribing need.',
+    'Ecological studies using neuropathic pain drug prescribing as a chronic pain proxy '
+    'must adjust for confounding diseases (especially diabetes); without adjustment, '
+    'regional differences in disease prevalence can be misinterpreted as pain behaviour differences.',
+    'The within-database confounder-adjustment framework demonstrated here is replicable '
+    'in any country with a national claims database and could inform future population-level '
+    'pain research.',
+]
+for item in policy_items:
     doc.add_paragraph(item, style='List Bullet')
 
 doc.add_page_break()
