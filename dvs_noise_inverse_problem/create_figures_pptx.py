@@ -15,18 +15,18 @@ import os
 
 
 def create_gap_map_figure():
-    """Create a visual map of the 4 research domains and gaps."""
-    fig, ax = plt.subplots(1, 1, figsize=(12, 8))
+    """Create a visual map of the 4 research domains and 5 gaps (G1-G5)."""
+    fig, ax = plt.subplots(1, 1, figsize=(14, 9))
 
     # Domain boxes
     domains = {
-        'A': {'pos': (0.15, 0.7), 'label': 'A. DVSノイズ\n物理モデリング\n(5件)', 'color': '#4ECDC4'},
-        'B': {'pos': (0.55, 0.7), 'label': 'B. DVSノイズ\nフィルタリング\n(7件)', 'color': '#45B7D1'},
-        'C': {'pos': (0.15, 0.15), 'label': 'C. DVS天文・\n宇宙応用\n(5件)', 'color': '#96CEB4'},
-        'D': {'pos': (0.55, 0.15), 'label': 'D. ノイズ逆問題\n(非DVS)\n(5件)', 'color': '#FFEAA7'},
+        'A': {'pos': (0.05, 0.72), 'label': 'A. DVSノイズ\n物理モデリング\n(5件)', 'color': '#4ECDC4'},
+        'B': {'pos': (0.37, 0.72), 'label': 'B. DVSノイズ\nフィルタリング\n(7件)', 'color': '#45B7D1'},
+        'C': {'pos': (0.05, 0.12), 'label': 'C. DVS天文・\n宇宙応用\n(5件)', 'color': '#96CEB4'},
+        'D': {'pos': (0.37, 0.12), 'label': 'D. ノイズ逆問題\n(非DVS)\n(7件)', 'color': '#FFEAA7'},
     }
 
-    box_w, box_h = 0.28, 0.22
+    box_w, box_h = 0.25, 0.2
     for key, d in domains.items():
         x, y = d['pos']
         rect = FancyBboxPatch((x, y), box_w, box_h,
@@ -36,43 +36,53 @@ def create_gap_map_figure():
                               transform=ax.transAxes)
         ax.add_patch(rect)
         ax.text(x + box_w/2, y + box_h/2, d['label'],
-                ha='center', va='center', fontsize=11, fontweight='bold',
+                ha='center', va='center', fontsize=10, fontweight='bold',
                 transform=ax.transAxes, fontfamily='Noto Sans CJK JP')
 
-    # Gap labels at intersections
-    gaps = {
-        'g1': {'pos': (0.35, 0.55), 'label': 'g1\nA→D ブリッジ\nフォワードモデル\n逆問題化', 'color': '#FF6B6B'},
-        'g2': {'pos': (0.7, 0.55), 'label': 'g2\nB→D ブリッジ\n自己教師あり\nノイズ学習', 'color': '#C44D58'},
-        'g3': {'pos': (0.15, 0.48), 'label': 'g3\nA+B+C 統合\n天文微弱天体\n検出', 'color': '#E74C3C'},
-        'g4': {'pos': (0.55, 0.48), 'label': 'g4\nA+B+C+D 完全統合\nLIGOテンプレート\n全統合パイプライン', 'color': '#C0392B'},
-    }
+    # Gap labels — 5 gaps
+    gaps = [
+        {'pos': (0.68, 0.80), 'label': 'G1\nベイズ逆問題\n定式化', 'color': '#FF6B6B'},
+        {'pos': (0.68, 0.62), 'label': 'G2\n補助チャンネル\nノイズ予測', 'color': '#C44D58'},
+        {'pos': (0.68, 0.44), 'label': 'G3 ★\n天文特化\nパイプライン', 'color': '#E74C3C'},
+        {'pos': (0.68, 0.26), 'label': 'G4 ★\nテンプレートフリー\n天体検出', 'color': '#C0392B'},
+        {'pos': (0.68, 0.08), 'label': 'G5\nSciDVS+大口径\n統合実証', 'color': '#8E44AD'},
+    ]
 
-    for key, g in gaps.items():
+    for g in gaps:
         x, y = g['pos']
-        ellipse = mpatches.Ellipse((x + 0.12, y + 0.03), 0.26, 0.14,
+        ellipse = mpatches.Ellipse((x + 0.12, y + 0.05), 0.24, 0.13,
                                    facecolor=g['color'], edgecolor='white',
                                    linewidth=2, alpha=0.9,
                                    transform=ax.transAxes)
         ax.add_patch(ellipse)
-        ax.text(x + 0.12, y + 0.03, g['label'],
+        ax.text(x + 0.12, y + 0.05, g['label'],
                 ha='center', va='center', fontsize=8, color='white',
                 fontweight='bold', transform=ax.transAxes,
                 fontfamily='Noto Sans CJK JP')
 
-    # Arrows
-    arrow_style = dict(arrowstyle='->', color='#555', lw=2)
-    ax.annotate('', xy=(0.35, 0.82), xytext=(0.43, 0.82),
+    # Arrows from domains to gaps
+    arrow_style = dict(arrowstyle='->', color='#555', lw=1.5)
+    # A→G1
+    ax.annotate('', xy=(0.68, 0.85), xytext=(0.30, 0.85),
                 xycoords='axes fraction', arrowprops=arrow_style)
-    ax.annotate('', xy=(0.29, 0.7), xytext=(0.29, 0.37),
+    # D→G2
+    ax.annotate('', xy=(0.68, 0.67), xytext=(0.62, 0.30),
                 xycoords='axes fraction', arrowprops=arrow_style)
-    ax.annotate('', xy=(0.69, 0.7), xytext=(0.69, 0.37),
-                xycoords='axes fraction', arrowprops=arrow_style)
+    # G1+G2→G3
+    ax.annotate('', xy=(0.80, 0.44+0.13), xytext=(0.80, 0.62),
+                xycoords='axes fraction', arrowprops=dict(arrowstyle='->', color='#C0392B', lw=2))
+    # G3→G4
+    ax.annotate('', xy=(0.80, 0.26+0.13), xytext=(0.80, 0.44),
+                xycoords='axes fraction', arrowprops=dict(arrowstyle='->', color='#C0392B', lw=2))
+    # G4→G5
+    ax.annotate('', xy=(0.80, 0.08+0.13), xytext=(0.80, 0.26),
+                xycoords='axes fraction', arrowprops=dict(arrowstyle='->', color='#8E44AD', lw=2))
 
     ax.set_xlim(0, 1)
     ax.set_ylim(0, 1)
     ax.set_aspect('equal')
     ax.axis('off')
-    ax.set_title('DVS × ノイズ逆問題: 4領域と未開拓ギャップの俯瞰図',
+    ax.set_title('DVS × ノイズ逆問題: 4領域と5つの未開拓ギャップ（G1–G5）',
                  fontsize=14, fontweight='bold', pad=20,
                  fontfamily='Noto Sans CJK JP')
 
@@ -85,14 +95,14 @@ def create_gap_map_figure():
 
 
 def create_pipeline_figure():
-    """Create the g4 pipeline architecture figure."""
+    """Create the G3 pipeline architecture figure."""
     fig, ax = plt.subplots(1, 1, figsize=(14, 10))
     ax.set_xlim(0, 14)
     ax.set_ylim(0, 10)
     ax.axis('off')
 
     # Title
-    ax.text(7, 9.7, 'g4 全統合パイプライン: LIGO → DVS 移植アーキテクチャ',
+    ax.text(7, 9.7, 'G3 天文特化DVSノイズ逆問題パイプライン + G4 テンプレートフリー検出',
             ha='center', va='center', fontsize=14, fontweight='bold',
             fontfamily='Noto Sans CJK JP')
 
@@ -115,7 +125,7 @@ def create_pipeline_figure():
         (7, 7.2, 'Stage 1: ノイズフォワードモデル構築\nλ_noise(x,y,t) = F(θ, T(t), bias, I_bg)', '#FFF3CD', 10, 0.8),
         (7, 5.8, 'Stage 2: ノイズ逆問題求解\nθ̂ = argmin_θ D(e_obs, F(θ)) — MLE / 変分推論 / DeepClean型NN', '#D1ECF1', 10, 0.8),
         (7, 4.4, 'Stage 3: 残差イベントストリーム生成\ne_residual = e_obs ⊖ F(θ̂) — 確率的薄化 / レート引き算', '#D4EDDA', 10, 0.8),
-        (7, 3.0, 'Stage 4: 微弱天体検出 (= g3パイプライン)\n候補軌道 shift-and-stack → 統計検定 → カタログ化', '#F8D7DA', 10, 0.8),
+        (7, 3.0, 'Stage 4 (G4): テンプレートフリー天体検出\n残差統計逸脱検出 → shift-and-stack → 統計検定 → カタログ化', '#F8D7DA', 10, 0.8),
         (7, 1.6, 'Stage 5: 物理的検証\nPSDテスト / 注入・回収テスト / 既知天体テスト / ブラインドテスト', '#E2D5F1', 10, 0.8),
     ]
 
@@ -139,7 +149,7 @@ def create_pipeline_figure():
                                    connectionstyle='arc3,rad=0'))
 
     plt.tight_layout()
-    out = 'fig2_g4_pipeline.png'
+    out = 'fig2_g3_pipeline.png'
     fig.savefig(out, dpi=200, bbox_inches='tight', facecolor='white')
     plt.close()
     print(f'Saved: {out}')
@@ -153,14 +163,14 @@ def create_pptx(fig_files):
     prs.slide_height = Inches(7.5)
 
     titles = [
-        'Fig. 1: DVS × ノイズ逆問題 — 4領域と未開拓ギャップの俯瞰図',
-        'Fig. 2: g4 全統合パイプライン — LIGO → DVS 移植アーキテクチャ',
+        'Fig. 1: DVS × ノイズ逆問題 — 4領域と5つの未開拓ギャップ（G1–G5）',
+        'Fig. 2: G3天文パイプライン + G4テンプレートフリー検出',
     ]
     captions = [
         '先行研究を4領域（A: DVSノイズ物理モデリング、B: DVSノイズフィルタリング、C: DVS天文応用、D: ノイズ逆問題）に分類し、'
-        '交差領域に4つの未開拓ギャップ（g1–g4）を同定。g4が最も野心的な全統合アプローチ。',
-        'LIGOのノイズ再構成パイプライン（Vajente et al. 2020）をDVS天文観測に移植する5段階アーキテクチャ。'
-        'DVS主チャンネル・補助センサー・物理モデル（A5）を入力とし、ノイズ逆問題求解→残差生成→微弱天体検出→物理的検証の一貫パイプライン。',
+        '5つの未開拓ギャップ（G1–G5）を同定。G3（天文パイプライン）とG4（テンプレートフリー検出）が最も探索価値の高い領域。',
+        'LIGOのノイズ再構成パイプライン（Vajente et al. 2020）をDVS天文観測に移植する4段階アーキテクチャ（G3）。'
+        'Stage 4ではG4のテンプレートフリー検出——ノイズを解いて残差から未知天体を発見——を統合。',
     ]
 
     for fig_path, title, caption in zip(fig_files, titles, captions):
@@ -207,6 +217,7 @@ def create_pptx(fig_files):
 
 
 if __name__ == '__main__':
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
     fig1 = create_gap_map_figure()
     fig2 = create_pipeline_figure()
     create_pptx([fig1, fig2])
