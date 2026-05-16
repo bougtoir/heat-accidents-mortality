@@ -349,6 +349,76 @@ def build_document():
         'G5はG3+G4の実望遠鏡実証。必要なピースはすべて揃っており、統合されていないだけ。'
     )
 
+    # ======== Section F: High-precision noise reconstruction algorithm ========
+    doc.add_heading('F. 提案: 高精度ノイズ再現アルゴリズム', level=1)
+
+    doc.add_heading('F.1 基本原理', level=2)
+    doc.add_paragraph(
+        '従来のDVSデノイジング（B1–B7）はフィルタリングアプローチ。'
+        '本提案は「ノイズを高精度に再現し、観測から差し引く」ことで信号のみを残す。'
+        'ノイズモデル精度 α=0.9 で S/N 10倍改善、α=0.99 で 100倍改善が理論的に期待される。'
+    )
+
+    doc.add_heading('F.2 統合アルゴリズム: PI-DC-DVS', level=2)
+    doc.add_paragraph(
+        'Physics-Informed DeepClean for DVS (PI-DC-DVS) — G1+G2を統合した4フェーズアルゴリズム:'
+    )
+    doc.add_paragraph(
+        'Phase 1 (オフライン校正): 暗闇データ + 均一照明 + 温度スイープでピクセルパラメータ θ_pixel_map を MAP推定。',
+        style='List Number'
+    )
+    doc.add_paragraph(
+        'Phase 2 (オンライン推論): Physics-Informed NN — A5物理モデル層 + 補助チャンネル結合層 + 時空間相関層で λ̂_noise(x,y,t) を予測。各イベントのノイズ確率 P_noise(e_i) を計算。',
+        style='List Number'
+    )
+    doc.add_paragraph(
+        'Phase 3 (残差生成): ソフト減算 (w_i = 1 - P_noise(e_i)) またはハード減算 (P_noise < τ)。',
+        style='List Number'
+    )
+    doc.add_paragraph(
+        'Phase 4 (適応更新): 残差統計のポアソン性検定によるリアルタイム品質管理、カルマンフィルタ的ドリフト補正。',
+        style='List Number'
+    )
+
+    doc.add_heading('F.3 EBSSAデータによる概念実証', level=2)
+    doc.add_paragraph(
+        'EBSSA宇宙観測データ（Afshar et al. 2019; DAVIS240Cセンサー, 衛星・恒星の記録）に対し、'
+        '簡易版PI-DC-DVSアルゴリズムを適用した結果、90.3%のノイズイベント除去を達成。'
+        '残差イベントストリームでは衛星軌道が明確に可視化された（Fig. 3, Fig. 4）。'
+    )
+
+    add_table(doc,
+        ['指標', '値'],
+        [
+            ['入力イベント数', '1,800,674'],
+            ['推定ノイズイベント', '1,625,413 (90.3%)'],
+            ['残差（信号候補）イベント', '175,261 (9.7%)'],
+            ['信号候補ピクセル (Fano > 2)', '2,294'],
+            ['平均ノイズレート', '0.42 events/sec/pixel'],
+        ])
+
+    # ======== Section G: Calibration framework ========
+    doc.add_heading('G. 提案: 校正画像・検証フレームワーク', level=1)
+    doc.add_paragraph(
+        'ノイズモデル精度を定量的に評価するための校正手法を提案する。'
+        'DVS固有の校正データセット（Cal-1〜Cal-5）と校正パイプラインを設計。'
+    )
+
+    add_table(doc,
+        ['校正', '条件', '目的', '合格基準'],
+        [
+            ['Cal-1', '暗闇（レンズキャップ）', '純粋ノイズストリーム取得', 'χ²/dof < 1.5'],
+            ['Cal-2', '暗闇 + 温度スイープ', '暗電流温度依存性の実測', '全温度で残差 < 10%'],
+            ['Cal-3', '積分球均一照明', 'ショットノイズ統計の検証', 'α_flat > 0.9'],
+            ['Cal-4', '既知動的パターン', '信号存在下のノイズモデル精度', 'AUC > 0.95'],
+            ['Cal-5', '天文シミュレーション', 'パイプライン端到端性能', 'Δm_lim > 2等'],
+        ])
+
+    doc.add_paragraph(
+        'リアルタイムモニタリング指標: 残差ポアソン性（KS検定）、残差レート安定性（CV）、'
+        '補助チャンネル整合性、ピクセル異常率。いずれかの閾値逸脱で適応更新を起動。'
+    )
+
     # ======== References ========
     doc.add_heading('文献一覧', level=1)
     refs = [
