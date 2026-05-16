@@ -1,7 +1,14 @@
 #!/usr/bin/env python3
 """
-Cover Letter for Water Alternatives — Research Article
-British English, formal academic style
+Cover Letter (Email Draft) for Water Alternatives — Research Article
+WaA submission is by email; this serves as the email body.
+British English, Verdana to match WaA style.
+
+Note: Declarations (COI, Funding, AI use, Author contributions) go in the
+manuscript Cover Page (Section 1), NOT in this email/cover letter.
+Per WaA guidelines, the Cover Page of the manuscript contains all author
+information, acknowledgements, and declarations. This email simply introduces
+the submission.
 """
 
 from docx import Document
@@ -50,142 +57,88 @@ def add_placeholder(text):
     return add_para(text, color=RGBColor(255, 0, 0))
 
 
-# ── Date ──
-add_placeholder("[Date]")
+# ── Header ──
+add_para("Cover Letter / Submission Email Draft", bold=True, font_size=12,
+         space_after=12)
 
-# ── Recipient ──
-add_para("")
-add_para("Managing Editor")
-add_para("Water Alternatives")
-add_para("managing_editor@water-alternatives.org")
+add_para("To: managing_editor@water-alternatives.org", bold=True)
 
-# ── Subject ──
-add_para("")
 add_para(
-    "Re: Submission of Research Article — "
-    "\"Unilateral flood control through subsurface storage management: "
-    "A hydro-political analysis of planned-release hydropower and "
-    "inter-watershed groundwater transfer\"",
-    bold=True
+    "Subject: Submission of Research Article — "
+    "\"Unilateral flood control through subsurface storage management\"",
+    bold=True, space_after=12
 )
 
 # ── Salutation ──
-add_para("")
 add_para("Dear Managing Editor,")
 
-# ── Body paragraph 1: Introduction ──
+# ── Body paragraph 1: Submission ──
 add_para("")
 add_para(
-    "We are pleased to submit the enclosed manuscript, entitled "
+    "I am pleased to submit the attached manuscript, entitled "
     "\"Unilateral flood control through subsurface storage management: "
     "A hydro-political analysis of planned-release hydropower and "
     "inter-watershed groundwater transfer\", for consideration as a "
     "Research Article in Water Alternatives."
 )
 
-# ── Body paragraph 2: Summary of the paper ──
+# ── Body paragraph 2: Brief summary ──
 add_para(
-    "This paper proposes and analyses a novel flood control framework that "
-    "integrates planned-release hydropower generation, inter-watershed "
-    "groundwater pumping, and managed aquifer recharge into a single "
-    "energy-positive system. The key contribution to the water governance "
-    "literature is the concept of 'unilateral treatability' — the "
-    "demonstration that downstream nations can implement effective flood "
-    "control measures using subsurface storage within their own "
-    "jurisdiction, without requiring upstream cooperation or transboundary "
-    "agreements."
+    "The paper proposes a novel flood control framework that enables "
+    "downstream nations to implement flood mitigation measures unilaterally "
+    "\u2014 without requiring upstream cooperation \u2014 by integrating "
+    "planned-release hydropower generation with inter-watershed groundwater "
+    "management. The concept is analysed through feasibility studies of "
+    "two Japanese basins (Oda River\u2013Takahashi River and "
+    "Arakawa\u2013Edogawa) and situated within the hydro-hegemony "
+    "literature, with applications discussed for the Mekong, Nile, "
+    "Ganges-Brahmaputra-Meghna, Indus, Tigris-Euphrates, and Jordan basins."
 )
 
-# ── Body paragraph 3: Relevance to Water Alternatives ──
+# ── Body paragraph 3: Fit to WaA ──
 add_para(
-    "We believe this manuscript is well suited to Water Alternatives for "
-    "several reasons. First, it engages directly with the hydro-hegemony "
-    "framework (Zeitoun and Warner, 2006), challenging the assumption that "
-    "downstream states are inherently disadvantaged in transboundary flood "
-    "management. Second, it bridges the gap between technical feasibility "
-    "analysis and water governance scholarship, demonstrating how "
-    "engineering innovation can reshape political dynamics in contested "
-    "river basins. Third, the paper discusses implications for multiple "
-    "transboundary systems — including the Mekong, Nile, "
-    "Ganges-Brahmaputra-Meghna, Indus, Tigris-Euphrates, and Jordan "
-    "basins — as well as deltaic and arid-region applications, making it "
-    "relevant to Water Alternatives' global readership."
+    "I believe the manuscript is well suited to Water Alternatives because "
+    "it engages directly with hydro-hegemony theory, bridges technical "
+    "feasibility analysis with water governance scholarship, and has "
+    "implications for transboundary flood management across multiple "
+    "global river systems."
 )
 
-# ── Body paragraph 4: Technical proof ──
+# ── Body paragraph 4: Related submissions ──
 add_para(
-    "The paper provides quantitative feasibility analysis using two "
-    "Japanese case studies: the Oda River–Takahashi River basin (site of "
-    "the devastating 2018 Western Japan floods) and the Tokyo metropolitan "
-    "area (Arakawa–Edogawa basin, 8.21 million people in projected "
-    "inundation zones). These case studies demonstrate that the proposed "
-    "framework is energy self-sufficient (generating 41.7 MW while "
-    "consuming only 3.68 MW for pumping) and can provide significant flood "
-    "volume reduction (12.0 × 10⁶ m³ of subsurface storage capacity)."
+    "Disclosure: A related manuscript focusing on quantitative engineering "
+    "analysis is being submitted to the Journal of JSCE (Special Issue: "
+    "Hydroscience and Hydraulic Engineering, B1). The two manuscripts "
+    "differ substantially in scope and audience \u2014 the JSCE paper is a "
+    "technical engineering paper, while the Water Alternatives manuscript "
+    "focuses on water governance and hydro-political dimensions."
 )
 
-# ── Body paragraph 5: Novelty ──
+# ── Body paragraph 5: Confirmations ──
 add_para(
-    "To the best of our knowledge, this is the first paper to analyse the "
-    "hydro-political implications of subsurface flood storage as a tool "
-    "for autonomous downstream adaptation in transboundary contexts. While "
-    "managed aquifer recharge and pumped-storage hydropower are individually "
-    "well-established technologies, their integration into a framework "
-    "specifically designed to circumvent upstream-downstream power "
-    "asymmetries has not previously been explored in the water governance "
-    "literature."
+    "The manuscript has not been published previously and is not under "
+    "consideration elsewhere in its current form. Author information, "
+    "declarations (conflicts of interest, funding, AI use, and author "
+    "contributions), and acknowledgements are provided on the cover page "
+    "(first page) of the attached manuscript, as per WaA guidelines."
 )
 
-# ── Body paragraph 6: Related submissions ──
+# ── Body paragraph 6: Attachment note ──
 add_para(
-    "Disclosure of related submissions: A related manuscript focusing on "
-    "quantitative engineering analysis (energy balance calculations, "
-    "hydrograph simulation, and infrastructure design parameters) is being "
-    "submitted to the Journal of JSCE (Special Issue: Hydroscience and "
-    "Hydraulic Engineering, B1). The Journal of JSCE manuscript is a "
-    "technical engineering paper with minimal overlap in governance content. "
-    "The Water Alternatives manuscript presented here focuses on water "
-    "governance, hydro-hegemony theory, and international policy "
-    "implications, with technical details included only to support the "
-    "governance argument."
-)
-
-# ── Body paragraph 7: Confirmations ──
-add_para(
-    "We confirm that this manuscript has not been published previously and "
-    "is not under consideration for publication elsewhere in its current "
-    "form. All authors have approved the manuscript and agree to its "
-    "submission to Water Alternatives. We have no conflicts of interest to "
-    "declare."
-)
-
-# ── Body paragraph 8: AI declaration ──
-add_para(
-    "AI use declaration: Generative AI tools were used to assist with "
-    "literature search, data analysis, and manuscript drafting. All content "
-    "has been verified, edited, and approved by the authors, who take full "
-    "responsibility for the accuracy and integrity of the work."
+    "Attached: Manuscript file (.docx), prepared using the WaA template.",
+    italic=True
 )
 
 # ── Closing ──
 add_para("")
-add_para(
-    "We look forward to hearing from you regarding the suitability of this "
-    "manuscript for Water Alternatives."
-)
+add_para("Kind regards,")
 
 add_para("")
-add_para("Yours sincerely,")
-
-add_para("")
-add_placeholder("[Corresponding Author Name]")
-add_placeholder("[Position]")
-add_placeholder("[Affiliation]")
-add_placeholder("[City, Country]")
-add_placeholder("[Email]")
-add_placeholder("[ORCID (if available)]")
+add_para("Tatsuki Onishi")
+add_placeholder("(Affiliation)")
+add_placeholder("(Email)")
 
 # ── Save ──
 outpath = f"{OUTDIR}/waa_cover_letter.docx"
 doc.save(outpath)
-print(f"WaA cover letter saved: {outpath}")
+print(f"WaA cover letter (email draft) saved: {outpath}")

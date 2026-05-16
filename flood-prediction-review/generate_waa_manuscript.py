@@ -157,9 +157,9 @@ add_main_title(
     "and inter-watershed groundwater transfer"
 )
 
-add_authors("(Author Name)")
+add_authors("Tatsuki Onishi")
 
-add_placeholder("(Author name)")
+add_normal("Tatsuki Onishi")
 add_placeholder("(Position)")
 add_placeholder("(Affiliation)")
 add_placeholder("(City, Country)")
@@ -167,20 +167,30 @@ add_placeholder("(Email address)")
 
 add_normal("")  # spacer
 
-add_heading1("Acknowledgements")
+add_heading1("Declaration of interest")
 add_normal(
-    "The authors gratefully acknowledge the National Research Institute for Earth Science "
-    "and Disaster Resilience (NIED) for rainfall and disaster data, the Ministry of Land, "
-    "Infrastructure, Transport and Tourism (MLIT) Chugoku Regional Development Bureau for "
-    "Oda River–Takahashi River basin data, and the Geological Survey of Japan (GSJ/AIST) "
-    "for subsurface geological data of the Kanto Plain."
+    "The author declares no conflicts of interest."
 )
 
-add_heading1("AI use declaration")
+add_heading1("Funding")
 add_normal(
-    "AI-assisted tools were used for literature search, data compilation, and manuscript "
-    "drafting support. All analytical content, interpretations, and conclusions were "
-    "independently verified and are the sole responsibility of the authors."
+    "This work received no external funding."
+)
+
+add_heading1("Acknowledgements")
+add_normal("None")
+
+add_heading1("Declaration of generative artificial intelligence (AI) in scientific writing")
+add_normal(
+    "We used devin.ai to help with formatting the text and choosing words that suited "
+    "the tone, and to help writing codes. The author takes full responsibility for the "
+    "accuracy and content of the manuscript."
+)
+
+add_heading1("Authors contribution")
+add_normal(
+    "O.T.: Conceptualisation, Methodology, Software, Formal analysis, "
+    "Writing – original draft, Writing – review and editing"
 )
 
 # ============================================================
