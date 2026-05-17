@@ -181,7 +181,7 @@ jobs:
             if [ -n "$WORKFLOW_FILES" ]; then
               TEMP_INDEX=$(mktemp)
               GIT_INDEX_FILE="$TEMP_INDEX" git read-tree "origin/$BRANCH"
-              GIT_INDEX_FILE="$TEMP_INDEX" git rm -r --cached .github/workflows/ >/dev/null 2>&1 || true
+              GIT_INDEX_FILE="$TEMP_INDEX" git rm -rf --cached .github/workflows/ >/dev/null 2>&1 || true
               FILTERED_TREE=$(GIT_INDEX_FILE="$TEMP_INDEX" git write-tree)
               rm -f "$TEMP_INDEX"
               # Deterministic commit: same content = same SHA = efficient skip
