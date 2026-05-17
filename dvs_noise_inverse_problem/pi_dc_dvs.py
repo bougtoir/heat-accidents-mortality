@@ -297,11 +297,17 @@ def train_model(model, training_data, noise_mask, n_epochs=100, lr=0.01,
     return losses
 
 
-def predict_noise_probability(model, events, shape=(180, 240), n_time_bins=50):
+def predict_noise_probability(model, events, shape=(180, 240), n_time_bins=50,
+                              noise_mask=None):
     """
     Compute per-event noise probability using trained PI-DC-DVS model.
 
     P_noise(e_i) = λ_noise(x_i, y_i, t_i) / λ_total(x_i, y_i, t_i)
+
+    Args:
+        noise_mask: (H, W) boolean mask of noise-dominated pixels (from training).
+                    Must match the mask used during training to ensure consistent
+                    temporal feature computation.
     """
     model.eval()
     t_min, t_max = events['t'].min(), events['t'].max()
@@ -309,6 +315,7 @@ def predict_noise_probability(model, events, shape=(180, 240), n_time_bins=50):
 
     # Get predicted noise rate for each time bin
     noise_rate_maps = []
+    prev_mean = None
     with torch.no_grad():
         for i in range(n_time_bins):
             mask = (events['t'] >= bin_edges[i]) & (events['t'] < bin_edges[i + 1])
@@ -319,10 +326,19 @@ def predict_noise_probability(model, events, shape=(180, 240), n_time_bins=50):
             rate_map = frame / max(bin_duration, 1e-6)
 
             event_context = torch.tensor(rate_map).unsqueeze(0).unsqueeze(0)
-            global_mean = rate_map.mean()
-            global_std = rate_map.std()
+            # Match training: compute stats over noise_mask pixels only
+            if noise_mask is not None and noise_mask.any():
+                global_mean = rate_map[noise_mask].mean()
+                global_std = rate_map[noise_mask].std()
+            else:
+                global_mean = rate_map.mean()
+                global_std = rate_map.std()
             time_frac = i / n_time_bins
-            trend = 0.0
+            if prev_mean is not None:
+                trend = (global_mean - prev_mean) / max(global_mean, 1e-6)
+            else:
+                trend = 0.0
+            prev_mean = global_mean
             temporal_features = torch.tensor(
                 [global_mean, global_std, time_frac, trend], dtype=torch.float32)
 
@@ -411,7 +427,8 @@ def run_on_recording(events, shape=(180, 240), n_epochs=80, verbose=True):
     # Predict
     if verbose:
         print("  Computing noise probabilities...")
-    p_noise = predict_noise_probability(model, events, shape=shape)
+    p_noise = predict_noise_probability(model, events, shape=shape,
+                                        noise_mask=noise_mask)
 
     # Evaluate
     stats = evaluate_noise_removal(events, p_noise, threshold=0.5)
