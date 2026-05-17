@@ -8,6 +8,15 @@ const PRIORITY_STYLES: Record<string, { bg: string; color: string; label: string
   low: { bg: '#e0f0e8', color: '#408060', label: 'LOW' },
 };
 
+const inputStyle: React.CSSProperties = {
+  padding: '4px 8px',
+  border: '1px solid #d0ccc0',
+  borderRadius: 4,
+  fontSize: 11,
+  background: '#faf8f3',
+  fontFamily: 'inherit',
+};
+
 interface Props {
   paper: Paper;
 }
@@ -17,6 +26,14 @@ export function NotesTodoPane({ paper }: Props) {
   const [newNote, setNewNote] = useState('');
   const [newTodo, setNewTodo] = useState('');
   const [newPriority, setNewPriority] = useState<'high' | 'medium' | 'low'>('medium');
+
+  // Edit note state
+  const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
+  const [editNoteDraft, setEditNoteDraft] = useState('');
+
+  // Edit todo state
+  const [editingTodoId, setEditingTodoId] = useState<string | null>(null);
+  const [editTodoDraft, setEditTodoDraft] = useState('');
 
   const toggleTodo = (id: string) => {
     updatePaper({
@@ -37,6 +54,24 @@ export function NotesTodoPane({ paper }: Props) {
     setNewNote('');
   };
 
+  const removeNote = (id: string) => {
+    updatePaper({ ...paper, notes: paper.notes.filter((n) => n.id !== id) });
+  };
+
+  const startEditNote = (id: string, content: string) => {
+    setEditingNoteId(id);
+    setEditNoteDraft(content);
+  };
+
+  const saveNote = () => {
+    if (!editingNoteId || !editNoteDraft.trim()) return;
+    updatePaper({
+      ...paper,
+      notes: paper.notes.map((n) => (n.id === editingNoteId ? { ...n, content: editNoteDraft.trim() } : n)),
+    });
+    setEditingNoteId(null);
+  };
+
   const addTodo = () => {
     if (!newTodo.trim()) return;
     updatePaper({
@@ -44,6 +79,36 @@ export function NotesTodoPane({ paper }: Props) {
       todos: [...paper.todos, { id: `t-${Date.now()}`, text: newTodo.trim(), done: false, priority: newPriority }],
     });
     setNewTodo('');
+  };
+
+  const removeTodo = (id: string) => {
+    updatePaper({ ...paper, todos: paper.todos.filter((t) => t.id !== id) });
+  };
+
+  const startEditTodo = (id: string, text: string) => {
+    setEditingTodoId(id);
+    setEditTodoDraft(text);
+  };
+
+  const saveTodo = () => {
+    if (!editingTodoId || !editTodoDraft.trim()) return;
+    updatePaper({
+      ...paper,
+      todos: paper.todos.map((t) => (t.id === editingTodoId ? { ...t, text: editTodoDraft.trim() } : t)),
+    });
+    setEditingTodoId(null);
+  };
+
+  const cyclePriority = (id: string) => {
+    const cycle: Array<'high' | 'medium' | 'low'> = ['low', 'medium', 'high'];
+    updatePaper({
+      ...paper,
+      todos: paper.todos.map((t) => {
+        if (t.id !== id) return t;
+        const curIdx = cycle.indexOf(t.priority);
+        return { ...t, priority: cycle[(curIdx + 1) % cycle.length] };
+      }),
+    });
   };
 
   return (
@@ -64,21 +129,49 @@ export function NotesTodoPane({ paper }: Props) {
           Notes
         </div>
         {paper.notes.map((note) => (
-          <div
-            key={note.id}
-            style={{
-              fontSize: 12,
-              lineHeight: 1.6,
-              color: '#555',
-              padding: '6px 8px',
-              background: '#faf8f3',
-              borderRadius: 4,
-              borderLeft: '3px solid #d0ccc0',
-              marginBottom: 6,
-            }}
-          >
-            {note.content}
-            <div style={{ fontSize: 9, color: '#bbb', marginTop: 2 }}>{note.createdAt}</div>
+          <div key={note.id}>
+            {editingNoteId === note.id ? (
+              <div style={{ marginBottom: 6 }}>
+                <textarea
+                  value={editNoteDraft}
+                  onChange={(e) => setEditNoteDraft(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); saveNote(); } if (e.key === 'Escape') setEditingNoteId(null); }}
+                  autoFocus
+                  style={{ ...inputStyle, width: '100%', minHeight: 48, resize: 'vertical', boxSizing: 'border-box' }}
+                />
+                <div style={{ display: 'flex', gap: 4, marginTop: 2, justifyContent: 'flex-end' }}>
+                  <button onClick={saveNote} style={{ ...inputStyle, background: '#2a7a8a', color: 'white', border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: 10, padding: '2px 8px' }}>Save</button>
+                  <button onClick={() => setEditingNoteId(null)} style={{ ...inputStyle, cursor: 'pointer', fontSize: 10, padding: '2px 8px' }}>Cancel</button>
+                </div>
+              </div>
+            ) : (
+              <div
+                style={{
+                  fontSize: 12,
+                  lineHeight: 1.6,
+                  color: '#555',
+                  padding: '6px 8px',
+                  background: '#faf8f3',
+                  borderRadius: 4,
+                  borderLeft: '3px solid #d0ccc0',
+                  marginBottom: 6,
+                  cursor: 'pointer',
+                  position: 'relative',
+                }}
+                onClick={() => startEditNote(note.id, note.content)}
+                title="Click to edit"
+              >
+                {note.content}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 2 }}>
+                  <span style={{ fontSize: 9, color: '#bbb' }}>{note.createdAt}</span>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); removeNote(note.id); }}
+                    style={{ background: 'none', border: 'none', color: '#ccc', cursor: 'pointer', fontSize: 10 }}
+                    title="Remove note"
+                  >&times;</button>
+                </div>
+              </div>
+            )}
           </div>
         ))}
         <div style={{ display: 'flex', gap: 4, marginTop: 4 }}>
@@ -130,6 +223,21 @@ export function NotesTodoPane({ paper }: Props) {
         </div>
         {paper.todos.map((todo) => {
           const ps = PRIORITY_STYLES[todo.priority];
+          if (editingTodoId === todo.id) {
+            return (
+              <div key={todo.id} style={{ display: 'flex', gap: 4, padding: '4px 0' }}>
+                <input
+                  value={editTodoDraft}
+                  onChange={(e) => setEditTodoDraft(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Enter') saveTodo(); if (e.key === 'Escape') setEditingTodoId(null); }}
+                  autoFocus
+                  style={{ ...inputStyle, flex: 1 }}
+                />
+                <button onClick={saveTodo} style={{ ...inputStyle, background: '#2a7a8a', color: 'white', border: 'none', cursor: 'pointer', fontWeight: 600, fontSize: 10 }}>Save</button>
+                <button onClick={() => setEditingTodoId(null)} style={{ ...inputStyle, cursor: 'pointer', fontSize: 10 }}>Cancel</button>
+              </div>
+            );
+          }
           return (
             <div
               key={todo.id}
@@ -161,6 +269,7 @@ export function NotesTodoPane({ paper }: Props) {
                 {todo.done ? '\u2713' : ''}
               </div>
               <span
+                onClick={() => cyclePriority(todo.id)}
                 style={{
                   fontSize: 9,
                   padding: '1px 6px',
@@ -168,13 +277,32 @@ export function NotesTodoPane({ paper }: Props) {
                   fontWeight: 700,
                   background: ps.bg,
                   color: ps.color,
+                  cursor: 'pointer',
                 }}
+                title="Click to cycle priority"
               >
                 {ps.label}
               </span>
-              <span style={{ textDecoration: todo.done ? 'line-through' : undefined, color: todo.done ? '#999' : undefined }}>
+              <span
+                onClick={() => startEditTodo(todo.id, todo.text)}
+                style={{
+                  textDecoration: todo.done ? 'line-through' : undefined,
+                  color: todo.done ? '#999' : undefined,
+                  cursor: 'pointer',
+                  flex: 1,
+                  borderBottom: '1px dashed transparent',
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.borderBottomColor = '#ccc')}
+                onMouseLeave={(e) => (e.currentTarget.style.borderBottomColor = 'transparent')}
+                title="Click to edit"
+              >
                 {todo.text}
               </span>
+              <button
+                onClick={() => removeTodo(todo.id)}
+                style={{ background: 'none', border: 'none', color: '#ccc', cursor: 'pointer', fontSize: 10 }}
+                title="Remove"
+              >&times;</button>
             </div>
           );
         })}

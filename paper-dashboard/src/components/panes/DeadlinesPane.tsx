@@ -28,6 +28,12 @@ export function DeadlinesPane({ paper }: Props) {
   const [newDate, setNewDate] = useState('');
   const [newType, setNewType] = useState<Deadline['type']>('other');
 
+  // Edit state
+  const [editingIdx, setEditingIdx] = useState<number | null>(null);
+  const [editLabel, setEditLabel] = useState('');
+  const [editDate, setEditDate] = useState('');
+  const [editType, setEditType] = useState<Deadline['type']>('other');
+
   const allDeadlines = [...paper.deadlines];
   if (paper.progress.revisionDueDate && !allDeadlines.some((d) => d.date === paper.progress.revisionDueDate)) {
     allDeadlines.unshift({
@@ -53,6 +59,23 @@ export function DeadlinesPane({ paper }: Props) {
     updatePaper({ ...paper, deadlines: paper.deadlines.filter((_, i) => i !== index) });
   };
 
+  const startEdit = (i: number) => {
+    const dl = paper.deadlines[i];
+    setEditLabel(dl.label);
+    setEditDate(dl.date);
+    setEditType(dl.type);
+    setEditingIdx(i);
+  };
+
+  const saveEdit = () => {
+    if (editingIdx === null || !editLabel.trim() || !editDate) return;
+    const updated = paper.deadlines.map((dl, i) =>
+      i === editingIdx ? { ...dl, label: editLabel.trim(), date: editDate, type: editType } : dl,
+    );
+    updatePaper({ ...paper, deadlines: updated });
+    setEditingIdx(null);
+  };
+
   return (
     <div>
       {allDeadlines.length === 0 && !showAdd && (
@@ -66,6 +89,28 @@ export function DeadlinesPane({ paper }: Props) {
           const countdownColor = days <= 7 ? '#d04040' : days <= 21 ? '#d09030' : '#40a060';
           const isFromProgress = dl.label === 'Revision due' && dl.date === paper.progress.revisionDueDate && !paper.deadlines.some((d) => d.date === dl.date);
           const realIdx = paper.deadlines.indexOf(dl);
+
+          if (!isFromProgress && editingIdx === realIdx) {
+            return (
+              <div key={i} style={{ padding: 6, background: '#faf8f3', borderRadius: 4, border: '1px solid #e8e4da', marginBottom: 4 }}>
+                <div style={{ display: 'flex', gap: 4, marginBottom: 4 }}>
+                  <input value={editLabel} onChange={(e) => setEditLabel(e.target.value)} placeholder="Label" style={{ ...inputStyle, flex: 1 }} />
+                  <select value={editType} onChange={(e) => setEditType(e.target.value as Deadline['type'])} style={inputStyle}>
+                    <option value="submission">Submission</option>
+                    <option value="revision">Revision</option>
+                    <option value="proof">Proof</option>
+                    <option value="conference">Conference</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+                <div style={{ display: 'flex', gap: 4 }}>
+                  <input type="date" value={editDate} onChange={(e) => setEditDate(e.target.value)} style={{ ...inputStyle, flex: 1 }} />
+                  <button onClick={saveEdit} style={{ ...inputStyle, background: '#2a7a8a', color: 'white', border: 'none', cursor: 'pointer', fontWeight: 600 }}>Save</button>
+                  <button onClick={() => setEditingIdx(null)} style={{ ...inputStyle, cursor: 'pointer' }}>Cancel</button>
+                </div>
+              </div>
+            );
+          }
 
           return (
             <div
@@ -85,7 +130,11 @@ export function DeadlinesPane({ paper }: Props) {
                 </div>
                 <div style={{ fontSize: 9, color: '#888' }}>{days < 0 ? 'due' : 'days'}</div>
               </div>
-              <div style={{ flex: 1 }}>
+              <div
+                style={{ flex: 1, cursor: isFromProgress ? undefined : 'pointer' }}
+                onClick={() => !isFromProgress && realIdx >= 0 && startEdit(realIdx)}
+                title={isFromProgress ? undefined : 'Click to edit'}
+              >
                 <div style={{ fontSize: 12, fontWeight: 600 }}>{dl.label}</div>
                 <div style={{ fontSize: 10, color: '#999' }}>
                   {new Date(dl.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}

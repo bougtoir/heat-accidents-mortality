@@ -172,7 +172,7 @@ export function AddPaperDialog() {
 
     const timeline = [...timelineEvents];
     if (submissionDate && !timeline.some((t) => t.type === 'submission')) {
-      timeline.push({ label: 'Submission', startDate: submissionDate, endDate: submissionDate, type: 'submission' });
+      timeline.push({ label: 'Submission', startDate: submissionDate, type: 'submission' });
     }
 
     const paper: Paper = isEditing

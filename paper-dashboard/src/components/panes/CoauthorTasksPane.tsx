@@ -32,6 +32,11 @@ export function CoauthorTasksPane({ paper }: Props) {
   const [newTask, setNewTask] = useState('');
   const [newStatus, setNewStatus] = useState<CoauthorTask['status']>('in-progress');
 
+  // Edit state
+  const [editingIdx, setEditingIdx] = useState<number | null>(null);
+  const [editAuthor, setEditAuthor] = useState('');
+  const [editTask, setEditTask] = useState('');
+
   const cycleStatus = (index: number) => {
     const ct = paper.coauthorTasks[index];
     const curIdx = STATUS_CYCLE.indexOf(ct.status);
@@ -69,6 +74,24 @@ export function CoauthorTasksPane({ paper }: Props) {
     updatePaper({ ...paper, coauthorTasks: paper.coauthorTasks.filter((_, i) => i !== index) });
   };
 
+  const startEdit = (i: number) => {
+    const ct = paper.coauthorTasks[i];
+    setEditAuthor(ct.authorName);
+    setEditTask(ct.task);
+    setEditingIdx(i);
+  };
+
+  const saveEdit = () => {
+    if (editingIdx === null || !editAuthor.trim() || !editTask.trim()) return;
+    const name = editAuthor.trim();
+    const initials = name.split(/\s+/).map((w) => w[0]).join('').toUpperCase().slice(0, 2);
+    const updated = paper.coauthorTasks.map((ct, i) =>
+      i === editingIdx ? { ...ct, authorName: name, initials, task: editTask.trim() } : ct,
+    );
+    updatePaper({ ...paper, coauthorTasks: updated });
+    setEditingIdx(null);
+  };
+
   if (paper.coauthorTasks.length === 0 && !showAdd) {
     return (
       <div>
@@ -87,6 +110,20 @@ export function CoauthorTasksPane({ paper }: Props) {
     <div>
       {paper.coauthorTasks.map((ct, i) => {
         const ts = TASK_STATUS[ct.status] ?? TASK_STATUS['in-progress'];
+        if (editingIdx === i) {
+          return (
+            <div key={i} style={{ padding: 6, background: '#faf8f3', borderRadius: 4, border: '1px solid #e8e4da', marginBottom: 4 }}>
+              <div style={{ display: 'flex', gap: 4, marginBottom: 4 }}>
+                <input value={editAuthor} onChange={(e) => setEditAuthor(e.target.value)} placeholder="Author name" style={{ ...inputStyle, flex: 1 }} />
+              </div>
+              <div style={{ display: 'flex', gap: 4 }}>
+                <input value={editTask} onChange={(e) => setEditTask(e.target.value)} placeholder="Task description" style={{ ...inputStyle, flex: 1 }} />
+                <button onClick={saveEdit} style={{ ...inputStyle, background: '#2a7a8a', color: 'white', border: 'none', cursor: 'pointer', fontWeight: 600 }}>Save</button>
+                <button onClick={() => setEditingIdx(null)} style={{ ...inputStyle, cursor: 'pointer' }}>Cancel</button>
+              </div>
+            </div>
+          );
+        }
         return (
           <div
             key={i}
@@ -116,7 +153,11 @@ export function CoauthorTasksPane({ paper }: Props) {
             >
               {ct.initials}
             </div>
-            <div style={{ flex: 1 }}>
+            <div
+              style={{ flex: 1, cursor: 'pointer' }}
+              onClick={() => startEdit(i)}
+              title="Click to edit"
+            >
               <div style={{ fontSize: 12, fontWeight: 600 }}>{ct.authorName}</div>
               <div style={{ fontSize: 10, color: '#999' }}>{ct.task}</div>
             </div>

@@ -36,6 +36,12 @@ export function LinksPane({ paper }: Props) {
   const [newUrl, setNewUrl] = useState('');
   const [newCategory, setNewCategory] = useState<Link['category']>('other');
 
+  // Edit state
+  const [editingIdx, setEditingIdx] = useState<number | null>(null);
+  const [editLabel, setEditLabel] = useState('');
+  const [editUrl, setEditUrl] = useState('');
+  const [editCategory, setEditCategory] = useState<Link['category']>('other');
+
   const grouped = paper.links.reduce(
     (acc, link) => {
       const cat = link.category;
@@ -62,6 +68,23 @@ export function LinksPane({ paper }: Props) {
     updatePaper({ ...paper, links: paper.links.filter((_, i) => i !== index) });
   };
 
+  const startEdit = (idx: number) => {
+    const link = paper.links[idx];
+    setEditLabel(link.label);
+    setEditUrl(link.url);
+    setEditCategory(link.category);
+    setEditingIdx(idx);
+  };
+
+  const saveEdit = () => {
+    if (editingIdx === null || !editLabel.trim() || !editUrl.trim()) return;
+    const updated = paper.links.map((l, i) =>
+      i === editingIdx ? { ...l, label: editLabel.trim(), url: editUrl.trim(), category: editCategory } : l,
+    );
+    updatePaper({ ...paper, links: updated });
+    setEditingIdx(null);
+  };
+
   return (
     <div>
       {paper.links.length === 0 && !showAdd && (
@@ -84,6 +107,26 @@ export function LinksPane({ paper }: Props) {
           </div>
           {links.map((link, i) => {
             const globalIdx = paper.links.indexOf(link);
+            if (editingIdx === globalIdx) {
+              return (
+                <div key={i} style={{ padding: 6, background: '#faf8f3', borderRadius: 4, border: '1px solid #e8e4da', marginBottom: 4 }}>
+                  <div style={{ display: 'flex', gap: 4, marginBottom: 4 }}>
+                    <input value={editLabel} onChange={(e) => setEditLabel(e.target.value)} placeholder="Label" style={{ ...inputStyle, flex: 1 }} />
+                    <select value={editCategory} onChange={(e) => setEditCategory(e.target.value as Link['category'])} style={inputStyle}>
+                      <option value="submission">Submission Portal</option>
+                      <option value="devin">Devin Session</option>
+                      <option value="repository">Repository</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+                  <div style={{ display: 'flex', gap: 4 }}>
+                    <input value={editUrl} onChange={(e) => setEditUrl(e.target.value)} placeholder="URL" style={{ ...inputStyle, flex: 1 }} />
+                    <button onClick={saveEdit} style={{ ...inputStyle, background: '#2a7a8a', color: 'white', border: 'none', cursor: 'pointer', fontWeight: 600 }}>Save</button>
+                    <button onClick={() => setEditingIdx(null)} style={{ ...inputStyle, cursor: 'pointer' }}>Cancel</button>
+                  </div>
+                </div>
+              );
+            }
             return (
               <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '4px 0', fontSize: 12 }}>
                 <span style={{ fontSize: 14 }}>{CATEGORY_ICONS[cat] ?? '\uD83D\uDD17'}</span>
@@ -95,6 +138,13 @@ export function LinksPane({ paper }: Props) {
                 >
                   {link.label}
                 </a>
+                <button
+                  onClick={() => startEdit(globalIdx)}
+                  style={{ background: 'none', border: 'none', color: '#aaa', cursor: 'pointer', fontSize: 10 }}
+                  title="Edit link"
+                >
+                  &#9998;
+                </button>
                 <button
                   onClick={() => removeLink(globalIdx)}
                   style={{ background: 'none', border: 'none', color: '#ccc', cursor: 'pointer', fontSize: 12 }}
