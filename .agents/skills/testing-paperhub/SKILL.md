@@ -1,117 +1,69 @@
 ---
 name: testing-paperhub
-description: Test PaperHub dashboard end-to-end. Use when verifying Gantt chart, inline editing, or paper management features.
+description: Test PaperHub paper management dashboard end-to-end. Use when verifying inline editing, Gantt chart, or pane UI changes.
 ---
 
-# Testing PaperHub Dashboard
+# Testing PaperHub
 
-## Dev Server Setup
-
-```bash
-cd paper-dashboard
-npm install
-npm run dev -- --port 5173
-```
-
-App runs at `http://localhost:5173`. No authentication required.
-
-## Build Verification
+## Setup
 
 ```bash
-cd paper-dashboard
-npm run build   # tsc -b && vite build
+cd paper-dashboard && npm install && npm run dev -- --port 5173
 ```
 
-Should produce 0 TypeScript errors.
+App runs at `http://localhost:5173`. If port is taken, Vite auto-increments.
 
-## Key Architecture
+## Key Test Areas
 
-- **React 19 + TypeScript + Vite** — no external UI libraries
-- **LocalStorage persistence** — all paper data stored in `localStorage` key `papers`
-- **9 dockable panes**: Title & Authors, Progress Timeline (Gantt), Links, Deliverables, Deadlines, Notes/TODO, Statistics, Costs/Funding, Co-author Tasks
-- **State management**: `DashboardContext` with `useLocalStorage` hook
-- **Sample data**: `src/data/sample-papers.ts` (7 papers with various statuses)
+### Gantt Chart (GanttChart.tsx)
+- Events **without** `endDate` should extend bars to Today (ongoing)
+- Events **with** `endDate` (even if same as `startDate`) render at that date (completed/point marker)
+- Verify bar widths via console: `document.querySelectorAll('.gantt-bar')` or check `style.width` on bar elements
+- Test with PMEA paper (mix of ongoing + completed events) and Cryoanesthesia (completed single-day events)
 
-## Browser Automation Notes
+### Inline Editing (All 9 Panes)
+- Click text → input/textarea appears → type → Enter saves, Escape cancels
+- Hover shows dashed underline on editable fields
+- Test multi-character input (not just single char) to catch remount bugs
+- **Important pattern**: Never define sub-components (like `StatCard`) inside a parent component body. This creates new function references on each render, causing React to unmount/remount, which fires `onBlur` mid-edit and breaks multi-character input. Always extract to module scope.
 
-### React Props Click Workaround
+### Persistence
+- Data persists in localStorage
+- Clear with `localStorage.clear()` before fresh test runs
+- Edits should survive paper switching (select different paper → select back)
 
-Direct `browser.click(devinid)` and coordinate clicks might not trigger React event handlers reliably. Use React props via console as a workaround:
+## Browser Automation Workarounds
 
+### Sidebar Paper Selection
+The sidebar items might not respond to direct `devinid` clicks. Use React props workaround:
 ```javascript
 const el = document.querySelector('[devinid="X"]');
-const propsKey = Object.keys(el).find(k => k.startsWith('__reactProps'));
-el[propsKey].onClick();
+const reactProps = Object.keys(el).find(k => k.startsWith('__reactProps'));
+if (reactProps) el[reactProps].onClick();
 ```
 
-This works reliably for sidebar paper selection and inline edit triggers.
-
-### Inline Edit Interaction Pattern
-
-To programmatically edit inline fields:
-
+### Statistics Pane Location
+Statistics pane (Pane 7) is below the fold. Scroll into view:
 ```javascript
-// 1. Trigger edit mode via React props onClick
-// 2. Find the textarea/input that appears
-const textarea = document.querySelector('textarea[devinid="X"]');
-const nativeSetter = Object.getOwnPropertyDescriptor(
-  window.HTMLTextAreaElement.prototype, 'value'
-).set;
-nativeSetter.call(textarea, 'new value');
-textarea.dispatchEvent(new Event('input', { bubbles: true }));
-// 3. Save with Enter
-textarea.dispatchEvent(
-  new KeyboardEvent('keydown', { key: 'Enter', code: 'Enter', bubbles: true })
-);
+document.querySelector('[devinid="104"]').scrollIntoView({ behavior: 'instant', block: 'center' });
 ```
+Devinids may change; search for elements with `title="Click to edit count"` to find stat values.
 
-Use `HTMLInputElement.prototype` for `<input>` fields instead of `HTMLTextAreaElement.prototype`.
+### Number Input Editing
+For `type="number"` inputs, use native setter to set values:
+```javascript
+const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+nativeInputValueSetter.call(input, '5000');
+input.dispatchEvent(new Event('input', { bubbles: true }));
+```
 
 ### Add Paper Dialog
+The "+ New Paper" button might not respond to browser automation clicks. This is a known limitation — mark as untested if blocked.
 
-The "+ New Paper" button might not respond to browser automation clicks. The React onClick handler fires but the dialog may not mount. This could be an environment-specific issue — try manual testing if automated clicks fail.
-
-## Testing Gantt Chart Bars
-
-Gantt bar widths can be verified via console:
-
-```javascript
-const bars = [];
-document.querySelectorAll('div[style*="border-radius: 3px"][style*="position: absolute"]')
-  .forEach(d => {
-    if (d.style.width?.includes('%') && d.style.position === 'absolute') {
-      bars.push({ width: d.style.width, left: d.style.left });
-    }
-  });
-console.log(JSON.stringify(bars, null, 2));
-```
-
-### Expected Gantt Bar Logic
-
-- Events **with endDate** (even if `endDate === startDate`): bar renders at that date range (may be min 2% width)
-- Events **without endDate**: bar extends from startDate to Today (ongoing)
-- Key assertion: `width > 2%` means the bar extends beyond a point marker
-
-### Good Test Papers for Gantt Verification
-
-- **Zero-cal PMEA**: Has both bounded events (Drafting, Peer Review) and ongoing (Revision, no endDate) + single-day (Submission, endDate=startDate)
-- **GDP tempo-effect**: Has ongoing Submission (no endDate) — the user's original bug report scenario
-- **Cryoanesthesia review**: Has completed single-day events (Accepted, Submission) that should NOT extend to Today
-
-## Testing Inline Editing
-
-1. **Title**: Click title div → textarea appears → modify → Enter saves
-2. **Journal name**: Click journal span in Pane 2 → input appears → modify → Enter saves (also updates sidebar)
-3. **Persistence**: Edit a field → switch papers → switch back → verify edit persisted
-
-## Resetting State
-
-To reset to sample data:
-```javascript
-localStorage.clear();
-location.reload();
-```
+## Sample Papers for Testing
+- **Zero-cal PMEA**: Mix of ongoing (Revision, no endDate) and completed (Submission, endDate=startDate) events
+- **GDP tempo-effect**: Ongoing submission (no endDate)
+- **Cryoanesthesia review**: Completed single-day events (Accepted, Submission both have endDate=startDate)
 
 ## Devin Secrets Needed
-
-None — PaperHub runs entirely locally with no external services.
+None — PaperHub is a fully client-side app with no backend authentication.
