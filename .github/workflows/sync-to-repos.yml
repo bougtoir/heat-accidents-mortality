@@ -111,6 +111,9 @@ jobs:
           BRANCH_MAP["devin/1777909479-desflurane-critical-appraisal"]="desflurane-critical-appraisal"
           BRANCH_MAP["devin/rokid-lyrics"]="rokid-lyrics"
 
+          # ── Flood prediction / subsurface flood control ──
+          BRANCH_MAP["devin/1778846737-flood-prediction-models"]="flood-prediction-review"
+
           # ── TATSUKI electoral model sub-branches ──
           BRANCH_MAP["devin/1777844647-tatsuki-electoral-studies"]="tatsuki-electoral-studies"
           BRANCH_MAP["devin/1777989587-jcss-ssr-submission"]="jcss-ssr-submission"
