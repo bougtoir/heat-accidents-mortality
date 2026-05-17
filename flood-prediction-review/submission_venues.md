@@ -164,4 +164,36 @@
 
 ---
 
-*作成日: 2026-05-15*
+## 2026-05-17 更新: Water Alternatives 不採択 → 代替誌提案
+
+### 状況
+Water Alternativesに投稿したが、**「Water Alternativesは技術論文を掲載しない」** との理由で不採択（編集部的判断）。
+
+### 原因分析
+本原稿は技術的定量分析（エネルギー収支計算・貯留量計算・洪水低減シミュレーション）を含んでおり、Water Alternativesの人文社会科学志向とスタイルが合致しなかった。技術的分析を排除せず、水政策・ガバナンス文脈で評価するジャーナルへの再投稿が適切。
+
+### 代替誌候補（再評価）
+
+| 順位 | ジャーナル | APC | 推奨理由 |
+|------|-----------|-----|----------|
+| **1** | **Water Policy** (IWA Publishing) | **USD 2,460** (OA) / 購読契約機関は無料 | 技術的分析を政策文脈で評価。Hydro-hegemony研究の発表の場。リライト最小。 |
+| **2** | **Int. J. Water Resources Development** (T&F) | 購読無料 / OA ~USD 3,400 | 越境水管理・事例分析を重視。ケーススタディ拡充で有力。 |
+| **3** | **Water International** (IWRA/T&F) | 購読無料 / OA option | 学際性を評価。Water Alternativesと近い読者層。 |
+| **4** | **Water Resources Management** (Springer) | USD 2,290 (OA) / 購読無料 | 工学的強み（エネルギー収支・洪水モデル）を活かせる。政治部分は圧縮。 |
+| **5** | **Geoforum** (Elsevier) | USD 3,500 (OA) / 購読無料 | 批判的水文学・hydro-hegemony理論に強い。ただし大規模リライト必須。 |
+
+### 総合推奨: Water Policy (IWA Publishing)
+
+**理由**:
+1. Water Alternativesと読者層・テーマが近く、リライト最小
+2. 技術的分析を排除せず、政策文脈での位置づけを評価
+3. APC: USD 2,460（滋賀大学がIWAと購読契約を結んでいれば無料の可能性あり）
+4. IF: 1.8 (Q2), CC BYライセンス, OA可能
+
+**APC詳細** (DOAJ 2026年5月確認):
+- APC: **USD 2,460**（GBP 1,845 / EUR 2,116）
+- CC BY / CC BY-ND / CC BY-NC 選択可能
+- ハイブリッド誌（購読契約機関はAPC無料）
+- 2021年よりOA対応
+
+*作成日: 2026-05-17（セッション成果を追記）*
