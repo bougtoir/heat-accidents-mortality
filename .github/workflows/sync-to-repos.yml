@@ -173,15 +173,35 @@ jobs:
               fi
             fi
 
+            # Determine what to push: strip .github/workflows/ if present
+            # (PAT without 'workflow' scope cannot push workflow files)
+            PUSH_REF="origin/$BRANCH"
+            COMPARE_SHA="$WIP_SHA"
+            WORKFLOW_FILES=$(git ls-tree -r --name-only "origin/$BRANCH" -- .github/workflows/ 2>/dev/null | head -1)
+            if [ -n "$WORKFLOW_FILES" ]; then
+              TEMP_INDEX=$(mktemp)
+              GIT_INDEX_FILE="$TEMP_INDEX" git read-tree "origin/$BRANCH"
+              GIT_INDEX_FILE="$TEMP_INDEX" git rm -r --cached .github/workflows/ >/dev/null 2>&1 || true
+              FILTERED_TREE=$(GIT_INDEX_FILE="$TEMP_INDEX" git write-tree)
+              rm -f "$TEMP_INDEX"
+              # Deterministic commit: same content = same SHA = efficient skip
+              COMPARE_SHA=$(GIT_AUTHOR_DATE="2000-01-01T00:00:00+0000" \
+                GIT_COMMITTER_DATE="2000-01-01T00:00:00+0000" \
+                GIT_AUTHOR_NAME="wip-sync" GIT_AUTHOR_EMAIL="sync@wip" \
+                GIT_COMMITTER_NAME="wip-sync" GIT_COMMITTER_EMAIL="sync@wip" \
+                git commit-tree "$FILTERED_TREE" -m "sync: $BRANCH (workflows stripped)")
+              PUSH_REF="$COMPARE_SHA"
+            fi
+
             # Compare SHAs - skip if already in sync
-            if [ "$WIP_SHA" = "$TARGET_SHA" ]; then
-              echo "SKIP: $BRANCH -> $TARGET_REPO (already in sync: $WIP_SHA)"
+            if [ "$COMPARE_SHA" = "$TARGET_SHA" ]; then
+              echo "SKIP: $BRANCH -> $TARGET_REPO (already in sync: $COMPARE_SHA)"
               SKIPPED=$((SKIPPED + 1))
               continue
             fi
 
             echo "SYNC: $BRANCH -> $TARGET_REPO (wip: $WIP_SHA, target: ${TARGET_SHA:-empty})"
-            if git push --force "https://x-access-token:${SYNC_PAT}@github.com/${OWNER}/${TARGET_REPO}.git" "origin/$BRANCH:refs/heads/main" 2>&1; then
+            if git push --force "https://x-access-token:${SYNC_PAT}@github.com/${OWNER}/${TARGET_REPO}.git" "$PUSH_REF:refs/heads/main" 2>&1; then
               SYNCED=$((SYNCED + 1))
             else
               echo "ERROR: Failed to sync $BRANCH -> $TARGET_REPO"
