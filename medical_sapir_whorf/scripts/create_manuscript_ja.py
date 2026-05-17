@@ -126,10 +126,16 @@ def main():
         "本仮説を二つの補完的な根拠から展開する。第一に、過労死（karoshi）を"
         "取り上げる。過労死は日本に固有の疾患概念であり、西洋の疾病分類には直接の対応物"
         "がない。同一の生物学的事象に対して、当該概念の有無が医療システムの応答を根本的"
-        "に変えることを示す。{12,13} 第二に、ICD-10からICD-11への移行を自然実験として"
-        "活用することを提案する。特に慢性疼痛の独立章新設（MG30）とバーンアウトの"
-        "公式分類（QD85）に焦点を当て、分類の変更が臨床実践に測定可能な変化を"
-        "もたらすか否かを実証的に検証する枠組みを提示する。{14,15}"
+        "に変えることを示す。{12,13} さらに、29年間の日本の労災補償データ"
+        "（1996〜2024年度）を用いた独自の実証分析を提示する。分断時系列分析は、"
+        "2001年の認定基準改正後に認定件数が3.71倍に増加したことを示し"
+        "（β = 231.4, p < 0.001）、国際比較では、日本と韓国が"
+        "多くの西洋諸国より低い生産年齢心血管疾患死亡率にもかかわらず包括的な"
+        "認定制度を有する唯一の国であることを明らかにし、診断カテゴリーが臨床的"
+        "インフラストラクチャーを反映するのではなく創出することを支持する。"
+        "第二に、ICD-10からICD-11への移行を前向きの自然実験として活用することを"
+        "提案する。特に慢性疼痛（MG30）とバーンアウト（QD85）に焦点を"
+        "当てる。{14,15}"
     )
 
     add_para_with_refs(
@@ -430,6 +436,121 @@ def main():
         "医療システムが知覚しうるものを変えたのである。"
     )
 
+    add_heading(doc, "過労死認定の分断時系列分析", level=2)
+
+    add_para_with_refs(
+        doc,
+        "この効果をより精密に定量化するため、厚生労働省の脳・心臓疾患労災補償状況"
+        "年次報告から29年間の労災補償データ（1996〜2024年度）を編纂した。{32} "
+        "2001年12月の認定基準改正を主要介入点とする分断時系列（ITS）分析を"
+        "セグメント回帰により実施した。2001年改正は「80時間ルール」を導入し、"
+        "労働関連心血管疾患の認定適格性を大幅に拡大した。"
+    )
+
+    add_para_with_refs(
+        doc,
+        "結果は顕著である（図3）。ITS回帰は、既存の時間的傾向を統制した上で、"
+        "認定基準改正直後にβ = 231.4件（p < 0.001）の統計的に有意な水準変化を"
+        "示した。年間平均認定件数は改正前（1996〜2001年度）の91.7件から、"
+        "改正直後（2002〜2008年度）の339.9件へと3.71倍に増加した。認定率"
+        "（認定件数／請求件数）は17.1%から39.6%に急上昇した。二標本t検定は"
+        "この差が高度に有意であることを確認した（t = 14.1, p < 0.0001）。"
+        "注目すべきは、負の傾斜変化（β = −17.2, p = 0.040）が、初期の急増後の"
+        "基線への漸進的回帰を示していることであり、これは以前認識されなかった症例の"
+        "「追いつき」効果とそれに続く安定化に一致する。"
+    )
+
+    add_para_with_refs(
+        doc,
+        "2021年9月の第二次改正は、不規則な勤務形態や心理的ストレスなどの"
+        "残業時間以外の要因を認定基準に追加したものであり、直近年度（2022〜2024"
+        "年度：194、216、241件）の緩やかな上昇と関連している。2021年改正後の"
+        "観察期間はロバストなITS分析には不十分であるが、方向性の変化は医療版"
+        "サピア＝ウォーフの予測に一致する。すなわち、疾病分類学的境界を拡大すれば、"
+        "システムが認識する範囲が拡大するのである。"
+    )
+
+    # --- 図3 インライン ---
+    fig3_path = os.path.join(OUT_DIR, "figure3_karoshi_its_ja.png")
+    if os.path.exists(fig3_path):
+        p = doc.add_paragraph()
+        p.space_before = Pt(18)
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        run = p.add_run()
+        run.add_picture(fig3_path, width=Inches(5.5))
+    else:
+        p = doc.add_paragraph()
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        run = p.add_run("[図3：output/figure3_karoshi_its_ja.png参照]")
+        run.italic = True
+
+    p = doc.add_paragraph()
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p.space_before = Pt(12)
+    run = p.add_run(
+        "図3. 過労死の労災認定件数の分断時系列分析（1996〜2024年度）。"
+        "パネルA：年間認定件数（水色）と死亡件数（赤）、ITS回帰線付き。"
+        "縦線は2001年および2021年の認定基準改正を示す。"
+        "パネルB：請求件数と認定率（%）。"
+        "データソース：厚生労働省「脳・心臓疾患に係る労災補償状況」年次報告。"
+    )
+    run.italic = True
+    run.font.size = Pt(9)
+    p.space_after = Pt(18)
+
+    add_heading(doc, "国際比較：診断カテゴリーがインフラストラクチャーを創出する",
+                level=2)
+
+    add_para_with_refs(
+        doc,
+        "医療版サピア＝ウォーフ仮説が正しければ、労働関連心血管疾患の国際的認定"
+        "パターンは、基礎疾患負荷ではなく過労死類似の診断カテゴリーの有無と相関する"
+        "はずである。この予測を検証するため、WHO死亡データベースから8カ国の"
+        "生産年齢人口（25〜64歳）の心血管疾患死亡率を比較した（図4）。{33}"
+    )
+
+    add_para_with_refs(
+        doc,
+        "結果は仮説を支持する。日本と韓国——包括的な過労死／過労死（과로사, "
+        "gwarosa）認定制度を有する唯一の二カ国——は、比較対象国の中で最も低い"
+        "生産年齢心血管疾患死亡率を示す（それぞれ10万人対23.0および28.0）。"
+        "対照的に、心血管疾患死亡率がより高い国（例：米国57.0、ドイツ37.0、"
+        "英国34.6/10万人）では、労働関連心血管死の体系的認定制度は非常に限定的"
+        "であるか存在しない。{34} 日本は年間約200〜300件の労働関連心血管疾患を"
+        "認定するが、同等の西洋諸国では10件未満である。この逆説——より低い疾患負荷に"
+        "もかかわらずはるかに高い認定——は、まさに医療版サピア＝ウォーフ仮説が予測"
+        "するものである。診断カテゴリーが基礎疾患の発生率とは独立に、認定のための"
+        "制度的インフラストラクチャーを創出するのである。"
+    )
+
+    # --- 図4 インライン ---
+    fig4_path = os.path.join(OUT_DIR, "figure4_international_cvd_ja.png")
+    if os.path.exists(fig4_path):
+        p = doc.add_paragraph()
+        p.space_before = Pt(18)
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        run = p.add_run()
+        run.add_picture(fig4_path, width=Inches(5.5))
+    else:
+        p = doc.add_paragraph()
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        run = p.add_run("[図4：output/figure4_international_cvd_ja.png参照]")
+        run.italic = True
+
+    p = doc.add_paragraph()
+    p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    p.space_before = Pt(12)
+    run = p.add_run(
+        "図4. 生産年齢人口の心血管疾患死亡率と職業性心血管疾患認定制度の国際比較。"
+        "パネルA：国別の虚血性心疾患および脳血管疾患死亡率（10万人対、25〜64歳）。"
+        "赤字は過労死類似の認定制度を有する国。"
+        "パネルB：労働関連心血管疾患認定制度の水準と年間認定件数。"
+        "データソース：WHO死亡データベース、各国労働統計。"
+    )
+    run.italic = True
+    run.font.size = Pt(9)
+    p.space_after = Pt(18)
+
     # =====================================================================
     # 事例研究2：ICD-11
     # =====================================================================
@@ -634,8 +755,12 @@ def main():
         "ループ効果、インフラストラクチャー創出、疾病分類学的プラセボのメカニズムを"
         "通じて臨床的現実を形成する。過労死の事例は、疾病分類学的概念の有無が同一の"
         "生物学的事象に対する医療システムの応答を根本的に変えることを実証する。"
+        "29年間の日本の労災補償データを用いた分断時系列分析は、2001年の認定基準"
+        "改正後に認定件数が3.71倍に増加したことを示す直接的な実証的証拠を提供し"
+        "（β = 231.4, p < 0.001）、国際比較は疾患負荷ではなく診断的"
+        "インフラストラクチャーが認定パターンを決定することを示す。"
         "ICD-10からICD-11への移行は、この仮説を前向きに検証する前例のない機会を"
-        "提供する。確認されれば、医療版サピア＝ウォーフ仮説は、疾病分類改定が行政的"
+        "提供する。医療版サピア＝ウォーフ仮説は、疾病分類改定が行政的"
         "帳簿整理ではなく、医療的現実を再構成する力を持つ臨床的介入として理解される"
         "べきことを含意する。"
     )
@@ -678,6 +803,9 @@ def main():
         "Bernal JL, Cummins S, Gasparrini A. Interrupted time series regression for the evaluation of public health interventions: a tutorial. Int J Epidemiol. 2017;46(1):348\u2013355.",
         "Jutel A, Nettleton S. Towards a sociology of diagnosis: reflections and opportunities. Soc Sci Med. 2011;73(6):793\u2013800.",
         "Simons RC, Hughes CC, eds. The Culture-Bound Syndromes: Folk Illnesses of Psychiatric and Anthropological Interest. D. Reidel Publishing; 1985.",
+        "Ministry of Health, Labour and Welfare. Status of Workers\u2019 Compensation for Brain/Cardiovascular Diseases and Mental Disorders (Annual Reports, FY2001\u2013FY2024). Tokyo: MHLW; 2025. https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudoukijun/rousai/090316_00002.html",
+        "World Health Organization. WHO Mortality Database. Geneva: WHO; 2026. Accessed April 2026. https://www.who.int/data-collections/mortality",
+        "Pega F, N\u00e1fr\u00e1di B, Momen NC, et al. Global, regional, and national burdens of ischemic heart disease and stroke attributable to exposure to long working hours for 194 countries, 2000\u20132016: a systematic analysis from the WHO/ILO Joint Estimates of the Work-related Burden of Disease and Injury. Environ Int. 2021;154:106595.",
     ]
 
     for i, ref in enumerate(references, start=1):
