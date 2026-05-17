@@ -1,6 +1,7 @@
-import { createContext, useContext, useCallback, useState, type ReactNode } from 'react';
+import { createContext, useContext, useCallback, useState, useMemo, type ReactNode } from 'react';
 import type { Paper, PaneConfig, PaneId } from '../types/paper';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { useServerEvents } from '../hooks/useServerEvents';
 import { samplePapers } from '../data/sample-papers';
 
 const DEFAULT_PANES: PaneConfig[] = [
@@ -50,6 +51,30 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
 
   const selectedPaper = papers.find((p) => p.id === selectedPaperId);
 
+  // SSE: receive real-time updates from server plugins (e.g. folder-watcher)
+  const sseHandlers = useMemo(
+    () => ({
+      'project-update': (data: unknown) => {
+        const { project } = data as { project: Paper };
+        if (project?.id) setPapers((prev) => prev.map((p) => (p.id === project.id ? project : p)));
+      },
+      'project-add': (data: unknown) => {
+        const { project } = data as { project: Paper };
+        if (project?.id) setPapers((prev) => (prev.some((p) => p.id === project.id) ? prev : [...prev, project]));
+      },
+      'project-delete': (data: unknown) => {
+        const { id } = data as { id: string };
+        if (id) setPapers((prev) => prev.filter((p) => p.id !== id));
+      },
+      'project-replace': (data: unknown) => {
+        const { projects } = data as { projects: Paper[] };
+        if (Array.isArray(projects)) setPapers(projects);
+      },
+    }),
+    [setPapers],
+  );
+  useServerEvents(sseHandlers);
+
   const togglePaneDocked = useCallback(
     (id: PaneId) => {
       setPanes((prev) => prev.map((p) => (p.id === id ? { ...p, docked: !p.docked } : p)));
@@ -88,8 +113,8 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
   const exportJson = useCallback(() => JSON.stringify(papers, null, 2), [papers]);
 
   const exportYaml = useCallback(() => {
-    // Simple YAML serializer for paper data
-    const yamlLines: string[] = ['papers:'];
+    // Simple YAML serializer for project data
+    const yamlLines: string[] = ['projects:'];
     for (const paper of papers) {
       yamlLines.push(`  - id: "${paper.id}"`);
       yamlLines.push(`    title: "${paper.title}"`);
@@ -152,10 +177,11 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
           // For YAML, we use js-yaml
           import('js-yaml').then((yaml) => {
             try {
-              const parsed = yaml.load(data) as { papers: Paper[] };
-              if (parsed?.papers && Array.isArray(parsed.papers)) {
-                setPapers(parsed.papers);
-                if (parsed.papers.length > 0) setSelectedPaperId(parsed.papers[0].id);
+              const parsed = yaml.load(data) as { projects?: Paper[]; papers?: Paper[] };
+              const items = parsed?.projects ?? parsed?.papers;
+              if (items && Array.isArray(items)) {
+                setPapers(items);
+                if (items.length > 0) setSelectedPaperId(items[0].id);
               }
             } catch (e) {
               console.error('YAML import failed:', e);

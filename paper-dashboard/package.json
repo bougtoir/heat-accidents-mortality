@@ -4,6 +4,12 @@
   "version": "1.0.0",
   "type": "module",
   "main": "electron/main.cjs",
+  "author": {
+    "name": "PaperHub",
+    "email": "bougtoir@gmail.com"
+  },
+  "description": "Paper management dashboard",
+  "homepage": "https://github.com/bougtoir/wip",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",

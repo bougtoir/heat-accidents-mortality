@@ -660,7 +660,7 @@ export function AddPaperDialog() {
               cursor: title.trim() ? 'pointer' : 'not-allowed',
             }}
           >
-            {isEditing ? 'Save Changes' : 'Add Paper'}
+            {isEditing ? 'Save Changes' : 'Add Project'}
           </button>
         </div>
       </div>

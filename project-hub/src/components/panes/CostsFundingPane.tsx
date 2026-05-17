@@ -112,7 +112,7 @@ export function CostsFundingPane({ paper }: Props) {
       ) : (
         <>
           {(c.apcEstimate ?? 0) > 0 ? (
-            <div style={{ display: 'flex', gap: 12, marginBottom: 12, cursor: 'pointer' }} onClick={() => { setApcEst(String(c.apcEstimate ?? 0)); setApcPaid(String(c.apcPaid)); setApcCur(apcCurrency); setEditingApc(true); }} title="Click to edit APC">
+            <div style={{ display: 'flex', gap: 12, marginBottom: 12, cursor: 'pointer' }} onClick={() => { setApcEst(String(c.apcEstimate ?? 0)); setApcPaid(String(c.apcPaid)); setApcCur(apcCurrency); setEditingApc(true); }} title="Click to edit Budget">
               <div style={{ flex: 1, padding: 10, background: '#faf8f3', borderRadius: 4, border: '1px solid #e8e4da', textAlign: 'center' }}>
                 <div style={{ fontSize: 18, fontWeight: 700, color: '#1a3a4a' }}>{formatCurrency(c.apcEstimate ?? 0, apcCurrency)}</div>
                 <div style={{ fontSize: 10, color: '#888' }}>Budget</div>

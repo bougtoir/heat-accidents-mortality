@@ -1,73 +1,68 @@
-# React + TypeScript + Vite
+# ProjectHub
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Project management dashboard with 9-pane grid layout, real-time updates, and plugin system.
 
-Currently, two official plugins are available:
+## Requirements
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- [Node.js](https://nodejs.org/) v18 or later
 
-## React Compiler
+## Quick Start
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Windows
 
-## Expanding the ESLint configuration
+`start.bat` をダブルクリック（またはコマンドプロンプトで実行）
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```cmd
+start.bat
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### macOS / Linux
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```bash
+node start.mjs
+```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+ブラウザが自動的に `http://localhost:3457` を開きます。
+
+## Options
+
+```bash
+node start.mjs --port 8080     # ポート変更
+node start.mjs --no-open       # ブラウザ自動起動を無効化
+```
+
+## Configuration
+
+`config.json` でポート、プラグイン設定などをカスタマイズできます。
+
+```json
+{
+  "port": 3457,
+  "openBrowser": true,
+  "plugins": {
+    "folder-watcher": {
+      "watchPaths": ["./watched"],
+      "debounceMs": 1000
+    }
+  }
+}
+```
+
+## Plugin System
+
+`plugins/` フォルダに `.mjs` ファイルを配置すると自動的にロードされます。
+
+- `folder-watcher.mjs` — フォルダ監視で進捗を自動登録
+
+## Data
+
+プロジェクトデータは `data/projects.json` に自動保存されます。
+
+## Development
+
+```bash
+npm install
+npm run dev        # 開発サーバー (Vite)
+npm run build      # dist/ にビルド
+npm run lint       # ESLint
 ```

@@ -4,6 +4,12 @@
   "version": "1.0.0",
   "type": "module",
   "main": "electron/main.cjs",
+  "author": {
+    "name": "ProjectHub",
+    "email": "bougtoir@gmail.com"
+  },
+  "description": "Project management dashboard",
+  "homepage": "https://github.com/bougtoir/wip",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
