@@ -13,9 +13,9 @@ import matplotlib.font_manager as fm
 from matplotlib import rcParams
 import os
 
-from sensitivity_technical_maritime_ban import (
+from sensitivity_technical_network_exclusion import (
     STRONG_CANDIDATES, MODERATE_CANDIDATES,
-    apply_technical_maritime_ban, apply_disrupted_assignment,
+    apply_technical_network_exclusion, apply_disrupted_assignment,
     compute_closure_analysis,
 )
 from data import load_data
@@ -48,8 +48,8 @@ def plot_conquest_rates_by_closure():
 
     closure_scenarios = {
         "Baseline": (df_base, []),
-        "+5 tech ban": (apply_technical_maritime_ban(df_base, STRONG_CANDIDATES), STRONG_CANDIDATES),
-        "+7 tech ban": (apply_technical_maritime_ban(df_base, STRONG_CANDIDATES + MODERATE_CANDIDATES),
+        "+5 tech excl": (apply_technical_network_exclusion(df_base, STRONG_CANDIDATES), STRONG_CANDIDATES),
+        "+7 tech excl": (apply_technical_network_exclusion(df_base, STRONG_CANDIDATES + MODERATE_CANDIDATES),
                         STRONG_CANDIDATES + MODERATE_CANDIDATES),
     }
 
@@ -62,7 +62,7 @@ def plot_conquest_rates_by_closure():
         "none": "#4ECDC4",
         "bloc": "#45B7D1",
         "maritime_ban": "#FF6B6B",
-        "technical_maritime_ban": "#FFB347",
+        "technical_network_exclusion": "#FFB347",
         "sakoku": "#C44D58",
     }
 
@@ -107,7 +107,7 @@ def plot_conquest_rates_by_closure():
                 ax.set_title(sc_name, fontsize=11, fontweight="bold")
 
     fig.suptitle("Sensitivity Analysis: Overtaken Rate by Closure Type\n"
-                 "(disrupted assignment × maritime ban reclassification)",
+                 "(disrupted assignment × network exclusion reclassification)",
                  fontsize=13, fontweight="bold", y=1.02)
     plt.tight_layout()
     path = os.path.join(FIG_DIR, "sensitivity_conquest_rates.png")
@@ -141,11 +141,11 @@ def plot_fisher_p_progression():
         risk_diffs = []
 
         for label, candidates in steps:
-            df_sc = apply_technical_maritime_ban(df_base, candidates) if candidates else df_base
+            df_sc = apply_technical_network_exclusion(df_base, candidates) if candidates else df_base
             df_prepared = apply_disrupted_assignment(df_sc, d_mode)
 
             has_ban = df_prepared["closure_type"].isin(
-                ["maritime_ban", "technical_maritime_ban", "sakoku"]
+                ["maritime_ban", "technical_network_exclusion", "sakoku"]
             )
             ban_df = df_prepared[has_ban]
             no_ban_df = df_prepared[~has_ban]
@@ -169,20 +169,20 @@ def plot_fisher_p_progression():
 
     ax1.axhline(y=0.05, color="red", linestyle="--", linewidth=1.5, alpha=0.7, label="p = 0.05")
     ax1.set_ylabel("Fisher p-value (one-sided)", fontsize=11)
-    ax1.set_title("Maritime Ban → Overtaken: Fisher Exact Test p-value", fontsize=12, fontweight="bold")
+    ax1.set_title("Network Closure → Overtaken: Fisher Exact Test p-value", fontsize=12, fontweight="bold")
     ax1.legend(fontsize=9)
     ax1.set_ylim(bottom=0)
 
     ax2.axhline(y=0, color="gray", linestyle="-", linewidth=0.5)
     ax2.set_ylabel("Risk Difference (ban - no ban, %pts)", fontsize=11)
-    ax2.set_title("Overtaken Risk Difference: Maritime Ban vs Open", fontsize=12, fontweight="bold")
+    ax2.set_title("Overtaken Risk Difference: Network Closure vs Open", fontsize=12, fontweight="bold")
     ax2.legend(fontsize=9)
 
     labels = [s[0] for s in steps]
     ax2.set_xticks(range(len(labels)))
     ax2.set_xticklabels(labels, fontsize=7, rotation=30, ha="right")
 
-    fig.suptitle("Technical Maritime Ban Sensitivity Analysis\n"
+    fig.suptitle("Technical Network Exclusion Sensitivity Analysis\n"
                  "Incremental Reclassification × Disrupted Assignment",
                  fontsize=14, fontweight="bold", y=1.02)
     plt.tight_layout()
@@ -196,7 +196,7 @@ def plot_fisher_p_progression():
 def plot_policy_vs_technical():
     """Figure 3: 政策的海禁 vs 技術的海禁 vs 開放（disrupted 2パターン並列）"""
     df_base = load_data()
-    df_all = apply_technical_maritime_ban(
+    df_all = apply_technical_network_exclusion(
         df_base, STRONG_CANDIDATES + MODERATE_CANDIDATES
     )
 
@@ -205,8 +205,8 @@ def plot_policy_vs_technical():
         "as_survived": "disrupted→survived",
     }
 
-    categories = ["maritime_ban", "technical_maritime_ban", "sakoku", "bloc", "none"]
-    cat_labels = ["Policy\nMaritime Ban", "Technical\nMaritime Ban", "Sakoku", "Bloc", "None\n(open)"]
+    categories = ["maritime_ban", "technical_network_exclusion", "sakoku", "bloc", "none"]
+    cat_labels = ["Policy\nMaritime Ban", "Technical\nNetwork Excl.", "Sakoku", "Bloc", "None\n(open)"]
     colors = ["#FF6B6B", "#FFB347", "#C44D58", "#45B7D1", "#4ECDC4"]
 
     fig, axes = plt.subplots(1, 2, figsize=(16, 7), sharey=True)
