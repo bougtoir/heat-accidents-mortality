@@ -47,6 +47,10 @@ paragraph_format.line_spacing = 2.0
 with open(OUTPUT_DIR + 'cpsp_regression_summary.json', 'r') as f:
     reg = json.load(f)
 
+_unadj_d = reg["model1_unadjusted"]["cohens_d"]
+_adj_d = reg["adjusted_cpsp_test"]["cohens_d"]
+_attenuation_pct = (1 - _adj_d / _unadj_d) * 100
+
 def add_heading_text(text, level=1):
     h = doc.add_heading(text, level=level)
     for run in h.runs:
@@ -476,7 +480,7 @@ doc.add_paragraph(
     'prescribing (unadjusted d = 2.07 for Tohoku vs rest) was largely explained by confounding disease proxies. '
     'Diabetes drug prescribing alone correlated at r = 0.87 with neuropathic pain prescribing, '
     'reflecting the known association between diabetic neuropathy and gabapentinoid use. '
-    'After adjustment, the Tohoku effect was attenuated by 62% and became nonsignificant.')
+    f'After adjustment, the Tohoku effect was attenuated by {_attenuation_pct:.0f}% and became nonsignificant.')
 
 doc.add_paragraph(
     'This has important methodological implications. '

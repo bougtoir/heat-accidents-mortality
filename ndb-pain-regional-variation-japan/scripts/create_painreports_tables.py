@@ -17,6 +17,10 @@ OUTPUT_DIR = '/home/ubuntu/analysis/output/'
 with open(OUTPUT_DIR + 'cpsp_regression_summary.json', 'r') as f:
     reg = json.load(f)
 
+_unadj_d = reg["model1_unadjusted"]["cohens_d"]
+_adj_d = reg["adjusted_cpsp_test"]["cohens_d"]
+_attenuation_pct = (1 - _adj_d / _unadj_d) * 100
+
 rows = []
 with open(OUTPUT_DIR + 'cpsp_integrated_results.csv', 'r', encoding='utf-8') as f:
     for r in csv.DictReader(f):
@@ -260,7 +264,7 @@ doc3.add_paragraph()
 note = doc3.add_paragraph(
     'Confounders: oral hypoglycemic agents (diabetes proxy), herpes zoster antivirals, '
     'antidepressants (excluding duloxetine), and anxiolytics. '
-    'Adjustment reduced the Tohoku effect by 62% and rendered it nonsignificant.')
+    f'Adjustment reduced the Tohoku effect by {_attenuation_pct:.0f}% and rendered it nonsignificant.')
 note.runs[0].font.size = Pt(8)
 note.runs[0].font.italic = True
 
