@@ -196,4 +196,12 @@ Water Alternativesに投稿したが、**「Water Alternativesは技術論文を
 - ハイブリッド誌（購読契約機関はAPC無料）
 - 2021年よりOA対応
 
-*作成日: 2026-05-17（セッション成果を追記）*
+### 投稿履歴
+
+| # | ジャーナル | ステータス | 日付 | 備考 |
+|---|-----------|-----------|------|------|
+| 1 | Water Alternatives | **Rejected** | 2026-05-17 | "Water Alternatives does not publish technical papers" |
+| 2 | Water Policy (IWA Publishing) | **準備完了** | 2026-05-18 | Vancouver style, 8,000語制限, Editorial Manager経由 |
+
+*作成日: 2026-05-17*
+*更新日: 2026-05-18（Water Policy投稿準備完了）*
