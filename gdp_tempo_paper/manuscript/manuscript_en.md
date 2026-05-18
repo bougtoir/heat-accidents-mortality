@@ -98,6 +98,20 @@ where *L_production* is the growth-rate residual from the production function (M
 
 Table 2 lays out the one-to-one mapping between the demographic variables that Bongaarts-Feeney-Goldstein-Lutz-Scherbov analysed and the capital-accounting variables we analyse. Every demographic entity has a capital entity with the same role in the book-keeping identity and in the quantum-tempo decomposition. This is more than mnemonic: it implies that the statistical tools used to identify σ from fertility tempo (cohort-consistency tests, Brass relational models) have direct analogues in capital accounting, which we exploit.
 
+### 3.5 Relational PIM: a Brass model for capital accounting
+
+Demography has long employed Brass relational models to compare an observed fertility or mortality schedule against a "standard" schedule via a small number of parameters that capture systematic deviations (Brass, 1971). We transplant this idea to capital accounting. Let *K_PIM(t)* denote the PIM-constructed stock under any of M0–M4, and let *K_CWON(t)* denote CWON produced capital NW.PCA.TO. We define the **Relational PIM** (RPIM) as:
+
+    log K_PIM(t) = ρ₁ + ρ₂ · log K_CWON(t) + ε(t),                              (M5)
+
+where (ρ₁, ρ₂) are the relational parameters estimated by OLS on the overlapping years where both series are observed and positive. The interpretation is direct:
+
+* **ρ₂ = 1 and ρ₁ = 0**: the PIM and CWON accounts are perfectly consistent — they measure the same latent stock up to a white-noise error.
+* **ρ₂ ≠ 1**: there is a cumulative (scale-dependent) bias in the PIM relative to CWON. If ρ₂ < 1, the PIM understates the growth of capital relative to CWON; if ρ₂ > 1, it overstates it.
+* **ρ₁ ≠ 0**: there is a level shift between the two accounts, capturing differences in base-year calibration, PPP conversions, or asset coverage.
+
+The novelty is threefold. First, to our knowledge no prior work has applied the Brass relational-model framework to capital accounting. Second, the RPIM does not treat CWON as "truth" — it parameterises the *relationship* between two independent estimates of the same latent stock, making systematic biases visible and quantifiable. Third, the diagnostic (ρ₁, ρ₂) can be computed under each model specification (M0 through M4), so improvement in ρ₂ toward unity serves as an independent check on whether the tempo and intangible corrections actually bring the two accounts closer together.
+
 ## 4. Data and methods
 
 ### 4.1 Data
@@ -176,6 +190,24 @@ Bootstrap confidence intervals on the joint estimates (Fig. 3) show that, countr
 
 A second way to read the bootstrap evidence is that the *shape* of the 95 % region in (μ, β) space is strongly country-specific. For R&D-intensive economies (Israel, Republic of Korea, Sweden, the United States) the posterior region is a tight ellipse in the north-east quadrant (μ ≥ 0.3 years, β ≥ 0.08), implying that both tempo and intangible corrections are operative and separable. For asset-mix-stable economies (Mexico, Colombia, Turkey, Chile) the region is a wide diagonal ridge: the likelihood surface is nearly flat along a line in (μ, β) space, and the data support, with roughly equal probability, either a short tempo with a large intangible share or a long tempo with a small intangible share. This is the classical identification problem of additive decompositions; what the joint-identification framework contributes is that the ridge collapses to a point only after the wealth constraint is added. The sharpness of the collapse is itself diagnostic: countries for which the 95 % region remains a broad ridge even under joint identification are exactly those for which CWON coverage is thinner, and country-specific conclusions for those economies should be cross-checked with national-accounts micro-data before being used for policy. Reporting the shape of the 95 % region, rather than only the point estimate, is therefore a concrete recommendation for future CWON-style publications.
 
+### 5.5 Relational PIM diagnostics
+
+**[Figure 6 here]**
+
+**[Table 3 here]**
+
+Figure 6 and Table 3 report the Relational PIM diagnostics defined in Section 3.5. Two findings stand out. First, under M0 (instant PIM, β = 0) the median ρ̂₂ across 39 countries is 0.801, substantially below the consistency benchmark of 1.0. Only 9 of 39 countries have ρ̂₂ ∈ [0.9, 1.1]. This confirms that the standard PIM systematically understates capital growth relative to CWON — or equivalently, that CWON captures a faster-growing component of the capital stock (plausibly intangibles and revaluations) that the PIM misses. Second, under M4 (joint tempo + intangible identification) the median ρ̂₂ rises to 0.833, and the number of countries in the [0.9, 1.1] consistency band increases from 9 to 12. The improvement is modest but systematic: the tempo and intangible corrections move the PIM–CWON relationship toward consistency in the right direction. The median R² exceeds 0.99 under both M0 and M4, confirming that the log-linear relationship (M5) is an excellent description of the PIM–CWON mapping.
+
+Figure 6(b) plots ρ̂₁ against ρ̂₂ under M4. Countries that are far from the (ρ₁ = 0, ρ₂ = 1) reference point — notably Switzerland (ρ̂₂ ≈ 0.40), Poland (ρ̂₂ ≈ 0.60), and Norway (ρ̂₂ ≈ 0.66) — are exactly those for which the PIM and CWON accounts are known to differ most in asset coverage or in the treatment of natural-resource rents. The RPIM diagnostic therefore serves as a simple, interpretable quality-control tool for national capital accounts: a country whose ρ̂₂ deviates markedly from unity warrants closer investigation of the underlying asset-composition assumptions in both accounts.
+
+### 5.6 Depreciation–lag sensitivity
+
+**[Figure 7 here]**
+
+Inklaar's critique (§6.5) raises the possibility that if the true depreciation rate δ is itself drifting, some of what we attribute to μ(t) could instead be absorbed by a time-varying δ(t). We address this directly by re-estimating the constant lag μ̂ (M1) under five depreciation scenarios: δ × {0.80, 0.90, 1.00, 1.10, 1.20}.
+
+Figure 7 shows the results. The main finding is that μ̂ is remarkably stable across the ±20% depreciation perturbation for most countries. The cross-country mean μ̂ moves from 1.61 years (δ × 0.80) to 1.52 years (δ × 1.20), a shift of only 0.09 years — less than 6% of the baseline estimate. The median μ̂ is virtually invariant at 0.26 years across all five scenarios. Countries with interior-solution μ̂ values (Luxembourg, Slovakia, United Kingdom, Sweden) show the expected negative relationship: higher depreciation slightly reduces the estimated lag, since faster depreciation absorbs some of the growth-rate variation that would otherwise be attributed to the gestation delay. However, the sensitivity is quantitatively small: a ±20% perturbation in δ moves μ̂ by at most 0.75 years even for the most sensitive country (Luxembourg: 3.75 → 3.00 years). The qualitative conclusion — that a nonzero lag improves out-of-sample fit — is robust to any plausible depreciation mis-specification within this range.
+
 ## 6. Discussion
 
 We now step back from the technical results and consider what a time-varying μ(t) and a nonzero β mean for four active debates in economic measurement.
@@ -223,6 +255,10 @@ Three practical recommendations follow from the results. First, any revision of 
 **Table 2.** Population–capital correspondence.
 
 **[Insert table 2 here]**
+
+**Table 3.** Relational PIM diagnostics: ρ̂₂ under M0, M1, M2, M4.
+
+**[Insert table 3 here]**
 
 ---
 
