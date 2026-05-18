@@ -634,6 +634,138 @@ def run_gamma_price(countries: list[Country], fair: pd.DataFrame,
     return pd.DataFrame(rows)
 
 
+# ----- Analysis 6: Relational PIM (M5 / RPIM) -----
+def fit_relational_pim(K_pim: np.ndarray, K_cwon: np.ndarray,
+                      cwon_years: np.ndarray,
+                      pim_years: np.ndarray) -> tuple[float, float, float, int]:
+    """Brass relational model for capital accounting.
+
+    Estimates  log K_PIM(t) = rho1 + rho2 * log K_CWON(t) + eps(t)
+    on the overlapping years where both series are observed and positive.
+
+    Returns (rho1, rho2, R2, n_obs).
+    """
+    idx_map = {int(y): i for i, y in enumerate(pim_years)}
+    log_pim = []
+    log_cwon = []
+    for i, y in enumerate(cwon_years):
+        j = idx_map.get(int(y))
+        if j is None:
+            continue
+        kp = K_pim[j]
+        kc = K_cwon[i]
+        if np.isfinite(kp) and np.isfinite(kc) and kp > 0 and kc > 0:
+            log_pim.append(np.log(kp))
+            log_cwon.append(np.log(kc))
+    if len(log_pim) < 6:
+        return np.nan, np.nan, np.nan, 0
+    lp = np.array(log_pim)
+    lc = np.array(log_cwon)
+    X = np.column_stack([np.ones_like(lc), lc])
+    params, residuals, _, _ = np.linalg.lstsq(X, lp, rcond=None)
+    rho1, rho2 = float(params[0]), float(params[1])
+    ss_res = float(np.sum((lp - X @ params) ** 2))
+    ss_tot = float(np.sum((lp - lp.mean()) ** 2))
+    r2 = 1.0 - ss_res / ss_tot if ss_tot > 0 else np.nan
+    return rho1, rho2, r2, len(lp)
+
+
+def run_relational_pim(countries: list[Country],
+                       fair: pd.DataFrame) -> pd.DataFrame:
+    """For each country, fit the Brass relational model between PIM K and
+    CWON produced capital under each model specification (M0, M1, M2, M4).
+    Reports (rho1, rho2, R2) per model."""
+    mu1_by = dict(zip(fair["country"], fair["mu_M1"]))
+    mu20_by = dict(zip(fair["country"], fair["mu_M2_0"]))
+    mu21_by = dict(zip(fair["country"], fair["mu_M2_1"]))
+    mu4_by = dict(zip(fair["country"], fair["mu_M4"]))
+    beta4_by = dict(zip(fair["country"], fair["beta_M4"]))
+    rows = []
+    for c in countries:
+        K_intan = build_intan_stock(c.Y, c.rnd_share)
+        if K_intan is None:
+            continue
+        K_M0 = pim_instant(c.I, c.delta, c.K0)
+        mu1 = float(mu1_by.get(c.country, np.nan))
+        K_M1 = pim_lagged(c.I, c.delta, c.K0, mu1) if np.isfinite(mu1) else None
+        mu20 = float(mu20_by.get(c.country, np.nan))
+        mu21 = float(mu21_by.get(c.country, np.nan))
+        K_M2 = pim_lagged_tempo(c.I, c.delta, c.K0, mu20, mu21,
+                                c.years) if np.isfinite(mu20) else None
+        mu4 = float(mu4_by.get(c.country, np.nan))
+        beta4 = float(beta4_by.get(c.country, np.nan))
+        K_M4_tang = pim_lagged(c.I, c.delta, c.K0, mu4) if np.isfinite(mu4) else None
+        if K_M4_tang is not None and np.isfinite(beta4) and beta4 > 0:
+            K_M4_total = K_M4_tang + beta4 * K_intan
+        elif K_M4_tang is not None:
+            K_M4_total = K_M4_tang
+        else:
+            K_M4_total = None
+
+        rec = {"country": c.country, "iso3": c.iso}
+        for label, K in [("M0", K_M0), ("M1", K_M1), ("M2", K_M2),
+                         ("M4", K_M4_total)]:
+            if K is None:
+                rec[f"{label}_rho1"] = np.nan
+                rec[f"{label}_rho2"] = np.nan
+                rec[f"{label}_R2"] = np.nan
+                rec[f"{label}_n"] = 0
+            else:
+                r1, r2, rsq, n = fit_relational_pim(K, c.pca,
+                                                     c.cwon_years, c.years)
+                rec[f"{label}_rho1"] = r1
+                rec[f"{label}_rho2"] = r2
+                rec[f"{label}_R2"] = rsq
+                rec[f"{label}_n"] = n
+        rows.append(rec)
+        print(f"  [rpim] {c.country:22s}  "
+              f"M0: rho2={rec['M0_rho2']:.3f}  "
+              f"M4: rho2={rec['M4_rho2']:.3f}  "
+              f"R2={rec['M4_R2']:.3f}",
+              flush=True)
+    return pd.DataFrame(rows)
+
+
+# ----- Analysis 7: delta-mu joint sensitivity -----
+def run_delta_sensitivity(countries: list[Country],
+                         delta_factors: tuple[float, ...] = (0.80, 0.90, 1.00,
+                                                             1.10, 1.20)
+                         ) -> pd.DataFrame:
+    """For each country, re-fit mu (M1 constant lag) under adjusted delta.
+
+    Addresses Inklaar's critique: if delta drifts, some of what is attributed
+    to mu(t) may instead belong to delta(t). Reports mu_hat for each
+    delta_factor."""
+    rows = []
+    for c in countries:
+        alpha = 1 - float(np.clip(np.mean(c.labsh), 0.40, 0.75))
+        L = c.emp * c.avh
+        LH = L * c.hc
+        logY = np.log(c.Y)
+        logLH = np.log(LH)
+        rec = {"country": c.country, "iso3": c.iso, "alpha": alpha}
+        for df in delta_factors:
+            delta_adj = c.delta * df
+            mu_hat = fit_mu_const(c.I, delta_adj, c.K0, logY, logLH, alpha)
+            rec[f"mu_d{df:.2f}"] = mu_hat
+        # also fit tempo (mu0, mu1) under each delta factor
+        for df in delta_factors:
+            delta_adj = c.delta * df
+            mu0, mu1 = fit_tempo(c.I, delta_adj, c.K0, logY, logLH, alpha,
+                                 c.years)
+            rec[f"mu0_d{df:.2f}"] = mu0
+            rec[f"mu1_d{df:.2f}"] = mu1
+        rows.append(rec)
+        base_mu = rec["mu_d1.00"]
+        lo_mu = rec["mu_d0.80"]
+        hi_mu = rec["mu_d1.20"]
+        print(f"  [dsens] {c.country:22s}  "
+              f"mu(d*0.8)={lo_mu:.2f}  mu(d*1.0)={base_mu:.2f}  "
+              f"mu(d*1.2)={hi_mu:.2f}",
+              flush=True)
+    return pd.DataFrame(rows)
+
+
 # ----- Figures -----
 def make_figures(fair: pd.DataFrame, oos: pd.DataFrame,
                  boot: pd.DataFrame, gamma: pd.DataFrame):
@@ -759,12 +891,40 @@ def main():
     gamma = run_gamma_price(countries, fair)
     gamma.to_csv(os.path.join(DATA, "gamma_price.csv"), index=False)
 
+    print("\n--- Analysis 6: Relational PIM (M5) ---", flush=True)
+    rpim = run_relational_pim(countries, fair)
+    rpim.to_csv(os.path.join(DATA, "rpim.csv"), index=False)
+    rpim_summary = {
+        label: {
+            "rho2_median": float(rpim[f"{label}_rho2"].median()),
+            "rho2_mean": float(rpim[f"{label}_rho2"].mean()),
+            "rho1_median": float(rpim[f"{label}_rho1"].median()),
+            "R2_median": float(rpim[f"{label}_R2"].median()),
+        } for label in ("M0", "M1", "M2", "M4")
+    }
+    with open(os.path.join(DATA, "rpim_summary.json"), "w") as fh:
+        json.dump(rpim_summary, fh, indent=2)
+
+    print("\n--- Analysis 7: delta-mu sensitivity ---", flush=True)
+    dsens = run_delta_sensitivity(countries)
+    dsens.to_csv(os.path.join(DATA, "delta_sensitivity.csv"), index=False)
+    dsens_summary = {
+        f"d{df:.2f}": {
+            "mu_median": float(dsens[f"mu_d{df:.2f}"].median()),
+            "mu_mean": float(dsens[f"mu_d{df:.2f}"].mean()),
+        } for df in (0.80, 0.90, 1.00, 1.10, 1.20)
+    }
+    with open(os.path.join(DATA, "delta_sensitivity_summary.json"), "w") as fh:
+        json.dump(dsens_summary, fh, indent=2)
+
     print("\n--- Figures ---", flush=True)
     make_figures(fair, oos, boot, gamma)
 
     print("\n=== SUMMARY ===", flush=True)
     print(json.dumps(fair_summary, indent=2))
     print("OOS medians:", json.dumps(oos_summary, indent=2))
+    print("RPIM summary:", json.dumps(rpim_summary, indent=2))
+    print("Delta-mu sensitivity:", json.dumps(dsens_summary, indent=2))
 
 
 if __name__ == "__main__":

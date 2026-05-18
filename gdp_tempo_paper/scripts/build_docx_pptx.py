@@ -58,6 +58,14 @@ FIG_LIST = [
      "Conceptual diagram of the population-capital tempo correspondence.",
      "人口・資本テンポ対応関係の概念図。",
      "fig5_concept_{lang}.png"),
+    ("fig6", "Fig. 6", "図6",
+     "Relational PIM diagnostics: rho_2 across 39 countries under M0 vs M4.",
+     "関係型PIM診断: M0とM4における39カ国のρ̂₂。",
+     "fig6_rpim_{lang}.png"),
+    ("fig7", "Fig. 7", "図7",
+     "Delta-mu sensitivity: mu_hat under +/-20% depreciation perturbation.",
+     "δ-μ感度分析: 減価償却率±20%変動下のμ̂。",
+     "fig7_delta_sensitivity_{lang}.png"),
 ]
 
 
@@ -166,6 +174,8 @@ def build_manuscript(lang: str):
     # Load tables
     t1 = pd.read_csv(os.path.join(TAB, "table1_model_metrics.csv"))
     t2 = pd.read_csv(os.path.join(TAB, "table2_correspondence.csv"))
+    t3_path = os.path.join(TAB, "table3_rpim.csv")
+    t3 = pd.read_csv(t3_path) if os.path.exists(t3_path) else None
 
     # Figure caption lookup by index
     fig_cap = {}
@@ -181,6 +191,8 @@ def build_manuscript(lang: str):
     t1_cap_ja = "M0-M4: 39カ国の標本内・標本外パフォーマンス（国間中央値、IQRを括弧内）。"
     t2_cap_en = "Population-capital tempo correspondence."
     t2_cap_ja = "人口・資本テンポ対応関係。"
+    t3_cap_en = "Relational PIM diagnostics: rho_2 summary under M0, M1, M2, M4."
+    t3_cap_ja = "関係型PIM診断: M0, M1, M2, M4におけるρ̂₂の要約。"
 
     doc = Document()
     # Use sensible page margins
@@ -240,6 +252,13 @@ def build_manuscript(lang: str):
                         t2_cap_en if lang == "en" else t2_cap_ja,
                         widths=[Inches(1.3), Inches(2.5), Inches(2.5)],
                     )
+                elif idx == 3 and t3 is not None:
+                    add_table_block(
+                        doc,
+                        "Table 3." if lang == "en" else "表3.",
+                        t3,
+                        t3_cap_en if lang == "en" else t3_cap_ja,
+                    )
             else:
                 # Drop markdown emphasis markers for clean rendering
                 text = stripped
@@ -264,14 +283,22 @@ def build_manuscript(lang: str):
 def build_standalone_tables():
     t1 = pd.read_csv(os.path.join(TAB, "table1_model_metrics.csv"))
     t2 = pd.read_csv(os.path.join(TAB, "table2_correspondence.csv"))
-    for name, df, cap, widths in [
+    t3_path = os.path.join(TAB, "table3_rpim.csv")
+    t3 = pd.read_csv(t3_path) if os.path.exists(t3_path) else None
+    table_list = [
         ("table1_model_metrics.docx", t1,
          "Table 1. M0-M4: in-sample and out-of-sample performance across 39 countries.",
          None),
         ("table2_correspondence.docx", t2,
          "Table 2. Population-capital tempo correspondence.",
          [Inches(1.3), Inches(2.5), Inches(2.5)]),
-    ]:
+    ]
+    if t3 is not None:
+        table_list.append(
+            ("table3_rpim.docx", t3,
+             "Table 3. Relational PIM diagnostics: rho_2 summary under M0, M1, M2, M4.",
+             None))
+    for name, df, cap, widths in table_list:
         d = Document()
         add_heading(d, cap, 2, "en")
         add_dataframe_as_table(d, df, col_widths=widths)
