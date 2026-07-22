@@ -56,7 +56,7 @@ def main():
     gas["date"] = pd.to_datetime(gas.date)
     gas = gas.sort_values("date")
     # weekly (reported for week ending 'date'); align each day to most recent report
-    out = pd.merge_asof(out.sort_values("date"), gas, on="date", direction="nearest")
+    out = pd.merge_asof(out.sort_values("date"), gas, on="date", direction="backward")
 
     out["vmt"] = out.vmt.interpolate().ffill().bfill()
     out["gasoline"] = out.gasoline.interpolate().ffill().bfill()
