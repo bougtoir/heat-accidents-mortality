@@ -86,8 +86,61 @@ def fig_compare():
     save(fig, "fig5_hidden_vs_official")
 
 
+def fig_roaduser():
+    d = pd.read_csv(os.path.join(PROC, "us_subgroup_response.csv"))
+    d = d[d.dimension == "user"].copy()
+    labels = {"vehicle_occupant": "Vehicle occupant\n(enclosed/AC)",
+              "motorcyclist": "Motorcyclist", "pedestrian": "Pedestrian",
+              "cyclist": "Cyclist"}
+    d["lab"] = d.group.map(labels)
+    y = np.arange(len(d))
+    fig, ax = plt.subplots(figsize=(6.2, 4))
+    ax.errorbar(d["sameday_RR_+9C"], y,
+                xerr=[d["sameday_RR_+9C"] - d.sameday_lo, d.sameday_hi - d["sameday_RR_+9C"]],
+                fmt="o", capsize=4, color="tab:red")
+    ax.axvline(1, ls="--", color="k", lw=0.8)
+    ax.set_yticks(y); ax.set_yticklabels(d.lab)
+    ax.set_xlabel("Same-day rate ratio for +9\u00b0C anomaly")
+    ax.set_title("Heat effect by road-user exposure:\nopen-air users hit hardest")
+    save(fig, "fig_us_roaduser")
+
+
+def fig_timeofday():
+    d = pd.read_csv(os.path.join(PROC, "us_timeofday_response.csv"))
+    x = np.arange(len(d))
+    colors = ["tab:blue" if h != "12-17" else "tab:red" for h in d.hour_band]
+    fig, ax = plt.subplots(figsize=(6, 4))
+    ax.errorbar(x, d["sameday_RR_+9C"],
+                yerr=[d["sameday_RR_+9C"] - d.sameday_lo, d.sameday_hi - d["sameday_RR_+9C"]],
+                fmt="o", capsize=4, color="k", zorder=3)
+    ax.scatter(x, d["sameday_RR_+9C"], c=colors, s=60, zorder=4)
+    ax.axhline(1, ls="--", color="k", lw=0.8)
+    ax.set_xticks(x); ax.set_xticklabels(d.hour_band)
+    ax.set_xlabel("Crash hour of day (local, h)")
+    ax.set_ylabel("Same-day rate ratio for +9\u00b0C anomaly")
+    ax.set_title("Time-of-day of the heat excess\n(peak in the hottest hours, 12-17)")
+    save(fig, "fig_us_timeofday")
+
+
+def fig_projection():
+    d = pd.read_csv(os.path.join(PROC, "us_projection.csv"))
+    x = np.arange(len(d))
+    fig, ax = plt.subplots(figsize=(6, 4))
+    ax.bar(x, d.extra_deaths_per_year, color="tab:red", alpha=0.85,
+           yerr=[d.extra_deaths_per_year - d.extra_lo, d.extra_hi - d.extra_deaths_per_year],
+           capsize=5)
+    for i, v in enumerate(d.extra_deaths_per_year):
+        ax.text(i, v, f"+{v:.0f}/yr", ha="center", va="bottom")
+    ax.set_xticks(x); ax.set_xticklabels([f"+{int(v)}\u00b0C" for v in d.delta_degC])
+    ax.set_xlabel("Uniform warming of daily temperature")
+    ax.set_ylabel("Additional crash deaths per year (US)")
+    ax.set_title("Projected additional hidden crash deaths\nunder warming (activity held constant)")
+    save(fig, "fig_us_projection")
+
+
 def main():
     fig_abs(); fig_anom(); fig_lag(); fig_year(); fig_compare()
+    fig_roaduser(); fig_timeofday(); fig_projection()
     print("figures written to", FIG)
 
 
