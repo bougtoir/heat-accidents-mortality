@@ -139,8 +139,8 @@ FIGURES = [
      "acute same-day excess followed by a 1-3 day deficit consistent with short-term "
      "mortality displacement."),
     ("fig4_attributable_by_year.png",
-     "United States estimated net heat-attributable crash deaths per year and the "
-     "attributable fraction (%), 2016-2022."),
+     "United States estimated net heat-attributable crash deaths per year, "
+     "2016-2022."),
     ("fig5_hidden_vs_official.png",
      "United States comparison of estimated net heat-attributable crash deaths per year "
      "with officially recorded direct-heat deaths (ICD-10 X30) from CDC WONDER."),
