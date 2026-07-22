@@ -231,7 +231,10 @@ def build_manuscript():
          "heat contribution, so any such contribution would be largely invisible in routine "
          "cause-of-death coding. We therefore ask whether days that are hotter than the "
          "local seasonal norm carry excess traffic-crash mortality, and how the magnitude "
-         "compares with officially recorded direct-heat deaths.")
+         "compares with officially recorded direct-heat deaths. This is an ecological, "
+         "population-level study whose aim is to gauge the potential societal burden of "
+         "under-recognised heat illness -- the deaths that would be missing from official "
+         "heat statistics -- rather than to diagnose heat illness in any individual crash.")
 
     h(doc, "Methods", 1)
     para(doc,
