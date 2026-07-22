@@ -18,7 +18,8 @@ import os
 import numpy as np
 import pandas as pd
 from patsy import dmatrix
-from model import (fit_model, cumulative_curve, bin_response, attributable, BINS, VAR_DF)
+from model import (fit_model, cumulative_curve, bin_response, attributable,
+                   project_warming, BINS, VAR_DF)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
@@ -116,6 +117,12 @@ def main():
     for a in (3, 6, 9, 12):
         c = cumulative_curve(m, [float(a)], 0.0).iloc[0]
         res[f"net_cumRR_anom+{a}C"] = f"{c.rr:.3f} ({c.lo:.3f}-{c.hi:.3f})"
+
+    proj = project_warming(m, "anom", [1.0, 2.0, 3.0])
+    proj.to_csv(os.path.join(PROC, "us_projection.csv"), index=False)
+    for _, r in proj.iterrows():
+        res[f"warming+{int(r.delta_degC)}C_extra_deaths_per_year"] = \
+            f"{r.extra_deaths_per_year:.0f} ({r.extra_lo:.0f}-{r.extra_hi:.0f})"
 
     ctrl_path = os.path.join(PROC, "driving_controls.csv")
     if os.path.exists(ctrl_path):

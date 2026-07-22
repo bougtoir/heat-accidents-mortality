@@ -69,10 +69,33 @@ def test_irls_recovers_poisson_slope():
 
 
 def test_result_outputs_finite():
-    for f in ("us_attributable.csv", "us_lag_response.csv"):
+    for f in ("us_attributable.csv", "us_lag_response.csv", "us_projection.csv",
+              "us_subgroup_response.csv", "us_timeofday_response.csv"):
         p = os.path.join(PROC, f)
         if not os.path.exists(p):
             continue
         d = pd.read_csv(p)
         num = d.select_dtypes("number")
         assert np.isfinite(num.values).all()
+
+
+def test_warming_projection_monotone_and_positive():
+    """project_warming should give a positive, delta-increasing extra-death curve
+    for a monotone-increasing heat exposure-response (synthetic check)."""
+    from model import project_warming
+    rng = np.random.default_rng(3)
+    x = _ar1(rng, 4000)
+    cb = DistLagBins(x, [(0, 0), (1, 3), (4, 10)], var_df=4)
+    df = pd.DataFrame({"unit": 1, "date": pd.date_range("2016-01-01", periods=len(x)),
+                       "anom": x, "deaths": 5})
+    idx, lagged = lag_matrix(df, "unit", "date", "anom", cb.maxlag)
+    lagged = lagged[np.argsort(idx)]
+    full = ~np.isnan(lagged).any(axis=1)
+    # positive slope of cumulative response wrt exposure
+    beta = np.linalg.lstsq(cb.cumulative_basis(x[full]), 0.02 * x[full], rcond=None)[0]
+    m = dict(cb=cb, beta=beta, cov=np.eye(len(beta)) * 1e-6,
+             d=df.loc[df.index[full]])
+    proj = project_warming(m, "anom", [1.0, 2.0, 3.0], nsim=50)
+    assert (proj.extra_deaths_per_year > 0).all()
+    assert proj.extra_deaths_per_year.is_monotonic_increasing
+    assert np.isfinite(proj.values.astype(float)).all()

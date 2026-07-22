@@ -19,6 +19,15 @@ spike from short-term mortality displacement (harvesting).
   crash deaths per year and comparison with official CDC direct-heat deaths
   (ICD-10 X30) are in `data/processed/us_attributable.csv` and
   `data/processed/cdc_heat_deaths.csv`.
+- **Mechanism / vulnerability (US)**: the same-day heat excess is graded by
+  road-user exposure (much larger for motorcyclists, pedestrians and cyclists
+  than for enclosed vehicle occupants) and concentrated in the hottest hours of
+  the day — patterns expected from a heat mechanism, not driving volume. See
+  `data/processed/us_subgroup_response.csv` and `us_timeofday_response.csv`.
+- **Warming projection (US)**: applying the anomaly exposure-response to a
+  uniformly warmer daily climate (+1/+2/+3 °C, activity held constant) projects
+  hundreds of additional crash deaths per year per degree
+  (`data/processed/us_projection.csv`); a scenario calculation, not a forecast.
 - **Japan** (NPA accident open data 2019–2024): same-day effect is in the same
   direction but not statistically significant (far fewer deaths → low power);
   see `output/jp_model_summary.txt`.

@@ -93,6 +93,33 @@ def bin_response(m, xhi, xref=0.0):
     return pd.DataFrame(rows, columns=["window", "rr", "lo", "hi"])
 
 
+def project_warming(m, expname, deltas, nsim=1000):
+    """Scenario projection: extra crash deaths if every day's temperature rose by
+    a uniform delta, holding baseline rates and driving activity constant. For day
+    i with observed deaths y_i, expected deaths scale by the cumulative
+    exposure-response ratio exp([B(anom_i+delta) - B(anom_i)] . beta); the extra
+    deaths are y_i * (ratio - 1). NB this is a counterfactual projection, not an
+    observed quantity, and assumes the anomaly response is stable under warming."""
+    rng = np.random.default_rng(SEED)
+    y = m["d"].deaths.values
+    x = m["d"][expname].values
+    nyears = m["d"].date.dt.year.nunique()
+    B0 = m["cb"].cumulative_basis(x)
+    draws = rng.multivariate_normal(m["beta"], m["cov"], size=nsim)
+    rows = []
+    for dlt in deltas:
+        D = m["cb"].cumulative_basis(x + dlt) - B0
+        extra = y * (np.exp(np.clip(D @ m["beta"], -10, 10)) - 1.0)
+        sims = np.array([(y * (np.exp(np.clip(D @ b, -10, 10)) - 1.0)).sum() for b in draws])
+        rows.append({
+            "delta_degC": dlt,
+            "extra_deaths_per_year": round(float(extra.sum() / nyears), 1),
+            "extra_lo": round(float(np.percentile(sims, 2.5) / nyears), 1),
+            "extra_hi": round(float(np.percentile(sims, 97.5) / nyears), 1),
+        })
+    return pd.DataFrame(rows)
+
+
 def attributable(m, expname, ref=0.0, only="hot", nsim=1000):
     rng = np.random.default_rng(SEED)
     y = m["d"].deaths.values

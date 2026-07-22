@@ -8,6 +8,7 @@ all: us japan figures
 ## --- data building (downloads public sources into data/raw) ---
 data_us:
 	$(PY) $(S)/build_fars.py
+	$(PY) $(S)/build_fars_strata.py
 	$(PY) $(S)/build_temperature.py
 	$(PY) $(S)/build_controls.py
 	$(PY) $(S)/build_cdc_heat.py
@@ -18,6 +19,7 @@ data_jp:
 ## --- analysis ---
 us: data_us
 	$(PY) $(S)/analyze_us.py
+	$(PY) $(S)/analyze_us_strata.py
 
 japan: data_jp
 	$(PY) $(S)/analyze_japan.py

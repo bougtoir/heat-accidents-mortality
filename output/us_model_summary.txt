@@ -26,6 +26,9 @@ net_cumRR_anom+3C: 1.015 (1.006-1.024)
 net_cumRR_anom+6C: 1.040 (1.015-1.066)
 net_cumRR_anom+9C: 1.074 (1.015-1.137)
 net_cumRR_anom+12C: 1.116 (1.008-1.236)
+warming+1C_extra_deaths_per_year: 339 (250-428)
+warming+2C_extra_deaths_per_year: 661 (459-864)
+warming+3C_extra_deaths_per_year: 983 (644-1356)
 sameday_RR_+9C_ctrl: 1.162
 sameday_RR_+9C_ctrl_lo: 1.132
 sameday_RR_+9C_ctrl_hi: 1.193
