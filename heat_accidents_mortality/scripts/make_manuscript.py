@@ -8,6 +8,8 @@ and output/ -- nothing is hard-coded. Run `make all` first.
 """
 import os
 import csv
+import re
+import shutil
 import numpy as np
 from docx import Document
 from docx.shared import Inches, Pt, RGBColor
@@ -46,6 +48,7 @@ PROJ = read_csv("us_projection.csv")
 USER = {r["group"]: r for r in SUB if r["dimension"] == "user"}
 AGE = {r["group"]: r for r in SUB if r["dimension"] == "age"}
 PROJ_D = {int(float(r["delta_degC"])): r for r in PROJ}
+TOD_D = {r["hour_band"]: r for r in TOD}
 TOD_MAX = max(TOD, key=lambda r: float(r["sameday_RR_+9C"]))
 cdc_recent = [int(r["heat_deaths_X30"]) for r in CDC if 2016 <= int(r["year"]) <= 2020]
 CDC_MEAN = np.mean(cdc_recent)
@@ -86,7 +89,9 @@ def cite(*keys):
         if k not in _ref_order:
             _ref_order.append(k)
         nums.append(str(_ref_order.index(k) + 1))
-    return "[" + ",".join(nums) + "]"
+    # {..} markers are rendered as Word font superscript by _add_runs (Vancouver:
+    # superscript numerals placed after the punctuation mark).
+    return "{" + ",".join(nums) + "}"
 
 
 # ------------------------------------------------------------------ docx helpers
@@ -100,28 +105,56 @@ def h(doc, text, level=1):
     return p
 
 
+def _add_runs(p, text):
+    """Split text on {n} citation markers and render those as Word font
+    superscript (editable in Word, unlike Unicode superscript glyphs)."""
+    for seg in re.split(r"(\{[^}]+\})", text):
+        if not seg:
+            continue
+        if seg[0] == "{" and seg[-1] == "}":
+            r = p.add_run(seg[1:-1]); r.font.superscript = True
+        else:
+            p.add_run(seg)
+
+
 def para(doc, text, space_after=6):
-    p = doc.add_paragraph(text)
+    p = doc.add_paragraph()
+    _add_runs(p, text)
     p.paragraph_format.space_after = Pt(space_after)
     p.paragraph_format.line_spacing = 2.0
     return p
 
 
+def labelled(doc, label, text, space_after=6, line_spacing=2.0):
+    """Paragraph beginning with a bold run-in label (Lancet semi-structured
+    abstract and Research-in-context panel)."""
+    p = doc.add_paragraph()
+    r = p.add_run(label); r.bold = True
+    _add_runs(p, text)
+    p.paragraph_format.space_after = Pt(space_after)
+    p.paragraph_format.line_spacing = line_spacing
+    return p
+
+
+_EMBED = True  # when False, figures render as legend-only (separate-file submission)
+
+
 def add_figure(doc, img, number, caption, width=5.6):
-    doc.add_paragraph()
-    p = doc.add_paragraph(); p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    p.add_run().add_picture(os.path.join(FIG, img), width=Inches(width))
+    if _EMBED:
+        doc.add_paragraph()
+        p = doc.add_paragraph(); p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        p.add_run().add_picture(os.path.join(FIG, img), width=Inches(width))
     cap = doc.add_paragraph()
     cap.paragraph_format.space_before = Pt(14)
     r = cap.add_run(f"Figure {number}. "); r.bold = True
-    cap.add_run(caption)
+    _add_runs(cap, caption)
     doc.add_paragraph()
 
 
 def add_table(doc, number, title, header, rows):
     cap = doc.add_paragraph(); cap.paragraph_format.space_before = Pt(14)
     r = cap.add_run(f"Table {number}. "); r.bold = True
-    cap.add_run(title)
+    _add_runs(cap, title)
     t = doc.add_table(rows=1, cols=len(header)); t.style = "Table Grid"
     for j, hd in enumerate(header):
         c = t.rows[0].cells[j].paragraphs[0].add_run(hd); c.bold = True
@@ -231,7 +264,10 @@ def tbl5(doc):
                for d in (1, 2, 3)])
 
 
-def build_manuscript():
+def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
+    global _EMBED, _ref_order
+    _EMBED = embed
+    _ref_order = []  # reset Vancouver numbering for each build
     doc = Document(); setup(doc)
 
     t = doc.add_paragraph(); t.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -240,47 +276,82 @@ def build_manuscript():
                   "under-recognised heat illness")
     r.bold = True; r.font.size = Pt(14)
 
-    h(doc, "Abstract", 1)
-    para(doc,
-         "Objective: To test whether days that are hotter than the local seasonal norm "
-         "are associated with higher daily traffic-crash mortality, a pathway through "
-         "which heat-related impairment or undiagnosed heat illness could contribute to "
-         "road deaths without being clinically recorded. "
-         "Design: Time-series analysis of state-day (United States, US) and "
-         "prefecture-day (Japan) panels using quasi-Poisson distributed-lag models of the "
-         "local seasonal temperature anomaly, adjusting for spatial fixed effects, "
-         "region-specific season, long-term trend and day of week. "
-         f"Setting and data: US Fatality Analysis Reporting System (FARS) {cite('fars')} "
-         f"2016-2022 and Japanese National Police Agency (NPA) accident open data {cite('npa')} "
-         "2019-2024, each linked to Global Historical Climatology Network-Daily "
-         f"(GHCN-Daily) temperature {cite('ghcn')}. "
-         "Results: In the US ("
-         f"{int(float(US['total_deaths'])):,} crash deaths), a +9 C anomaly raised same-day "
-         f"crash mortality (rate ratio, RR {rr(US, 'sameday_RR_anom+9C')}; CI, confidence "
-         "interval"
-         "), partly offset by a 1-3 day deficit; the effect was unchanged after adjustment "
-         f"for national vehicle-miles travelled and gasoline supplied (RR "
-         f"{f(CTRL['sameday_RR_anom+9C'])}). The same-day excess was far larger for open-air "
-         f"road users (motorcyclists RR {f(USER['motorcyclist']['sameday_RR_+9C'])}, "
-         f"pedestrians RR {f(USER['pedestrian']['sameday_RR_+9C'])}) than for enclosed "
-         f"vehicle occupants (RR {f(USER['vehicle_occupant']['sameday_RR_+9C'])}) and peaked "
-         "in the hottest hours of the day, consistent with a heat mechanism. Estimated net "
-         "heat-attributable crash deaths were "
-         f"{float(US['net_heat_attributable_per_year']):.0f} per year "
-         f"({f(US['net_heat_attributable_fraction_pct'],2)}%), comparable to the "
-         f"{CDC_MEAN:.0f} officially recorded direct-heat deaths per year (ICD-10 X30, "
-         f"{CDC_YRS}); uniform warming of +1 to +3 C projected "
-         f"{float(PROJ_D[1]['extra_deaths_per_year']):.0f}-"
-         f"{float(PROJ_D[3]['extra_deaths_per_year']):.0f} additional crash deaths per year. "
-         f"In Japan ({int(float(JP['total_deaths'])):,} deaths) the estimate was "
-         "in the same direction on some specifications but imprecise and not statistically "
-         "significant. "
-         "Conclusions: Unusually hot days are associated with an acute excess of US "
-         "traffic-crash deaths of a magnitude similar to all officially recorded direct-heat "
-         "mortality, concentrated in heat-exposed road users, and projected to grow with "
-         "warming, consistent with an under-recognised heat contribution to road deaths. "
-         "The aggregate association does not establish heat illness in any individual crash.",
-         space_after=6)
+    ap = doc.add_paragraph(); ap.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    ap.add_run("[PLACEHOLDER author list \u2014 Given-name Family-name, degrees; ... \u2014 "
+               "replace before submission]")
+    af = doc.add_paragraph(); af.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    af.add_run("[PLACEHOLDER affiliations, numbered to authors]")
+    cp = doc.add_paragraph(); cp.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    cp.add_run("Correspondence to: [PLACEHOLDER corresponding author, address, email, "
+               "ORCID]")
+
+    h(doc, "Summary", 1)
+    labelled(doc, "Background ",
+             "Heat waves are increasing under climate change and ambient heat drives "
+             "mortality. Because driving continues in the heat, some fatal crashes may "
+             "involve heat-related impairment or undiagnosed heat illness that is never "
+             "recorded. We estimated the potential population-level traffic-crash mortality "
+             "burden of such under-recognised heat effects in the USA and Japan.")
+    labelled(doc, "Methods ",
+             "In this ecological time-series study we fitted quasi-Poisson distributed-lag "
+             "models of the local seasonal temperature anomaly to state-day (USA) and "
+             "prefecture-day (Japan) panels, adjusting for spatial, seasonal, "
+             "long-term-trend and day-of-week terms. Data were the US Fatality Analysis "
+             "Reporting System (2016-2022) and Japanese National Police Agency accident open "
+             "data (2019-2024), linked to Global Historical Climatology Network-Daily "
+             "(GHCN-Daily) temperature.")
+    labelled(doc, "Findings ",
+             f"In the USA ({int(float(US['total_deaths'])):,} crash deaths) a +9\u00b0C anomaly "
+             f"raised same-day crash mortality (rate ratio [RR] {rr(US, 'sameday_RR_anom+9C')}), "
+             "unchanged after adjusting for national driving activity (RR "
+             f"{f(CTRL['sameday_RR_anom+9C'])}). The excess was larger "
+             f"for open-air road users (motorcyclists {f(USER['motorcyclist']['sameday_RR_+9C'])}, "
+             f"pedestrians {f(USER['pedestrian']['sameday_RR_+9C'])}) than vehicle occupants "
+             f"({f(USER['vehicle_occupant']['sameday_RR_+9C'])}). Net heat-attributable deaths "
+             f"were {float(US['net_heat_attributable_per_year']):.0f} per year "
+             f"({f(US['net_heat_attributable_fraction_pct'],2)}%), similar to the "
+             f"{CDC_MEAN:.0f} officially recorded direct-heat deaths per year (ICD-10 X30); "
+             "+1 to +3\u00b0C warming projected "
+             f"{float(PROJ_D[1]['extra_deaths_per_year']):.0f}-"
+             f"{float(PROJ_D[3]['extra_deaths_per_year']):.0f} additional deaths per year. In "
+             f"Japan ({int(float(JP['total_deaths'])):,} deaths) the estimate was "
+             "directionally similar but imprecise.")
+    labelled(doc, "Interpretation ",
+             "Unusually hot days are associated with an acute excess of US traffic-crash "
+             "deaths comparable to all recorded direct-heat mortality, concentrated in "
+             "heat-exposed road users and projected to grow with warming. They are "
+             "consistent with an under-recognised heat contribution but cannot establish "
+             "heat illness in any individual crash, and open-air gradients may partly "
+             "reflect weather-related activity.")
+    labelled(doc, "Funding ", "None.")
+
+    h(doc, "Research in context", 1)
+    labelled(doc, "Evidence before this study ",
+             "Ambient heat is a well-established driver of daily mortality, and "
+             "distributed-lag and distributed-lag non-linear models linking temperature to "
+             "death are a mature methodology. Prior work has largely focused on "
+             "cardiovascular, respiratory, and all-cause mortality; heat illness is thought "
+             "to be substantially under-recorded because it is rarely investigated after "
+             "death. Traffic-crash deaths, which seldom undergo a heat-oriented post-mortem "
+             "examination, have received little attention as a possible reservoir of "
+             "unrecognised heat mortality. We are not aware of national population-level "
+             "studies quantifying the acute crash-mortality burden of hotter-than-normal "
+             "days alongside officially recorded direct-heat deaths.")
+    labelled(doc, "Added value of this study ",
+             "Using only public data, we show at the population level that days hotter than "
+             "the local seasonal norm carry an acute excess of US traffic-crash deaths that "
+             "persists after adjustment for national driving activity, is concentrated in "
+             "heat-exposed open-air road users, and is comparable in magnitude to all "
+             "officially recorded direct-heat mortality. We provide scenario projections "
+             "showing this hidden burden would grow under uniform warming, and we report a "
+             "much weaker, imprecise signal in Japan.")
+    labelled(doc, "Implications of all the available evidence ",
+             "The results suggest that routine cause-of-death coding may miss a heat "
+             "contribution to road deaths of societal importance, and that this burden is "
+             "sensitive to future warming. Because the analysis is ecological, it cannot "
+             "attribute any individual crash to heat illness and cannot exclude "
+             "weather-related changes in activity; it motivates individual-level "
+             "investigation, such as heat-aware forensic assessment of crash fatalities.")
 
     h(doc, "Introduction", 1)
     para(doc,
@@ -326,7 +397,9 @@ def build_manuscript():
          "as a mechanistic and vulnerability analysis; and (iii) projected the additional "
          "crash deaths implied by uniform warming of the daily temperature distribution "
          "(+1, +2, +3 C), holding activity and baseline rates constant. All data are public "
-         "and the full pipeline is reproducible from source (see Data availability).")
+         "and the full pipeline is reproducible from source (see Data sharing). Reporting "
+         "follows the Strengthening the Reporting of Observational Studies in Epidemiology "
+         "(STROBE) guideline (checklist provided).")
 
     h(doc, "Results", 1)
     para(doc,
@@ -357,17 +430,23 @@ def build_manuscript():
     add_figure(doc, FIGURES[2][0], 3, FIGURES[2][1])
     tbl2(doc)
     para(doc,
-         "Two features supported a heat mechanism rather than residual driving-activity "
-         "confounding. First, the same-day excess differed sharply by road-user exposure "
-         f"(Fig. 4; Table 4): the effect was small for enclosed, often air-conditioned, "
-         f"vehicle occupants (RR {subrr(USER['vehicle_occupant'])}) but far larger for "
-         f"open-air users -- motorcyclists (RR {subrr(USER['motorcyclist'])}), pedestrians "
-         f"(RR {subrr(USER['pedestrian'])}) and cyclists (RR {subrr(USER['cyclist'])}) -- a "
-         "gradient that tracks direct bodily heat exposure and physical exertion rather than "
-         f"traffic volume {cite('daanen')}. Second, the excess was concentrated in the "
-         f"hottest part of the day: the same-day RR was largest for crashes at "
-         f"{TOD_MAX['hour_band']} h (RR {subrr(TOD_MAX)}) and weakest in the cool morning "
-         "(06-11 h) (Fig. 5).")
+         "Two exploratory analyses were consistent with a heat mechanism, although neither "
+         "can exclude residual confounding. First, the same-day excess differed by "
+         f"road-user exposure (Fig. 4; Table 4): the effect was small for enclosed, often "
+         f"air-conditioned, vehicle occupants (RR {subrr(USER['vehicle_occupant'])}) but "
+         f"larger for open-air users -- motorcyclists (RR {subrr(USER['motorcyclist'])}), "
+         f"pedestrians (RR {subrr(USER['pedestrian'])}) and cyclists (RR "
+         f"{subrr(USER['cyclist'])}) -- a gradient consistent with direct bodily heat "
+         f"exposure and physical exertion {cite('daanen')}, though it could also partly "
+         "reflect greater discretionary open-air travel (motorcycling, cycling, walking) on "
+         "hotter-than-normal days, which our aggregate activity proxies do not capture by "
+         "mode. Second, the excess was largest for crashes in the hottest part of the day "
+         f"({TOD_MAX['hour_band']} h; RR {subrr(TOD_MAX)}) and weakest in the cool morning "
+         f"(06-11 h; RR {subrr(TOD_D['06-11'])}); the overnight band was also elevated "
+         f"(00-05 h; RR {subrr(TOD_D['00-05'])}), so the diurnal pattern is not a clean "
+         "daytime-only gradient (Fig. 5). These road-user, age and time-of-day analyses are "
+         "hypothesis-generating: they involve multiple unadjusted comparisons and are not "
+         "individual-level tests of susceptibility or mechanism.")
     add_figure(doc, FIGURES[3][0], 4, FIGURES[3][1])
     add_figure(doc, FIGURES[4][0], 5, FIGURES[4][1])
     tbl4(doc)
@@ -418,17 +497,20 @@ def build_manuscript():
          "displacement, so the net annual burden is smaller than the same-day spike alone "
          "would imply.")
     para(doc,
-         "Two patterns argue against residual confounding by nice-weather driving and for a "
-         "direct heat mechanism. The excess was strongly graded by bodily heat exposure -- "
-         "minimal for enclosed, frequently air-conditioned vehicle occupants but several-fold "
-         "larger for motorcyclists, pedestrians and cyclists, who are directly exposed and "
-         "often physically exerting -- and it was concentrated in the hottest hours of the "
-         "day. A driving-volume confounder would not produce either gradient, whereas both "
-         "are expected if heat degrades psychomotor and cognitive performance. Applied to a "
-         "warmer mean climate, the same exposure-response implies hundreds of additional US "
-         "crash deaths per year per degree of warming; because these deaths would continue to "
-         "be coded as ordinary crashes, the societal heat burden they represent would remain "
-         "invisible to heat-mortality surveillance.")
+         "Two patterns are consistent with a direct heat mechanism rather than with "
+         "confounding by aggregate driving volume. The excess was graded by bodily heat "
+         "exposure -- minimal for enclosed, frequently air-conditioned vehicle occupants but "
+         "several-fold larger for motorcyclists, pedestrians and cyclists, who are directly "
+         "exposed and often physically exerting -- and it was largest in the hottest hours of "
+         "the day. Both are expected if heat degrades psychomotor and cognitive performance. "
+         "We caution, however, that these gradients are not proof of mechanism: open-air "
+         "travel is itself weather-elastic, so more motorcycling, cycling and walking on "
+         "hotter-than-normal days could inflate the open-air estimates through greater "
+         "exposure rather than physiology, and our activity proxies are national and not "
+         "mode-specific. Applied to a warmer mean climate, the same exposure-response implies "
+         "hundreds of additional US crash deaths per year per degree of warming; because "
+         "these deaths would continue to be coded as ordinary crashes, the societal heat "
+         "burden they represent would remain invisible to heat-mortality surveillance.")
     para(doc,
          "Several limitations apply. First, this is an ecological, population-level "
          "association: it cannot establish that heat caused illness in any specific crash, "
@@ -440,9 +522,14 @@ def build_manuscript():
          "do not pool the two countries. Fifth, the warming projection is a scenario "
          "calculation that holds driving activity, the vehicle fleet and behaviour fixed and "
          "assumes the anomaly response is stable under a warmer mean climate; it should be "
-         "read as illustrative of magnitude, not as a forecast. These results motivate, but "
-         "do not substitute for, individual-level studies linking crash decedents to ambient "
-         "heat and, where available, post-mortem findings.")
+         "read as illustrative of magnitude, not as a forecast. Sixth, the road-user, age "
+         "and time-of-day subgroup analyses are exploratory: they entail multiple "
+         "comparisons without formal adjustment, and the open-air road-user gradient may in "
+         "part reflect weather-related differences in activity rather than physiology. "
+         "Finally, inference rests on a quasi-Poisson dispersion adjustment; residual serial "
+         "correlation could still understate uncertainty. These results motivate, but do not "
+         "substitute for, individual-level studies linking crash decedents to ambient heat "
+         "and, where available, post-mortem findings.")
 
     h(doc, "Conclusion", 1)
     para(doc,
@@ -452,12 +539,37 @@ def build_manuscript():
          "consistent in direction on some specifications but too sparse for a firm "
          "conclusion.")
 
-    h(doc, "Data availability", 1)
+    h(doc, "Contributors", 1)
+    para(doc,
+         "[PLACEHOLDER \u2014 replace before submission.] All authors contributed to the "
+         "study design, data analysis, interpretation and drafting, and approved the final "
+         "manuscript. [Specify each author's contribution and who verified the underlying "
+         "data.]")
+
+    h(doc, "Declaration of interests", 1)
+    para(doc,
+         "[PLACEHOLDER \u2014 replace before submission.] We declare no competing interests.")
+
+    h(doc, "Role of the funding source", 1)
+    para(doc,
+         "[PLACEHOLDER \u2014 replace before submission.] There was no specific funding for "
+         "this study. The corresponding author had full access to all the data and had final "
+         "responsibility for the decision to submit for publication.")
+
+    h(doc, "Use of generative AI", 1)
+    para(doc,
+         "[PLACEHOLDER \u2014 confirm and adapt before submission.] Generative AI assistance "
+         "was used to help develop analysis code and draft text; all methods, results and "
+         "interpretations were verified by the authors, who take full responsibility for the "
+         "content.")
+
+    h(doc, "Data sharing", 1)
     para(doc,
          "All data are public: FARS, GHCN-Daily, CDC WONDER, FHWA/FRED, EIA and the "
-         "Japanese NPA accident open data. Code and the reproduction pipeline (make all) are "
-         "available in the project repository; all reported numbers are regenerated from "
-         "source with no hard-coded values.")
+         "Japanese NPA accident open data (see References for sources). The complete "
+         "analysis code and one-command reproduction pipeline (make all) are openly "
+         "available in the project repository; every reported number, figure and table is "
+         "regenerated from source with no hard-coded values.")
 
     h(doc, "References", 1)
     for i, key in enumerate(_ref_order, 1):
@@ -465,7 +577,7 @@ def build_manuscript():
     missing = set(REF_TEXT) - set(_ref_order)
     assert not missing, f"uncited references: {missing}"
 
-    path = os.path.join(MAN, "heat_crash_mortality.docx")
+    path = os.path.join(MAN, filename)
     doc.save(path); print("wrote", path)
 
 
@@ -491,5 +603,96 @@ def build_tables_docx():
     path = os.path.join(MAN, "tables.docx"); doc.save(path); print("wrote", path)
 
 
+# STROBE (v4) checklist items mapped to where each is addressed in this manuscript.
+STROBE_ITEMS = [
+    ("1a", "Title/abstract: study design in title or abstract", "Title; Summary (Methods)"),
+    ("1b", "Abstract: informative and balanced summary", "Summary (semi-structured)"),
+    ("2", "Background/rationale", "Introduction"),
+    ("3", "Objectives / hypotheses", "Introduction (final sentence)"),
+    ("4", "Study design", "Methods (ecological time-series, quasi-Poisson DLM)"),
+    ("5", "Setting, locations, periods", "Methods (US states 2016-2022; Japan prefectures 2019-2024)"),
+    ("6", "Participants / units of analysis", "Methods (state-day and prefecture-day panels); Table 1"),
+    ("7", "Variables (outcome, exposure, confounders)", "Methods (crash deaths; temperature anomaly; adjustments)"),
+    ("8", "Data sources / measurement", "Methods; Data sharing (FARS, GHCN-Daily, NPA, CDC WONDER, FHWA, EIA)"),
+    ("9", "Bias", "Methods (anomaly design); Discussion (limitations)"),
+    ("10", "Study size", "Table 1 (death counts, years, units)"),
+    ("11", "Quantitative variables handling", "Methods (spline lag windows; anomaly construction)"),
+    ("12", "Statistical methods", "Methods (quasi-Poisson DLM, attributable risk, projections, subgroups)"),
+    ("13", "Descriptive data", "Results (panel sizes); Table 1"),
+    ("14", "Outcome data", "Results; Tables 2-4"),
+    ("15", "Main results (estimates, CIs)", "Results; Tables 2-5; Figures 1-10"),
+    ("16", "Other analyses (subgroups, sensitivity)", "Results (activity controls, road-user/age/time-of-day, projection)"),
+    ("17", "Key results", "Discussion (first paragraph); Conclusion"),
+    ("18", "Limitations", "Discussion (limitations paragraph)"),
+    ("19", "Interpretation", "Discussion; Summary (Interpretation)"),
+    ("20", "Generalisability", "Discussion (ecological scope; US vs Japan)"),
+    ("21", "Funding", "Role of the funding source; Summary (Funding)"),
+]
+
+
+def build_strobe():
+    doc = Document(); setup(doc)
+    doc.add_heading("STROBE checklist \u2014 cross-sectional/ecological time-series study", 1)
+    para(doc, "Strengthening the Reporting of Observational Studies in Epidemiology "
+              "(STROBE). Item numbering follows the STROBE Statement; the third column "
+              "indicates where each item is addressed in the manuscript.")
+    t = doc.add_table(rows=1, cols=3); t.style = "Table Grid"
+    for j, hd in enumerate(("Item", "Recommendation", "Location in manuscript")):
+        run = t.rows[0].cells[j].paragraphs[0].add_run(hd); run.bold = True
+    for item, rec, loc in STROBE_ITEMS:
+        cells = t.add_row().cells
+        cells[0].text = item; cells[1].text = rec; cells[2].text = loc
+    path = os.path.join(MAN, "strobe_checklist.docx"); doc.save(path); print("wrote", path)
+
+
+def build_cover_letter():
+    doc = Document(); setup(doc)
+    para(doc, "[PLACEHOLDER date]")
+    para(doc, "The Editors, The Lancet Planetary Health")
+    para(doc, "Dear Editors,")
+    para(doc,
+         "We submit for your consideration our manuscript, \u201cHotter-than-normal days and "
+         "traffic-crash mortality: a distributed-lag analysis of the United States and "
+         "Japan and the question of under-recognised heat illness\u201d, as an Article.")
+    para(doc,
+         "Using only public data, this ecological, population-level study shows that days "
+         "hotter than the local seasonal norm carry an acute excess of US traffic-crash "
+         "deaths that survives adjustment for national driving activity, is concentrated in "
+         "heat-exposed open-air road users, and is comparable in magnitude to all officially "
+         "recorded direct-heat deaths \u2014 a burden that would be invisible to routine "
+         "cause-of-death surveillance and that our scenario projections suggest would grow "
+         "under warming. We believe this speaks directly to the journal's focus on the "
+         "health consequences of climate change and on under-recognised planetary-health "
+         "burdens.")
+    para(doc,
+         "The manuscript is original, is not under consideration elsewhere, and all authors "
+         "approve submission. All data are public and the complete analysis pipeline is "
+         "openly available and fully reproducible (make all), with no hard-coded results. We "
+         "declare [PLACEHOLDER competing interests]. We suggest the manuscript has not been "
+         "posted to a preprint server [PLACEHOLDER confirm].")
+    para(doc, "We look forward to your assessment.")
+    para(doc, "Yours sincerely,")
+    para(doc, "[PLACEHOLDER corresponding author, on behalf of all authors]")
+    path = os.path.join(MAN, "cover_letter.docx"); doc.save(path); print("wrote", path)
+
+
+def build_submission_figures():
+    """Copy each figure to a submission folder named by figure number (Lancet/EM
+    uploads figures as separate files, not embedded in the manuscript)."""
+    sub = os.path.join(MAN, "submission_figures")
+    os.makedirs(sub, exist_ok=True)
+    for i, (img, _cap) in enumerate(FIGURES, 1):
+        ext = os.path.splitext(img)[1]
+        shutil.copyfile(os.path.join(FIG, img), os.path.join(sub, f"Figure{i}{ext}"))
+        pdf = os.path.splitext(img)[0] + ".pdf"
+        pdf_src = os.path.join(FIG, pdf)
+        if os.path.exists(pdf_src):
+            shutil.copyfile(pdf_src, os.path.join(sub, f"Figure{i}.pdf"))
+    print("wrote", sub, f"({len(FIGURES)} figures)")
+
+
 if __name__ == "__main__":
-    build_manuscript(); build_pptx(); build_tables_docx()
+    build_manuscript()                                              # inline (reading copy)
+    build_manuscript("heat_crash_mortality_submission.docx", embed=False)  # legends-only
+    build_pptx(); build_tables_docx()
+    build_strobe(); build_cover_letter(); build_submission_figures()

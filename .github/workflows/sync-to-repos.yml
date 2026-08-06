@@ -199,9 +199,9 @@ jobs:
           BRANCH_MAP["devin/1784122193-luup-data-policy"]="discharged-secrets-scoping-review"
 
           # ── Heat and traffic-crash mortality (US FARS + Japan NPA, GHCN) ──
-          # Public repo tracks the additional-analysis branch, a strict superset of
-          # devin/1784701414-heat-accidents-mortality (forked from its tip).
-          BRANCH_MAP["devin/1784709452-heat-additional-analysis"]="heat-accidents-mortality"
+          # Track the merged mainline branch (PR #289 and the pre-submission work are
+          # merged into it), so the public repo reproduces the full manuscript.
+          BRANCH_MAP["devin/1784701414-heat-accidents-mortality"]="heat-accidents-mortality"
 
           # ── Subdirectory filter map ──
           # When a branch contains multiple project folders (e.g. branched from
@@ -268,7 +268,7 @@ jobs:
           SUBDIR_MAP["devin/1784122193-luup-data-policy"]="discharged_secrets_ijcip"
           # Publish ONLY the clean, reproducible reanalysis folder (exclude tainted originals)
           SUBDIR_MAP["devin/1784008417-weibull-tb-reproducible-data"]="weibull-clinical-dropout/reanalysis_real"
-          SUBDIR_MAP["devin/1784709452-heat-additional-analysis"]="heat_accidents_mortality"
+          SUBDIR_MAP["devin/1784701414-heat-accidents-mortality"]="heat_accidents_mortality"
 
           # ── File exclusion map ──
           # Space-separated list of file paths (relative to subdir root if
@@ -290,7 +290,7 @@ jobs:
           # in-text numbers and figures remain reproducible from source.
           # No exclusions: the manuscript generator and its DOCX/PPTX/tables outputs
           # are published so the public repo is fully reproducible (make all).
-          EXCLUDE_MAP["devin/1784709452-heat-additional-analysis"]=""
+          EXCLUDE_MAP["devin/1784701414-heat-accidents-mortality"]=""
 
           OWNER="bougtoir"
 
