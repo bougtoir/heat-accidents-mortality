@@ -57,6 +57,20 @@ make manuscript   # build DOCX + editable PPTX (after `make all`)
 make test         # light unit tests
 ```
 
+`make manuscript` writes, under `output/manuscript/`:
+
+- `heat_crash_mortality.docx` — reading copy with figures/tables inline;
+- `heat_crash_mortality_submission.docx` — Lancet-style submission copy (figure
+  **legends only**, figures uploaded separately);
+- `figures.pptx`, `tables.docx` — editable figures/tables;
+- `submission_figures/` — individual `Figure1..N.{png,pdf}` for separate upload;
+- `strobe_checklist.docx`, `cover_letter.docx` — STROBE checklist and cover letter
+  (both contain `[PLACEHOLDER ...]` fields to complete before submission).
+
+The `submission_*` outputs target The Lancet Planetary Health (semi-structured
+250-word summary, Research-in-context panel, superscript Vancouver citations,
+STROBE); author/funding/COI fields are placeholders.
+
 Raw downloads are cached under `data/raw/`; re-running skips existing files.
 
 ## Layout
