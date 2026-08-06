@@ -14,6 +14,7 @@ import numpy as np
 from docx import Document
 from docx.shared import Inches, Pt, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.oxml import parse_xml
 from pptx import Presentation
 from pptx.util import Inches as PInches, Pt as PPt
 
@@ -165,6 +166,38 @@ def add_table(doc, number, title, header, rows):
     doc.add_paragraph()
 
 
+# ------------------------------------------------------------------ Word equations
+# Native Office Math (OMML) so the equations are editable in Word, not LaTeX/images.
+_M = "http://schemas.openxmlformats.org/officeDocument/2006/math"
+
+
+def _mr(t):
+    return f'<m:r><m:t xml:space="preserve">{t}</m:t></m:r>'
+
+
+def _msub(base, sub):
+    return f"<m:sSub><m:e>{base}</m:e><m:sub>{sub}</m:sub></m:sSub>"
+
+
+def _mbar(inner):
+    return ('<m:bar><m:barPr><m:pos m:val="top"/></m:barPr>'
+            f"<m:e>{inner}</m:e></m:bar>")
+
+
+def _mnary(sub, body):
+    return ('<m:nary><m:naryPr><m:chr m:val="\u2211"/><m:limLoc m:val="subSup"/>'
+            '<m:supHide m:val="1"/></m:naryPr>'
+            f"<m:sub>{sub}</m:sub><m:sup/><m:e>{body}</m:e></m:nary>")
+
+
+def add_equation(doc, inner):
+    """Insert a centred, Word-native (OMML) display equation."""
+    p = doc.add_paragraph(); p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    xml = (f'<m:oMathPara xmlns:m="{_M}"><m:oMath>{inner}</m:oMath></m:oMathPara>')
+    p._p.append(parse_xml(xml))
+    return p
+
+
 # figures/tables metadata (used by both manuscript and pptx/tables docx)
 FIGURES = [
     ("fig1_absolute_exposure_response.png",
@@ -183,7 +216,7 @@ FIGURES = [
     ("fig_us_roaduser.png",
      "United States same-day rate ratio of crash death for a +9 C anomaly by road-user "
      "type. Open-air users (motorcyclists, pedestrians, cyclists) show much larger heat "
-     "effects than enclosed, often air-conditioned, vehicle occupants -- a gradient that "
+     "effects than enclosed, often air-conditioned, vehicle occupants\u2014a gradient that "
      "tracks direct heat exposure rather than driving volume."),
     ("fig_us_timeofday.png",
      "United States same-day rate ratio of crash death for a +9 C anomaly by crash hour of "
@@ -230,7 +263,7 @@ def tbl2(doc):
 
 
 def tbl3(doc):
-    add_table(doc, 3, "United States net heat-attributable crash deaths versus officially recorded direct-heat deaths.",
+    add_table(doc, 4, "United States net heat-attributable crash deaths versus officially recorded direct-heat deaths.",
               ["Quantity", "Estimate"],
               [["Net heat-attributable crash deaths / year", f"{float(US['net_heat_attributable_per_year']):.0f}"],
                ["Attributable fraction (%)", f(US['net_heat_attributable_fraction_pct'], 2)],
@@ -242,7 +275,7 @@ def subrr(d):
 
 
 def tbl4(doc):
-    add_table(doc, 4, "United States same-day rate ratio of crash death for a +9 C anomaly, "
+    add_table(doc, 3, "United States same-day rate ratio of crash death for a +9 C anomaly, "
               "by road-user type and age band (vulnerability analysis).",
               ["Subgroup", "Crash deaths", "Same-day RR (95% CI)"],
               [["Vehicle occupant", f"{int(USER['vehicle_occupant']['deaths']):,}", subrr(USER['vehicle_occupant'])],
@@ -356,7 +389,7 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
     h(doc, "Introduction", 1)
     para(doc,
          "Heat waves are becoming more frequent under climate change, and ambient heat is "
-         f"an established driver of mortality {cite('lancet','basu')}. Occupational and driving activity "
+         f"an established driver of mortality.{cite('lancet','basu')} Occupational and driving activity "
          "do not stop during heat, so some fatal accidents plausibly involve heat-related "
          "impairment or frank heat illness. Traffic-crash deaths are of particular interest "
          "because decedents rarely undergo the post-mortem assessment that would identify a "
@@ -365,32 +398,51 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
          "local seasonal norm carry excess traffic-crash mortality, and how the magnitude "
          "compares with officially recorded direct-heat deaths. This is an ecological, "
          "population-level study whose aim is to gauge the potential societal burden of "
-         "under-recognised heat illness -- the deaths that would be missing from official "
-         "heat statistics -- rather than to diagnose heat illness in any individual crash.")
+         "under-recognised heat illness\u2014the deaths that would be missing from official "
+         "heat statistics\u2014rather than to diagnose heat illness in any individual crash.")
 
     h(doc, "Methods", 1)
     para(doc,
-         "We built daily panels of traffic-crash deaths by US state (FARS, 2016-2022) "
-         f"{cite('fars')} and by Japanese prefecture (NPA accident open data, 2019-2024) "
-         f"{cite('npa')}. Daily mean temperature was derived from GHCN-Daily stations "
-         f"{cite('ghcn')} as the mean of TMAX and TMIN, aggregated to each spatial unit from the "
-         "nearest reporting stations. For each unit we estimated a cyclic day-of-year "
-         "climatology and defined the temperature anomaly as the observed minus the "
-         "climatological temperature.")
+         "We built daily panels of traffic-crash deaths by US state (FARS, 2016-2022)"
+         f"{cite('fars')} and by Japanese prefecture (NPA accident open data, 2019-2024)."
+         f"{cite('npa')} Daily mean temperature was taken from GHCN-Daily stations"
+         f"{cite('ghcn')} as the mean of TMAX and TMIN, aggregated to each spatial unit from "
+         "its nearest reporting stations. For every unit we estimated a cyclic day-of-year "
+         "climatology and defined the temperature anomaly as the observed temperature minus "
+         "that climatology,", space_after=2)
+    add_equation(doc,
+                 _msub(_mr("A"), _mr("u,t")) + _mr(" = ") + _msub(_mr("T"), _mr("u,t"))
+                 + _mr(" \u2212 ") + _msub(_mbar(_mr("T")), _mr("u")) + _mr("(")
+                 + _msub(_mr("d"), _mr("t")) + _mr(")"))
     para(doc,
-         "Because absolute temperature is strongly confounded by the seasonal cycle of "
-         "driving exposure, our primary model used the anomaly. We fitted quasi-Poisson "
-         f"distributed-lag models {cite('dlnm')} in which the exposure entered through a "
-         "constant-free natural cubic spline within three lag windows (same-day, 1-3 days, "
-         "4-10 days), adjusting for spatial fixed effects, region-specific season (natural "
-         "spline of day of year), a long-term time trend and day of week. Overdispersion "
-         "was accommodated with a quasi-Poisson dispersion parameter. Net heat-attributable "
-         f"deaths were computed by the method of Gasparrini and Leone {cite('attrib')} with Monte "
-         "Carlo (MC) confidence intervals (CIs). As a sensitivity analysis for the US we added national "
-         f"vehicle-miles travelled (VMT) {cite('fhwa')} and finished-motor-gasoline product supplied "
+         "for the anomaly A of spatial unit u on day t, where T is the observed daily mean "
+         "temperature and the barred T is the day-of-year climatology d(t) for that unit.",
+         space_after=6)
+    para(doc,
+         "Absolute temperature is strongly confounded by the seasonal cycle of driving "
+         "exposure, so our primary model used the anomaly. We fitted a quasi-Poisson "
+         f"distributed-lag model{cite('dlnm')} of the form", space_after=2)
+    add_equation(doc,
+                 _mr("log E(") + _msub(_mr("Y"), _mr("u,t")) + _mr(") = ")
+                 + _mnary(_mr("k"), _msub(_mr("f"), _mr("k")) + _mr("(")
+                          + _msub(_mr("A"), _mr("u,t")) + _mr(")"))
+                 + _mr(" + ") + _msub(_mr("\u03b1"), _mr("u"))
+                 + _mr(" + ") + _msub(_mr("s"), _mr("r(u)")) + _mr("(")
+                 + _msub(_mr("d"), _mr("t")) + _mr(")")
+                 + _mr(" + h(t) + ") + _msub(_mr("\u03b4"), _mr("dow(t)")))
+    para(doc,
+         "where Y is the daily crash-death count, the f\u2096 are constant-free natural cubic "
+         "splines of the anomaly within three lag windows (same day, 1-3 days, 4-10 days) "
+         "summed over k, \u03b1\u1d64 are spatial fixed effects, s is a region-specific cyclic "
+         "seasonal spline of day of year, h a long-term time trend and \u03b4 a day-of-week "
+         "effect. Overdispersion was handled with a quasi-Poisson dispersion parameter. "
+         "Net heat-attributable deaths were computed by "
+         f"the method of Gasparrini and Leone{cite('attrib')} with Monte Carlo (MC) confidence "
+         "intervals (CIs). As a sensitivity analysis for the US we added national "
+         f"vehicle-miles travelled (VMT){cite('fhwa')} and finished-motor-gasoline product supplied"
          f"{cite('eia')} as activity proxies. Officially recorded direct-heat deaths "
          "(International Classification of Diseases, 10th revision [ICD-10] code X30) were "
-         f"obtained from CDC WONDER {cite('cdc')}. In three further US analyses we "
+         f"obtained from CDC WONDER.{cite('cdc')} In three further US analyses we "
          "(i) refitted the same-day model within crash-hour bands to test whether the excess "
          "concentrates in the hottest hours; (ii) refitted it by road-user type (vehicle "
          "occupant, motorcyclist, pedestrian, cyclist) and age band from FARS person records, "
@@ -432,15 +484,18 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
     para(doc,
          "Two exploratory analyses were consistent with a heat mechanism, although neither "
          "can exclude residual confounding. First, the same-day excess differed by "
-         f"road-user exposure (Fig. 4; Table 4): the effect was small for enclosed, often "
+         f"road-user exposure (Fig. 4; Table 3): the effect was small for enclosed, often "
          f"air-conditioned, vehicle occupants (RR {subrr(USER['vehicle_occupant'])}) but "
-         f"larger for open-air users -- motorcyclists (RR {subrr(USER['motorcyclist'])}), "
+         f"larger for open-air users\u2014motorcyclists (RR {subrr(USER['motorcyclist'])}), "
          f"pedestrians (RR {subrr(USER['pedestrian'])}) and cyclists (RR "
-         f"{subrr(USER['cyclist'])}) -- a gradient consistent with direct bodily heat "
-         f"exposure and physical exertion {cite('daanen')}, though it could also partly "
+         f"{subrr(USER['cyclist'])})\u2014a gradient consistent with direct bodily heat "
+         f"exposure and physical exertion,{cite('daanen')} though it could also partly "
          "reflect greater discretionary open-air travel (motorcycling, cycling, walking) on "
          "hotter-than-normal days, which our aggregate activity proxies do not capture by "
-         "mode. Second, the excess was largest for crashes in the hottest part of the day "
+         "mode. Across age bands the excess was of similar size (age <25 y RR "
+         f"{subrr(AGE['<25'])}; 25-64 y RR {subrr(AGE['25-64'])}; 65+ y RR "
+         f"{subrr(AGE['65+'])}; Table 3), giving no clear age gradient. Second, the excess "
+         "was largest for crashes in the hottest part of the day "
          f"({TOD_MAX['hour_band']} h; RR {subrr(TOD_MAX)}) and weakest in the cool morning "
          f"(06-11 h; RR {subrr(TOD_D['06-11'])}); the overnight band was also elevated "
          f"(00-05 h; RR {subrr(TOD_D['00-05'])}), so the diurnal pattern is not a clean "
@@ -455,18 +510,18 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
          f"{float(US['net_heat_attributable_per_year']):.0f} per year (95% CI "
          f"{float(US['net_heat_attributable_lo'])/float(US['years']):.0f}-"
          f"{float(US['net_heat_attributable_hi'])/float(US['years']):.0f}), an attributable "
-         f"fraction of {f(US['net_heat_attributable_fraction_pct'],2)}% (Fig. 6; Table 3). This is of "
+         f"fraction of {f(US['net_heat_attributable_fraction_pct'],2)}% (Fig. 6; Table 4). This is of "
          f"the same order as the {CDC_MEAN:.0f} officially recorded direct-heat deaths per "
-         f"year (ICD-10 X30, {CDC_YRS}; Fig. 7), so a heat contribution to crash deaths of a "
-         "magnitude comparable to all recorded direct-heat mortality would be entirely "
-         "absent from cause-of-death statistics.")
+         f"year (ICD-10 X30, {CDC_YRS}; Fig. 7), so a heat contribution to road deaths on the "
+         "scale of all recorded direct-heat mortality could go unrecorded in cause-of-death "
+         "statistics.")
     add_figure(doc, FIGURES[5][0], 6, FIGURES[5][1])
     add_figure(doc, FIGURES[6][0], 7, FIGURES[6][1])
     tbl3(doc)
     para(doc,
          "To gauge the trajectory under continued warming, we applied the estimated anomaly "
          "exposure-response to uniformly warmer daily temperatures, holding driving activity "
-         f"and baseline rates constant {cite('ipcc')}. A uniform +1 C shift projected "
+         f"and baseline rates constant.{cite('ipcc')} A uniform +1 C shift projected "
          f"{float(PROJ_D[1]['extra_deaths_per_year']):.0f} additional US crash deaths per "
          f"year (95% CI {float(PROJ_D[1]['extra_lo']):.0f}-{float(PROJ_D[1]['extra_hi']):.0f}), "
          f"rising to {float(PROJ_D[3]['extra_deaths_per_year']):.0f} "
@@ -489,21 +544,22 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
     h(doc, "Discussion", 1)
     para(doc,
          "Days hotter than the local seasonal norm are associated with an acute, same-day "
-         "excess of US traffic-crash deaths that is robust to activity confounding and is "
-         "comparable in magnitude to all officially recorded direct-heat mortality. This is "
+         "excess of US traffic-crash deaths that is not explained by aggregate driving "
+         "activity and is comparable in magnitude to all officially recorded direct-heat "
+         "mortality. This is "
          "consistent with the hypothesis that heat-related impairment and under-recognised "
          "heat illness contribute to road deaths without appearing in cause-of-death data. "
          "The 1-3 day deficit indicates that part of the acute excess reflects short-term "
          "displacement, so the net annual burden is smaller than the same-day spike alone "
          "would imply.")
     para(doc,
-         "Two patterns are consistent with a direct heat mechanism rather than with "
-         "confounding by aggregate driving volume. The excess was graded by bodily heat "
-         "exposure -- minimal for enclosed, frequently air-conditioned vehicle occupants but "
+         "Two features of the data point towards a direct heat effect rather than "
+         "confounding by overall driving volume. The excess was graded by bodily heat "
+         "exposure\u2014minimal for enclosed, frequently air-conditioned vehicle occupants but "
          "several-fold larger for motorcyclists, pedestrians and cyclists, who are directly "
-         "exposed and often physically exerting -- and it was largest in the hottest hours of "
-         "the day. Both are expected if heat degrades psychomotor and cognitive performance. "
-         "We caution, however, that these gradients are not proof of mechanism: open-air "
+         "exposed and often physically exerting\u2014and it was largest in the hottest hours of "
+         "the day. Both are what one would expect if heat degrades psychomotor and cognitive "
+         "performance. These gradients are not proof of mechanism, however: open-air "
          "travel is itself weather-elastic, so more motorcycling, cycling and walking on "
          "hotter-than-normal days could inflate the open-air estimates through greater "
          "exposure rather than physiology, and our activity proxies are national and not "
@@ -599,7 +655,7 @@ def build_pptx():
 def build_tables_docx():
     doc = Document(); setup(doc)
     doc.add_heading("Tables (editable)", 1)
-    tbl1(doc); tbl2(doc); tbl3(doc); tbl4(doc); tbl5(doc)
+    tbl1(doc); tbl2(doc); tbl4(doc); tbl3(doc); tbl5(doc)  # display order 1,2,3,4,5
     path = os.path.join(MAN, "tables.docx"); doc.save(path); print("wrote", path)
 
 
@@ -691,8 +747,35 @@ def build_submission_figures():
     print("wrote", sub, f"({len(FIGURES)} figures)")
 
 
+def build_submission_zip():
+    """Bundle the complete submission package into a single zip for delivery."""
+    stage = os.path.join(MAN, "submission_package")
+    if os.path.exists(stage):
+        shutil.rmtree(stage)
+    os.makedirs(stage)
+    files = [
+        "heat_crash_mortality_submission.docx",  # main text, legends only
+        "tables.docx",
+        "figures.pptx",
+        "strobe_checklist.docx",
+        "cover_letter.docx",
+    ]
+    for name in files:
+        src = os.path.join(MAN, name)
+        if os.path.exists(src):
+            shutil.copyfile(src, os.path.join(stage, name))
+    sub_src = os.path.join(MAN, "submission_figures")
+    if os.path.isdir(sub_src):
+        shutil.copytree(sub_src, os.path.join(stage, "figures"))
+    zip_base = os.path.join(MAN, "submission_package")
+    shutil.make_archive(zip_base, "zip", stage)
+    shutil.rmtree(stage)
+    print("wrote", zip_base + ".zip")
+
+
 if __name__ == "__main__":
     build_manuscript()                                              # inline (reading copy)
     build_manuscript("heat_crash_mortality_submission.docx", embed=False)  # legends-only
     build_pptx(); build_tables_docx()
     build_strobe(); build_cover_letter(); build_submission_figures()
+    build_submission_zip()
