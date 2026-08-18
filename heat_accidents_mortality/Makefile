@@ -1,7 +1,7 @@
 PY = python3
 S  = scripts
 
-.PHONY: all us japan figures clean data_us data_jp
+.PHONY: all us japan figures clean data_us data_jp manuscript test aap
 
 all: us japan figures
 
@@ -31,6 +31,9 @@ figures:
 
 manuscript:
 	$(PY) $(S)/make_manuscript.py
+
+aap: manuscript
+	$(PY) $(S)/make_aap_submission.py
 
 test:
 	$(PY) -m pytest -q tests

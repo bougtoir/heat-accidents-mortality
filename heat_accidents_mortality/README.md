@@ -54,6 +54,7 @@ export CENSUS_API_KEY=...   # for US county population
 export EIA_API_KEY=...      # for US gasoline (sensitivity only)
 make all          # build data, fit US + Japan models, make figures
 make manuscript   # build DOCX + editable PPTX (after `make all`)
+make aap          # build Accident Analysis & Prevention submission package
 make test         # light unit tests
 ```
 
@@ -70,6 +71,23 @@ make test         # light unit tests
 The `submission_*` outputs target The Lancet Planetary Health (semi-structured
 250-word summary, Research-in-context panel, superscript Vancouver citations,
 STROBE); author/funding/COI fields are placeholders.
+
+|`make aap` produces the Accident Analysis & Prevention submission package under
+`output/manuscript/`:
+
+- `heat_crash_mortality_aap.docx` — main manuscript with inline figures/tables,
+  unstructured abstract, keywords, numbered sections 1-5, and bracketed
+  Vancouver-style citations;
+- `heat_crash_mortality_aap_legends.docx` — optional legends-only version;
+- `aap_highlights.docx` — 3-5 bullet highlights (<=85 characters each);
+- `aap_cover_letter.docx` — cover letter addressed to *Accident Analysis &
+  Prevention*;
+- `aap_submission_figures/` — separate `Figure1..N.{png,pdf}` files;
+- `aap_submission_package.zip` — bundle of the above plus `tables.docx`,
+  `figures.pptx` and `strobe_checklist.docx`.
+
+All numbers, figures and tables are produced by the existing pipeline; the AAP
+script re-uses `make_manuscript.py` and only reformats text and citations.
 
 Raw downloads are cached under `data/raw/`; re-running skips existing files.
 
