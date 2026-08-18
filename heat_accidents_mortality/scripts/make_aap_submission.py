@@ -54,7 +54,7 @@ The Editors, Accident Analysis & Prevention
 
 Dear Editors,
 
-We submit for your consideration our manuscript, "Ambient heat as an under-recognised risk factor for US traffic-crash mortality: a distributed-lag analysis with an exploratory Japan comparison", as a Research Article.
+We submit for your consideration our manuscript, "Ambient heat as an under-recognised risk factor for US traffic-crash mortality: a distributed-lag analysis with road-safety implications", as a Research Article.
 
 Climate change is increasing the frequency of dangerously hot days, and recent systematic reviews and city-level analyses have linked higher ambient temperatures to increased road traffic accidents and injuries. Using only public data, this ecological time-series study extends that evidence to a national US crash-mortality burden: days hotter than the local seasonal norm carry an acute excess of US traffic-crash deaths. The excess survives adjustment for national driving activity, is concentrated in heat-exposed open-air road users—motorcyclists, pedestrians and cyclists—and is comparable in magnitude to all officially recorded direct-heat deaths (ICD-10 X30). Scenario projections suggest this burden would grow under uniform warming. Because these deaths continue to be coded as ordinary crashes, the heat contribution remains invisible to both heat-mortality surveillance and road-safety statistics, suggesting an uncounted opportunity for targeted prevention.
 

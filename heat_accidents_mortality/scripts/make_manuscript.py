@@ -308,7 +308,7 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
 
     t = doc.add_paragraph(); t.alignment = WD_ALIGN_PARAGRAPH.CENTER
     r = t.add_run("Ambient heat as an under-recognised risk factor for US traffic-crash "
-                  "mortality: a distributed-lag analysis with an exploratory Japan comparison")
+                  "mortality: a distributed-lag analysis with road-safety implications")
     r.bold = True; r.font.size = Pt(14)
 
     ap = doc.add_paragraph(); ap.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -587,9 +587,10 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
          "vehicle failure or road conditions; the possibility that ambient heat impairs "
          "psychomotor or cognitive performance is rarely considered. Integrating "
          "temperature forecasts into crash-prevention messaging and ensuring heat-health "
-         "plans reach outdoor workers and commuters could reduce a burden that is currently "
-         "invisible to both heat-mortality and road-safety surveillance, though intervention "
-         "studies are needed to test whether such heat-aware measures reduce crash risk.")
+         "plans reach outdoor workers and commuters is consistent with a Safe System approach "
+         "to environmental risk and could reduce a burden that is currently invisible to both "
+         "heat-mortality and road-safety surveillance, though intervention studies are needed to "
+         "test whether such heat-aware measures reduce crash risk.")
     para(doc,
          "Several limitations apply. First, this is an ecological, population-level "
          "association: it cannot establish that heat caused illness in any specific crash, "
