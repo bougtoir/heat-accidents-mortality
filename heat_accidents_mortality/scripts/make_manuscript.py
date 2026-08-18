@@ -388,8 +388,10 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
 
     h(doc, "Introduction", 1)
     para(doc,
-         "Heat waves are becoming more frequent under climate change, and ambient heat is "
-         f"an established driver of mortality.{cite('lancet','basu')} Recent syntheses also link higher ambient "
+         "Road traffic crashes are a leading cause of preventable death, and climate change "
+         "is adding a heat-related layer of risk. Heat waves are becoming more frequent, and "
+         "ambient heat is an established driver of mortality"
+         f".{cite('lancet','basu')} Recent syntheses also link higher ambient "
          f"temperature to increased road traffic accidents and injuries.{cite('liang2022','liang2021_aap')} Occupational and driving activity "
          "do not stop during heat, so some fatal accidents plausibly involve heat-related "
          "impairment or overt heat illness. Traffic-crash deaths are of particular interest "
