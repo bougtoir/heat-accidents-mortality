@@ -336,12 +336,12 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
              f"was associated with higher same-day crash mortality, RR {rr(US, 'sameday_RR_anom+9C')}, "
              "essentially unchanged after adjusting for driving activity (RR "
              f"{f(CTRL['sameday_RR_anom+9C'])}). The excess was larger "
-             f"for open-air users (motorcyclists {f(USER['motorcyclist']['sameday_RR_+9C'])}, "
-             f"pedestrians {f(USER['pedestrian']['sameday_RR_+9C'])}) than vehicle occupants "
-             f"({f(USER['vehicle_occupant']['sameday_RR_+9C'])}). Net heat-attributable deaths "
+             f"for open-air users (motorcyclists RR {f(USER['motorcyclist']['sameday_RR_+9C'])}, "
+             f"pedestrians RR {f(USER['pedestrian']['sameday_RR_+9C'])}) than vehicle occupants "
+             f"(RR {f(USER['vehicle_occupant']['sameday_RR_+9C'])}). Net heat-attributable deaths "
              f"were {float(US['net_heat_attributable_per_year']):.0f} per year "
              f"({f(US['net_heat_attributable_fraction_pct'],2)}%), similar to "
-             f"{CDC_MEAN:.0f} officially recorded direct-heat deaths (ICD-10 X30); "
+             f"{CDC_MEAN:.0f} recorded direct-heat deaths (ICD-10 X30); "
              "+1 to +3\u00b0C warming projected "
              f"{float(PROJ_D[1]['extra_deaths_per_year']):.0f}-"
              f"{float(PROJ_D[3]['extra_deaths_per_year']):.0f} additional deaths per year. "
@@ -506,8 +506,8 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
          "hypothesis-generating: they involve multiple unadjusted comparisons and are not "
          "individual-level tests of susceptibility or mechanism.")
     add_figure(doc, FIGURES[3][0], 4, FIGURES[3][1])
-    add_figure(doc, FIGURES[4][0], 5, FIGURES[4][1])
     tbl4(doc)
+    add_figure(doc, FIGURES[4][0], 5, FIGURES[4][1])
     para(doc,
          "Net heat-attributable crash deaths were "
          f"{float(US['net_heat_attributable_per_year']):.0f} per year (95% CI "
@@ -519,8 +519,8 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
          "scale of all recorded direct-heat mortality could go unrecorded in cause-of-death "
          "statistics.")
     add_figure(doc, FIGURES[5][0], 6, FIGURES[5][1])
-    add_figure(doc, FIGURES[6][0], 7, FIGURES[6][1])
     tbl3(doc)
+    add_figure(doc, FIGURES[6][0], 7, FIGURES[6][1])
     para(doc,
          "To gauge the trajectory under continued warming, we applied the estimated anomaly "
          "exposure-response to uniformly warmer daily temperatures, holding driving activity "
