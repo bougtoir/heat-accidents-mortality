@@ -41,10 +41,11 @@ import make_manuscript as mm  # noqa: E402
 AAP_KEYWORDS = "heat; traffic crash; mortality; climate change; distributed-lag model; road safety"
 
 HIGHLIGHTS = [
-    "Hotter-than-normal days are linked to same-day US traffic-crash mortality.",
-    "The excess is comparable in magnitude to all recorded direct-heat deaths.",
-    "Open-air road users show the largest heat-attributable excess risk.",
+    "Hotter-than-normal days are linked to same-day US traffic-crash deaths.",
+    "The excess is comparable to all officially recorded direct-heat deaths.",
+    "Motorcyclists, pedestrians and cyclists face the largest heat-attributable risk.",
     "Uniform +1 to +3 °C warming would add hundreds of deaths per year.",
+    "Heat-aware road safety could target an uncounted climate-sensitive burden.",
 ]
 
 AAP_COVER = """[PLACEHOLDER date]
@@ -53,9 +54,11 @@ The Editors, Accident Analysis & Prevention
 
 Dear Editors,
 
-We submit for your consideration our manuscript, "Hotter-than-normal days and traffic-crash mortality: a distributed-lag analysis of the United States and Japan and the question of under-recognised heat illness", as a Research Article.
+We submit for your consideration our manuscript, "Ambient heat as an under-recognised risk factor for US traffic-crash mortality: a distributed-lag analysis with an exploratory Japan comparison", as a Research Article.
 
-Using only public data, this ecological time-series study shows that days hotter than the local seasonal norm carry an acute excess of US traffic-crash deaths. The excess survives adjustment for national driving activity, is concentrated in heat-exposed open-air road users (motorcyclists, pedestrians and cyclists), and is comparable in magnitude to all officially recorded direct-heat deaths (ICD-10 X30). Scenario projections suggest this burden would grow under uniform warming. These findings are directly relevant to the journal's scope of transportation-accident injury and the environmental and human factors that influence crash occurrence and severity.
+Climate change is increasing the frequency of dangerously hot days, yet the road safety field has paid little attention to ambient heat as a possible contributor to fatal crashes. Using only public data, this ecological time-series study shows that days hotter than the local seasonal norm carry an acute excess of US traffic-crash deaths. The excess survives adjustment for national driving activity, is concentrated in heat-exposed open-air road users—motorcyclists, pedestrians and cyclists—and is comparable in magnitude to all officially recorded direct-heat deaths (ICD-10 X30). Scenario projections suggest this burden would grow under uniform warming. Because these deaths continue to be coded as ordinary crashes, the heat contribution remains invisible to both heat-mortality surveillance and road-safety statistics, suggesting an uncounted opportunity for targeted prevention.
+
+We believe this work is a strong fit for Accident Analysis & Prevention: it addresses the journal's core scope of transportation accident injury and the environmental and human factors that influence crash occurrence and severity, and it offers a concrete, actionable implication for heat-aware road safety messaging and climate adaptation.
 
 The manuscript is original, is not under consideration elsewhere, and all authors approve submission. All data are public and the complete analysis pipeline is openly available and fully reproducible (make all for data and figures, then make aap for the manuscript and submission package), with no hard-coded results. We declare [PLACEHOLDER competing interests]. We confirm [PLACEHOLDER preprint status].
 

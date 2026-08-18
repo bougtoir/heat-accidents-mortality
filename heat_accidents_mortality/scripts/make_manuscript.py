@@ -305,9 +305,8 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
     doc = Document(); setup(doc)
 
     t = doc.add_paragraph(); t.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    r = t.add_run("Hotter-than-normal days and traffic-crash mortality: a distributed-lag "
-                  "analysis of the United States and Japan and the question of "
-                  "under-recognised heat illness")
+    r = t.add_run("Ambient heat as an under-recognised risk factor for US traffic-crash "
+                  "mortality: a distributed-lag analysis with an exploratory Japan comparison")
     r.bold = True; r.font.size = Pt(14)
 
     ap = doc.add_paragraph(); ap.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -345,15 +344,17 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
              f"{CDC_MEAN:.0f} officially recorded direct-heat deaths (ICD-10 X30); "
              "+1 to +3\u00b0C warming projected "
              f"{float(PROJ_D[1]['extra_deaths_per_year']):.0f}-"
-             f"{float(PROJ_D[3]['extra_deaths_per_year']):.0f} additional deaths per year. In "
-             f"Japan ({int(float(JP['total_deaths'])):,} deaths) the data were too sparse for a precise estimate.")
+             f"{float(PROJ_D[3]['extra_deaths_per_year']):.0f} additional deaths per year. "
+             f"An exploratory Japan comparison ({int(float(JP['total_deaths'])):,} deaths) "
+             "found the data too sparse for a precise estimate.")
     labelled(doc, "Interpretation ",
              "Unusually hot days are associated with an acute excess of US traffic-crash "
              "deaths comparable to all recorded direct-heat mortality, concentrated in "
              "heat-exposed road users and projected to grow with warming. This is "
              "consistent with an under-recognised heat contribution, but the study cannot establish "
              "heat illness in any individual crash and the open-air gradient may partly "
-             "reflect weather-related activity.")
+             "reflect weather-related activity. The findings suggest heat-aware road safety "
+             "and climate adaptation planning could address an uncounted burden.")
     labelled(doc, "Funding ", "None.")
 
     h(doc, "Research in context", 1)
@@ -397,7 +398,11 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
          "compares with officially recorded direct-heat deaths. This is an ecological, "
          "population-level study whose aim is to gauge the potential societal burden of "
          "under-recognised heat illness\u2014the deaths that would be missing from official "
-         "heat statistics\u2014rather than to diagnose heat illness in any individual crash.")
+         "heat statistics\u2014rather than to diagnose heat illness in any individual crash. "
+         "If population-level heat contributes to road deaths, heat-aware road safety "
+         "messaging and occupational protections for outdoor riders and drivers could "
+         "reduce a burden currently invisible to both heat-mortality and road-safety "
+         "surveillance.")
 
     h(doc, "Methods", 1)
     para(doc,
@@ -528,6 +533,7 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
          "assume the anomaly response is stable under a warmer mean climate.")
     add_figure(doc, FIGURES[7][0], 8, FIGURES[7][1])
     tbl5(doc)
+    h(doc, "Exploratory Japan comparison", 2)
     para(doc,
          f"In Japan ({int(float(JP['total_deaths'])):,} crash deaths over "
          f"{int(float(JP['years']))} years) the anomaly exposure-response was imprecise, with "
@@ -566,6 +572,19 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
          "hundreds of additional US crash deaths per year per degree of warming; because "
          "these deaths would continue to be coded as ordinary crashes, the societal heat "
          "burden they represent would remain uncounted by heat-mortality surveillance.")
+    h(doc, "Implications for road safety", 2)
+    para(doc,
+         "These results point to practical implications for road safety and climate "
+         "adaptation. Because the same-day excess was largest among open-air road users "
+         "and in the hottest hours, heat warnings and travel advice could be targeted at "
+         "motorcyclists, cyclists, pedestrians and outdoor delivery riders during hot "
+         "periods. Road safety agencies typically classify fatal crashes by driver error, "
+         "vehicle failure or road conditions; the possibility that ambient heat impairs "
+         "psychomotor or cognitive performance is rarely considered. Integrating "
+         "temperature forecasts into crash-prevention messaging and ensuring heat-health "
+         "plans reach outdoor workers and commuters could reduce a burden that is currently "
+         "invisible to both heat-mortality and road-safety surveillance, though intervention "
+         "studies are needed to test whether such heat-aware measures reduce crash risk.")
     para(doc,
          "Several limitations apply. First, this is an ecological, population-level "
          "association: it cannot establish that heat caused illness in any specific crash, "
@@ -590,8 +609,10 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
     para(doc,
          "Unusually hot days are associated with an acute, same-day excess of US traffic-crash "
          "mortality comparable to all recorded direct-heat deaths, supporting the plausibility "
-         "of an under-recognised heat contribution to road deaths. The Japanese data are "
-         "too sparse for a firm conclusion.")
+         "of an under-recognised heat contribution to road deaths. The findings suggest "
+         "heat-aware road safety and climate adaptation planning could reduce an uncounted "
+         "burden, although the Japanese data are too sparse for a firm conclusion and "
+         "individual-level mechanistic evidence is still needed.")
 
     h(doc, "Contributors", 1)
     para(doc,
@@ -705,9 +726,9 @@ def build_cover_letter():
     para(doc, "The Editors, The Lancet Planetary Health")
     para(doc, "Dear Editors,")
     para(doc,
-         "We submit for your consideration our manuscript, \u201cHotter-than-normal days and "
-         "traffic-crash mortality: a distributed-lag analysis of the United States and "
-         "Japan and the question of under-recognised heat illness\u201d, as an Article.")
+         "We submit for your consideration our manuscript, \u201cAmbient heat as an "
+         "under-recognised risk factor for US traffic-crash mortality: a distributed-lag "
+         "analysis with an exploratory Japan comparison\u201d, as an Article.")
     para(doc,
          "Using only public data, this ecological, population-level study shows that days "
          "hotter than the local seasonal norm carry an acute excess of US traffic-crash "
