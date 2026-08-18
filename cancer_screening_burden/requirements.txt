@@ -1,0 +1,9 @@
+pandas
+numpy
+matplotlib
+seaborn
+pyyaml
+openpyxl
+python-pptx
+python-docx
+pdfplumber
