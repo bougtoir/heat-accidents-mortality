@@ -41,7 +41,7 @@ import make_manuscript as mm  # noqa: E402
 AAP_KEYWORDS = "heat; traffic crash; mortality; climate change; distributed-lag model; road safety"
 
 HIGHLIGHTS = [
-    "Hotter-than-normal days raise same-day US traffic-crash mortality.",
+    "Hotter-than-normal days are linked to same-day US traffic-crash mortality.",
     "The excess is comparable in magnitude to all recorded direct-heat deaths.",
     "Open-air road users show the largest heat-attributable excess risk.",
     "Uniform +1 to +3 °C warming would add hundreds of deaths per year.",
@@ -53,25 +53,11 @@ The Editors, Accident Analysis & Prevention
 
 Dear Editors,
 
-We submit for your consideration our manuscript, "Hotter-than-normal days and 
-traffic-crash mortality: a distributed-lag analysis of the United States and 
-Japan and the question of under-recognised heat illness", as a Research Article.
+We submit for your consideration our manuscript, "Hotter-than-normal days and traffic-crash mortality: a distributed-lag analysis of the United States and Japan and the question of under-recognised heat illness", as a Research Article.
 
-Using only public data, this ecological time-series study shows that days hotter 
-than the local seasonal norm carry an acute excess of US traffic-crash deaths. 
-The excess survives adjustment for national driving activity, is concentrated 
-in heat-exposed open-air road users (motorcyclists, pedestrians and cyclists), 
-and is comparable in magnitude to all officially recorded direct-heat deaths 
-(ICD-10 X30). Scenario projections suggest this burden would grow under uniform 
-warming. The findings are directly relevant to the journal's scope of 
-transportation-accident injury and the environmental and human factors that 
-influence crash occurrence and severity.
+Using only public data, this ecological time-series study shows that days hotter than the local seasonal norm carry an acute excess of US traffic-crash deaths. The excess survives adjustment for national driving activity, is concentrated in heat-exposed open-air road users (motorcyclists, pedestrians and cyclists), and is comparable in magnitude to all officially recorded direct-heat deaths (ICD-10 X30). Scenario projections suggest this burden would grow under uniform warming. These findings are directly relevant to the journal's scope of transportation-accident injury and the environmental and human factors that influence crash occurrence and severity.
 
-The manuscript is original, is not under consideration elsewhere, and all authors 
-approve submission. All data are public and the complete analysis pipeline is 
-openly available and fully reproducible (make all), with no hard-coded results. 
-We declare [PLACEHOLDER competing interests]. We confirm [PLACEHOLDER preprint 
-status].
+The manuscript is original, is not under consideration elsewhere, and all authors approve submission. All data are public and the complete analysis pipeline is openly available and fully reproducible (make all for data and figures, then make aap for the manuscript and submission package), with no hard-coded results. We declare [PLACEHOLDER competing interests]. We confirm [PLACEHOLDER preprint status].
 
 We look forward to your assessment.
 
@@ -266,11 +252,10 @@ def _build_highlights(path):
 def _build_cover_letter(path):
     doc = Document()
     mm.setup(doc)
-    for line in AAP_COVER.splitlines():
-        if not line:
-            doc.add_paragraph()
-        else:
-            p = doc.add_paragraph(line)
+    for block in AAP_COVER.strip().split("\n\n"):
+        text = " ".join(block.splitlines())
+        if text:
+            p = doc.add_paragraph(text)
             p.paragraph_format.line_spacing = 1.15
             p.paragraph_format.space_after = Pt(6)
     doc.save(path)
