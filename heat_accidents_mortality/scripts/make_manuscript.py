@@ -494,24 +494,24 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
     para(doc,
          "Two exploratory analyses were consistent with a heat mechanism, although neither "
          "can exclude residual confounding. First, the same-day excess differed by "
-         f"road-user exposure (Fig. 4; Table 3): the effect was small for enclosed, often "
-         f"air-conditioned, vehicle occupants, RR {subrr(USER['vehicle_occupant'])}, but "
-         f"larger for open-air users\u2014motorcyclists, RR {subrr(USER['motorcyclist'])}; "
+         f"road-user exposure (Fig. 4; Table 3). The effect was small for enclosed, often "
+         f"air-conditioned vehicle occupants, RR {subrr(USER['vehicle_occupant'])}, but much "
+         f"larger for open-air users: motorcyclists, RR {subrr(USER['motorcyclist'])}; "
          f"pedestrians, RR {subrr(USER['pedestrian'])}; and cyclists, RR "
-         f"{subrr(USER['cyclist'])}\u2014a gradient consistent with direct bodily heat "
-         f"exposure and physical exertion,{cite('daanen')} though it could also partly "
+         f"{subrr(USER['cyclist'])}, a pattern consistent with direct bodily heat "
+         f"exposure and physical exertion.{cite('daanen')} This gradient could also partly "
          "reflect greater discretionary open-air travel (motorcycling, cycling, walking) on "
          "hotter-than-normal days, which our aggregate activity proxies do not capture by "
-         "mode. Across age bands the excess was of similar size: age <25 y RR "
+         "mode. Across age bands the excess was similar: age <25 y RR "
          f"{subrr(AGE['<25'])}; 25-64 y RR {subrr(AGE['25-64'])}; 65+ y RR "
          f"{subrr(AGE['65+'])} (Table 3), giving no clear age gradient. Second, the excess "
          "was largest for crashes in the hottest part of the day "
          f"({TOD_MAX['hour_band']} h), RR {subrr(TOD_MAX)}, and weakest in the cool morning "
          f"(06-11 h), RR {subrr(TOD_D['06-11'])}; the overnight band was also elevated "
          f"(00-05 h), RR {subrr(TOD_D['00-05'])}, so the diurnal pattern is not a clean "
-         "daytime-only gradient (Fig. 5). These road-user, age and time-of-day analyses are "
-         "hypothesis-generating: they involve multiple unadjusted comparisons and are not "
-         "individual-level tests of susceptibility or mechanism.")
+         "daytime-only gradient (Fig. 5). These subgroup analyses are hypothesis-generating: "
+         "they involve multiple unadjusted comparisons and are not individual-level tests "
+         "of susceptibility or mechanism.")
     add_figure(doc, FIGURES[3][0], 4, FIGURES[3][1])
     tbl4(doc)
     add_figure(doc, FIGURES[4][0], 5, FIGURES[4][1])
@@ -565,20 +565,20 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
          "under-recognised heat illness contributing to road deaths without appearing in "
          f"cause-of-death data.{cite('liang2022','liang2021_aap')}")
     para(doc,
-         "Two features of the data are consistent with a direct heat effect rather than "
-         "confounding by overall driving volume. The excess was graded by bodily heat "
-         "exposure\u2014minimal for enclosed, frequently air-conditioned vehicle occupants but "
-         "several-fold larger for motorcyclists, pedestrians and cyclists, who are directly "
-         "exposed and often physically exerting\u2014and it was largest in the hottest hours of "
-         "the day. Both patterns are consistent with heat degrading psychomotor and cognitive "
-         "performance. These gradients are not proof of mechanism, however: open-air "
-         "travel is itself weather-sensitive, so more motorcycling, cycling and walking on "
-         "hotter-than-normal days could inflate the open-air estimates through greater "
-         "exposure rather than physiology, and our activity proxies are national and not "
-         "mode-specific. Applied to a warmer mean climate, the same exposure-response implies "
-         "hundreds of additional US crash deaths per year per degree of warming; because "
-         "these deaths would continue to be coded as ordinary crashes, the societal heat "
-         "burden they represent would remain uncounted by heat-mortality surveillance.")
+         "Two features of the data argue against confounding by overall driving volume and "
+         "are consistent with a direct heat effect. The excess rose with direct heat exposure: "
+         "it was small for enclosed, often air-conditioned vehicle occupants but several-fold "
+         "larger for motorcyclists, pedestrians and cyclists, who are directly exposed and "
+         "often physically exerting. It was also largest in the hottest hours of the day. Both "
+         "patterns are consistent with heat degrading psychomotor and cognitive performance. "
+         "These gradients are not proof of mechanism, however: open-air travel is itself "
+         "weather-sensitive, so more motorcycling, cycling and walking on hotter-than-normal "
+         "days could inflate the open-air estimates through greater exposure rather than "
+         "physiology, and our activity proxies are national and not mode-specific. Applied to a "
+         "warmer mean climate, the same exposure-response implies hundreds of additional US "
+         "crash deaths per year per degree of warming; because these deaths would continue to "
+         "be coded as ordinary crashes, the societal heat burden they represent would remain "
+         "uncounted by heat-mortality surveillance.")
     h(doc, "Implications for road safety", 2)
     para(doc,
          "These results point to practical implications for road safety and climate "
