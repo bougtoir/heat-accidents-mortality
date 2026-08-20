@@ -13,6 +13,7 @@ Uses: EBSSA Dataset (Afshar et al. 2019) — event camera recordings of
       satellites, stars, and space objects.
 """
 
+import json
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
@@ -330,7 +331,25 @@ def main():
     print(f'  Residual events: {len(residual_events):,}')
     print(f'  Noise removal: {removal_pct:.1f}%')
 
-    # 5. Generate figures
+    # 5. Save reproducible summary
+    n_signal = int((fano > 2).sum())
+    summary = {
+        'source': 'noise_inverse_demo.py on EBSSA labelled recording #0 (DAVIS240C, 180x240)',
+        'events_in': f'{len(events):,}',
+        'events_residual': f'{len(residual_events):,}',
+        'removal_pct': f'{removal_pct:.1f}',
+        'threshold': '0.5',
+        'signal_pixels': f'{n_signal:,}',
+        'total_pixels': f'{shape[0] * shape[1]:,}',
+    }
+    RESULTS_DIR = OUT_DIR / 'results'
+    RESULTS_DIR.mkdir(exist_ok=True)
+    summary_path = RESULTS_DIR / 'demo_summary.json'
+    with open(summary_path, 'w', encoding='utf-8') as f:
+        json.dump(summary, f, indent=2, ensure_ascii=False)
+    print(f'  Saved summary: {summary_path}')
+
+    # 6. Generate figures
     print('\n[5/5] Generating visualization figures...')
     fig3, fig4 = create_demo_figures(events, noise_model, p_noise,
                                       residual_events, shape)
