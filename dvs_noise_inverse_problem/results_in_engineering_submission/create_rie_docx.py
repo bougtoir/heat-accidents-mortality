@@ -35,8 +35,9 @@ from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 OUT_DIR = SCRIPT_DIR
-FIG_DIR_JATIS = SCRIPT_DIR.parent / 'jatis_submission'
-FIG_DIR_PRE = SCRIPT_DIR.parent / '..' / 'sr_ancova_framework' / 'pre_submission'
+# In-repo figure directories (public mirror root is dvs_noise_inverse_problem)
+FIG_DIR_DVS = SCRIPT_DIR.parent          # noise_inverse_demo.py / systematic_evaluation.py outputs
+FIG_DIR_SR = SCRIPT_DIR / 'sr_figures'   # generate_sr_figures.py outputs
 
 # Global metrics cache; populated by load_results(). Keys may be referenced
 # with {key} placeholders in manuscript strings so numerical values are not
@@ -744,8 +745,8 @@ def build_manuscript():
         'producing a maximally informative event stream.'
     ))
 
-    # Fig 1: Conceptual schematic (from Paper b)
-    add_figure(doc, FIG_DIR_PRE / 'fig1_schematic.png',
+    # Fig 1: Conceptual schematic
+    add_figure(doc, FIG_DIR_SR / 'fig1_schematic.png',
                'Fig. 1. Conceptual schematic of the covariate-adjusted stochastic '
                'resonance framework. (a) Threshold-based event detector: a weak '
                'periodic signal s(t) embedded in Gaussian noise triggers events when '
@@ -796,8 +797,8 @@ def build_manuscript():
         'high-noise environments\u2014precisely the regime of DVS astronomical observation.'
     ))
 
-    # Fig 2: Optimal rho* (from Paper b)
-    add_figure(doc, FIG_DIR_PRE / 'fig3_optimal_rho.png',
+    # Fig 2: Optimal rho*
+    add_figure(doc, FIG_DIR_SR / 'fig3_optimal_rho.png',
                'Fig. 2. (a) Optimal noise model accuracy \u03c1* versus input noise. '
                'Shaded yellow: SR regime (\u03c3 < \u03b8) where \u03c1* = 0 (noise is beneficial). '
                'Shaded blue: excess noise regime (\u03c3 > \u03b8) where '
@@ -862,8 +863,8 @@ def build_manuscript():
         '(Fig. 3).'
     ))
 
-    # Fig 3: Pipeline (from Paper a)
-    add_figure(doc, FIG_DIR_JATIS / 'fig1_pipeline.png',
+    # Fig 3: Pipeline
+    add_figure(doc, FIG_DIR_DVS / 'fig2_g3_pipeline_en.png',
                'Fig. 3. System architecture of the PI-DC-DVS noise inverse problem '
                'pipeline. Four stages: (1) noise forward model construction using the '
                'A5 pixel model and auxiliary channels; (2) Bayesian inverse problem '
@@ -956,8 +957,8 @@ def build_manuscript():
         'f\u2080 = 5 Hz, dt = 1 ms, and N = 10^5 steps per trial.'
     ))
 
-    # Fig 4: SR curves (from Paper b)
-    add_figure(doc, FIG_DIR_PRE / 'fig2_sr_curves.png',
+    # Fig 4: SR curves
+    add_figure(doc, FIG_DIR_SR / 'fig2_sr_curves.png',
                'Fig. 4. Stochastic resonance curves for a threshold detector '
                '(A/\u03b8 = 0.3). Solid lines: analytical SNR from Eq. (1). Black '
                'squares with error bars: Monte Carlo validation (15 trials per '
@@ -980,15 +981,15 @@ def build_manuscript():
         'diagonal, demonstrating improved signal\u2013noise discrimination.'
     ))
 
-    # Fig 5: Detection probability (from Paper b)
-    add_figure(doc, FIG_DIR_PRE / 'fig4_detection_probability.png',
+    # Fig 5: Detection probability
+    add_figure(doc, FIG_DIR_SR / 'fig4_detection_probability.png',
                'Fig. 5. (a) Detection probability P_D and (b) false alarm '
                'probability P_FA versus input noise for different noise model '
                'accuracies \u03c1 (A/\u03b8 = 0.4).',
                width=Inches(5.5))
 
-    # Fig 6: ROC comparison (from Paper b)
-    add_figure(doc, FIG_DIR_PRE / 'fig5_roc_comparison.png',
+    # Fig 6: ROC comparison
+    add_figure(doc, FIG_DIR_SR / 'fig5_roc_comparison.png',
                'Fig. 6. ROC curves at \u03c3_n/\u03b8 = 1.5 (excess noise regime). '
                'Covariate adjustment (\u03c1 = 0.95) achieves near-ideal separation.',
                width=Inches(3.8))
@@ -1003,8 +1004,8 @@ def build_manuscript():
         '90% noise model accuracy (\u03b1 = 0.9).'
     ))
 
-    # Fig 7: A5 simulation (from Paper a)
-    add_figure(doc, FIG_DIR_JATIS / 'fig4_a5_simulation.png',
+    # Fig 7: A5 simulation
+    add_figure(doc, FIG_DIR_DVS / 'fig6_a5_simulation.png',
                'Fig. 7. A5-based noise rate simulation. (a) Predicted noise event '
                'rate [evt/s/pix]; (b) SNR improvement factor at 90% model accuracy; '
                '(c) SNR vs. temperature at fixed illuminance comparing methods.',
@@ -1064,8 +1065,8 @@ def build_manuscript():
         'faint-object detection.'
     ))
 
-    # Fig 8: Evaluation (from Paper a)
-    add_figure(doc, FIG_DIR_JATIS / 'fig3_evaluation.png',
+    # Fig 8: Evaluation
+    add_figure(doc, FIG_DIR_DVS / 'fig5_systematic_evaluation.png',
                'Fig. 8. Systematic evaluation of three denoising methods on {n_recordings} EBSSA '
                'recordings. Four-panel boxplot: (a) Noise Removal Rate, '
                '(b) Signal Preservation Rate, (c) F1 Score, (d) ROC-AUC. '
@@ -1085,8 +1086,8 @@ def build_manuscript():
         'the prediction that over-removal past the SR optimum is counterproductive.'
     ))
 
-    # Fig 9: DVS application in SR framework (from Paper b)
-    add_figure(doc, FIG_DIR_PRE / 'fig7_dvs_application.png',
+    # Fig 9: DVS application in SR framework
+    add_figure(doc, FIG_DIR_SR / 'fig7_dvs_application.png',
                'Fig. 9. DVS results in the SR framework. (a) ROC-AUC comparison: '
                'the Fano filter (covariate adjustment) achieves {fano_auc_value}, far exceeding '
                'temporal filtering. (b) NRR vs SPR trade-off: the Fano filter '
@@ -1111,8 +1112,8 @@ def build_manuscript():
         'in noise (Fig. 10).'
     ))
 
-    # Fig 10: Demo (from Paper a)
-    add_figure(doc, FIG_DIR_JATIS / 'fig6_demo.png',
+    # Fig 10: Demo
+    add_figure(doc, FIG_DIR_DVS / 'fig3_noise_inverse_demo.png',
                'Fig. 10. Proof-of-concept on EBSSA Recording #0. (a) Raw event '
                'accumulation ({demo_events_in} events); (b) estimated noise rate map; '
                '(c) per-event noise probability distribution showing bimodal '
@@ -1131,8 +1132,8 @@ def build_manuscript():
         'giving \u0394m > 2.5 mag at \u03b1 = 0.9.'
     ))
 
-    # Fig 11: SNR analysis (from Paper a)
-    add_figure(doc, FIG_DIR_JATIS / 'fig7_snr.png',
+    # Fig 11: SNR analysis
+    add_figure(doc, FIG_DIR_DVS / 'fig4_sn_improvement.png',
                'Fig. 11. SNR improvement analysis. (a) Fano factor spatial map: '
                'noise-dominated pixels (blue, F \u2248 1) vs. signal-containing pixels '
                '(red, F \u226b 1); (b) temporal dynamics of event rate vs. noise model; '

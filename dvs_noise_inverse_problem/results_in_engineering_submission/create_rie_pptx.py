@@ -11,8 +11,9 @@ from pptx.enum.text import PP_ALIGN
 from pathlib import Path
 
 SCRIPT_DIR = Path(__file__).resolve().parent
-FIG_DIR_JATIS = SCRIPT_DIR.parent / 'jatis_submission'
-FIG_DIR_PRE = SCRIPT_DIR.parent / '..' / 'sr_ancova_framework' / 'pre_submission'
+# In-repo figure directories (public mirror root is dvs_noise_inverse_problem)
+FIG_DIR_DVS = SCRIPT_DIR.parent          # noise_inverse_demo.py / systematic_evaluation.py outputs
+FIG_DIR_SR = SCRIPT_DIR / 'sr_figures'   # generate_sr_figures.py outputs
 
 
 def load_metrics():
@@ -34,7 +35,7 @@ def load_metrics():
 
 FIGURES = [
     {
-        'source': FIG_DIR_PRE,
+        'source': FIG_DIR_SR,
         'file': 'fig1_schematic.png',
         'title': 'Figure 1',
         'caption': (
@@ -45,7 +46,7 @@ FIGURES = [
         ),
     },
     {
-        'source': FIG_DIR_PRE,
+        'source': FIG_DIR_SR,
         'file': 'fig3_optimal_rho.png',
         'title': 'Figure 2',
         'caption': (
@@ -55,8 +56,8 @@ FIGURES = [
         ),
     },
     {
-        'source': FIG_DIR_JATIS,
-        'file': 'fig1_pipeline.png',
+        'source': FIG_DIR_DVS,
+        'file': 'fig2_g3_pipeline_en.png',
         'title': 'Figure 3',
         'caption': (
             'PI-DC-DVS pipeline: (1) A5 noise model + auxiliary channels; '
@@ -65,7 +66,7 @@ FIGURES = [
         ),
     },
     {
-        'source': FIG_DIR_PRE,
+        'source': FIG_DIR_SR,
         'file': 'fig2_sr_curves.png',
         'title': 'Figure 4',
         'caption': (
@@ -74,7 +75,7 @@ FIGURES = [
         ),
     },
     {
-        'source': FIG_DIR_PRE,
+        'source': FIG_DIR_SR,
         'file': 'fig4_detection_probability.png',
         'title': 'Figure 5',
         'caption': (
@@ -83,7 +84,7 @@ FIGURES = [
         ),
     },
     {
-        'source': FIG_DIR_PRE,
+        'source': FIG_DIR_SR,
         'file': 'fig5_roc_comparison.png',
         'title': 'Figure 6',
         'caption': (
@@ -92,8 +93,8 @@ FIGURES = [
         ),
     },
     {
-        'source': FIG_DIR_JATIS,
-        'file': 'fig4_a5_simulation.png',
+        'source': FIG_DIR_DVS,
+        'file': 'fig6_a5_simulation.png',
         'title': 'Figure 7',
         'caption': (
             'A5-based noise rate simulation. (a) Predicted noise rate [evt/s/pix]; '
@@ -101,8 +102,8 @@ FIGURES = [
         ),
     },
     {
-        'source': FIG_DIR_JATIS,
-        'file': 'fig3_evaluation.png',
+        'source': FIG_DIR_DVS,
+        'file': 'fig5_systematic_evaluation.png',
         'title': 'Figure 8',
         'caption': (
             'Systematic evaluation on the public EBSSA dataset ({n_recordings} recordings). '
@@ -111,7 +112,7 @@ FIGURES = [
         ),
     },
     {
-        'source': FIG_DIR_PRE,
+        'source': FIG_DIR_SR,
         'file': 'fig7_dvs_application.png',
         'title': 'Figure 9',
         'caption': (
@@ -120,8 +121,8 @@ FIGURES = [
         ),
     },
     {
-        'source': FIG_DIR_JATIS,
-        'file': 'fig6_demo.png',
+        'source': FIG_DIR_DVS,
+        'file': 'fig3_noise_inverse_demo.png',
         'title': 'Figure 10',
         'caption': (
             'Proof-of-concept: (a) raw events; (b) noise rate map; '
@@ -129,8 +130,8 @@ FIGURES = [
         ),
     },
     {
-        'source': FIG_DIR_JATIS,
-        'file': 'fig7_snr.png',
+        'source': FIG_DIR_DVS,
+        'file': 'fig4_sn_improvement.png',
         'title': 'Figure 11',
         'caption': (
             'SNR improvement: (a) Fano spatial map (noise F\u22481 vs signal F\u226b1); '
