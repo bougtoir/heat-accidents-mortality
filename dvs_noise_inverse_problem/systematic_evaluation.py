@@ -18,6 +18,7 @@ Metrics:
 import numpy as np
 import time
 import json
+import random
 from pathlib import Path
 import warnings
 warnings.filterwarnings('ignore')
@@ -26,6 +27,22 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from sklearn.metrics import roc_auc_score, f1_score
+
+SEED = 42
+
+
+def _set_seed(seed=SEED):
+    """Set random seeds for reproducible neural-network and NumPy results."""
+    random.seed(seed)
+    np.random.seed(seed)
+    try:
+        import torch
+        torch.manual_seed(seed)
+        if torch.cuda.is_available():
+            torch.cuda.manual_seed_all(seed)
+    except Exception:
+        pass
+
 
 OUT_DIR = Path(__file__).parent
 DATA_DIR = OUT_DIR / 'data'
@@ -141,6 +158,7 @@ def pidcdvs_filter(events, shape, n_bins=50, n_epochs=80):
     - Learning correlated noise patterns across neighbouring pixels
     - Capturing gradual spatial gradients in dark current
     """
+    _set_seed(SEED)
     import torch
     import torch.nn as nn
     import torch.optim as optim
@@ -576,10 +594,16 @@ def generate_figures(all_results, sim_results):
     plt.close()
     print(f"  Saved: {fig7_path}")
 
-    return {'fig5': str(fig5_path), 'fig6': str(fig6_path), 'fig7': str(fig7_path)}
+    # Store relative filenames so the summary is portable across clones.
+    return {
+        'fig5': fig5_path.name,
+        'fig6': fig6_path.name,
+        'fig7': fig7_path.name,
+    }
 
 
 def main():
+    _set_seed(SEED)
     print("=" * 70)
     print("SYSTEMATIC EVALUATION: PI-DC-DVS on EBSSA + A5 Simulation")
     print("=" * 70)
