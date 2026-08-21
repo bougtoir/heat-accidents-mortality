@@ -77,12 +77,24 @@ except Exception as e:
     print(f"Warning: could not generate TIFF figures: {e}")
 
 # Assemble submission zip
+# Keep the editable figure deck in the documents folder for reference,
+# but exclude PowerPoint files from the upload zip so Editorial Manager
+# receives only the requested separate high-resolution figure files.
 zip_path = os.path.join(root, 'bmc_hsr_submission_package.zip')
+# Leave editable/tracking files in the documents folder but out of the
+# Editorial Manager upload zip so only requested submission files are included.
+skip_in_zip = {'.pptx'}
+skip_names = {'bmc_hsr_submission_metadata.json', 'zenodo_doi.txt'}
 with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zf:
     for dirpath, _, filenames in os.walk(hp_dir):
         for fname in filenames:
+            if any(fname.lower().endswith(ext) for ext in skip_in_zip):
+                continue
+            if fname in skip_names:
+                continue
             full = os.path.join(dirpath, fname)
-            arc = os.path.relpath(full, root)
+            # Flat zip for Editorial Manager upload.
+            arc = os.path.basename(full)
             zf.write(full, arc)
 
 print(f"\n=== BMC Health Services Research package built successfully in {hp_dir} ===")
