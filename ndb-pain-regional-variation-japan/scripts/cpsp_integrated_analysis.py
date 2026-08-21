@@ -11,8 +11,11 @@ import json
 import numpy as np
 from collections import defaultdict
 
-OUTPUT_DIR = '/home/ubuntu/analysis/output/'
-DATA_DIR = '/home/ubuntu/analysis/data/'
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(SCRIPT_DIR)
+DATA_DIR = os.path.join(BASE_DIR, 'data') + os.sep
+OUTPUT_DIR = os.path.join(BASE_DIR, 'output') + os.sep
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 PREF_NAMES = {
     1:'北海道',2:'青森県',3:'岩手県',4:'宮城県',5:'秋田県',6:'山形県',7:'福島県',

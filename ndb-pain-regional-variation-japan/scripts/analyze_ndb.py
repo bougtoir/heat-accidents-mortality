@@ -24,10 +24,12 @@ except:
 # ============================================================
 # CONFIGURATION
 # ============================================================
-DATA_DIR = '/home/ubuntu/analysis/data/'
-OUTPUT_DIR = '/home/ubuntu/analysis/output/'
-
 import os
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(SCRIPT_DIR)
+DATA_DIR = os.path.join(BASE_DIR, 'data') + os.sep
+OUTPUT_DIR = os.path.join(BASE_DIR, 'output') + os.sep
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 PREFECTURE_NAMES = {

@@ -5,6 +5,7 @@ All labels, legends, titles, and annotations in English.
 """
 import csv
 import json
+import os
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
@@ -19,7 +20,10 @@ rcParams['font.family'] = 'sans-serif'
 rcParams['font.sans-serif'] = ['DejaVu Sans', 'IPAexGothic', 'Noto Sans CJK JP']
 rcParams['axes.unicode_minus'] = False
 
-OUTPUT_DIR = '/home/ubuntu/analysis/output/'
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(SCRIPT_DIR)
+OUTPUT_DIR = os.path.join(BASE_DIR, 'output') + os.sep
+os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 # Load data
 rows = []
