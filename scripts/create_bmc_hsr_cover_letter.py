@@ -150,8 +150,7 @@ add_para(
     "aggregate data only; ethics committee approval was not required under the "
     "Japanese Ethical Guidelines for Medical and Biological Research Involving "
     "Human Subjects (2021 revision). The reporting follows the STROBE checklist "
-    "for cross-sectional studies, which is uploaded as supplementary material. "
-    "A Highlights file is also provided as optional supplementary material.")
+    "for cross-sectional studies, which is uploaded as supplementary material.")
 
 add_para(
     "Statistical analysis: the lead author, who has training in clinical "
@@ -170,8 +169,8 @@ add_para(
     "${abstract_word_count} words, within the 350-word limit; ${n_tables} tables and "
     "${n_figures} figures; ${n_references} references). We have "
     "uploaded a separate title page, the anonymised main manuscript, separate "
-    "editable tables and figures, and the STROBE checklist. A Highlights file is "
-    "also provided as supplementary material.")
+    "tables, high-resolution figure files, and the STROBE checklist. A Highlights "
+    "file is also provided as supplementary material.")
 
 add_para(
     "We believe our work will be of substantive interest to the Journal's "
