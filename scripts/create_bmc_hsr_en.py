@@ -218,8 +218,8 @@ def build_flat(R):
             F[f'audit_{code}_iqr_pct'] = fmt_num(R['audit_sensitivity'][code]['percent_of_iqr'], 2)
 
     outlier_name_map = {
-        ('安房', '千葉県'): ('Awa (Chiba)', 'Chiba'),
-        ('区中央部', '東京都'): ('central Tokyo (Tokyo)', 'Tokyo'),
+        ('安房', '千葉県'): ('Awa', 'Chiba'),
+        ('区中央部', '東京都'): ('central Tokyo', 'Tokyo'),
     }
     for i, o in enumerate(R['outliers']['L008'][:2], 1):
         name, pref = o['area_name'], o['pref_name']
@@ -528,7 +528,7 @@ add_para(
     "Background: Geographic variation in anaesthesia technique is well documented, "
     "but separating true differences in care from coding, reimbursement and audit "
     "artefacts is rarely possible. Japan's uniform fee schedule and "
-    "prefecture-specific claims auditing create a natural experiment for separating "
+    "prefecture-specific claims auditing provide a quasi-experimental setting for separating "
     "structural access from administrative artefacts. We quantified the respective "
     "contributions of university hospital proximity and prefectural claims auditing "
     "to regional variation in anaesthesia practice under universal health coverage.")
@@ -546,7 +546,7 @@ add_para(
 add_para(
     "Results: Coefficients of variation ranged from ${L008_cv}% to ${L002_cv}%. "
     "For general anaesthesia, only ${L008_ml_icc_pct}% of variance lay between "
-    "prefectures; university hospital presence explained ${L008_ml_r2_pct}% of total "
+    "prefectures; university hospital presence accounted for ${L008_ml_r2_pct}% of total "
     "variance (P ${L008_ml_p}). The association persisted after log "
     "transformation and covariate adjustment; audit-related ratio shifts were "
     "small relative to observed variation, supporting structural access over "
@@ -578,8 +578,8 @@ add_para(
     "coverage.{1} Because claims record reimbursed procedures, they capture "
     "documented care rather than bedside intention; in systems with uniform fee "
     "schedules, however, geographic variation in claims is commonly interpreted "
-    "as a signal of differences in service delivery, practice style and "
-    "unmet need.{1,5} The same records are also used for prefecture-level "
+    "as a marker of differences in service delivery, practice style and "
+    "unmet need.{1,26} The same records are also used for prefecture-level "
     "insurance auditing (shinsa), and audit intensity varies across "
     "prefectures.{6} Where audits differ, between-area variation in claims could "
     "reflect differential scrutiny rather than differential care. Distinguishing "
@@ -589,17 +589,18 @@ add_para(
 
 add_para(
     "Japan offers a natural experiment for this question. The fee schedule "
-    "and insured benefits are nationally uniform, so price variation is "
-    "eliminated, while prefectures independently operate claims audits. "
+    "and insured benefits are nationally uniform,{5} so price variation is "
+    "eliminated, while prefectures independently operate claims audits.{6} "
     "Anaesthesia is a useful tracer: the choice between general anaesthesia "
     "alone and neuraxial or combined techniques is clinically consequential "
-    "and plausibly linked to outcomes, yet the technical and workforce "
-    "requirements for neuraxial techniques tend to concentrate in teaching "
-    "hospitals.{7-9} If access to these techniques varies by geography, "
-    "patients' probability of receiving potentially beneficial care depends "
-    "on place of residence, which is an equity problem under universal coverage. "
-    "Because the FY2022 data predate the 2026 clarification of the general-anaesthesia "
-    "billing code, any coding ambiguity that existed during the study period is "
+    "and has been associated with patient outcomes in selected populations.{7-9} "
+    "Because neuraxial and combined techniques require specialised workforce "
+    "and technical resources, their availability may vary by geography. If "
+    "access depends on where patients live, the probability of receiving "
+    "potentially beneficial care is influenced by place of residence, "
+    "which is an equity problem under universal coverage. Because the FY2022 "
+    "data predate the 2026 clarification of the general-anaesthesia billing "
+    "code, any coding ambiguity that existed during the study period is "
     "retained in the analysis.{10}")
 
 add_para(
@@ -687,7 +688,7 @@ add_para(
     "and coefficient of variation). To account for the nesting of secondary "
     "medical areas within prefectures, we fitted multilevel linear models with "
     "prefecture random intercepts and a binary fixed effect for university "
-    "hospital presence, using restricted maximum likelihood. The null model "
+    "hospital presence, using restricted maximum likelihood.{16} The null model "
     "intraclass correlation coefficient quantified the proportion of variance "
     "between prefectures, and the proportional reduction in total variance "
     "(sometimes labelled marginal R²) measured the decrease in total "
@@ -697,12 +698,12 @@ add_para(
     "within-prefecture paired comparisons of university and non-university "
     "areas; a covariate-adjusted model adding the natural logarithm of "
     "population density and the anaesthesiologist share of all physicians; "
-    "an empirical Bayes shrinkage stress-test of area-level ratios toward "
+    "an empirical Bayes shrinkage{18} stress-test of area-level ratios toward "
     "prefecture means; and a log-transformed multilevel model to address right-"
-    "skewed SCR distributions and influential outliers. To examine the audit hypothesis specifically, we used the multilevel variance decomposition, pairwise correlations between codes, an upper-bound estimate of the maximum prefectural audit-rate impact, and a combined general/spinal anaesthesia measure. No formal multiple-"
+    "skewed SCR distributions and influential outliers. To examine the audit hypothesis specifically, we used the multilevel variance decomposition, pairwise correlations between codes, an upper-bound estimate of the maximum prefectural audit-rate impact, and a combined general/spinal anaesthesia measure. Effect sizes for the university-hospital comparison were summarised using Cohen's d.{15} No formal multiple-"
     "comparison adjustment was applied; reported p-values are nominal and should "
     "be interpreted as exploratory. All analyses were performed in Python 3.10 "
-    "using NumPy, Pandas, SciPy and Statsmodels.")
+    "using NumPy, Pandas, SciPy and Statsmodels.{17}")
 
 # ============================================================
 # RESULTS
@@ -871,7 +872,7 @@ add_para(
     "that only ${L008_ml_icc_pct}% of general anaesthesia variance lies between "
     "prefectures, where audit policy differs, so differential auditing can account "
     "for at most a small share of observed variation. University hospital presence "
-    "explained ${L008_ml_r2_pct}% of total variance in the same model, a structural "
+    "accounted for ${L008_ml_r2_pct}% of total variance in the same model, a structural "
     "component far larger than the between-prefecture share. Second, general "
     "and spinal anaesthesia were positively correlated (r = ${corr_L008_L004_r}, P "
     "${corr_L008_L004_p}), as were general and epidural anaesthesia (r = "
@@ -887,7 +888,7 @@ add_para(
     "ratios produced an alternative measure that should be insensitive to "
     "miscoding between reclassifiable codes; it showed a coefficient of variation of "
     "${L008_L004_cv}% and a university hospital effect that remained large "
-    "(Cohen's d ${L008_L004_d}), confirming that the structural effect is not "
+    "(Cohen's d ${L008_L004_d}), indicating that the structural effect is not "
     "erased as an artefact by combining codes.")
 
 add_subheading("Robustness: empirical Bayes shrinkage and outliers")
@@ -899,14 +900,13 @@ add_para(
     "fell from ${L008_d} (raw) to ${L008_d_shrunk} (shrunken), an attenuation "
     "of ${L008_attenuation}%; for epidural anaesthesia (L002) from ${L002_d} to "
     "${L002_d_shrunk} (${L002_attenuation}%); and for spinal anaesthesia (L004) "
-    "from ${L004_d} to ${L004_d_shrunk} (${L004_attenuation}%). The general "
-    "anaesthesia effect therefore remained moderate despite heavy shrinkage, "
+    "from ${L004_d} to ${L004_d_shrunk} (${L004_attenuation}%). The general-"
+    "anaesthesia effect remained moderate even after substantial shrinkage, "
     "whereas the L002 and L004 effects were materially attenuated, "
     "indicating that those smaller raw effects are more vulnerable to sampling "
-    "instability. These shrinkage estimates are complementary to, and consistent "
-    "in direction with, the mixed-effects model coefficients reported in Table 2, "
-    "which themselves incorporate prefecture-level shrinkage. Two areas were "
-    "identified as outliers (more than three standard deviations from the mean "
+    "instability. These shrinkage estimates are consistent in direction with "
+    "the mixed-effects model coefficients reported in Table 2. Two areas were "
+    "outliers (more than three standard deviations from the mean "
     "general anaesthesia ratio): ${outlier1_name} in ${outlier1_pref} (ratio "
     "${outlier1_scr}) and ${outlier2_name} in ${outlier2_pref} (ratio "
     "${outlier2_scr}). Excluding outliers did not alter the direction or "
@@ -917,7 +917,7 @@ add_para(
 # ============================================================
 add_heading("Discussion", level=1)
 
-add_subheading("Statement of principal findings")
+add_subheading("Summary of principal findings")
 add_para(
     "Regional variation in anaesthesia practice across Japan's ${n_areas} "
     "secondary medical areas is substantial and appears to reflect structural "
@@ -992,14 +992,14 @@ add_para(
     "medical office) system on practice in affiliated hospitals.{24}")
 
 add_para(
-    "The natural experiment used here depends on two institutional features: "
+    "The quasi-experimental design used here depends on two institutional features: "
     "a uniform national fee schedule that eliminates price variation, and "
     "regionally devolved claims auditing that makes within-region audit policy "
     "homogeneous while allowing it to differ between regions. Both features are "
     "present in several high-income universal-coverage systems, including "
-    "Taiwan's National Health Insurance,{25} South Korea's National Health "
-    "Insurance Service, and the tariff-based systems of Germany, France and "
-    "the English National Health Service.{21,22} In these settings the "
+    "Taiwan's National Health Insurance{25} and South Korea's National Health "
+    "Insurance Service, and national fee-schedule systems such as the English "
+    "National Health Service.{21} In these settings the "
     "within-region variance decomposition and audit-sensitivity bound are "
     "directly transportable. In countries without universal health coverage, "
     "or where reimbursement varies by insurer, state or facility, price and "
@@ -1017,10 +1017,10 @@ add_para(
     "with reduced postoperative opioid consumption, lower postoperative nausea "
     "and vomiting, and faster recovery in selected populations.{7-9} "
     "Geographic variation in these techniques therefore raises the possibility "
-    "that billing variation corresponds to variation in care processes that are "
+    "that billing variation may correspond to variation in care processes that are "
     "associated with modifiable patient outcomes, not merely to variation in "
-    "billing. Because the observed gradient is not explained by "
-    "differential auditing, interventions may warrant targeting workforce "
+    "billing. Because the observed gradient is unlikely to reflect differential "
+    "auditing alone, interventions may warrant targeting workforce "
     "distribution, training and organisational capacity rather than coding "
     "compliance.")
 

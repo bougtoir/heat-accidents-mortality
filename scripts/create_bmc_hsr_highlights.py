@@ -24,7 +24,7 @@ l008_r2 = R['codes']['L008']['multilevel']['marginal_r2']
 HIGHLIGHTS = [
     "Uniform fees and regional audits separate structural and administrative variation.",
     "Anaesthesia practice variation is linked to university-hospital access, not auditing.",
-    f"University hospital presence explains {l008_r2*100:.1f}% of general-anaesthesia variance.",
+    f"University hospital presence accounts for {l008_r2*100:.1f}% of general-anaesthesia variance.",
     "Audit-related ratio shifts account for <1% of the observed interquartile range.",
     "Transferable to UHC systems with uniform fees and regional audits.",
 ]

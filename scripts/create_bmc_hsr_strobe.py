@@ -327,7 +327,7 @@ items = [
     ("Discussion", "", "", ""),
     ("Key results", "18",
      "Summarise key results with reference to study objectives",
-     "Discussion, 'Statement of principal findings'"),
+     "Discussion, 'Summary of principal findings'"),
     ("Limitations", "19",
      "Discuss limitations of the study, taking into account sources of "
      "potential bias or imprecision. Discuss both direction and magnitude "

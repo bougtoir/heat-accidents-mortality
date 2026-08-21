@@ -95,7 +95,7 @@ fiscal_year = R['metadata'].get('fiscal_year', 2022)
 
 # Table 1: distribution
 rows2 = []
-for code in ['L008', 'L004', 'L002', 'L003']:
+for code in ['L008', 'L002', 'L003', 'L004']:
     o = R['codes'][code]['overall']
     rows2.append([
         code,
@@ -124,7 +124,7 @@ add_footnote(doc,
 
 # Table 2: multilevel model
 rows3 = []
-for code in ['L008', 'L004', 'L002', 'L003']:
+for code in ['L008', 'L002', 'L003', 'L004']:
     m = R['codes'][code]['multilevel']
     rows3.append([
         code,

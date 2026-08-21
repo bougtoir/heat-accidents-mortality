@@ -138,9 +138,9 @@ add_para(
     "${L008_d}). Sensitivity and robustness analyses—within-prefecture paired "
     "comparisons, covariate adjustment, empirical Bayes shrinkage, log-transformation, "
     "and audit-sensitivity checks (maximum audit-rate impact, code correlations and a "
-    "combined general/spinal measure)—all pointed away from differential auditing as the "
-    "main explanation; empirical Bayes shrinkage confirmed robustness to "
-    "low-volume instability.")
+    "combined general/spinal measure)—all were more consistent with structural access "
+    "than with differential auditing as the main explanation; empirical Bayes shrinkage "
+    "supported robustness to low-volume instability.")
 
 add_para(
     "The manuscript is original, has not been previously published and is not "
