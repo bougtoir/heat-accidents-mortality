@@ -109,13 +109,13 @@ for code in ['L008', 'L004', 'L002', 'L003']:
 
 add_title(doc,
           f"Table 1. Distribution of standardised claim ratios across {n_areas} "
-          f"secondary medical areas (national average = 100), fiscal year {fiscal_year}")
+          f"secondary medical areas, fiscal year {fiscal_year}")
 make_table(doc,
            ["Code", "n", "Mean (SD)", "Median (IQR)", "Min", "Max", "CV (%)"],
            rows2)
 add_footnote(doc,
-             "SD, standard deviation; IQR, interquartile range; CV, coefficient of "
-             "variation. L008 = closed-circuit general anaesthesia; L002 = epidural "
+             "National average = 100. SD, standard deviation; IQR, interquartile range; "
+             "CV, coefficient of variation. L008 = closed-circuit general anaesthesia; L002 = epidural "
              "anaesthesia as main technique; L003 = continuous epidural infusion, "
              "largely billed as an adjunct to general anaesthesia; L004 = spinal "
              "anaesthesia. Areas with low claim volume are masked by the data provider "
@@ -135,7 +135,7 @@ for code in ['L008', 'L004', 'L002', 'L003']:
     ])
 
 add_title(doc,
-          "Table 2. Multilevel linear mixed model results: standardised claim "
+          "Table 2. Multilevel model results: standardised claim "
           "ratio as outcome, prefecture as random intercept")
 make_table(doc,
            ["Code", "Null model ICC", "β university (95% CI)", "P value",

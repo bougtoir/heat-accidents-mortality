@@ -249,16 +249,8 @@ def _add_text_run(paragraph, text, italic=False, bold=False):
     return run
 
 
-def _add_math_run(paragraph, text, italic=False, bold=False):
-    """Insert an inline Word equation (<m:oMath>) containing the supplied text."""
-    run = paragraph.add_run()
-    run.font.name = 'Cambria Math'
-    run.font.size = Pt(12)
-    if italic:
-        run.italic = True
-    if bold:
-        run.bold = True
-    omath = OxmlElement('m:oMath')
+def _make_math_run(text, italic=False, bold=False):
+    """Return an <m:r> element containing the supplied math text."""
     mrun = OxmlElement('m:r')
     rpr = OxmlElement('m:rPr')
     style = OxmlElement('m:sty')
@@ -269,7 +261,44 @@ def _add_math_run(paragraph, text, italic=False, bold=False):
     mt.set(qn('xml:space'), 'preserve')
     mt.text = text
     mrun.append(mt)
-    omath.append(mrun)
+    return mrun
+
+
+def _add_math_run(paragraph, text, italic=False, bold=False):
+    """Insert an inline Word equation (<m:oMath>) containing the supplied text."""
+    run = paragraph.add_run()
+    run.font.name = 'Cambria Math'
+    run.font.size = Pt(12)
+    if italic:
+        run.italic = True
+    if bold:
+        run.bold = True
+    omath = OxmlElement('m:oMath')
+    omath.append(_make_math_run(text, italic=italic, bold=bold))
+    run._r.append(omath)
+    return run
+
+
+def _add_math_ratio(paragraph, italic=False, bold=False):
+    """Insert the ratio 100 × O/E as a proper Word OMML equation."""
+    run = paragraph.add_run()
+    run.font.name = 'Cambria Math'
+    run.font.size = Pt(12)
+    if italic:
+        run.italic = True
+    if bold:
+        run.bold = True
+    omath = OxmlElement('m:oMath')
+    omath.append(_make_math_run('100'))
+    omath.append(_make_math_run('×'))
+    frac = OxmlElement('m:f')
+    num = OxmlElement('m:num')
+    num.append(_make_math_run('O'))
+    den = OxmlElement('m:den')
+    den.append(_make_math_run('E'))
+    frac.append(num)
+    frac.append(den)
+    omath.append(frac)
     run._r.append(omath)
     return run
 
@@ -287,7 +316,10 @@ def add_run_with_refs(paragraph, text, italic=False, bold=False):
             continue
         if part.startswith('<m>') and part.endswith('</m>'):
             math_text = part[3:-4]
-            _add_math_run(paragraph, math_text, italic=italic, bold=bold)
+            if math_text.strip() == '100 × (O / E)':
+                _add_math_ratio(paragraph, italic=italic, bold=bold)
+            else:
+                _add_math_run(paragraph, math_text, italic=italic, bold=bold)
             continue
         # In Vancouver style, citations follow punctuation: move any trailing
         # punctuation that sits immediately before a citation marker to after it.
@@ -437,34 +469,17 @@ def add_table_from_data(caption, headers, rows, note=None):
 
 
 _excluded_word_count_elements = set()
+_figure_legends = []
 
 
 def add_figure_inline(image_path, caption):
-    """Insert a figure inline after its first citation and add its caption.
+    """Queue a figure legend for placement after the References section.
 
-    The image is centred and the caption is excluded from the body word count.
+    BMC Health Services Research requires figure files to be uploaded separately;
+    the main manuscript contains figure legends after the reference list.
     """
     rendered = Template(caption).substitute(FLAT)
-    if os.path.exists(image_path):
-        doc.add_picture(image_path, width=Inches(6.0))
-        img_p = doc.paragraphs[-1]
-        img_p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        _excluded_word_count_elements.add(img_p._element)
-    else:
-        img_p = doc.add_paragraph()
-        run = img_p.add_run(f"[Figure not found: {image_path}]")
-        run.font.name = 'Times New Roman'
-        run.font.size = Pt(10)
-        run.italic = True
-    cap_p = doc.add_paragraph()
-    cap_p.paragraph_format.space_before = Pt(6)
-    cap_p.paragraph_format.space_after = Pt(12)
-    run = cap_p.add_run(rendered)
-    run.font.name = 'Times New Roman'
-    run.font.size = Pt(10)
-    run.bold = True
-    _excluded_word_count_elements.add(cap_p._element)
-    add_blank()
+    _figure_legends.append(rendered)
 
 
 # ============================================================
@@ -539,10 +554,10 @@ add_para(
 
 add_para(
     "Conclusions: Regional variation in anaesthesia practice is predominantly "
-    "structural, driven by access to university hospitals rather than by "
-    "prefectural auditing. In universal-coverage systems this pattern indicates "
-    "inequitable access to neuraxial techniques; policy efforts may need to "
-    "address workforce and organisational barriers, not additional coding audits.")
+    "associated with access to university hospitals rather than with prefectural "
+    "auditing. In universal-coverage systems this pattern suggests inequitable "
+    "access to neuraxial techniques; policy efforts may need to address workforce "
+    "and organisational barriers rather than rely on additional coding audits.")
 
 add_para("Trial registration: Not applicable.")
 
@@ -713,7 +728,7 @@ add_para(
 # Table 1 inline
 add_table_from_data(
     "Table 1. Distribution of standardised claim ratios across ${n_areas} secondary "
-    "medical areas (national average = 100), fiscal year ${fiscal_year}.",
+    "medical areas, fiscal year ${fiscal_year}.",
     ["Code", "n", "Mean (SD)", "Median (IQR)", "Min", "Max", "CV (%)"],
     [
         ["L008", "${L008_n}", "${L008_mean} (${L008_sd})",
@@ -729,8 +744,8 @@ add_table_from_data(
          "${L004_median} (${L004_q1}-${L004_q3})", "${L004_min}", "${L004_max}",
          "${L004_cv}"],
     ],
-    note=("SD, standard deviation; IQR, interquartile range; CV, coefficient of "
-          "variation. L008 = closed-circuit general anaesthesia; L002 = epidural "
+    note=("National average = 100. SD, standard deviation; IQR, interquartile range; "
+          "CV, coefficient of variation. L008 = closed-circuit general anaesthesia; L002 = epidural "
           "anaesthesia as main technique; L003 = continuous epidural infusion, "
           "largely billed as an adjunct to general anaesthesia; L004 = spinal "
           "anaesthesia. Areas with low claim volume are masked by the data provider "
@@ -741,13 +756,13 @@ add_table_from_data(
 add_figure_inline(
     os.path.join(FIG_DIR, 'rapm_fig1_en.png'),
     "Figure 1. Geographic distribution of anaesthesia standardised claim ratios "
-    "across ${n_areas} secondary medical areas of Japan, fiscal year ${fiscal_year}. "
+    "across ${n_areas} secondary medical areas. "
     "(A) General anaesthesia (L008). (B) Spinal anaesthesia (L004). (C) Epidural "
     "anaesthesia as main anaesthetic (L002). (D) Continuous epidural infusion "
     "(L003). Choropleth maps shaded by quintile of the standardised claim ratio "
     "(national average = 100). Red circles mark secondary medical areas "
     "containing at least one university hospital. Areas masked by the data "
-    "provider owing to low volume are shown in grey."
+    "provider owing to low volume are shown in grey. Fiscal year ${fiscal_year}."
 )
 
 add_subheading("Multilevel model and university hospital effect")
@@ -784,7 +799,7 @@ add_para(
 
 # Table 2 inline
 add_table_from_data(
-    "Table 2. Multilevel linear mixed model results: standardised claim ratio as "
+    "Table 2. Multilevel model results: standardised claim ratio as "
     "outcome, prefecture as random intercept.",
     ["Code", "Null model ICC", "β university (95% CI)", "P value",
      "Proportional reduction in total variance"],
@@ -813,13 +828,13 @@ add_table_from_data(
 
 add_figure_inline(
     os.path.join(FIG_DIR, 'rapm_fig2_en.png'),
-    "Figure 2. University hospital presence and the combined general-anaesthesia "
-    "plus continuous-epidural measure. (A) Geographic distribution of secondary "
-    "medical areas containing at least one university hospital (n = ${n_univ_areas} of "
-    "${n_areas}; red). (B) Choropleth map of the combined general-anaesthesia "
-    "plus continuous-epidural standardised claim ratio (unweighted mean of L008 and L003 "
-    "SCRs, not a clinical co-administration rate; ${L008_L003_n} areas with data for both "
-    "codes), shaded by quintile. Red circles mark secondary medical areas containing at "
+    "Figure 2. University hospital presence and the combined general-epidural "
+    "measure. (A) Geographic distribution of secondary medical areas containing "
+    "at least one university hospital (n = ${n_univ_areas} of ${n_areas}; red). "
+    "(B) Choropleth map of the combined general-anaesthesia plus continuous-epidural "
+    "standardised claim ratio (unweighted mean of L008 and L003 SCRs, not a clinical "
+    "co-administration rate; ${L008_L003_n} areas with data for both codes), "
+    "shaded by quintile. Red circles mark secondary medical areas containing at "
     "least one university hospital. Areas masked by the data provider for either code are "
     "shown in grey."
 )
@@ -963,8 +978,8 @@ add_subheading("International generalizability and clinical relevance")
 add_para(
     "These findings are consistent with the broader literature on geographic "
     "variation in medical practice. The Dartmouth Atlas project documented extensive "
-    "regional variation in surgical rates in the United States, driven primarily by "
-    "physician supply and practice style.{20} Comparable patterns have been "
+    "regional variation in surgical rates in the United States, attributed primarily "
+    "to physician supply and practice style.{20} Comparable patterns have been "
     "described for the National Health Service in England,{21} Germany{22} and "
     "Australia.{23} Our study extends this evidence by exploiting Japan's "
     "uniform fee schedule combined with prefecture-specific auditing to "
@@ -973,7 +988,7 @@ add_para(
     "anaesthesia technique under universal coverage in East Asia using publicly "
     "available, nationwide standardised claim ratios. The "
     "university hospital effect we report (Cohen's d = ${L008_d}) is "
-    "substantial, plausibly reflecting the influence of the ikyoku (university "
+    "substantial and consistent with the influence of the ikyoku (university "
     "medical office) system on practice in affiliated hospitals.{24}")
 
 add_para(
@@ -1001,9 +1016,10 @@ add_para(
     "implications. Neuraxial anaesthesia and epidural analgesia are associated "
     "with reduced postoperative opioid consumption, lower postoperative nausea "
     "and vomiting, and faster recovery in selected populations.{7-9} "
-    "Geographic variation in these techniques therefore translates into "
-    "variation in potentially modifiable patient outcomes, not merely variation "
-    "in billing. Because the observed gradient is not explained by "
+    "Geographic variation in these techniques therefore raises the possibility "
+    "that billing variation corresponds to variation in care processes that are "
+    "associated with modifiable patient outcomes, not merely to variation in "
+    "billing. Because the observed gradient is not explained by "
     "differential auditing, interventions may warrant targeting workforce "
     "distribution, training and organisational capacity rather than coding "
     "compliance.")
@@ -1033,7 +1049,7 @@ add_para(
     "Japan is substantial and appears to reflect structural access factors -- "
     "notably proximity to university hospitals -- more than prefectural claims "
     "auditing. The pattern is best interpreted as a documented service-delivery "
-    "gradient that reflects potentially inequitable access to neuraxial techniques. In "
+    "gradient that is consistent with potentially inequitable access to neuraxial techniques. In "
     "countries without universal coverage or with heterogeneous reimbursement, "
     "the audit hypothesis cannot be isolated, although the structural-access "
     "framework can be adapted if comparable data exist. Perioperative surveillance "
@@ -1141,6 +1157,18 @@ for i, ref in enumerate(REFERENCES, 1):
     run = p.add_run(Template(ref).substitute(FLAT))
     run.font.name = 'Times New Roman'
     run.font.size = Pt(12)
+
+# BMC Health Services Research requires figures to be uploaded separately; the
+# main manuscript contains the figure legends after the reference list.
+if _figure_legends:
+    add_heading("Figure legends", level=1)
+    for legend in _figure_legends:
+        p = doc.add_paragraph()
+        p.paragraph_format.space_after = Pt(12)
+        run = p.add_run(legend)
+        run.font.name = 'Times New Roman'
+        run.font.size = Pt(10)
+        run.bold = True
 
 # Word-count checks and title-page placeholder updates are performed after
 # the manuscript body is complete, so the counted text matches the saved docx.

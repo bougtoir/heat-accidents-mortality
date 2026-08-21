@@ -65,18 +65,19 @@ def build_deck(figures, out_path):
 figures_en = [
     (
         'rapm_fig1_en.png',
-        f'Figure 1. Geographic distribution of anaesthesia standardised claim ratios across {n_areas} secondary medical areas of Japan, fiscal year {fiscal_year}',
+        f'Figure 1. Geographic distribution of anaesthesia standardised claim ratios across {n_areas} secondary medical areas',
         '(A) General anaesthesia (L008). (B) Spinal anaesthesia (L004). '
         '(C) Epidural anaesthesia as main anaesthetic (L002). '
         '(D) Continuous epidural infusion (L003). Choropleth maps shaded '
         'by quintile of the standardised claim ratio (national average = 100). '
         'Red circles mark secondary medical areas containing at least one '
         'university hospital. Areas masked by the data provider owing to low '
-        'volume are shown in grey.',
+        'volume are shown in grey. '
+        f'Fiscal year {fiscal_year}.',
     ),
     (
         'rapm_fig2_en.png',
-        'Figure 2. University hospital presence and the combined general-anaesthesia plus continuous-epidural measure.',
+        'Figure 2. University hospital presence and the combined general-epidural measure.',
         f'(A) Geographic distribution of secondary medical areas containing at least one '
         f'university hospital (n = {n_univ} of {n_areas}; red). (B) Choropleth map of the '
         f'combined general-anaesthesia plus continuous-epidural standardised '
