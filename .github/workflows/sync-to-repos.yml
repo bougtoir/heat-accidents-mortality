@@ -59,6 +59,7 @@ jobs:
           BRANCH_MAP["devin/1774690359-anesthesia-regional-variation-japan"]="anesthesia-regional-variation-japan"
           BRANCH_MAP["devin/1774690362-vaporizer-price-study"]="vaporizer-price-study"
           BRANCH_MAP["devin/1774690371-ndb-pain-regional-variation-japan"]="ndb-pain-regional-variation-japan"
+          BRANCH_MAP["devin/1787302315-joppp-submission"]="bbb-bhb-research"
           BRANCH_MAP["devin/1784701921-ndb-dea-drug-lag"]="ndb-dea-drug-lag"
           BRANCH_MAP["scoping-review/hansens-disease-work-visa-screening"]="hansens-disease-work-visa-screening"
           BRANCH_MAP["tasuki-electoral-model"]="tasuki-electoral-model"
@@ -253,6 +254,8 @@ jobs:
           # SUBDIR_MAP["devin/1786439000-cover-letter"]="medical_accident_its_analysis"
           SUBDIR_MAP["devin/1786764182-bpp-submission"]="medical_accident_its_analysis"
           SUBDIR_MAP["devin/1784701921-ndb-dea-drug-lag"]="ndb-dea-drug-lag"
+          # New JoPPP submission package for the regional analgesic variation study
+          SUBDIR_MAP["devin/1787302315-joppp-submission"]="ndb-pain-regional-variation-japan"
           SUBDIR_MAP["devin/1778846737-flood-prediction-models"]="flood-prediction-review"
           SUBDIR_MAP["devin/1777462980-spectral-causality-brainstorm"]="spectral-causality-brainstorm"
           SUBDIR_MAP["devin/1777863337-spectral-causality-jmlr"]="spectral-causality-jmlr"
