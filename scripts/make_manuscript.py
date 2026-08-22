@@ -325,21 +325,19 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
 
     h(doc, "Summary", 1)
     labelled(doc, "Background ",
-             "Ambient heat is an established risk factor for mortality, and heat waves are "
-             "increasing. Because driving continues in heat, some fatal crashes may involve "
-             "heat-related impairment or unrecorded heat illness. We estimated the US traffic-crash "
-             "mortality burden and explored the same question in Japan.")
+             "Ambient heat is an established mortality risk factor and heat waves are "
+             "increasing; because driving continues in heat, fatal crashes may involve "
+             "heat-related impairment or unrecorded heat illness.")
     labelled(doc, "Methods ",
-             "We fitted quasi-Poisson distributed-lag models of the local seasonal "
-             "temperature anomaly to state-day (USA) and prefecture-day (Japan) panels, "
-             "adjusting for spatial, seasonal, trend and day-of-week terms. Data were FARS "
-             "(2016-2022), Japanese NPA accident open data (2019-2024) and GHCN-Daily "
-             "temperature.")
+             "We fitted quasi-Poisson distributed-lag models of local seasonal "
+             "temperature anomalies to US state-day and Japan prefecture-day panels, "
+             "adjusting for spatial, seasonal, trend and day-of-week effects. Data were FARS "
+             "(2016-2022), Japanese NPA open data (2019-2024) and GHCN-Daily.")
     labelled(doc, "Findings ",
              f"In the USA ({int(float(US['total_deaths'])):,} crash deaths), a +9\u00b0C anomaly "
-             f"was associated with higher same-day crash mortality, RR {rr(US, 'sameday_RR_anom+9C')}, "
-             "and the association remained positive after adjustment for driving activity, RR "
-             f"{f(CTRL['sameday_RR_anom+9C'])} (95% CI {f(CTRL['sameday_RR_lo'])}-{f(CTRL['sameday_RR_hi'])}). The excess was larger "
+             f"raised same-day crash mortality, RR {rr(US, 'sameday_RR_anom+9C')}, "
+             "and remained robust to adjustment for driving activity (RR "
+             f"{f(CTRL['sameday_RR_anom+9C'])}, 95% CI {f(CTRL['sameday_RR_lo'])}-{f(CTRL['sameday_RR_hi'])}). The excess was larger "
              f"for open-air users (motorcyclists RR {f(USER['motorcyclist']['sameday_RR_+9C'])}, "
              f"pedestrians RR {f(USER['pedestrian']['sameday_RR_+9C'])}) than vehicle occupants "
              f"(RR {f(USER['vehicle_occupant']['sameday_RR_+9C'])}). Net heat-attributable deaths "
@@ -349,15 +347,15 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
              "+1 to +3\u00b0C warming projected "
              f"{float(PROJ_D[1]['extra_deaths_per_year']):.0f}-"
              f"{float(PROJ_D[3]['extra_deaths_per_year']):.0f} additional deaths per year. "
-             f"An exploratory Japan comparison ({int(float(JP['total_deaths'])):,} deaths) "
-             "found the data too sparse for a precise estimate.")
+             f"Japan data ({int(float(JP['total_deaths'])):,} deaths) were too sparse for a "
+             "precise estimate.")
     labelled(doc, "Interpretation ",
              "Unusually hot days are associated with an acute excess of US crash "
              "deaths comparable to recorded direct-heat mortality, concentrated in "
              "heat-exposed road users and projected to grow with warming. This is "
-             "consistent with an under-recognised heat contribution, but the study cannot establish "
-             "heat illness in any individual crash and the open-air gradient may partly "
-             "reflect weather-related activity. The findings suggest heat-aware road safety "
+             "consistent with an under-recognised heat contribution, but cannot establish "
+             "heat illness in any individual crash and open-air gradient may partly "
+             "reflect weather-related activity. Findings suggest heat-aware road safety "
              "and climate adaptation planning could address an uncounted burden.")
     labelled(doc, "Funding ", "None.")
 

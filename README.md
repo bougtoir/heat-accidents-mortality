@@ -55,6 +55,7 @@ export EIA_API_KEY=...      # for US gasoline (sensitivity only)
 make all          # build data, fit US + Japan models, make figures
 make manuscript   # build DOCX + editable PPTX (after `make all`)
 make aap          # build Accident Analysis & Prevention submission package
+make ehp          # build Environmental Health Perspectives submission package
 make test         # light unit tests
 ```
 
@@ -72,7 +73,7 @@ The `submission_*` outputs target The Lancet Planetary Health (semi-structured
 250-word summary, Research-in-context panel, superscript Vancouver citations,
 STROBE); author/funding/COI fields are placeholders.
 
-|`make aap` produces the Accident Analysis & Prevention submission package under
+`make aap` produces the Accident Analysis & Prevention submission package under
 `output/manuscript/`:
 
 - `heat_crash_mortality_aap.docx` — main manuscript with inline figures/tables,
@@ -87,7 +88,20 @@ STROBE); author/funding/COI fields are placeholders.
   `figures.pptx` and `strobe_checklist.docx`.
 
 All numbers, figures and tables are produced by the existing pipeline; the AAP
-script re-uses `make_manuscript.py` and only reformats text and citations.
+and EHP scripts re-use `make_manuscript.py` and only reformat text and citations.
+
+`make ehp` produces the Environmental Health Perspectives submission package under
+`output/manuscript/`:
+
+- `heat_crash_mortality_ehp.docx` — main manuscript with inline figures/tables,
+  structured abstract (Background, Objectives, Methods, Results, Discussion),
+  keywords, and EHP-style numbered sections and declarations;
+- `heat_crash_mortality_ehp_legends.docx` — optional legends-only version;
+- `ehp_cover_letter.docx` — cover letter including the EHP Statement of
+  Contribution and Environmental-Health Significance;
+- `ehp_submission_figures/` — separate `Figure1..N.{png,pdf}` files;
+- `ehp_submission_package.zip` — bundle of the above plus `tables.docx`,
+  `figures.pptx` and `strobe_checklist.docx`.
 
 Raw downloads are cached under `data/raw/`; re-running skips existing files.
 
