@@ -122,10 +122,65 @@ def _std(x):
     return (s - mu) / (sd if sd > 0 else 1)
 
 
-def _sensitivity_row(m, label):
+VIF_THRESHOLD = 5.0
+
+
+def _vif(X, col):
+    """Variance inflation factor for a single column of the design matrix."""
+    if col not in X.columns:
+        return np.nan
+    y = X[col].values.astype(float)
+    Xo = X.drop(columns=[col]).values.astype(float)
+    Xo = np.column_stack([np.ones(len(Xo), dtype=float), Xo])
+    coef, *_ = np.linalg.lstsq(Xo, y, rcond=None)
+    pred = Xo @ coef
+    ss_res = np.sum((y - pred) ** 2)
+    ss_tot = np.sum((y - y.mean()) ** 2)
+    r2 = 1 - ss_res / ss_tot if ss_tot > 0 else 0.0
+    return float(1.0 / max(1.0 - r2, 1e-12))
+
+
+def _fit_vif_screened(df, exposure, confounder_fn, extra, offset, group, label,
+                      vif_threshold=VIF_THRESHOLD):
+    """Iteratively remove added controls whose VIF exceeds the threshold.
+
+    Returns the final model, the VIF dict for retained controls, and a list of
+    dropped variables with their pre-drop VIFs.
+    """
+    remaining = list(extra.columns)
+    current_extra = extra.copy()
+    dropped = []
+    while remaining:
+        m = fit_model(df, exposure, confounder_fn, extra=current_extra,
+                      offset=offset, group=group)
+        present = [c for c in remaining if c in m["X"].columns]
+        if not present:
+            dropped.extend(remaining)
+            break
+        vifs = {c: _vif(m["X"], c) for c in present}
+        worst = max(vifs, key=vifs.get)
+        if vifs[worst] <= vif_threshold:
+            break
+        dropped.append(f"{worst} (VIF={vifs[worst]:.1f})")
+        remaining.remove(worst)
+        current_extra = current_extra[remaining]
+    m = fit_model(df, exposure, confounder_fn, extra=current_extra,
+                  offset=offset, group=group)
+    row, v = _sensitivity_row(m, label, remaining)
+    row["dropped"] = "; ".join(dropped) if dropped else "none"
+    return row, v, dropped
+
+
+def _sensitivity_row(m, label, extra_cols=None):
     s0 = bin_response(m, 9.0, 0.0).iloc[0]
     s9 = cumulative_curve(m, [9.0], 0.0).iloc[0]
-    return {
+    vif = {}
+    if extra_cols and "X" in m:
+        for c in extra_cols:
+            v = _vif(m["X"], c)
+            if not np.isnan(v):
+                vif[c] = v
+    row = {
         "model": label,
         "sameday_RR_anom+9C": round(float(s0.rr), 3),
         "sameday_RR_lo": round(float(s0.lo), 3),
@@ -134,6 +189,11 @@ def _sensitivity_row(m, label):
         "cumRR_lo": round(float(s9.lo), 3),
         "cumRR_hi": round(float(s9.hi), 3),
     }
+    if vif:
+        row["max_control_VIF"] = round(max(vif.values()), 2)
+    else:
+        row["max_control_VIF"] = np.nan
+    return row, vif
 
 
 def main():
@@ -184,6 +244,7 @@ def main():
             f"{r.extra_deaths_per_year:.0f} ({r.extra_lo:.0f}-{r.extra_hi:.0f})"
 
     sensitivity_rows = []
+    vif_rows = []
     ctrl_path = os.path.join(PROC, "driving_controls.csv")
     if os.path.exists(ctrl_path):
         c = pd.read_csv(ctrl_path, parse_dates=["date"])
@@ -192,32 +253,92 @@ def main():
         for col in ("vmt", "gasoline"):
             extra[col] = _std(cc[col].values)
         mc = fit_model(df, "anom", confounders, extra=extra, group="unit")
-        sensitivity_rows.append(_sensitivity_row(mc, "with_VMT_gasoline_controls"))
+        row, v = _sensitivity_row(mc, "with_national_VMT_gasoline", list(extra.columns))
+        sensitivity_rows.append(row)
+        for col, val in v.items():
+            vif_rows.append({"model": row["model"], "variable": col, "VIF": round(val, 2)})
 
     if "population" in df.columns and df.population.notna().any():
-        extra_full = pd.DataFrame(index=df.index)
-        if ctrl_path and os.path.exists(ctrl_path):
-            for col in ("vmt", "gasoline"):
-                extra_full[col] = _std(cc[col].values)
-        extra_full["vmt_state"] = _std(df.vmt_millions)
-        extra_full["prcp"] = _std(df.prcp)
-        for col in ("humidex_anom", "heat_index_anom", "wbgt_est_anom"):
-            if col in df.columns and df[col].notna().any():
-                extra_full[col] = _std(df[col])
         log_pop = np.log(df.population)
-        mfull = fit_model(df, "anom", confounders, extra=extra_full, offset=log_pop, group="unit")
-        sensitivity_rows.append(_sensitivity_row(mfull, "with_population_stateVMT_prcp_humidity"))
-        res["sameday_RR_+9C_ctrl"] = round(float(bin_response(mfull, 9.0, 0.0).iloc[0].rr), 3)
-        res["sameday_RR_+9C_ctrl_lo"] = round(float(bin_response(mfull, 9.0, 0.0).iloc[0].lo), 3)
-        res["sameday_RR_+9C_ctrl_hi"] = round(float(bin_response(mfull, 9.0, 0.0).iloc[0].hi), 3)
+
+        # Staged state-level controls, adding one variable at a time to avoid
+        # simultaneous inclusion of multiple highly correlated heat-stress metrics.
+        base = pd.DataFrame(index=df.index)
+        base["vmt_state"] = _std(df.vmt_millions)
+
+        m_pop = fit_model(df, "anom", confounders, offset=log_pop, group="unit")
+        row, _ = _sensitivity_row(m_pop, "with_population_offset")
+        sensitivity_rows.append(row)
+
+        m_vmt = fit_model(df, "anom", confounders, extra=base, offset=log_pop, group="unit")
+        row, v = _sensitivity_row(m_vmt, "with_population_stateVMT", ["vmt_state"])
+        sensitivity_rows.append(row)
+        for col, val in v.items():
+            vif_rows.append({"model": row["model"], "variable": col, "VIF": round(val, 2)})
+
+        extra = base.copy(); extra["prcp"] = _std(df.prcp)
+        m_prcp = fit_model(df, "anom", confounders, extra=extra, offset=log_pop, group="unit")
+        row, v = _sensitivity_row(m_prcp, "with_population_stateVMT_prcp", ["vmt_state", "prcp"])
+        sensitivity_rows.append(row)
+        for col, val in v.items():
+            vif_rows.append({"model": row["model"], "variable": col, "VIF": round(val, 2)})
+
+        for metric, label in (("humidex_anom", "humidex"),
+                              ("heat_index_anom", "heat_index"),
+                              ("wbgt_est_anom", "wbgt")):
+            if metric in df.columns and df[metric].notna().any():
+                e2 = extra.copy()
+                e2[metric] = _std(df[metric])
+                m_h = fit_model(df, "anom", confounders, extra=e2, offset=log_pop, group="unit")
+                extra_cols = ["vmt_state", "prcp", metric]
+                row, v = _sensitivity_row(m_h,
+                    f"with_population_stateVMT_prcp_{label}", extra_cols)
+                sensitivity_rows.append(row)
+                for col, val in v.items():
+                    vif_rows.append({"model": row["model"], "variable": col, "VIF": round(val, 2)})
+
+        # VIF-screened full-controls: begin with state VMT, precipitation and all
+        # available heat-stress metrics, then iteratively drop the control with the
+        # highest VIF until all retained controls have VIF < threshold.  This is the
+        # primary full-controls model reported in the manuscript.
+        vif_candidates = base.copy()
+        vif_candidates["prcp"] = _std(df.prcp)
+        for metric, label in (("humidex_anom", "humidex"),
+                              ("heat_index_anom", "heat_index"),
+                              ("wbgt_est_anom", "wbgt")):
+            if metric in df.columns and df[metric].notna().any():
+                vif_candidates[metric] = _std(df[metric])
+        vif_row, v_vif, dropped = _fit_vif_screened(
+            df, "anom", confounders, vif_candidates, log_pop, "unit",
+            "with_population_stateVMT_prcp_VIFscreened")
+        sensitivity_rows.append(vif_row)
+        for col, val in v_vif.items():
+            vif_rows.append({"model": vif_row["model"], "variable": col, "VIF": round(val, 2)})
+
+        chosen = vif_row
+        res["sameday_RR_+9C_ctrl"] = chosen["sameday_RR_anom+9C"]
+        res["sameday_RR_+9C_ctrl_lo"] = chosen["sameday_RR_lo"]
+        res["sameday_RR_+9C_ctrl_hi"] = chosen["sameday_RR_hi"]
+        res["cumRR_+9C_ctrl"] = chosen["cumRR_anom+9C"]
+        res["cumRR_+9C_ctrl_lo"] = chosen["cumRR_lo"]
+        res["cumRR_+9C_ctrl_hi"] = chosen["cumRR_hi"]
+        res["max_control_VIF"] = chosen.get("max_control_VIF")
     elif sensitivity_rows:
-        res["sameday_RR_+9C_ctrl"] = sensitivity_rows[0]["sameday_RR_anom+9C"]
-        res["sameday_RR_+9C_ctrl_lo"] = sensitivity_rows[0]["sameday_RR_lo"]
-        res["sameday_RR_+9C_ctrl_hi"] = sensitivity_rows[0]["sameday_RR_hi"]
+        chosen = sensitivity_rows[0]
+        res["sameday_RR_+9C_ctrl"] = chosen["sameday_RR_anom+9C"]
+        res["sameday_RR_+9C_ctrl_lo"] = chosen["sameday_RR_lo"]
+        res["sameday_RR_+9C_ctrl_hi"] = chosen["sameday_RR_hi"]
+        res["cumRR_+9C_ctrl"] = chosen["cumRR_anom+9C"]
+        res["cumRR_+9C_ctrl_lo"] = chosen["cumRR_lo"]
+        res["cumRR_+9C_ctrl_hi"] = chosen["cumRR_hi"]
+        res["max_control_VIF"] = chosen.get("max_control_VIF")
 
     if sensitivity_rows:
         pd.DataFrame(sensitivity_rows).to_csv(
             os.path.join(PROC, "us_sensitivity_controls.csv"), index=False)
+    if vif_rows:
+        pd.DataFrame(vif_rows).to_csv(
+            os.path.join(PROC, "us_sensitivity_vif.csv"), index=False)
 
     dfy = m["d"].assign(an=an_hot, year=m["d"].date.dt.year)
     per_year = dfy.groupby("year").agg(deaths=("deaths", "sum"), heat_an=("an", "sum")).reset_index()

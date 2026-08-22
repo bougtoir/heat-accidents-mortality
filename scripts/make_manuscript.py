@@ -43,10 +43,21 @@ US_LAG = {r["window"]: r for r in read_csv("us_lag_response.csv")}
 JP_LAG = {r["window"]: r for r in read_csv("jp_lag_response.csv")}
 CDC = read_csv("cdc_heat_deaths.csv")
 CTRL_ROWS = {r["model"]: r for r in read_csv("us_sensitivity_controls.csv")}
-CTRL = (CTRL_ROWS.get("with_population_stateVMT_prcp_humidity")
-        or CTRL_ROWS.get("with_VMT_gasoline_controls")
+CTRL = (CTRL_ROWS.get("with_population_stateVMT_prcp_VIFscreened")
+        or CTRL_ROWS.get("with_population_stateVMT_prcp")
+        or CTRL_ROWS.get("with_national_VMT_gasoline")
         or list(CTRL_ROWS.values())[0])
-CTRL_VMT = CTRL_ROWS.get("with_VMT_gasoline_controls", CTRL)
+CTRL_VMT = CTRL_ROWS.get("with_national_VMT_gasoline", CTRL)
+
+
+def _ctrl_dropped_names():
+    d = CTRL.get("dropped", "")
+    if not d or d == "none" or str(d).lower() in ("nan", "none"):
+        return "none"
+    return ", ".join([x.split("(", 1)[0].strip() for x in str(d).split(";")])
+
+CTRL_DROPPED_NAMES = _ctrl_dropped_names()
+CTRL_KEPT_NAMES = "log-population offset and daily precipitation" if CTRL_DROPPED_NAMES != "none" else "all controls"
 SUB = read_csv("us_subgroup_response.csv")
 TOD = read_csv("us_timeofday_response.csv")
 PROJ = read_csv("us_projection.csv")
@@ -294,6 +305,18 @@ def subrr(d):
     return f"{f(d['sameday_RR_+9C'])} ({f(d['sameday_lo'])}-{f(d['sameday_hi'])})"
 
 
+def ctrlrr(r):
+    """Same-day RR from a sensitivity-controls row."""
+    return f"{f(r['sameday_RR_anom+9C'])} ({f(r['sameday_RR_lo'])}-{f(r['sameday_RR_hi'])})"
+
+
+def ctrlcum(r):
+    """Cumulative RR from a sensitivity-controls row."""
+    return f"{f(r['cumRR_anom+9C'])} ({f(r['cumRR_lo'])}-{f(r['cumRR_hi'])})"
+
+
+
+
 def tbl4(doc):
     add_table(doc, 3, "United States same-day rate ratio of crash death for a +9 °C anomaly, "
               "by road-user type and age band (vulnerability analysis).",
@@ -315,6 +338,60 @@ def tbl5(doc):
                 f"{float(PROJ_D[d]['extra_deaths_per_year']):.0f} "
                 f"({float(PROJ_D[d]['extra_lo']):.0f}-{float(PROJ_D[d]['extra_hi']):.0f})"]
                for d in (1, 2, 3)])
+
+
+SENS_LABELS = {
+    "with_national_VMT_gasoline": "National VMT + motor gasoline",
+    "with_population_offset": "State population offset",
+    "with_population_stateVMT": "+ state annual VMT",
+    "with_population_stateVMT_prcp": "+ state VMT + precipitation",
+    "with_population_stateVMT_prcp_humidex": "+ humidex anomaly",
+    "with_population_stateVMT_prcp_heat_index": "+ heat-index anomaly",
+    "with_population_stateVMT_prcp_wbgt": "+ estimated WBGT anomaly",
+    "with_population_stateVMT_prcp_VIFscreened": "VIF-screened full controls",
+}
+SENS_ORDER = [
+    "with_national_VMT_gasoline",
+    "with_population_offset",
+    "with_population_stateVMT",
+    "with_population_stateVMT_prcp",
+    "with_population_stateVMT_prcp_VIFscreened",
+    "with_population_stateVMT_prcp_humidex",
+    "with_population_stateVMT_prcp_heat_index",
+    "with_population_stateVMT_prcp_wbgt",
+]
+
+
+def _vif_cell(r):
+    v = r.get("max_control_VIF")
+    if v in ("", "nan", "NaN", None) or (isinstance(v, float) and np.isnan(v)):
+        return "-"
+    try:
+        return f"{float(v):.1f}"
+    except (TypeError, ValueError):
+        return str(v)
+
+
+def tbl6(doc):
+    rows = []
+    for key in SENS_ORDER:
+        if key not in CTRL_ROWS:
+            continue
+        r = CTRL_ROWS[key]
+        rows.append([
+            SENS_LABELS.get(key, key),
+            ctrlrr(r),
+            ctrlcum(r),
+            _vif_cell(r),
+        ])
+    add_table(doc, 6, "United States sensitivity of the +9 \u00b0C anomaly association to activity, "
+              "precipitation and heat-stress controls. All added continuous controls were z-scored; "
+              "population entered as a log offset; heat-stress metrics were anomaly-derived. The "
+              "VIF-screened row is the primary full-controls model, selected by iteratively removing "
+              "added controls with VIF > 5. Heat-stress metrics were tested individually because they "
+              "are functions of temperature and can be collinear with the anomaly.",
+              ["Model", "Same-day RR (95% CI)", "Cumulative RR (95% CI)", "Max control VIF"],
+              rows)
 
 
 def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
@@ -354,9 +431,9 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
     labelled(doc, "Findings ",
              f"In the USA ({int(float(US['total_deaths'])):,} crash deaths), a +9\u00b0C anomaly "
              f"raised same-day crash mortality, RR {rr(US, 'sameday_RR_anom+9C')}, "
-             "and remained similar after additionally adjusting for state population, "
-             "state vehicle-miles travelled, precipitation and heat-stress metrics (RR "
-             f"{f(CTRL['sameday_RR_anom+9C'])}, 95% CI {f(CTRL['sameday_RR_lo'])}-{f(CTRL['sameday_RR_hi'])}). The excess was larger "
+             "and remained similar in a VIF-screened model adjusting for state population (offset) "
+             f"and precipitation (VIF > 5 iteratively dropped {CTRL_DROPPED_NAMES}; RR "
+             f"{ctrlrr(CTRL)}; cumulative RR {ctrlcum(CTRL)}). The excess was larger "
              f"for open-air users (motorcyclists RR {f(USER['motorcyclist']['sameday_RR_+9C'])}, "
              f"pedestrians RR {f(USER['pedestrian']['sameday_RR_+9C'])}) than vehicle occupants "
              f"(RR {f(USER['vehicle_occupant']['sameday_RR_+9C'])}). Net heat-attributable deaths "
@@ -476,9 +553,19 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
          "intervals (CIs). As sensitivity analyses for the US we added (i) national "
          f"vehicle-miles travelled (VMT){cite('fhwa')} and finished-motor-gasoline product supplied"
          f"{cite('eia')} as activity proxies, and (ii) a richer control set with state annual "
-         f"population (used as an offset){cite('census_pep')}, state annual VMT"
-         f"{cite('fhwa_vm2')}, daily state precipitation, and the GHCN-derived heat-stress "
-         "metrics as additional exposures or confounders. Officially recorded direct-heat deaths "
+         f"population entered as a log offset{cite('census_pep')}, state annual VMT"
+         f"{cite('fhwa_vm2')} and daily state precipitation, all as z-scored linear terms except "
+         "the population offset, plus GHCN-derived heat-stress metrics (humidex, NOAA heat index, "
+         "and an estimated wet-bulb globe temperature) expressed as anomalies relative to their "
+         "day-of-year climatology. Because heat-stress metrics are functions of temperature and can "
+         "be collinear with the anomaly exposure, we selected the primary full-controls model by a "
+         "variance-inflation-factor (VIF) screen (iteratively dropping added controls with VIF > 5), "
+         "and tested the heat-stress metrics individually as sensitivity analyses. "
+         "State fixed effects capture time-invariant cross-state differences in baseline risk, while the "
+         "log-population offset scales expected counts within each state across years; because state "
+         "annual VMT is correlated with population size, the two partly adjust for the same scale factor, "
+         "so their simultaneous use is reported as a sensitivity analysis rather than the primary specification. "
+         "Officially recorded direct-heat deaths "
          "(International Classification of Diseases, 10th revision [ICD-10] code X30) were "
          f"obtained from CDC WONDER.{cite('cdc')} We performed three further US analyses: (i) "
          "refitting the same-day model within crash-hour bands to test whether the excess "
@@ -530,10 +617,18 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
          "(harvesting) rather than a net addition of deaths (Fig. 3; Table 2). The "
          "same-day association was essentially unchanged after adjusting for national "
          f"vehicle-miles travelled and gasoline supplied (RR {f(CTRL_VMT['sameday_RR_anom+9C'])}, "
-         f"95% CI {f(CTRL_VMT['sameday_RR_lo'])}-{f(CTRL_VMT['sameday_RR_hi'])}); it remained similar when we further added "
-         f"state population (offset), state VMT, precipitation and heat-stress metrics (RR "
-         f"{f(CTRL['sameday_RR_anom+9C'])}, 95% CI {f(CTRL['sameday_RR_lo'])}-{f(CTRL['sameday_RR_hi'])}), "
-         "suggesting that driving volume and weather-related activity alone do not explain the effect.")
+         f"95% CI {f(CTRL_VMT['sameday_RR_lo'])}-{f(CTRL_VMT['sameday_RR_hi'])}; "
+         f"cumulative RR {ctrlcum(CTRL_VMT)}). A variance-inflation-factor (VIF) screened full-controls "
+         "model—starting with state population as a log offset plus z-scored state annual VMT, daily "
+         "precipitation and the three heat-stress metrics, then iteratively dropping any added control "
+         f"with VIF > 5—retained only the {CTRL_KEPT_NAMES}. "
+         f"Iteratively dropped variables were {CTRL_DROPPED_NAMES}. "
+         "Its same-day RR remained similar "
+         f"(RR {ctrlrr(CTRL)}, 95% CI {f(CTRL['sameday_RR_lo'])}-{f(CTRL['sameday_RR_hi'])}), "
+         f"but the cumulative 0-10 day RR was attenuated (RR {ctrlcum(CTRL)}). "
+         "Heat-stress metrics were tested individually because they are functions of temperature and can be "
+         "collinear with the anomaly; they yielded variable same-day estimates and the heat-index model "
+         "attenuated toward the null.")
     add_figure(doc, FIGURES[2][0], 3, FIGURES[2][1])
     tbl2(doc)
     para(doc,
@@ -585,6 +680,15 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
          "assume the anomaly response is stable under a warmer mean climate.")
     add_figure(doc, FIGURES[7][0], 8, FIGURES[7][1])
     tbl5(doc)
+    para(doc,
+         "Sensitivity to activity, precipitation and heat-stress controls is summarized in Table 6. "
+         "All added continuous terms were z-scored linear terms; state population entered as a log offset, "
+         "and heat-stress metrics were expressed as anomalies relative to their day-of-year climatology. "
+         "The primary full-controls model was selected by iteratively removing added controls with VIF > 5; "
+         f"dropped variables were {CTRL.get('dropped', 'none')}. "
+         "Heat-stress metrics showed high collinearity with the temperature anomaly when entered individually, "
+         "so they are reported separately as sensitivity analyses rather than being included simultaneously.")
+    tbl6(doc)
     h(doc, "Exploratory external validation: Japan comparison", 2)
     para(doc,
          "We did not pool the Japanese estimates with the US estimates; the comparison is "
@@ -607,10 +711,11 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
          f"{float(US['net_heat_attributable_hi'])/float(US['years']):.0f}), "
          f"similar to the {CDC_MEAN:.0f} officially recorded direct-heat deaths per year. "
          "This acute, same-day excess was not explained by aggregate driving activity, and "
-         f"it remained after additionally controlling for state population (offset), state VMT, "
-         f"precipitation and heat-stress metrics (RR {f(CTRL['sameday_RR_anom+9C'])} "
-         f"[{f(CTRL['sameday_RR_lo'])}-{f(CTRL['sameday_RR_hi'])}]), although the cumulative "
-         "0-10 day estimate became imprecise in that richer specification. The 1-3 day deficit "
+         "it remained in the VIF-screened full-controls model (added controls iteratively removed "
+         f"when VIF > 5, retaining only the {CTRL_KEPT_NAMES}; dropped: {CTRL_DROPPED_NAMES}), "
+         f"RR {ctrlrr(CTRL)}, 95% CI {f(CTRL['sameday_RR_lo'])}-{f(CTRL['sameday_RR_hi'])}). "
+         f"The cumulative 0-10 day RR in that model was attenuated (RR {ctrlcum(CTRL)}). "
+         "The 1-3 day deficit "
          "indicates that part of the excess reflects short-term displacement (harvesting). These "
          "findings are consistent with heat-related impairment or under-recognised heat illness "
          f"contributing to road deaths without appearing in cause-of-death data.{cite('liang2022','liang2021_aap')}")
@@ -755,7 +860,7 @@ def build_pptx():
 def build_tables_docx():
     doc = Document(); setup(doc)
     doc.add_heading("Tables (editable)", 1)
-    tbl1(doc); tbl2(doc); tbl4(doc); tbl3(doc); tbl5(doc)  # display order 1,2,3,4,5
+    tbl1(doc); tbl2(doc); tbl4(doc); tbl3(doc); tbl5(doc); tbl6(doc)
     path = os.path.join(MAN, "tables.docx"); doc.save(path); print("wrote", path)
 
 
@@ -776,8 +881,8 @@ STROBE_ITEMS = [
     ("12", "Statistical methods", "Methods (quasi-Poisson DLM, attributable risk, projections, subgroups)"),
     ("13", "Descriptive data", "Results (panel sizes); Table 1"),
     ("14", "Outcome data", "Results; Tables 2-4"),
-    ("15", "Main results (estimates, CIs)", "Results; Tables 2-5; Figures 1-10"),
-    ("16", "Other analyses (subgroups, sensitivity)", "Results (activity controls, road-user/age/time-of-day, projection)"),
+    ("15", "Main results (estimates, CIs)", "Results; Tables 2-6; Figures 1-10"),
+    ("16", "Other analyses (subgroups, sensitivity)", "Results (activity, precipitation and heat-stress controls; road-user/age/time-of-day; projection); Table 6"),
     ("17", "Key results", "Discussion (first paragraph); Conclusion"),
     ("18", "Limitations", "Discussion (limitations paragraph)"),
     ("19", "Interpretation", "Discussion; Summary (Interpretation)"),

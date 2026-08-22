@@ -96,9 +96,17 @@ def load_counties():
     pop["state_fips"] = pop["state"].str.zfill(2)
     pop["county_fips"] = pop["county"].str.zfill(3)
     pop["POP"] = pd.to_numeric(pop["POP"], errors="coerce")
-    df = gaz.merge(pop[["state_fips", "county_fips", "POP"]],
-                   on=["state_fips", "county_fips"], how="inner")
-    df = df.dropna(subset=["lat", "lon", "POP"])
+    gaz = gaz.merge(pop[["state_fips", "county_fips", "POP"]],
+                    on=["state_fips", "county_fips"], how="left")
+    # Connecticut switched to planning-region GEOIDs in 2022; the 2023 Gazetteer
+    # GEOIDs no longer match the 2019 county FIPS used for population.  Fall back
+    # to land area (sq mi) weighting for any county whose population is missing.
+    fallback = gaz["POP"].isna() & gaz["ALAND_SQMI"].notna()
+    gaz.loc[fallback, "POP"] = gaz.loc[fallback, "ALAND_SQMI"]
+    if fallback.any():
+        print(f"  area-weighted fallback for {int(fallback.sum()):,} counties"
+              f" ({gaz.loc[fallback, 'NAME'].tolist()[:3]} ...)")
+    df = gaz.dropna(subset=["lat", "lon", "POP"])
     # keep only 50 states + DC (state fips 01-56, exclude territories >= 60)
     df = df[df.state_fips.astype(int) <= 56]
     print(f"  counties with centroid+population: {len(df):,}")

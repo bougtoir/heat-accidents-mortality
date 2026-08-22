@@ -79,7 +79,8 @@ def fit_model(df, exposure, confounder_fn, extra=None, offset=None,
     cov = cov * phi
     cols = list(X.columns); ci = [cols.index(c) for c in cb.colnames()]
     return dict(cb=cb, beta=beta[ci], cov=cov[np.ix_(ci, ci)], d=d, phi=phi,
-                cbX=X[cb.colnames()].values, npar=X.shape[1])
+                cbX=X[cb.colnames()].values, X=X, y=d.deaths.values,
+                npar=X.shape[1])
 
 
 def _ci(b, beta, cov):

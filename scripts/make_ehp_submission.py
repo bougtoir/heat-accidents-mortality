@@ -42,7 +42,7 @@ MAN = mm.MAN
 # ---------------------------------------------------------------------------
 EHP_KEYWORDS = (
     "heat; traffic crash; mortality; climate change; "
-    "road safety; distributed-lag model; environmental health"
+    "road safety; distributed-lag model"
 )
 
 EHP_REF_TEXT = {
@@ -127,12 +127,12 @@ EHP_COVER = """22 August 2026
 
 The Editor-in-Chief, Environmental Health Perspectives
 
-Dear Editors,
+Dear Editor-in-Chief,
 
 We submit for your consideration our manuscript, "Ambient heat as an under-recognised risk factor for US traffic-crash mortality: a distributed-lag analysis with road-safety implications", as a Research Article.
 
 Statement of Contribution and Environmental-Health Significance:
-Ambient heat is a well-established environmental exposure that increases all-cause and cardiovascular mortality, but its contribution to fatal road traffic crashes has been largely overlooked. Using only public data, this ecological time-series study shows that days hotter than the local seasonal norm carry an acute, same-day excess of US traffic-crash deaths. The excess survives adjustment for aggregate driving activity and remains after further control for state population, state vehicle-miles travelled, precipitation and heat-stress metrics. It is concentrated in heat-exposed open-air road users (motorcyclists, pedestrians and cyclists), and is comparable in magnitude to all officially recorded direct-heat deaths. Because these deaths continue to be coded as ordinary traffic crashes, the heat contribution remains invisible to heat-mortality surveillance and road-safety statistics, suggesting an uncounted environmental-health burden that would grow under continued warming and could be targeted by heat-aware road safety messaging and shared-mobility heat-adaptation measures.
+Ambient heat is a well-established environmental exposure that increases all-cause and cardiovascular mortality, but its contribution to fatal road traffic crashes has been largely overlooked. Using only public data, this ecological time-series study shows that days hotter than the local seasonal norm carry an acute, same-day excess of US traffic-crash deaths. The excess survives adjustment for aggregate driving activity and remains in a VIF-screened model with state population (log offset) and precipitation retained after iteratively dropping state vehicle-miles travelled and heat-stress metrics (VIF > 5); the heat-stress metrics, tested individually, yield variable cumulative estimates consistent with collinearity. The excess is concentrated in heat-exposed open-air road users (motorcyclists, pedestrians and cyclists), and is comparable in magnitude to all officially recorded direct-heat deaths. Because these deaths continue to be coded as ordinary traffic crashes, the heat contribution remains invisible to heat-mortality surveillance and road-safety statistics, suggesting an uncounted environmental-health burden that would grow under continued warming and could be targeted by heat-aware road safety messaging and shared-mobility heat-adaptation measures.
 
 This work advances the environmental health literature by (1) quantifying a hidden, climate-sensitive mortality burden in a cause-of-death category normally outside the scope of heat research, (2) showing that the open-air road-user gradient is consistent with direct heat exposure, and (3) providing reproducible national estimates and projections to inform climate adaptation and transportation safety policy. The analysis is intentionally transparent: all data and code are public at https://github.com/bougtoir/heat-accidents-mortality, and the pipeline is fully reproducible (make all for data and figures, then make ehp for the manuscript and submission package), with no hard-coded results.
 
