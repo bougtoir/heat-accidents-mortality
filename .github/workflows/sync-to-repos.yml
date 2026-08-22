@@ -28,7 +28,9 @@ jobs:
 
           # ── Heat and traffic-crash mortality (US FARS + Japan NPA, GHCN) ──
           # Track the merged mainline branch so the public repo reproduces the manuscript.
-          BRANCH_MAP["devin/1784701414-heat-accidents-mortality"]="heat-accidents-mortality"
+          # Superseded by devin/1787377663-ehp-submission (Environmental Health Perspectives).
+          # BRANCH_MAP["devin/1784701414-heat-accidents-mortality"]="heat-accidents-mortality"
+          BRANCH_MAP["devin/1787377663-ehp-submission"]="heat-accidents-mortality"
 
           # ── Original entries ──
           BRANCH_MAP["IONE-stratification-framework"]="ione-stratification-framework"
