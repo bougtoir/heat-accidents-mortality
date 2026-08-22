@@ -325,9 +325,10 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
 
     h(doc, "Summary", 1)
     labelled(doc, "Background ",
-             "Ambient heat is an established mortality risk factor and heat waves are "
-             "increasing; because driving continues in heat, fatal crashes may involve "
-             "heat-related impairment or unrecorded heat illness.")
+             "Ambient heat is an established mortality risk factor; because driving "
+             "continues in heat, fatal crashes may involve heat-related impairment or "
+             "unrecorded heat illness. We quantified the acute association between local "
+             "heat anomalies and daily traffic-crash mortality in the US and Japan.")
     labelled(doc, "Methods ",
              "We fitted quasi-Poisson distributed-lag models of local seasonal "
              "temperature anomalies to US state-day and Japan prefecture-day panels, "
