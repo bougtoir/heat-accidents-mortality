@@ -10,8 +10,15 @@ import matplotlib.pyplot as plt
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 PROC = os.path.join(ROOT, "data", "processed")
-FIG = os.path.join(ROOT, "output", "figures")
+BW = os.environ.get("FIGURES_BW") == "1"
+FIG = os.path.join(ROOT, "output", "figures_bw" if BW else "figures")
 os.makedirs(FIG, exist_ok=True)
+C_MAIN = "0.25" if BW else "tab:red"
+C_FILL = "0.55" if BW else "tab:orange"
+C_SEC = "0.25" if BW else "tab:blue"
+C_HOT = "0.2" if BW else "tab:red"
+C_COOL = "0.85" if BW else "tab:blue"
+C_OFF = "0.55" if BW else "tab:grey"
 plt.rcParams.update({"figure.dpi": 130, "font.size": 11, "axes.grid": True,
                      "grid.alpha": 0.3, "savefig.bbox": "tight"})
 
@@ -25,8 +32,8 @@ def save(fig, name):
 def fig_abs():
     d = pd.read_csv(os.path.join(PROC, "us_exposure_response_abs.csv"))
     fig, ax = plt.subplots(figsize=(6, 4))
-    ax.fill_between(d.tmean, d.lo, d.hi, alpha=0.2, color="tab:red")
-    ax.plot(d.tmean, d.rr, color="tab:red")
+    ax.fill_between(d.tmean, d.lo, d.hi, alpha=0.2, color=C_MAIN)
+    ax.plot(d.tmean, d.rr, color=C_MAIN)
     ax.axhline(1, ls="--", color="k", lw=0.8)
     ax.set_xlabel("Daily mean temperature (\u00b0C)")
     ax.set_ylabel("Rate ratio of crash deaths (vs MMT)")
@@ -37,8 +44,8 @@ def fig_abs():
 def fig_anom():
     d = pd.read_csv(os.path.join(PROC, "us_anomaly_response.csv"))
     fig, ax = plt.subplots(figsize=(6, 4))
-    ax.fill_between(d.anom, d.lo, d.hi, alpha=0.2, color="tab:orange")
-    ax.plot(d.anom, d.rr, color="tab:orange")
+    ax.fill_between(d.anom, d.lo, d.hi, alpha=0.2, color=C_FILL)
+    ax.plot(d.anom, d.rr, color=C_FILL)
     ax.axhline(1, ls="--", color="k", lw=0.8)
     ax.axvline(0, ls=":", color="grey", lw=0.8)
     ax.set_xlabel("Temperature anomaly vs local seasonal norm (\u00b0C)")
@@ -52,7 +59,7 @@ def fig_lag():
     fig, ax = plt.subplots(figsize=(6, 4))
     x = np.arange(len(d))
     ax.errorbar(x, d.rr, yerr=[d.rr - d.lo, d.hi - d.rr], fmt="o", capsize=4,
-                color="tab:blue")
+                color=C_SEC)
     ax.axhline(1, ls="--", color="k", lw=0.8)
     ax.set_xticks(x); ax.set_xticklabels(d.window)
     ax.set_xlabel("Lag window (days)")
@@ -64,7 +71,7 @@ def fig_lag():
 def fig_year():
     d = pd.read_csv(os.path.join(PROC, "us_attributable_by_year.csv"))
     fig, ax = plt.subplots(figsize=(6, 4))
-    ax.bar(d.year, d.heat_an, color="tab:red", alpha=0.8)
+    ax.bar(d.year, d.heat_an, color=C_MAIN, alpha=0.8, edgecolor="0.15")
     ax.set_xlabel("Year")
     ax.set_ylabel("Heat-attributable crash deaths")
     ax.set_title("D. Net crash deaths attributable to\nhotter-than-normal days, by year")
@@ -78,7 +85,9 @@ def fig_compare():
     fig, ax = plt.subplots(figsize=(6, 4))
     vals = [off, att.net_heat_attributable_per_year]
     labs = ["Official direct-heat\ndeaths (ICD-10 X30)", "Est. heat-attributable\ncrash deaths (this study)"]
-    ax.bar(labs, vals, color=["tab:grey", "tab:red"], alpha=0.85)
+    colors = [C_OFF, C_MAIN]
+    hatch = ["", "//"] if BW else ["", ""]
+    ax.bar(labs, vals, color=colors, alpha=0.85, edgecolor="0.15", hatch=hatch)
     for i, v in enumerate(vals):
         ax.text(i, v, f"{v:.0f}/yr", ha="center", va="bottom")
     ax.set_ylabel("Deaths per year (US)")
@@ -97,7 +106,7 @@ def fig_roaduser():
     fig, ax = plt.subplots(figsize=(6.2, 4))
     ax.errorbar(d["sameday_RR_+9C"], y,
                 xerr=[d["sameday_RR_+9C"] - d.sameday_lo, d.sameday_hi - d["sameday_RR_+9C"]],
-                fmt="o", capsize=4, color="tab:red")
+                fmt="o", capsize=4, color=C_MAIN)
     ax.axvline(1, ls="--", color="k", lw=0.8)
     ax.set_yticks(y); ax.set_yticklabels(d.lab)
     ax.set_xlabel("Same-day rate ratio for +9\u00b0C anomaly")
@@ -108,12 +117,21 @@ def fig_roaduser():
 def fig_timeofday():
     d = pd.read_csv(os.path.join(PROC, "us_timeofday_response.csv"))
     x = np.arange(len(d))
-    colors = ["tab:blue" if h != "12-17" else "tab:red" for h in d.hour_band]
     fig, ax = plt.subplots(figsize=(6, 4))
-    ax.errorbar(x, d["sameday_RR_+9C"],
-                yerr=[d["sameday_RR_+9C"] - d.sameday_lo, d.sameday_hi - d["sameday_RR_+9C"]],
-                fmt="o", capsize=4, color="k", zorder=3)
-    ax.scatter(x, d["sameday_RR_+9C"], c=colors, s=60, zorder=4)
+    if BW:
+        fill = [C_COOL if h != "12-17" else C_HOT for h in d.hour_band]
+        edge = ["0.15"] * len(d)
+        ax.errorbar(x, d["sameday_RR_+9C"],
+                    yerr=[d["sameday_RR_+9C"] - d.sameday_lo, d.sameday_hi - d["sameday_RR_+9C"]],
+                    fmt="none", ecolor="0.35", capsize=4, zorder=3)
+        ax.scatter(x, d["sameday_RR_+9C"], facecolors=fill, edgecolors=edge,
+                   s=70, zorder=4, linewidths=1.2)
+    else:
+        colors = ["tab:blue" if h != "12-17" else "tab:red" for h in d.hour_band]
+        ax.errorbar(x, d["sameday_RR_+9C"],
+                    yerr=[d["sameday_RR_+9C"] - d.sameday_lo, d.sameday_hi - d["sameday_RR_+9C"]],
+                    fmt="o", capsize=4, color="k", zorder=3)
+        ax.scatter(x, d["sameday_RR_+9C"], c=colors, s=60, zorder=4)
     ax.axhline(1, ls="--", color="k", lw=0.8)
     ax.set_xticks(x); ax.set_xticklabels(d.hour_band)
     ax.set_xlabel("Crash hour of day (local, h)")
@@ -126,7 +144,7 @@ def fig_projection():
     d = pd.read_csv(os.path.join(PROC, "us_projection.csv"))
     x = np.arange(len(d))
     fig, ax = plt.subplots(figsize=(6, 4))
-    ax.bar(x, d.extra_deaths_per_year, color="tab:red", alpha=0.85,
+    ax.bar(x, d.extra_deaths_per_year, color=C_MAIN, alpha=0.85, edgecolor="0.15",
            yerr=[d.extra_deaths_per_year - d.extra_lo, d.extra_hi - d.extra_deaths_per_year],
            capsize=5)
     for i, v in enumerate(d.extra_deaths_per_year):
