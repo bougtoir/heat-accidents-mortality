@@ -241,6 +241,7 @@ jobs:
           declare -A SUBDIR_MAP
 
           SUBDIR_MAP["devin/1784701414-heat-accidents-mortality"]="heat_accidents_mortality"
+          SUBDIR_MAP["devin/1787377663-ehp-submission"]="heat_accidents_mortality"
 
           # Problem B fixes (branches with unrelated folders mixed in)
           # SUBDIR_MAP["devin/1785490740-jmaj-revision-reanalysis"]="medical_accident_its_analysis"  # superseded
