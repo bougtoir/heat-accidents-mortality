@@ -220,11 +220,13 @@ FIGURES = [
      "United States same-day rate ratio of crash death for a +9 °C anomaly by road-user "
      "type. Open-air users (motorcyclists, pedestrians, cyclists) show much larger heat "
      "effects than enclosed, often air-conditioned, vehicle occupants\u2014a gradient that "
-     "tracks direct heat exposure rather than driving volume."),
+     "tracks direct heat exposure rather than driving volume. "
+     "This subgroup analysis is exploratory and is not adjusted for multiple comparisons."),
     ("fig_us_timeofday.png",
      "United States same-day rate ratio of crash death for a +9 °C anomaly by crash hour of "
      "day. The excess is largest for crashes in the hottest part of the day (12-17 h) and "
-     "weakest in the cool morning (06-11 h)."),
+     "weakest in the cool morning (06-11 h). "
+     "This subgroup analysis is exploratory and is not adjusted for multiple comparisons."),
     ("fig4_attributable_by_year.png",
      "United States estimated net heat-attributable crash deaths per year, "
      "2016-2022."),
@@ -243,8 +245,17 @@ FIGURES = [
     ("cross_fig_us_vs_japan_sameday.png",
      "Same-day rate ratio of traffic-crash deaths for a +9 °C anomaly, United States "
      "versus Japan. The US shows a precise acute effect; the Japanese estimate is "
-     "underpowered."),
+     "underpowered. This comparison is exploratory and is not adjusted for multiple comparisons."),
 ]
+
+_BW_NOTES = {
+    "fig_us_roaduser.png": "Black-and-white version: categories are distinguished by the y-axis labels.",
+    "fig_us_timeofday.png": "Black-and-white version: the 12-17 h point is filled and the others are open to highlight the peak band.",
+    "fig5_hidden_vs_official.png": "Black-and-white version: the right-hand (estimate) bar is hatched to distinguish it from the left-hand (official) bar.",
+    "cross_fig_us_vs_japan_sameday.png": "Black-and-white version: US (square) and Japan (circle) estimates use different marker shapes."
+}
+if os.environ.get("FIGURES_BW") == "1":
+    FIGURES = [(fn, cap + " " + _BW_NOTES.get(fn, "Black-and-white version: line styles and marker shapes distinguish categories.")) for fn, cap in FIGURES]
 
 
 def tbl1(doc):
@@ -465,8 +476,20 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
          "follows the Strengthening the Reporting of Observational Studies in Epidemiology "
          "(STROBE) guideline (checklist provided).")
     para(doc,
+         "The +9 °C anomaly level was chosen because it lies near the upper end of the observed "
+         "positive-anomaly range while remaining within the support of the estimated anomaly "
+         "response (approximately -12 to +10 °C), so the estimate does not require extrapolation. "
+         "The quasi-Poisson variance accounts for overdispersion but does not model residual "
+         "temporal autocorrelation explicitly; the distributed-lag, seasonal, trend and "
+         "day-of-week terms absorb most short-term serial correlation, but any remaining "
+         "autocorrelation could affect confidence intervals (see Limitations).")
+    para(doc,
          "No ethics approval was required because the study used publicly available, "
          "aggregated and de-identified data with no individual patient records.")
+    para(doc,
+         "Generative artificial-intelligence tools were used to assist with code development "
+         "and manuscript drafting; the author reviewed and verified all content and takes full "
+         "responsibility for the final work.")
 
     h(doc, "Results", 1)
     para(doc,
@@ -545,8 +568,10 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
          "assume the anomaly response is stable under a warmer mean climate.")
     add_figure(doc, FIGURES[7][0], 8, FIGURES[7][1])
     tbl5(doc)
-    h(doc, "Exploratory Japan comparison", 2)
+    h(doc, "Exploratory external validation: Japan comparison", 2)
     para(doc,
+         "We did not pool the Japanese estimates with the US estimates; the comparison is "
+         "presented only as an exploratory external validation. "
          f"In Japan ({int(float(JP['total_deaths'])):,} crash deaths over "
          f"{int(float(JP['years']))} years) the anomaly exposure-response was imprecise, with "
          "a wide confidence band that included the null throughout (Fig. 9); the same-day "
@@ -601,22 +626,29 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
     para(doc,
          "Several limitations apply. First, this is an ecological, population-level "
          "association: it cannot establish that heat caused illness in any specific crash, "
-         "and FARS and NPA carry no post-mortem heat diagnosis. Second, activity adjustment "
-         "used national, not daily state-level, proxies. Third, exposure is measured at the "
-         "spatial-unit level and misclassifies individual exposure. Fourth, the Japanese "
-         "analysis is underpowered and inconclusive; its shorter series, far smaller death "
-         "counts and sparser GHCN-Daily coverage preclude a firm estimate, and we therefore "
-         "do not pool the two countries. Fifth, the warming projection is a scenario "
-         "calculation that holds driving activity, the vehicle fleet and behaviour fixed and "
-         "assumes the anomaly response is stable under a warmer mean climate; it should be "
-         "read as illustrative of magnitude, not as a forecast. Sixth, the road-user, age "
-         "and time-of-day subgroup analyses are exploratory: they entail multiple "
-         "comparisons without formal adjustment, and the open-air road-user gradient may in "
-         "part reflect weather-related differences in activity rather than physiology. "
-         "Finally, we used a quasi-Poisson dispersion parameter but did not model residual serial "
-         "correlation explicitly, which could affect confidence intervals. These findings should motivate, but "
-         "cannot replace, individual-level studies linking crash decedents to ambient heat "
-         "and, where available, post-mortem findings.")
+         "and neither FARS nor NPA records post-mortem heat diagnosis. Second, exposure is "
+         "measured at the state/prefecture level from the nearest GHCN-Daily station; this "
+         "misclassifies individual exposure, does not capture sub-unit variation such as "
+         "urban heat islands, and omits humidity, wet-bulb globe temperature and other "
+         "heat-stress metrics. Third, activity adjustment used national monthly proxies "
+         "(vehicle-miles travelled and gasoline supplied) and is not daily, state-level or "
+         "mode-specific; daily state-level or mode-specific activity could alter the "
+         "road-user and time-of-day gradients. Fourth, the Japanese analysis is an "
+         "exploratory external validation only; its shorter series, far smaller death counts "
+         "and sparser GHCN-Daily coverage preclude a precise estimate, and we do not pool "
+         "the two countries. Fifth, the warming projection is a scenario calculation that "
+         "holds driving activity, the vehicle fleet and behaviour fixed and assumes the "
+         "anomaly response is stable under a warmer mean climate; it should be read as "
+         "illustrative of magnitude, not as a forecast. Sixth, the road-user, age and "
+         "time-of-day subgroup analyses are exploratory: they entail multiple comparisons "
+         "without formal adjustment, and the open-air road-user gradient may in part reflect "
+         "weather-related differences in activity rather than physiology. Seventh, the "
+         "quasi-Poisson model accounts for overdispersion but does not include an explicit "
+         "autoregressive error term; although the distributed-lag, seasonal, trend and "
+         "day-of-week controls absorb much short-term temporal autocorrelation, unmodelled "
+         "residual serial correlation could affect confidence intervals. These findings should "
+         "motivate, but cannot replace, individual-level studies linking crash decedents to "
+         "ambient heat and, where available, post-mortem findings.")
 
     h(doc, "Conclusion", 1)
     para(doc,
