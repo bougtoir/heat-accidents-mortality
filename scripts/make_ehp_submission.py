@@ -121,6 +121,12 @@ EHP_REF_TEXT = {
         "Short-term effects of ambient temperature and road traffic accident injuries in Dalian, Northern China: "
         "A distributed lag non-linear analysis. Accid Anal Prev 153:106057, PMID: 33647596, 10.1016/j.aap.2021.106057."
     ),
+    "care": (
+        "European Commission, Directorate-General for Mobility and Transport. n.d. "
+        "Community database on road accidents (CARE). "
+        "https://road-safety.transport.ec.europa.eu/european-road-safety-observatory/methodology-and-research/care-database_en "
+        "[accessed 22 August 2026]."
+    ),
 }
 
 EHP_COVER = """22 August 2026

@@ -130,6 +130,7 @@ REF_TEXT = {
     "daanen": "Daanen HAM, van de Vliert E, Huang X. Driving performance in cold, warm, and thermoneutral environments. Appl Ergon 2003;34:597-602.",
     "liang2022": "Liang M, Min M, Guo X, Song Q, Wang H, Li N, et al. The relationship between ambient temperatures and road traffic injuries: a systematic review and meta-analysis. Environ Sci Pollut Res 2022;29(33):50647-60.",
     "liang2021_aap": "Liang M, Zhao D, Wu Y, Ye P, Wang Y, Yao Z, et al. Short-term effects of ambient temperature and road traffic accident injuries in Dalian, Northern China: A distributed lag non-linear analysis. Accid Anal Prev 2021;153:106057.",
+    "care": "European Commission, Directorate-General for Mobility and Transport. Community database on road accidents (CARE). https://road-safety.transport.ec.europa.eu/european-road-safety-observatory/methodology-and-research/care-database_en",
 }
 _ref_order = []
 
@@ -827,7 +828,7 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
          "quasi-Poisson model accounts for overdispersion but does not include an explicit "
          "autoregressive error term; although the distributed-lag, seasonal, trend and "
          "day-of-week controls absorb much short-term temporal autocorrelation, unmodelled "
-         "residual serial correlation could affect confidence intervals. These findings should "
+         f"residual serial correlation could affect confidence intervals. Eighth, the findings are drawn from the United States and Japan because, among high-income countries with comparably robust road-crash and meteorological data collection, no other country currently provides a fully open, daily, individual-level crash record equivalent to FARS or the Japanese NPA open data; the EU CARE database contains detailed individual accident records but is not publicly available at the daily individual level, and national open road-safety datasets in Europe are not harmonised, so the United States and Japan represent the best available public sources for this study design.{cite('care')} These findings should "
          "motivate, but cannot replace, individual-level studies linking crash decedents to "
          "ambient heat and, where available, post-mortem findings.")
 
