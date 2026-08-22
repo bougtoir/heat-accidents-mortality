@@ -334,7 +334,7 @@ def main():
         for col, val in v_vif10.items():
             vif_rows.append({"model": vif_row10["model"], "variable": col, "VIF": round(val, 2)})
 
-        chosen = vif_row5
+        chosen = vif_row10
         res["sameday_RR_+9C_ctrl"] = chosen["sameday_RR_anom+9C"]
         res["sameday_RR_+9C_ctrl_lo"] = chosen["sameday_RR_lo"]
         res["sameday_RR_+9C_ctrl_hi"] = chosen["sameday_RR_hi"]

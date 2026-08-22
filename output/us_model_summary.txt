@@ -29,10 +29,10 @@ net_cumRR_anom+12C: 1.120 (1.012-1.239)
 warming+1C_extra_deaths_per_year: 347 (257-436)
 warming+2C_extra_deaths_per_year: 678 (474-881)
 warming+3C_extra_deaths_per_year: 1009 (667-1384)
-sameday_RR_+9C_ctrl: 1.165
-sameday_RR_+9C_ctrl_lo: 1.135
-sameday_RR_+9C_ctrl_hi: 1.196
-cumRR_+9C_ctrl: 1.083
-cumRR_+9C_ctrl_lo: 1.023
-cumRR_+9C_ctrl_hi: 1.146
-max_control_VIF: 1.07
+sameday_RR_+9C_ctrl: 1.17
+sameday_RR_+9C_ctrl_lo: 1.122
+sameday_RR_+9C_ctrl_hi: 1.219
+cumRR_+9C_ctrl: 1.086
+cumRR_+9C_ctrl_lo: 1.019
+cumRR_+9C_ctrl_hi: 1.157
+max_control_VIF: 8.46
