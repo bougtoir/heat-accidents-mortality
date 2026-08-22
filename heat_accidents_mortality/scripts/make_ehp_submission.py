@@ -27,11 +27,15 @@ from docx.shared import Pt
 # make_manuscript.py lives in the same scripts/ directory
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
-MAN = os.path.join(ROOT, "output", "manuscript")
-FIG = os.path.join(ROOT, "output", "figures")
+BW = os.environ.get("FIGURES_BW") == "1"
+DEFAULT_FIG = os.path.join(ROOT, "output", "figures_bw" if BW else "figures")
+DEFAULT_MAN = os.path.join(ROOT, "output", "manuscript_bw" if BW else "manuscript")
+os.environ.setdefault("FIGURES_DIR", DEFAULT_FIG)
+os.environ.setdefault("MANUSCRIPT_DIR", DEFAULT_MAN)
 
 sys.path.insert(0, HERE)
 import make_manuscript as mm  # noqa: E402
+MAN = mm.MAN
 
 # ---------------------------------------------------------------------------
 # EHP formatting constants
@@ -120,7 +124,7 @@ We submit for your consideration our manuscript, "Ambient heat as an under-recog
 Statement of Contribution and Environmental-Health Significance:
 Ambient heat is a well-established environmental exposure that increases all-cause and cardiovascular mortality, but its contribution to fatal road traffic crashes has been largely overlooked. Using only public data, this ecological time-series study shows that days hotter than the local seasonal norm carry an acute, same-day excess of US traffic-crash deaths. The excess survives adjustment for aggregate driving activity, is concentrated in heat-exposed open-air road users (motorcyclists, pedestrians and cyclists), and is comparable in magnitude to all officially recorded direct-heat deaths. Because these deaths continue to be coded as ordinary traffic crashes, the heat contribution remains invisible to heat-mortality surveillance and road-safety statistics, suggesting an uncounted environmental-health burden that would grow under continued warming and could be targeted by heat-aware road safety messaging.
 
-This work advances the environmental health literature by (1) quantifying a hidden, climate-sensitive mortality burden in a cause-of-death category normally outside the scope of heat research, (2) showing that the open-air road-user gradient is consistent with direct heat exposure, and (3) providing reproducible national estimates and projections to inform climate adaptation and transportation safety policy. The analysis is intentionally transparent: all data and code are public, and the pipeline is fully reproducible (make all for data and figures, then make ehp for the manuscript and submission package), with no hard-coded results.
+This work advances the environmental health literature by (1) quantifying a hidden, climate-sensitive mortality burden in a cause-of-death category normally outside the scope of heat research, (2) showing that the open-air road-user gradient is consistent with direct heat exposure, and (3) providing reproducible national estimates and projections to inform climate adaptation and transportation safety policy. The analysis is intentionally transparent: all data and code are public at https://github.com/bougtoir/heat-accidents-mortality, and the pipeline is fully reproducible (make all for data and figures, then make ehp for the manuscript and submission package), with no hard-coded results.
 
 The manuscript is original, is not under consideration elsewhere, and all authors approve submission. We declare no competing interests. We confirm that this manuscript has not been posted to a preprint server.
 

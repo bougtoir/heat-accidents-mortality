@@ -4,3 +4,4 @@ __pycache__/
 *.pyc
 .venv/
 output/manuscript/submission_package.zip
+output/manuscript_bw/submission_package.zip

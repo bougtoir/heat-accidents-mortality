@@ -22,8 +22,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 PROC = os.path.join(ROOT, "data", "processed")
 OUT = os.path.join(ROOT, "output")
-FIG = os.path.join(OUT, "figures")
-MAN = os.path.join(OUT, "manuscript")
+FIG = os.environ.get("FIGURES_DIR", os.path.join(OUT, "figures"))
+MAN = os.environ.get("MANUSCRIPT_DIR", os.path.join(OUT, "manuscript"))
 os.makedirs(MAN, exist_ok=True)
 
 
@@ -412,13 +412,14 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
 
     h(doc, "Methods", 1)
     para(doc,
-         "We built daily panels of traffic-crash deaths by US state (FARS, 2016-2022)"
-         f"{cite('fars')} and by Japanese prefecture (NPA accident open data, 2019-2024)."
-         f"{cite('npa')} Daily mean temperature was taken from GHCN-Daily stations"
-         f"{cite('ghcn')} as the mean of TMAX and TMIN, aggregated to each spatial unit from "
-         "its nearest reporting stations. For every unit we estimated a cyclic day-of-year "
-         "climatology and defined the temperature anomaly as the observed temperature minus "
-         "that climatology,", space_after=2)
+         "We built daily panels of traffic-crash deaths by US state (Fatality Analysis "
+         f"Reporting System [FARS], 2016-2022){cite('fars')} and by Japanese prefecture "
+         f"(National Police Agency [NPA] accident open data, 2019-2024).{cite('npa')} "
+         "Daily mean temperature was taken from the Global Historical Climatology "
+         f"Network-Daily (GHCN-Daily) stations{cite('ghcn')} as the mean of TMAX and TMIN, "
+         "aggregated to each spatial unit from its nearest reporting stations. For every unit "
+         "we estimated a cyclic day-of-year climatology and defined the temperature anomaly "
+         "as the observed temperature minus that climatology,", space_after=2)
     add_equation(doc,
                  _msub(_mr("A"), _mr("u,t")) + _mr(" = ") + _msub(_mr("T"), _mr("u,t"))
                  + _mr(" \u2212 ") + _msub(_mbar(_mr("T")), _mr("u")) + _mr("(")
@@ -444,8 +445,10 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
          "splines of the anomaly within three lag windows (same day, 1-3 days, 4-10 days) "
          "summed over k, \u03b1\u1d64 are spatial fixed effects, s is a region-specific cyclic "
          "seasonal spline of day of year, h a long-term time trend and \u03b4 a day-of-week "
-         "effect. Overdispersion was handled with a quasi-Poisson dispersion parameter. "
-         "Net heat-attributable deaths were computed by "
+         "effect. Each exposure-response spline had 4 df (3 effective df after removing the "
+         "constant); the US and Japanese seasonal splines had 8 and 6 df respectively, and "
+         "the long-term trend had 3 df per study year. Overdispersion was handled with a "
+         "quasi-Poisson dispersion parameter. Net heat-attributable deaths were computed by "
          f"the method of Gasparrini and Leone{cite('attrib')} with Monte Carlo (MC) confidence "
          "intervals (CIs). As a sensitivity analysis for the US we added national "
          f"vehicle-miles travelled (VMT){cite('fhwa')} and finished-motor-gasoline product supplied"
@@ -650,10 +653,12 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
     h(doc, "Data availability", 1)
     para(doc,
          "All data are public: FARS, GHCN-Daily, CDC WONDER, FHWA/FRED, EIA and the "
-         "Japanese NPA accident open data (see References for sources). The complete "
-         "analysis code and reproducible pipeline (make all for data and figures, then make aap for the manuscript and submission package) are openly "
-         "available in the project repository; every reported number, figure and table is "
-         "regenerated from source with no hard-coded values.")
+         "Japanese NPA accident open data (see References for sources). Processed data files "
+         "are provided in the repository so the manuscript and figures can be regenerated "
+         "without API keys. The complete analysis code and reproducible pipeline (make all "
+         "for raw data and figures, then make ehp for the EHP submission package) is openly "
+         "available at https://github.com/bougtoir/heat-accidents-mortality; every reported "
+         "number, figure and table is regenerated from source with no hard-coded values.")
 
     h(doc, "References", 1)
     for i, key in enumerate(_ref_order, 1):
@@ -732,12 +737,12 @@ def build_strobe():
 def build_cover_letter():
     doc = Document(); setup(doc)
     para(doc, "[PLACEHOLDER date]")
-    para(doc, "The Editors, The Lancet Planetary Health")
+    para(doc, "The Editor-in-Chief, [Target journal]")
     para(doc, "Dear Editors,")
     para(doc,
          "We submit for your consideration our manuscript, \u201cAmbient heat as an "
          "under-recognised risk factor for US traffic-crash mortality: a distributed-lag "
-         "analysis with an exploratory Japan comparison\u201d, as an Article.")
+         "analysis with road-safety implications\u201d, as a Research Article.")
     para(doc,
          "Using only public data, this ecological, population-level study shows that days "
          "hotter than the local seasonal norm carry an acute excess of US traffic-crash "
@@ -746,8 +751,8 @@ def build_cover_letter():
          "recorded direct-heat deaths \u2014 a burden that would be invisible to routine "
          "cause-of-death surveillance and that our scenario projections suggest would grow "
          "under warming. We believe this speaks directly to the journal's focus on the "
-         "health consequences of climate change and on under-recognised planetary-health "
-         "burdens.")
+         "environmental determinants of health and on under-recognised climate-sensitive "
+         "mortality burdens.")
     para(doc,
          "The manuscript is original, is not under consideration elsewhere, and all authors "
          "approve submission. All data are public and the complete analysis pipeline is "

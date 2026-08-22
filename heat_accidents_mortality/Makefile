@@ -1,7 +1,7 @@
 PY = python3
 S  = scripts
 
-.PHONY: all us japan figures clean data_us data_jp manuscript test aap ehp
+.PHONY: all us japan figures clean data_us data_jp manuscript test aap ehp ehp_bw
 
 all: us japan figures
 
@@ -37,6 +37,16 @@ aap: manuscript
 
 ehp: manuscript
 	$(PY) $(S)/make_ehp_submission.py
+
+figures_bw:
+	FIGURES_BW=1 $(PY) $(S)/figures_us.py
+	FIGURES_BW=1 $(PY) $(S)/figures_japan.py
+
+manuscript_bw: figures_bw
+	FIGURES_BW=1 FIGURES_DIR=output/figures_bw MANUSCRIPT_DIR=output/manuscript_bw $(PY) $(S)/make_manuscript.py
+
+ehp_bw: manuscript_bw
+	FIGURES_BW=1 $(PY) $(S)/make_ehp_submission.py
 
 test:
 	$(PY) -m pytest -q tests
