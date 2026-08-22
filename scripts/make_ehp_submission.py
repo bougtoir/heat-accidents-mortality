@@ -28,6 +28,7 @@ from docx.shared import Pt
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 BW = os.environ.get("FIGURES_BW") == "1"
+SUFFIX = "_bw" if BW else ""
 DEFAULT_FIG = os.path.join(ROOT, "output", "figures_bw" if BW else "figures")
 DEFAULT_MAN = os.path.join(ROOT, "output", "manuscript_bw" if BW else "manuscript")
 os.environ.setdefault("FIGURES_DIR", DEFAULT_FIG)
@@ -388,28 +389,35 @@ def _build_figures_stage():
     return dest_dir
 
 
-def _build_submission_zip(fig_stage):
-    zip_base = os.path.join(MAN, "ehp_submission_package")
+def _build_submission_zip(fig_stage, suffix=""):
+    zip_base = os.path.join(MAN, f"ehp_submission_package{suffix}")
     stage = zip_base + "_stage"
     if os.path.exists(stage):
         shutil.rmtree(stage)
     os.makedirs(stage)
     files = [
-        "heat_crash_mortality_ehp.docx",
-        "heat_crash_mortality_ehp_legends.docx",
-        "ehp_cover_letter.docx",
-        "tables.docx",
-        "figures.pptx",
-        "strobe_checklist.docx",
+        f"heat_crash_mortality_ehp{suffix}.docx",
+        f"heat_crash_mortality_ehp_legends{suffix}.docx",
+        f"ehp_cover_letter{suffix}.docx",
+        f"tables{suffix}.docx",
+        f"figures{suffix}.pptx",
+        f"strobe_checklist{suffix}.docx",
     ]
     for name in files:
         src = os.path.join(MAN, name)
+        # Base make_manuscript outputs do not carry the _bw suffix; rename on copy.
+        if not os.path.exists(src) and suffix:
+            base_name = name.replace(suffix, "", 1)
+            src = os.path.join(MAN, base_name)
         if os.path.exists(src):
             shutil.copyfile(src, os.path.join(stage, name))
     if fig_stage and os.path.isdir(fig_stage):
         for entry in os.listdir(fig_stage):
             entry_src = os.path.join(fig_stage, entry)
-            entry_dst = os.path.join(stage, entry)
+            if entry == "ehp_submission_figures" and suffix:
+                entry_dst = os.path.join(stage, f"ehp_submission_figures{suffix}")
+            else:
+                entry_dst = os.path.join(stage, entry)
             if os.path.isdir(entry_src):
                 shutil.copytree(entry_src, entry_dst)
             else:
@@ -444,19 +452,19 @@ def main():
     inline_src = os.path.join(tmpdir, "tmp_inline.docx")
     legends_src = os.path.join(tmpdir, "tmp_legends.docx")
 
-    ehp_inline = os.path.join(MAN, "heat_crash_mortality_ehp.docx")
-    ehp_legends = os.path.join(MAN, "heat_crash_mortality_ehp_legends.docx")
+    ehp_inline = os.path.join(MAN, f"heat_crash_mortality_ehp{SUFFIX}.docx")
+    ehp_legends = os.path.join(MAN, f"heat_crash_mortality_ehp_legends{SUFFIX}.docx")
 
     _postprocess(inline_src, ehp_inline)
     _postprocess(legends_src, ehp_legends)
 
     shutil.rmtree(tmpdir)
 
-    _build_cover_letter(os.path.join(MAN, "ehp_cover_letter.docx"))
+    _build_cover_letter(os.path.join(MAN, f"ehp_cover_letter{SUFFIX}.docx"))
 
     fig_stage = _build_figures_stage()
     try:
-        _build_submission_zip(fig_stage)
+        _build_submission_zip(fig_stage, SUFFIX)
     finally:
         shutil.rmtree(fig_stage)
 
