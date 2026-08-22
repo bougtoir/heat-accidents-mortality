@@ -45,12 +45,36 @@ def load_panel():
     fars["state"] = fars.STATE.astype(int)
     temp = pd.read_csv(os.path.join(PROC, "state_day_temperature.csv"), parse_dates=["date"])
     temp["state"] = temp.state_fips.astype(int)
+
+    # state-level annual controls (population, VMT)
+    sc_path = os.path.join(PROC, "state_controls.csv")
+    if os.path.exists(sc_path):
+        sc = pd.read_csv(sc_path)
+        sc["year"] = sc.year.astype(int)
+        temp["year"] = temp.date.dt.year
+        temp = temp.merge(sc[["state", "year", "population", "vmt_millions"]],
+                          on=["state", "year"], how="left")
+        temp = temp.drop(columns=["year"])
+
+    # humidity / heat-stress metrics (GHCN-Daily ADPT/RHAV/AWBT)
+    hum_path = os.path.join(PROC, "state_day_humidity.csv")
+    if os.path.exists(hum_path):
+        hum = pd.read_csv(hum_path, parse_dates=["date"])
+        hum["state"] = hum.state_fips.astype(int)
+        temp = temp.merge(hum[["state", "date", "humidex", "heat_index", "wbgt_est"]],
+                          on=["state", "date"], how="left")
+
     states = sorted(set(fars.state) & set(temp.state))
     dates = pd.date_range(fars.date.min(), fars.date.max(), freq="D")
     grid = pd.MultiIndex.from_product([states, dates], names=["state", "date"]).to_frame(index=False)
     df = grid.merge(fars[["state", "date", "deaths"]], on=["state", "date"], how="left")
     df["deaths"] = df.deaths.fillna(0).astype(int)
-    df = df.merge(temp[["state", "date", "tmean"]], on=["state", "date"], how="left")
+    merge_cols = ["state", "date", "tmean", "prcp"]
+    if "population" in temp.columns:
+        merge_cols += ["population", "vmt_millions"]
+    if "humidex" in temp.columns:
+        merge_cols += ["humidex", "heat_index", "wbgt_est"]
+    df = df.merge(temp[merge_cols], on=["state", "date"], how="left")
     df = df.sort_values(["state", "date"]).reset_index(drop=True)
     df["unit"] = df.state
     df["dow"] = df.date.dt.dayofweek
@@ -58,14 +82,28 @@ def load_panel():
     df["division"] = df.state.map(DIVISION)
     df["t_index"] = (df.date - df.date.min()).dt.days
     n0 = len(df); df = df.dropna(subset=["tmean"]).reset_index(drop=True)
+
+    # seasonal climatology for temperature and any available heat-stress metrics
+    clim_metrics = ["tmean"] + [c for c in ("humidex", "heat_index", "wbgt_est") if c in df.columns]
     parts = []
     for _, g in df.groupby("state"):
         g = g.sort_values("date").copy()
         B = np.asarray(dmatrix("cc(doy, df=6)", g, return_type="dataframe"))
-        g["clim"] = B @ np.linalg.lstsq(B, g.tmean.values, rcond=None)[0]
+        for m in clim_metrics:
+            v = g[m].values
+            ok = ~np.isnan(v)
+            if ok.sum() > 6:
+                g[f"clim_{m}"] = np.nan
+                coef = np.linalg.lstsq(B[ok], v[ok], rcond=None)[0]
+                g[f"clim_{m}"] = B @ coef
+            else:
+                g[f"clim_{m}"] = np.nan
         parts.append(g)
     df = pd.concat(parts).sort_values(["state", "date"]).reset_index(drop=True)
-    df["anom"] = df.tmean - df.clim
+    df["anom"] = df.tmean - df.clim_tmean
+    for m in clim_metrics:
+        if f"clim_{m}" in df.columns and m != "tmean":
+            df[f"{m}_anom"] = df[m] - df[f"clim_{m}"]
     print(f"panel: {len(df):,} state-days ({n0-len(df):,} dropped for missing temp), "
           f"{df.state.nunique()} states, {int(df.deaths.sum()):,} deaths")
     return df
@@ -75,6 +113,27 @@ def confounders(df, season_df=8):
     nyears = df.date.dt.year.nunique()
     return dmatrix("C(state) + C(division):cr(doy, df=%d) + cr(t_index, df=%d) + C(dow)"
                    % (season_df, 3 * nyears), df, return_type="dataframe")
+
+
+def _std(x):
+    """Z-score a pandas/numpy vector, returning a Series indexed like the input."""
+    s = pd.Series(np.asarray(x), index=x.index if hasattr(x, "index") else None)
+    mu, sd = s.mean(), s.std(ddof=0)
+    return (s - mu) / (sd if sd > 0 else 1)
+
+
+def _sensitivity_row(m, label):
+    s0 = bin_response(m, 9.0, 0.0).iloc[0]
+    s9 = cumulative_curve(m, [9.0], 0.0).iloc[0]
+    return {
+        "model": label,
+        "sameday_RR_anom+9C": round(float(s0.rr), 3),
+        "sameday_RR_lo": round(float(s0.lo), 3),
+        "sameday_RR_hi": round(float(s0.hi), 3),
+        "cumRR_anom+9C": round(float(s9.rr), 3),
+        "cumRR_lo": round(float(s9.lo), 3),
+        "cumRR_hi": round(float(s9.hi), 3),
+    }
 
 
 def main():
@@ -124,26 +183,41 @@ def main():
         res[f"warming+{int(r.delta_degC)}C_extra_deaths_per_year"] = \
             f"{r.extra_deaths_per_year:.0f} ({r.extra_lo:.0f}-{r.extra_hi:.0f})"
 
+    sensitivity_rows = []
     ctrl_path = os.path.join(PROC, "driving_controls.csv")
     if os.path.exists(ctrl_path):
         c = pd.read_csv(ctrl_path, parse_dates=["date"])
         cc = df.merge(c, on="date", how="left")
+        extra = pd.DataFrame(index=df.index)
         for col in ("vmt", "gasoline"):
-            cc[col] = (cc[col] - cc[col].mean()) / cc[col].std()
-        extra = cc[["vmt", "gasoline"]]; extra.index = df.index
+            extra[col] = _std(cc[col].values)
         mc = fit_model(df, "anom", confounders, extra=extra, group="unit")
-        s0 = bin_response(mc, 9.0, 0.0).iloc[0]; s9 = cumulative_curve(mc, [9.0], 0.0).iloc[0]
-        pd.DataFrame([{"model": "with_VMT_gasoline_controls",
-                       "sameday_RR_anom+9C": round(float(s0.rr), 3),
-                       "sameday_RR_lo": round(float(s0.lo), 3),
-                       "sameday_RR_hi": round(float(s0.hi), 3),
-                       "cumRR_anom+9C": round(float(s9.rr), 3),
-                       "cumRR_lo": round(float(s9.lo), 3),
-                       "cumRR_hi": round(float(s9.hi), 3)}]).to_csv(
+        sensitivity_rows.append(_sensitivity_row(mc, "with_VMT_gasoline_controls"))
+
+    if "population" in df.columns and df.population.notna().any():
+        extra_full = pd.DataFrame(index=df.index)
+        if ctrl_path and os.path.exists(ctrl_path):
+            for col in ("vmt", "gasoline"):
+                extra_full[col] = _std(cc[col].values)
+        extra_full["vmt_state"] = _std(df.vmt_millions)
+        extra_full["prcp"] = _std(df.prcp)
+        for col in ("humidex_anom", "heat_index_anom", "wbgt_est_anom"):
+            if col in df.columns and df[col].notna().any():
+                extra_full[col] = _std(df[col])
+        log_pop = np.log(df.population)
+        mfull = fit_model(df, "anom", confounders, extra=extra_full, offset=log_pop, group="unit")
+        sensitivity_rows.append(_sensitivity_row(mfull, "with_population_stateVMT_prcp_humidity"))
+        res["sameday_RR_+9C_ctrl"] = round(float(bin_response(mfull, 9.0, 0.0).iloc[0].rr), 3)
+        res["sameday_RR_+9C_ctrl_lo"] = round(float(bin_response(mfull, 9.0, 0.0).iloc[0].lo), 3)
+        res["sameday_RR_+9C_ctrl_hi"] = round(float(bin_response(mfull, 9.0, 0.0).iloc[0].hi), 3)
+    elif sensitivity_rows:
+        res["sameday_RR_+9C_ctrl"] = sensitivity_rows[0]["sameday_RR_anom+9C"]
+        res["sameday_RR_+9C_ctrl_lo"] = sensitivity_rows[0]["sameday_RR_lo"]
+        res["sameday_RR_+9C_ctrl_hi"] = sensitivity_rows[0]["sameday_RR_hi"]
+
+    if sensitivity_rows:
+        pd.DataFrame(sensitivity_rows).to_csv(
             os.path.join(PROC, "us_sensitivity_controls.csv"), index=False)
-        res["sameday_RR_+9C_ctrl"] = round(float(s0.rr), 3)
-        res["sameday_RR_+9C_ctrl_lo"] = round(float(s0.lo), 3)
-        res["sameday_RR_+9C_ctrl_hi"] = round(float(s0.hi), 3)
 
     dfy = m["d"].assign(an=an_hot, year=m["d"].date.dt.year)
     per_year = dfy.groupby("year").agg(deaths=("deaths", "sum"), heat_an=("an", "sum")).reset_index()

@@ -128,7 +128,7 @@ def load_temps(needed):
         for chunk in pd.read_csv(gz, header=None, names=cols, compression="gzip",
                                  chunksize=2_000_000, low_memory=False,
                                  usecols=[0, 1, 2, 3, 5]):
-            chunk = chunk[chunk.elem.isin(("TMAX", "TMIN")) & chunk.id.isin(needed)]
+            chunk = chunk[chunk.elem.isin(("TMAX", "TMIN", "PRCP")) & chunk.id.isin(needed)]
             chunk = chunk[chunk.q.isna()]  # drop QC-flagged
             got.append(chunk[["id", "date", "elem", "value"]])
         frames.append(pd.concat(got, ignore_index=True))
@@ -136,10 +136,13 @@ def load_temps(needed):
     wide = temps.pivot_table(index=["id", "date"], columns="elem",
                              values="value", aggfunc="mean").reset_index()
     wide["tmean"] = (wide["TMAX"] + wide["TMIN"]) / 2.0 / 10.0  # tenths degC -> degC
+    # PRCP is daily total precipitation in tenths of mm
+    if "PRCP" in wide.columns:
+        wide["prcp"] = wide["PRCP"] / 10.0
     wide = wide.dropna(subset=["tmean"])
     wide["date"] = pd.to_datetime(wide["date"].astype(str), format="%Y%m%d")
     print(f"  station-days with tmean: {len(wide):,}")
-    return wide[["id", "date", "tmean"]]
+    return wide[["id", "date", "tmean", "prcp"]]
 
 
 def main():
@@ -148,8 +151,6 @@ def main():
     mapping, needed = assign_stations(counties, stations)
     temps = load_temps(needed)
 
-    # station-day lookup
-    tmap = temps.set_index(["id", "date"]).tmean
     # long county-station table
     rows = []
     for geoid, sids in mapping.items():
@@ -159,15 +160,21 @@ def main():
     cs = cs.merge(temps, on="id", how="inner")
     # county-day = mean over its assigned stations
     county_day = (cs.groupby(["GEOID", "date"], as_index=False)
-                  .tmean.mean())
+                  .agg(tmean=("tmean", "mean"), prcp=("prcp", "mean")))
     county_day = county_day.merge(counties[["GEOID", "state_fips", "POP"]], on="GEOID")
 
     # state-day pop-weighted mean
-    def wmean(g):
-        return np.average(g.tmean, weights=g.POP)
+    def wavg(g, col):
+        v = g[col]
+        ok = v.notna()
+        if ok.any():
+            return np.average(v[ok], weights=g.POP[ok])
+        return np.nan
+
     state_day = (county_day.groupby(["state_fips", "date"])
                  .apply(lambda g: pd.Series({
-                     "tmean": np.average(g.tmean, weights=g.POP),
+                     "tmean": wavg(g, "tmean"),
+                     "prcp": wavg(g, "prcp"),
                      "pop_cov": g.POP.sum()}))
                  .reset_index())
 
@@ -175,7 +182,8 @@ def main():
     state_day.to_csv(out, index=False)
     print(f"\nSaved {out}: {len(state_day):,} state-days, "
           f"{state_day.state_fips.nunique()} states, "
-          f"temp range {state_day.tmean.min():.1f} to {state_day.tmean.max():.1f} degC")
+          f"temp range {state_day.tmean.min():.1f} to {state_day.tmean.max():.1f} degC, "
+          f"prcp range {state_day.prcp.min():.1f} to {state_day.prcp.max():.1f} mm")
 
 
 if __name__ == "__main__":

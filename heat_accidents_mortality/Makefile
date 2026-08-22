@@ -10,7 +10,9 @@ data_us:
 	$(PY) $(S)/build_fars.py
 	$(PY) $(S)/build_fars_strata.py
 	$(PY) $(S)/build_temperature.py
+	$(PY) $(S)/build_humidity.py
 	$(PY) $(S)/build_controls.py
+	$(PY) $(S)/build_state_controls.py
 	$(PY) $(S)/build_cdc_heat.py
 
 data_jp:
