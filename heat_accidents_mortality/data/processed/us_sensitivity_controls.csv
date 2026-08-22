@@ -1,0 +1,2 @@
+model,sameday_RR_anom+9C,sameday_RR_lo,sameday_RR_hi,cumRR_anom+9C,cumRR_lo,cumRR_hi
+with_VMT_gasoline_controls,1.162,1.132,1.193,1.073,1.013,1.136
