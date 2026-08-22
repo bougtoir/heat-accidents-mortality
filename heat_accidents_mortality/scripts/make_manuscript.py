@@ -312,13 +312,16 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
     r.bold = True; r.font.size = Pt(14)
 
     ap = doc.add_paragraph(); ap.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    ap.add_run("[PLACEHOLDER author list \u2014 Given-name Family-name, degrees; ... \u2014 "
-               "replace before submission]")
+    ap.add_run("Tatsuki Onishi")
     af = doc.add_paragraph(); af.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    af.add_run("[PLACEHOLDER affiliations, numbered to authors]")
+    af.add_run("Data Science and AI Innovation Research Promotion Center, "
+               "Shiga University of Medical Science, Seta Tsukinowa-cho, "
+               "Otsu, Shiga 520-2192, Japan")
     cp = doc.add_paragraph(); cp.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    cp.add_run("Correspondence to: [PLACEHOLDER corresponding author, address, email, "
-               "ORCID]")
+    cp.add_run("Correspondence to: Tatsuki Onishi, Data Science and AI Innovation "
+               "Research Promotion Center, Shiga University of Medical Science, "
+               "Seta Tsukinowa-cho, Otsu, Shiga 520-2192, Japan. "
+               "E-mail: bougtoir@gmail.com. ORCID: [iD to be added]")
 
     h(doc, "Summary", 1)
     labelled(doc, "Background ",
@@ -624,27 +627,26 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
 
     h(doc, "Contributors", 1)
     para(doc,
-         "[PLACEHOLDER \u2014 replace before submission.] All authors contributed to the "
-         "study design, data analysis, interpretation and drafting, and approved the final "
-         "manuscript. [Specify each author's contribution and who verified the underlying "
-         "data.]")
+         "Tatsuki Onishi conceived the study, performed the analysis, drafted the "
+         "manuscript, and approved the final version. The author had full access to all "
+         "data and verified the reported results.")
 
     h(doc, "Declaration of competing interests", 1)
     para(doc,
-         "[PLACEHOLDER \u2014 replace before submission.] We declare no competing interests.")
+         "We declare no competing interests.")
 
     h(doc, "Funding", 1)
     para(doc,
-         "[PLACEHOLDER \u2014 replace before submission.] There was no specific funding for "
-         "this study. The corresponding author had full access to all the data and had final "
-         "responsibility for the decision to submit for publication.")
+         "There was no specific funding for this study. The corresponding author had full "
+         "access to all the data and had final responsibility for the decision to submit for "
+         "publication.")
 
     h(doc, "Declaration of generative AI use", 1)
     para(doc,
-         "[PLACEHOLDER \u2014 confirm and adapt before submission.] Generative AI assistance "
-         "was used to help develop analysis code and draft text; all methods, results and "
-         "interpretations were verified by the authors, who take full responsibility for the "
-         "content.")
+         "During the preparation of this work the author used generative artificial "
+         "intelligence tools to assist with code development and manuscript drafting. After "
+         "using these tools, the author reviewed and edited the content and takes full "
+         "responsibility for the published content.")
 
     h(doc, "Data availability", 1)
     para(doc,

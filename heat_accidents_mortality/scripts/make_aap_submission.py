@@ -48,7 +48,7 @@ HIGHLIGHTS = [
     "Heat-aware road safety could target an uncounted climate-sensitive burden.",
 ]
 
-AAP_COVER = """[PLACEHOLDER date]
+AAP_COVER = """22 August 2026
 
 The Editors, Accident Analysis & Prevention
 
@@ -60,13 +60,17 @@ Climate change is increasing the frequency of dangerously hot days, and recent s
 
 We believe this work is a strong fit for Accident Analysis & Prevention: it directly addresses the journal's core scope of transportation accident injury and prevention, brings a quantitative time-series approach to the environmental and human factors that influence crash occurrence and severity, and translates the findings into a concrete, actionable implication for heat-aware road safety messaging and climate adaptation.
 
-The manuscript is original, is not under consideration elsewhere, and all authors approve submission. All data are public and the complete analysis pipeline is openly available and fully reproducible (make all for data and figures, then make aap for the manuscript and submission package), with no hard-coded results. We declare [PLACEHOLDER competing interests]. We confirm [PLACEHOLDER preprint status].
+The manuscript is original, is not under consideration elsewhere, and all authors approve submission. All data are public and the complete analysis pipeline is openly available and fully reproducible (make all for data and figures, then make aap for the manuscript and submission package), with no hard-coded results. We declare no competing interests. We confirm that this manuscript has not been posted to a preprint server.
 
 We look forward to your assessment.
 
 Yours sincerely,
 
-[PLACEHOLDER corresponding author, on behalf of all authors]
+Tatsuki Onishi, on behalf of all authors
+Data Science and AI Innovation Research Promotion Center
+Shiga University of Medical Science
+Seta Tsukinowa-cho, Otsu, Shiga 520-2192, Japan
+E-mail: bougtoir@gmail.com
 """
 
 
