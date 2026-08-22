@@ -299,8 +299,9 @@ def main():
 
         # VIF-screened full-controls: begin with state VMT, precipitation and all
         # available heat-stress metrics, then iteratively drop the control with the
-        # highest VIF until all retained controls have VIF < threshold.  This is the
-        # primary full-controls model reported in the manuscript.
+        # highest VIF until all retained controls have VIF < threshold.  Report
+        # thresholds 5 and 10, plus an unscreened full-controls model, so the
+        # manuscript can choose the most robust primary specification.
         vif_candidates = base.copy()
         vif_candidates["prcp"] = _std(df.prcp)
         for metric, label in (("humidex_anom", "humidex"),
@@ -308,14 +309,32 @@ def main():
                               ("wbgt_est_anom", "wbgt")):
             if metric in df.columns and df[metric].notna().any():
                 vif_candidates[metric] = _std(df[metric])
-        vif_row, v_vif, dropped = _fit_vif_screened(
-            df, "anom", confounders, vif_candidates, log_pop, "unit",
-            "with_population_stateVMT_prcp_VIFscreened")
-        sensitivity_rows.append(vif_row)
-        for col, val in v_vif.items():
-            vif_rows.append({"model": vif_row["model"], "variable": col, "VIF": round(val, 2)})
 
-        chosen = vif_row
+        # Unscreened full-controls (free) model
+        m_free = fit_model(df, "anom", confounders, extra=vif_candidates,
+                           offset=log_pop, group="unit")
+        free_row, free_vifs = _sensitivity_row(m_free, "with_population_stateVMT_prcp_VIFfree", list(vif_candidates.columns))
+        free_row["dropped"] = "none"
+        sensitivity_rows.append(free_row)
+        for col, val in free_vifs.items():
+            vif_rows.append({"model": free_row["model"], "variable": col, "VIF": round(val, 2)})
+
+        # VIF thresholds 5 and 10
+        vif_row5, v_vif5, dropped5 = _fit_vif_screened(
+            df, "anom", confounders, vif_candidates, log_pop, "unit",
+            "with_population_stateVMT_prcp_VIFscreened", vif_threshold=5.0)
+        sensitivity_rows.append(vif_row5)
+        for col, val in v_vif5.items():
+            vif_rows.append({"model": vif_row5["model"], "variable": col, "VIF": round(val, 2)})
+
+        vif_row10, v_vif10, dropped10 = _fit_vif_screened(
+            df, "anom", confounders, vif_candidates, log_pop, "unit",
+            "with_population_stateVMT_prcp_VIFscreened10", vif_threshold=10.0)
+        sensitivity_rows.append(vif_row10)
+        for col, val in v_vif10.items():
+            vif_rows.append({"model": vif_row10["model"], "variable": col, "VIF": round(val, 2)})
+
+        chosen = vif_row5
         res["sameday_RR_+9C_ctrl"] = chosen["sameday_RR_anom+9C"]
         res["sameday_RR_+9C_ctrl_lo"] = chosen["sameday_RR_lo"]
         res["sameday_RR_+9C_ctrl_hi"] = chosen["sameday_RR_hi"]

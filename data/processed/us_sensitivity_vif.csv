@@ -13,4 +13,11 @@ with_population_stateVMT_prcp_heat_index,heat_index_anom,10.74
 with_population_stateVMT_prcp_wbgt,vmt_state,323.79
 with_population_stateVMT_prcp_wbgt,prcp,1.11
 with_population_stateVMT_prcp_wbgt,wbgt_est_anom,8.46
+with_population_stateVMT_prcp_VIFfree,vmt_state,323.82
+with_population_stateVMT_prcp_VIFfree,prcp,1.27
+with_population_stateVMT_prcp_VIFfree,humidex_anom,63.51
+with_population_stateVMT_prcp_VIFfree,heat_index_anom,29.94
+with_population_stateVMT_prcp_VIFfree,wbgt_est_anom,52.83
 with_population_stateVMT_prcp_VIFscreened,prcp,1.07
+with_population_stateVMT_prcp_VIFscreened10,prcp,1.11
+with_population_stateVMT_prcp_VIFscreened10,wbgt_est_anom,8.46

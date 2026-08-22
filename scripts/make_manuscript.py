@@ -43,12 +43,28 @@ US_LAG = {r["window"]: r for r in read_csv("us_lag_response.csv")}
 JP_LAG = {r["window"]: r for r in read_csv("jp_lag_response.csv")}
 CDC = read_csv("cdc_heat_deaths.csv")
 CTRL_ROWS = {r["model"]: r for r in read_csv("us_sensitivity_controls.csv")}
-CTRL = (CTRL_ROWS.get("with_population_stateVMT_prcp_VIFscreened")
+# Primary full-controls model uses a VIF threshold of 10 because it retains a
+# physiologically meaningful heat-stress variable (estimated WBGT) while
+# keeping maximum collinearity low (VIF < 10).  The VIF < 5 and unscreened
+# specifications are reported as conservative and over-adjustment sensitivity
+# analyses, respectively.
+CTRL = (CTRL_ROWS.get("with_population_stateVMT_prcp_VIFscreened10")
+        or CTRL_ROWS.get("with_population_stateVMT_prcp_VIFscreened")
         or CTRL_ROWS.get("with_population_stateVMT_prcp")
         or CTRL_ROWS.get("with_national_VMT_gasoline")
         or list(CTRL_ROWS.values())[0])
 CTRL_VMT = CTRL_ROWS.get("with_national_VMT_gasoline", CTRL)
 
+# Candidate added controls in the full-controls VIF screening (offset log-population
+# is always retained).  Used to derive the list of retained controls.
+_ALL_CTRL_VARS = ["vmt_state", "prcp", "humidex_anom", "heat_index_anom", "wbgt_est_anom"]
+_ALL_CTRL_LABELS = {
+    "vmt_state": "state annual VMT",
+    "prcp": "daily precipitation",
+    "humidex_anom": "humidex anomaly",
+    "heat_index_anom": "heat-index anomaly",
+    "wbgt_est_anom": "estimated WBGT anomaly",
+}
 
 def _ctrl_dropped_names():
     d = CTRL.get("dropped", "")
@@ -57,7 +73,21 @@ def _ctrl_dropped_names():
     return ", ".join([x.split("(", 1)[0].strip() for x in str(d).split(";")])
 
 CTRL_DROPPED_NAMES = _ctrl_dropped_names()
-CTRL_KEPT_NAMES = "log-population offset and daily precipitation" if CTRL_DROPPED_NAMES != "none" else "all controls"
+
+def _ctrl_kept_names():
+    if CTRL_DROPPED_NAMES == "none":
+        return "all candidate controls"
+    dropped_set = set(CTRL_DROPPED_NAMES.split(", "))
+    kept = [_ALL_CTRL_LABELS[v] for v in _ALL_CTRL_VARS if v not in dropped_set]
+    if not kept:
+        return "log-population offset"
+    if len(kept) == 1:
+        return f"log-population offset and {kept[0]}"
+    return "log-population offset, " + ", ".join(kept[:-1]) + " and " + kept[-1]
+
+CTRL_KEPT_NAMES = _ctrl_kept_names()
+CTRL_VIF5 = CTRL_ROWS.get("with_population_stateVMT_prcp_VIFscreened", CTRL)
+CTRL_FREE = CTRL_ROWS.get("with_population_stateVMT_prcp_VIFfree", CTRL)
 SUB = read_csv("us_subgroup_response.csv")
 TOD = read_csv("us_timeofday_response.csv")
 PROJ = read_csv("us_projection.csv")
@@ -348,13 +378,17 @@ SENS_LABELS = {
     "with_population_stateVMT_prcp_humidex": "+ humidex anomaly",
     "with_population_stateVMT_prcp_heat_index": "+ heat-index anomaly",
     "with_population_stateVMT_prcp_wbgt": "+ estimated WBGT anomaly",
-    "with_population_stateVMT_prcp_VIFscreened": "VIF-screened full controls",
+    "with_population_stateVMT_prcp_VIFfree": "Full controls, no VIF screen",
+    "with_population_stateVMT_prcp_VIFscreened10": "VIF-screened full controls (VIF < 10)",
+    "with_population_stateVMT_prcp_VIFscreened": "VIF-screened full controls (VIF < 5)",
 }
 SENS_ORDER = [
     "with_national_VMT_gasoline",
     "with_population_offset",
     "with_population_stateVMT",
     "with_population_stateVMT_prcp",
+    "with_population_stateVMT_prcp_VIFfree",
+    "with_population_stateVMT_prcp_VIFscreened10",
     "with_population_stateVMT_prcp_VIFscreened",
     "with_population_stateVMT_prcp_humidex",
     "with_population_stateVMT_prcp_heat_index",
@@ -387,9 +421,10 @@ def tbl6(doc):
     add_table(doc, 6, "United States sensitivity of the +9 \u00b0C anomaly association to activity, "
               "precipitation and heat-stress controls. All added continuous controls were z-scored; "
               "population entered as a log offset; heat-stress metrics were anomaly-derived. The "
-              "VIF-screened row is the primary full-controls model, selected by iteratively removing "
-              "added controls with VIF > 5. Heat-stress metrics were tested individually because they "
-              "are functions of temperature and can be collinear with the anomaly.",
+              "VIF < 10 row is the primary full-controls model, selected by iteratively removing "
+              "added controls with VIF > 10. A stricter VIF < 5 screen and an unscreened model are "
+              "also shown. Heat-stress metrics were tested individually because they are functions of "
+              "temperature and can be collinear with the anomaly.",
               ["Model", "Same-day RR (95% CI)", "Cumulative RR (95% CI)", "Max control VIF"],
               rows)
 
@@ -431,8 +466,8 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
     labelled(doc, "Findings ",
              f"In the USA ({int(float(US['total_deaths'])):,} crash deaths), a +9\u00b0C anomaly "
              f"raised same-day crash mortality, RR {rr(US, 'sameday_RR_anom+9C')}, "
-             "and remained similar in a VIF-screened model adjusting for state population (offset) "
-             f"and precipitation (VIF > 5 iteratively dropped {CTRL_DROPPED_NAMES}; RR "
+             "and remained similar in a VIF-screened full-controls model (VIF threshold 10; "
+             f"retained {CTRL_KEPT_NAMES}; iteratively dropped {CTRL_DROPPED_NAMES}; RR "
              f"{ctrlrr(CTRL)}; cumulative RR {ctrlcum(CTRL)}). The excess was larger "
              f"for open-air users (motorcyclists RR {f(USER['motorcyclist']['sameday_RR_+9C'])}, "
              f"pedestrians RR {f(USER['pedestrian']['sameday_RR_+9C'])}) than vehicle occupants "
@@ -559,8 +594,10 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
          "and an estimated wet-bulb globe temperature) expressed as anomalies relative to their "
          "day-of-year climatology. Because heat-stress metrics are functions of temperature and can "
          "be collinear with the anomaly exposure, we selected the primary full-controls model by a "
-         "variance-inflation-factor (VIF) screen (iteratively dropping added controls with VIF > 5), "
-         "and tested the heat-stress metrics individually as sensitivity analyses. "
+         "variance-inflation-factor (VIF) screen (iteratively dropping added controls with VIF > 10). "
+         "A stricter VIF < 5 screen and an unscreened model retaining all candidate controls were "
+         "also fitted and reported as sensitivity analyses. Heat-stress metrics were tested individually "
+         "because they are functions of temperature. "
          "State fixed effects capture time-invariant cross-state differences in baseline risk, while the "
          "log-population offset scales expected counts within each state across years; because state "
          "annual VMT is correlated with population size, the two partly adjust for the same scale factor, "
@@ -621,11 +658,15 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
          f"cumulative RR {ctrlcum(CTRL_VMT)}). A variance-inflation-factor (VIF) screened full-controls "
          "model—starting with state population as a log offset plus z-scored state annual VMT, daily "
          "precipitation and the three heat-stress metrics, then iteratively dropping any added control "
-         f"with VIF > 5—retained only the {CTRL_KEPT_NAMES}. "
+         f"with VIF > 10—retained {CTRL_KEPT_NAMES}. "
          f"Iteratively dropped variables were {CTRL_DROPPED_NAMES}. "
          "Its same-day RR remained similar "
-         f"(RR {ctrlrr(CTRL)}, 95% CI {f(CTRL['sameday_RR_lo'])}-{f(CTRL['sameday_RR_hi'])}), "
+         f"(RR {ctrlrr(CTRL)}), "
          f"but the cumulative 0-10 day RR was attenuated (RR {ctrlcum(CTRL)}). "
+         f"A stricter VIF < 5 screen retained {CTRL_KEPT_NAMES if CTRL_VIF5 is CTRL else _ALL_CTRL_LABELS['prcp']} "
+         f"(RR {ctrlrr(CTRL_VIF5)}; cumulative RR {ctrlcum(CTRL_VIF5)}), "
+         f"while the unscreened full-controls model attenuated toward the null (RR {ctrlrr(CTRL_FREE)}; "
+         f"cumulative RR {ctrlcum(CTRL_FREE)}; max control VIF {_vif_cell(CTRL_FREE)}). "
          "Heat-stress metrics were tested individually because they are functions of temperature and can be "
          "collinear with the anomaly; they yielded variable same-day estimates and the heat-index model "
          "attenuated toward the null.")
@@ -684,8 +725,9 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
          "Sensitivity to activity, precipitation and heat-stress controls is summarized in Table 6. "
          "All added continuous terms were z-scored linear terms; state population entered as a log offset, "
          "and heat-stress metrics were expressed as anomalies relative to their day-of-year climatology. "
-         "The primary full-controls model was selected by iteratively removing added controls with VIF > 5; "
+         "The primary full-controls model was selected by iteratively removing added controls with VIF > 10; "
          f"dropped variables were {CTRL.get('dropped', 'none')}. "
+         "A stricter VIF < 5 screen and an unscreened full-controls model are also shown. "
          "Heat-stress metrics showed high collinearity with the temperature anomaly when entered individually, "
          "so they are reported separately as sensitivity analyses rather than being included simultaneously.")
     tbl6(doc)
@@ -712,8 +754,8 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
          f"similar to the {CDC_MEAN:.0f} officially recorded direct-heat deaths per year. "
          "This acute, same-day excess was not explained by aggregate driving activity, and "
          "it remained in the VIF-screened full-controls model (added controls iteratively removed "
-         f"when VIF > 5, retaining only the {CTRL_KEPT_NAMES}; dropped: {CTRL_DROPPED_NAMES}), "
-         f"RR {ctrlrr(CTRL)}, 95% CI {f(CTRL['sameday_RR_lo'])}-{f(CTRL['sameday_RR_hi'])}). "
+         f"when VIF > 10, retaining {CTRL_KEPT_NAMES}; dropped: {CTRL_DROPPED_NAMES}), "
+         f"RR {ctrlrr(CTRL)}). "
          f"The cumulative 0-10 day RR in that model was attenuated (RR {ctrlcum(CTRL)}). "
          "The 1-3 day deficit "
          "indicates that part of the excess reflects short-term displacement (harvesting). These "
