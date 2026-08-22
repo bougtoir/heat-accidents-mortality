@@ -10,13 +10,18 @@ VAR_DF = 4                            # exposure spline df per window (constant-
 SEED = 20260722
 
 
-def fit_poisson_irls(X, y, maxiter=100, tol=1e-9):
+def fit_poisson_irls(X, y, offset=None, maxiter=100, tol=1e-9):
     """Memory-light Poisson (log link) IRLS via normal equations."""
     X = np.asarray(X, float); y = np.asarray(y, float)
+    n = X.shape[0]
+    if offset is None:
+        offset = np.zeros(n)
+    else:
+        offset = np.asarray(offset, float)
     beta = np.zeros(X.shape[1]); beta[0] = np.log(max(y.mean(), 1e-3))
     for _ in range(maxiter):
-        eta = np.clip(X @ beta, -30, 30); mu = np.exp(eta)
-        z = eta + (y - mu) / mu
+        eta = offset + np.clip(X @ beta, -30, 30); mu = np.exp(eta)
+        z = np.clip(X @ beta, -30, 30) + (y - mu) / mu
         WX = mu[:, None] * X
         A = X.T @ WX
         try:
@@ -26,7 +31,7 @@ def fit_poisson_irls(X, y, maxiter=100, tol=1e-9):
         if np.max(np.abs(new - beta)) < tol:
             beta = new; break
         beta = new
-    mu = np.exp(np.clip(X @ beta, -30, 30))
+    mu = np.exp(offset + np.clip(X @ beta, -30, 30))
     XtWX = X.T @ (mu[:, None] * X)
     try:
         cov = np.linalg.inv(XtWX)
@@ -53,7 +58,8 @@ def _full_rank(X, protect):
     return X[kept]
 
 
-def fit_model(df, exposure, confounder_fn, extra=None, var_df=VAR_DF, group="unit"):
+def fit_model(df, exposure, confounder_fn, extra=None, offset=None,
+              var_df=VAR_DF, group="unit"):
     cb = DistLagBins(df[exposure].values, BINS, var_df)
     idx, lagged = lag_matrix(df, group, "date", exposure, cb.maxlag)
     lagged = lagged[np.argsort(idx)]
@@ -65,7 +71,10 @@ def fit_model(df, exposure, confounder_fn, extra=None, var_df=VAR_DF, group="uni
     X = pd.concat(blocks, axis=1)
     X = X.loc[X.index[full]].dropna(); d = df.loc[X.index]
     X = _full_rank(X, protect=cb.colnames())
-    beta, cov, mu, pear = fit_poisson_irls(X.values, d.deaths.values)
+    off_arr = None
+    if offset is not None:
+        off_arr = offset.loc[d.index].values if hasattr(offset, "loc") else np.asarray(offset)[X.index]
+    beta, cov, mu, pear = fit_poisson_irls(X.values, d.deaths.values, offset=off_arr)
     phi = pear / (len(d) - X.shape[1])
     cov = cov * phi
     cols = list(X.columns); ci = [cols.index(c) for c in cb.colnames()]

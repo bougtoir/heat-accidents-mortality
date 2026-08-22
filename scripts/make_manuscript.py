@@ -42,7 +42,11 @@ JP = read_csv("jp_attributable.csv")[0]
 US_LAG = {r["window"]: r for r in read_csv("us_lag_response.csv")}
 JP_LAG = {r["window"]: r for r in read_csv("jp_lag_response.csv")}
 CDC = read_csv("cdc_heat_deaths.csv")
-CTRL = read_csv("us_sensitivity_controls.csv")[0]
+CTRL_ROWS = {r["model"]: r for r in read_csv("us_sensitivity_controls.csv")}
+CTRL = (CTRL_ROWS.get("with_population_stateVMT_prcp_humidity")
+        or CTRL_ROWS.get("with_VMT_gasoline_controls")
+        or list(CTRL_ROWS.values())[0])
+CTRL_VMT = CTRL_ROWS.get("with_VMT_gasoline_controls", CTRL)
 SUB = read_csv("us_subgroup_response.csv")
 TOD = read_csv("us_timeofday_response.csv")
 PROJ = read_csv("us_projection.csv")
@@ -79,6 +83,8 @@ REF_TEXT = {
     "attrib": "Gasparrini A, Leone M. Attributable risk from distributed lag models. BMC Med Res Methodol 2014;14:55.",
     "eia": "US Energy Information Administration. Weekly finished motor gasoline product supplied (PET.WGFUPUS2.W). https://www.eia.gov/",
     "fhwa": "Federal Highway Administration. Traffic Volume Trends. https://www.fhwa.dot.gov/policyinformation/travel_monitoring/tvt.cfm",
+    "fhwa_vm2": "Federal Highway Administration. Highway Statistics VM-2: Annual state vehicle-miles travelled. https://www.fhwa.dot.gov/policyinformation/statistics.cfm",
+    "census_pep": "US Census Bureau. Population Estimates Program. Annual state population estimates. https://www.census.gov/programs-surveys/popest.html",
     "ipcc": "IPCC. Climate Change 2021: The Physical Science Basis. Contribution of Working Group I to the Sixth Assessment Report of the Intergovernmental Panel on Climate Change. Cambridge: Cambridge University Press; 2021.",
     "daanen": "Daanen HAM, van de Vliert E, Huang X. Driving performance in cold, warm, and thermoneutral environments. Appl Ergon 2003;34:597-602.",
     "liang2022": "Liang M, Min M, Guo X, Song Q, Wang H, Li N, et al. The relationship between ambient temperatures and road traffic injuries: a systematic review and meta-analysis. Environ Sci Pollut Res 2022;29(33):50647-60.",
@@ -348,7 +354,8 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
     labelled(doc, "Findings ",
              f"In the USA ({int(float(US['total_deaths'])):,} crash deaths), a +9\u00b0C anomaly "
              f"raised same-day crash mortality, RR {rr(US, 'sameday_RR_anom+9C')}, "
-             "and remained robust to adjustment for driving activity (RR "
+             "and remained similar after additionally adjusting for state population, "
+             "state vehicle-miles travelled, precipitation and heat-stress metrics (RR "
              f"{f(CTRL['sameday_RR_anom+9C'])}, 95% CI {f(CTRL['sameday_RR_lo'])}-{f(CTRL['sameday_RR_hi'])}). The excess was larger "
              f"for open-air users (motorcyclists RR {f(USER['motorcyclist']['sameday_RR_+9C'])}, "
              f"pedestrians RR {f(USER['pedestrian']['sameday_RR_+9C'])}) than vehicle occupants "
@@ -428,7 +435,12 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
          f"(National Police Agency [NPA] accident open data, 2019-2024).{cite('npa')} "
          "Daily mean temperature was taken from the Global Historical Climatology "
          f"Network-Daily (GHCN-Daily) stations{cite('ghcn')} as the mean of TMAX and TMIN, "
-         "aggregated to each spatial unit from its nearest reporting stations. For every unit "
+         "aggregated to each spatial unit from its nearest reporting stations. State-level "
+         "precipitation (PRCP) and, in sensitivity analyses, daily average dew point (ADPT), "
+         "relative humidity (RHAV) and average wet-bulb temperature (AWBT) were taken from the "
+         "same GHCN-Daily stations and used to compute humidex, the US National Weather Service "
+         "heat index (converted back to degrees Celsius) and an estimated wet-bulb globe "
+         "temperature (0.7 times wet-bulb plus 0.3 times air temperature). For every unit "
          "we estimated a cyclic day-of-year climatology and defined the temperature anomaly "
          "as the observed temperature minus that climatology,", space_after=2)
     add_equation(doc,
@@ -461,9 +473,12 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
          "the long-term trend had 3 df per study year. Overdispersion was handled with a "
          "quasi-Poisson dispersion parameter. Net heat-attributable deaths were computed by "
          f"the method of Gasparrini and Leone{cite('attrib')} with Monte Carlo (MC) confidence "
-         "intervals (CIs). As a sensitivity analysis for the US we added national "
+         "intervals (CIs). As sensitivity analyses for the US we added (i) national "
          f"vehicle-miles travelled (VMT){cite('fhwa')} and finished-motor-gasoline product supplied"
-         f"{cite('eia')} as activity proxies. Officially recorded direct-heat deaths "
+         f"{cite('eia')} as activity proxies, and (ii) a richer control set with state annual "
+         f"population (used as an offset){cite('census_pep')}, state annual VMT"
+         f"{cite('fhwa_vm2')}, daily state precipitation, and the GHCN-derived heat-stress "
+         "metrics as additional exposures or confounders. Officially recorded direct-heat deaths "
          "(International Classification of Diseases, 10th revision [ICD-10] code X30) were "
          f"obtained from CDC WONDER.{cite('cdc')} We performed three further US analyses: (i) "
          "refitting the same-day model within crash-hour bands to test whether the excess "
@@ -514,9 +529,11 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
          f"days, RR {lagrr(US_LAG['lag1-3'])}, consistent with short-term displacement "
          "(harvesting) rather than a net addition of deaths (Fig. 3; Table 2). The "
          "same-day association was essentially unchanged after adjusting for national "
-         f"vehicle-miles travelled and gasoline supplied (RR {f(CTRL['sameday_RR_anom+9C'])}, "
-         f"95% CI {f(CTRL['sameday_RR_lo'])}-{f(CTRL['sameday_RR_hi'])}), suggesting that "
-         "day-to-day driving volume alone does not explain the effect.")
+         f"vehicle-miles travelled and gasoline supplied (RR {f(CTRL_VMT['sameday_RR_anom+9C'])}, "
+         f"95% CI {f(CTRL_VMT['sameday_RR_lo'])}-{f(CTRL_VMT['sameday_RR_hi'])}); it remained similar when we further added "
+         f"state population (offset), state VMT, precipitation and heat-stress metrics (RR "
+         f"{f(CTRL['sameday_RR_anom+9C'])}, 95% CI {f(CTRL['sameday_RR_lo'])}-{f(CTRL['sameday_RR_hi'])}), "
+         "suggesting that driving volume and weather-related activity alone do not explain the effect.")
     add_figure(doc, FIGURES[2][0], 3, FIGURES[2][1])
     tbl2(doc)
     para(doc,
@@ -590,10 +607,13 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
          f"{float(US['net_heat_attributable_hi'])/float(US['years']):.0f}), "
          f"similar to the {CDC_MEAN:.0f} officially recorded direct-heat deaths per year. "
          "This acute, same-day excess was not explained by aggregate driving activity, and "
-         "the 1-3 day deficit indicates that part of the excess reflects short-term displacement "
-         "(harvesting). These findings are consistent with heat-related impairment or "
-         "under-recognised heat illness contributing to road deaths without appearing in "
-         f"cause-of-death data.{cite('liang2022','liang2021_aap')}")
+         f"it remained after additionally controlling for state population (offset), state VMT, "
+         f"precipitation and heat-stress metrics (RR {f(CTRL['sameday_RR_anom+9C'])} "
+         f"[{f(CTRL['sameday_RR_lo'])}-{f(CTRL['sameday_RR_hi'])}]), although the cumulative "
+         "0-10 day estimate became imprecise in that richer specification. The 1-3 day deficit "
+         "indicates that part of the excess reflects short-term displacement (harvesting). These "
+         "findings are consistent with heat-related impairment or under-recognised heat illness "
+         f"contributing to road deaths without appearing in cause-of-death data.{cite('liang2022','liang2021_aap')}")
     para(doc,
          "Two features of the data argue against confounding by overall driving volume and "
          "are consistent with a direct heat effect. The excess rose with direct heat exposure: "
@@ -615,25 +635,39 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
          "adaptation. Because the same-day excess was largest among open-air road users "
          "and in the hottest hours, heat warnings and travel advice could be targeted at "
          "motorcyclists, cyclists, pedestrians and outdoor delivery riders during hot "
-         "periods. Road safety agencies typically classify fatal crashes by driver error, "
-         "vehicle failure or road conditions; the possibility that ambient heat impairs "
-         "psychomotor or cognitive performance is rarely considered. Integrating "
-         "temperature forecasts into crash-prevention messaging and ensuring heat-health "
-         "plans reach outdoor workers and commuters is consistent with a Safe System approach "
-         "to environmental risk and could reduce a burden that is currently invisible to both "
-         "heat-mortality and road-safety surveillance, though intervention studies are needed to "
-         "test whether such heat-aware measures reduce crash risk.")
+         "periods. Shared e-scooter and e-bike fleets and public bikeshare systems should also "
+         "be considered: batteries, motors and tyres are heat-stressed, increasing the risk of "
+         "sudden power loss or brake failure, while docking and charging points without shade "
+         "expose users and maintenance staff to thermal load during check-out, parking and "
+         "battery swap. Service operators could temporarily reduce or suspend rentals above "
+         "high-temperature thresholds, relocate or shade docking and charging infrastructure, "
+         "and integrate heat warnings into app-based routing. Linking shared-mobility heat "
+         "alerts with public transit and cooled shelter maps would help preserve access for "
+         "users who depend on these modes, particularly in low-income neighbourhoods where "
+         "private air-conditioned transport is less available. Road safety agencies typically "
+         "classify fatal crashes by driver error, vehicle failure or road conditions; the "
+         "possibility that ambient heat impairs psychomotor or cognitive performance is rarely "
+         "considered. Integrating temperature forecasts into crash-prevention messaging and "
+         "ensuring heat-health plans reach outdoor workers and commuters is consistent with a "
+         "Safe System approach to environmental risk and could reduce a burden that is currently "
+         "invisible to both heat-mortality and road-safety surveillance, though intervention "
+         "studies are needed to test whether such heat-aware measures reduce crash risk.")
     para(doc,
          "Several limitations apply. First, this is an ecological, population-level "
          "association: it cannot establish that heat caused illness in any specific crash, "
          "and neither FARS nor NPA records post-mortem heat diagnosis. Second, exposure is "
          "measured at the state/prefecture level from the nearest GHCN-Daily station; this "
-         "misclassifies individual exposure, does not capture sub-unit variation such as "
-         "urban heat islands, and omits humidity, wet-bulb globe temperature and other "
-         "heat-stress metrics. Third, activity adjustment used national monthly proxies "
-         "(vehicle-miles travelled and gasoline supplied) and is not daily, state-level or "
-         "mode-specific; daily state-level or mode-specific activity could alter the "
-         "road-user and time-of-day gradients. Fourth, the Japanese analysis is an "
+         "misclassifies individual exposure and does not capture sub-unit variation such as "
+         "urban heat islands. We therefore added state population as an offset and evaluated "
+         "GHCN-derived humidity, heat-index and estimated wet-bulb globe temperature metrics in "
+         "sensitivity models, but these station-based heat-stress measures still do not measure "
+         "personal exposure. Third, activity adjustment used national monthly proxies for the main "
+         "model and annual state VMT for the sensitivity model; neither is daily, mode-specific or "
+         "shared-mobility-specific, and daily state-level or mode-specific activity could alter "
+         "the road-user and time-of-day gradients. In particular, publicly available daily "
+         "national counts of pedestrian, bicycle and shared-mobility trips are not available, so "
+         "we cannot directly separate a weather-related activity shift from a physiological or "
+         "mechanical heat effect for those modes. Fourth, the Japanese analysis is an "
          "exploratory external validation only; its shorter series, far smaller death counts "
          "and sparser GHCN-Daily coverage preclude a precise estimate, and we do not pool "
          "the two countries. Fifth, the warming projection is a scenario calculation that "
@@ -684,13 +718,14 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
 
     h(doc, "Data availability", 1)
     para(doc,
-         "All data are public: FARS, GHCN-Daily, CDC WONDER, FHWA/FRED, EIA and the "
-         "Japanese NPA accident open data (see References for sources). Processed data files "
-         "are provided in the repository so the manuscript and figures can be regenerated "
-         "without API keys. The complete analysis code and reproducible pipeline (make all "
-         "for raw data and figures, then make ehp for the EHP submission package) is openly "
-         "available at https://github.com/bougtoir/heat-accidents-mortality; every reported "
-         "number, figure and table is regenerated from source with no hard-coded values.")
+         "All data are public: FARS, GHCN-Daily, CDC WONDER, US Census Bureau Population "
+         "Estimates Program, FHWA Highway Statistics VM-2, FHWA/FRED, EIA and the Japanese "
+         "NPA accident open data (see References for sources). Processed data files are "
+         "provided in the repository so the manuscript and figures can be regenerated without "
+         "API keys. The complete analysis code and reproducible pipeline (make all for raw data "
+         "and figures, then make ehp for the EHP submission package) is openly available at "
+         "https://github.com/bougtoir/heat-accidents-mortality; every reported number, figure "
+         "and table is regenerated from source with no hard-coded values.")
 
     h(doc, "References", 1)
     for i, key in enumerate(_ref_order, 1):

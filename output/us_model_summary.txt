@@ -9,7 +9,7 @@ Lag-window RR for a +9C anomaly vs seasonal norm:
 
 total_deaths: 270497
 years: 7
-mmt_abs_degC: -13.22
+mmt_abs_degC: -13.23
 dispersion_phi: 1.23
 cumRR_anom+9C: 1.074
 cumRR_anom+9C_lo: 1.015
@@ -17,18 +17,18 @@ cumRR_anom+9C_hi: 1.137
 sameday_RR_anom+9C: 1.165
 sameday_RR_anom+9C_lo: 1.134
 sameday_RR_anom+9C_hi: 1.196
-net_heat_attributable_deaths: 3589.2
-net_heat_attributable_lo: 2870.2
-net_heat_attributable_hi: 4306.5
-net_heat_attributable_per_year: 512.7
+net_heat_attributable_deaths: 3590.8
+net_heat_attributable_lo: 2871.8
+net_heat_attributable_hi: 4308.1
+net_heat_attributable_per_year: 513.0
 net_heat_attributable_fraction_pct: 1.327
 net_cumRR_anom+3C: 1.015 (1.006-1.024)
 net_cumRR_anom+6C: 1.040 (1.015-1.066)
 net_cumRR_anom+9C: 1.074 (1.015-1.137)
 net_cumRR_anom+12C: 1.116 (1.008-1.236)
 warming+1C_extra_deaths_per_year: 339 (250-428)
-warming+2C_extra_deaths_per_year: 661 (459-864)
-warming+3C_extra_deaths_per_year: 983 (644-1356)
-sameday_RR_+9C_ctrl: 1.162
-sameday_RR_+9C_ctrl_lo: 1.132
-sameday_RR_+9C_ctrl_hi: 1.193
+warming+2C_extra_deaths_per_year: 662 (459-864)
+warming+3C_extra_deaths_per_year: 984 (644-1357)
+sameday_RR_+9C_ctrl: 1.073
+sameday_RR_+9C_ctrl_lo: 1.024
+sameday_RR_+9C_ctrl_hi: 1.124
