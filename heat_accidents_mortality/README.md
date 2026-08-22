@@ -41,9 +41,12 @@ hard-coded.
 |------|--------|
 | US traffic fatalities | NHTSA FARS `https://static.nhtsa.gov/nhtsa/downloads/FARS/{YEAR}/National/` |
 | Temperature (both) | NOAA GHCN-Daily `https://www.ncei.noaa.gov/pub/data/ghcn/daily/` |
-| US county centroids / population | Census 2023 Gazetteer + PEP 2019 (needs `CENSUS_API_KEY`) |
-| US vehicle-miles travelled | FRED `TRFVOLUSM227NFWA` (FHWA Traffic Volume Trends) |
-| US gasoline supplied | EIA `PET.WGFUPUS2.W` (needs `EIA_API_KEY`) |
+| US precipitation | NOAA GHCN-Daily `PRCP` element |
+| US heat-stress metrics | NOAA GHCN-Daily `ADPT`/`RHAV`/`AWBT` elements |
+| US county centroids | Census 2023 Gazetteer |
+| US state annual population | Census Population Estimates Program (`NST-EST`) |
+| US state annual VMT | FHWA Highway Statistics VM-2 `https://www.fhwa.dot.gov/policyinformation/statistics/{YEAR}/vm2.cfm` |
+| US monthly VMT / gasoline | FRED `TRFVOLUSM227NFWA` (FHWA Traffic Volume Trends) and EIA `PET.WGFUPUS2.W` (needs `EIA_API_KEY`) |
 | US official heat deaths | CDC WONDER Underlying Cause of Death (D76), ICD-10 X30 |
 | Japan traffic fatalities | National Police Agency accident open data (`honhyo_YYYY.csv`) |
 
