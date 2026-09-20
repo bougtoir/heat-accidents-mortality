@@ -89,11 +89,13 @@ CTRL_KEPT_NAMES = _ctrl_kept_names()
 CTRL_VIF5 = CTRL_ROWS.get("with_population_stateVMT_prcp_VIFscreened", CTRL)
 CTRL_FREE = CTRL_ROWS.get("with_population_stateVMT_prcp_VIFfree", CTRL)
 SUB = read_csv("us_subgroup_response.csv")
+CTX = read_csv("us_crashcontext_response.csv")
 TOD = read_csv("us_timeofday_response.csv")
 PROJ = read_csv("us_projection.csv")
 USER = {r["group"]: r for r in SUB if r["dimension"] == "user"}
 AGE = {r["group"]: r for r in SUB if r["dimension"] == "age"}
 PROJ_D = {int(float(r["delta_degC"])): r for r in PROJ}
+CTXG = {(r["dimension"], r["group"]): r for r in CTX}
 TOD_D = {r["hour_band"]: r for r in TOD}
 TOD_MAX = max(TOD, key=lambda r: float(r["sameday_RR_+9C"]))
 US_JP_RATIO = (float(US["total_deaths"]) / float(US["years"])) / (float(JP["total_deaths"]) / float(JP["years"]))
@@ -287,6 +289,15 @@ FIGURES = [
      "activity and baseline rates constant. Bars show the point estimate with 95% "
      "Monte Carlo confidence intervals; this is a scenario projection, not an observed "
      "quantity."),
+    ("fig_us_crashcontext.png",
+     "United States same-day rate ratio of crash death for a +9 °C anomaly by crash "
+     "circumstances: manner of collision, weather condition, rural/urban land use and "
+     "police-reported driver drinking. The excess is present for clear or cloudy days, "
+     "is larger for single-vehicle (not a collision with a motor vehicle in transport) "
+     "than multi-vehicle crashes, and is similar regardless of reported driver "
+     "drinking\u2014patterns consistent with a direct heat contribution rather than "
+     "adverse-weather surface conditions or a purely behavioural pathway. "
+     "These subgroup analyses are exploratory and are not adjusted for multiple comparisons."),
     ("jp_fig2_anomaly_exposure_response.png",
      "Japan temperature-anomaly exposure-response (2019-2024). The estimate is "
      "imprecise: the confidence band is wide and includes the null throughout."),
@@ -407,6 +418,32 @@ def _vif_cell(r):
         return str(v)
 
 
+def tbl7(doc):
+    label = {"manner": "Manner of collision", "weather": "Weather condition",
+             "rururb": "Land use", "alcohol": "Driver drinking"}
+    names = {"single_vehicle": "Single-vehicle (not a MVIT collision)",
+             "multi_vehicle": "Multi-vehicle collision",
+             "clear_or_cloudy": "Clear or cloudy",
+             "adverse": "Adverse (rain, snow, fog, wind)",
+             "rural": "Rural", "urban": "Urban",
+             "no_drinking": "No drinking driver",
+             "drinking_driver": "Drinking driver involved"}
+    rows = []
+    for dim in ("manner", "weather", "rururb", "alcohol"):
+        for r in CTX:
+            if r["dimension"] == dim:
+                rows.append([f"{label[dim]}: {names[r['group']]}",
+                             f"{int(r['deaths']):,}", subrr(r)])
+    add_table(doc, 6, "United States same-day rate ratio of crash death for a +9 \u00b0C "
+              "anomaly, by crash circumstances (crash-level strata). Single-vehicle "
+              "crashes are those whose first harmful event was not a collision with a "
+              "motor vehicle in transport (includes run-off-road and pedestrian crashes); "
+              "driver drinking is police-reported for any involved driver; crashes "
+              "with unreported or unknown drinking status are excluded. Subgroup "
+              "analyses are exploratory and not adjusted for multiple comparisons.",
+              ["Stratum", "Crash deaths", "Same-day RR (95% CI)"], rows)
+
+
 def tbl6(doc):
     rows = []
     for key in SENS_ORDER:
@@ -419,7 +456,7 @@ def tbl6(doc):
             ctrlcum(r),
             _vif_cell(r),
         ])
-    add_table(doc, 6, "United States sensitivity of the +9 \u00b0C anomaly association to activity, "
+    add_table(doc, 7, "United States sensitivity of the +9 \u00b0C anomaly association to activity, "
               "precipitation and heat-stress controls. All added continuous controls were z-scored; "
               "population entered as a log offset; heat-stress metrics were anomaly-derived. The "
               "VIF < 10 row is the primary full-controls model, selected by iteratively removing "
@@ -608,8 +645,10 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
          f"obtained from CDC WONDER.{cite('cdc')} We performed three further US analyses: (i) "
          "refitting the same-day model within crash-hour bands to test whether the excess "
          "concentrates in the hottest hours; (ii) refitting it by road-user type (vehicle "
-         "occupant, motorcyclist, pedestrian, cyclist) and age band from FARS person records, "
-         "as a mechanistic and vulnerability analysis; and (iii) projecting the additional "
+         "occupant, motorcyclist, pedestrian, cyclist), age band and crash circumstances "
+         "(manner of collision, weather condition, rural/urban land use and "
+         "police-reported driver drinking) from FARS records, "
+         "as mechanistic and vulnerability analyses; and (iii) projecting the additional "
          "crash deaths under uniform warming scenarios of the daily temperature distribution "
          "(+1, +2, +3 °C), holding activity and baseline rates constant. All data are public "
          "and the full pipeline is reproducible from source (see Data availability). Reporting "
@@ -723,7 +762,29 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
     add_figure(doc, FIGURES[7][0], 8, FIGURES[7][1])
     tbl5(doc)
     para(doc,
-         "Sensitivity to activity, precipitation and heat-stress controls is summarized in Table 6. "
+         "Crash-level strata provided four further checks on the mechanism and on "
+         "robustness (Fig. 9; Table 6). The same-day excess was larger for "
+         "single-vehicle crashes\u2014those whose first harmful event was not a "
+         "collision with another motor vehicle in transport, including run-off-road "
+         "and pedestrian-involved crashes\u2014than for multi-vehicle collisions "
+         f"(RR {subrr(CTXG[('manner', 'single_vehicle')])} vs "
+         f"{subrr(CTXG[('manner', 'multi_vehicle')])}), the pattern expected if heat "
+         "degrades driver performance independently of interaction with other "
+         "vehicles. The excess persisted on clear or cloudy days "
+         f"(RR {subrr(CTXG[('weather', 'clear_or_cloudy')])}) and was similar in "
+         f"adverse weather (RR {subrr(CTXG[('weather', 'adverse')])}), so it is not "
+         "explained by precipitation or wet-road surface conditions. Estimates were "
+         f"similar for rural (RR {subrr(CTXG[('rururb', 'rural')])}) and urban "
+         f"(RR {subrr(CTXG[('rururb', 'urban')])}) crashes. Finally, the excess was "
+         "present and of similar magnitude whether or not a driver was reported to "
+         f"have been drinking (RR {subrr(CTXG[('alcohol', 'no_drinking')])} and "
+         f"{subrr(CTXG[('alcohol', 'drinking_driver')])} respectively), indicating "
+         "that the association is not driven by alcohol-involved crashes; "
+         "police-reported drinking is, however, under-ascertained in FARS.")
+    add_figure(doc, FIGURES[8][0], 9, FIGURES[8][1])
+    tbl7(doc)
+    para(doc,
+         "Sensitivity to activity, precipitation and heat-stress controls is summarized in Table 7. "
          "All added continuous terms were z-scored linear terms; state population entered as a log offset, "
          "and heat-stress metrics were expressed as anomalies relative to their day-of-year climatology. "
          "The primary full-controls model was selected by iteratively removing added controls with VIF > 10; "
@@ -738,12 +799,12 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
          "presented only as an exploratory external validation. "
          f"In Japan ({int(float(JP['total_deaths'])):,} crash deaths over "
          f"{int(float(JP['years']))} years) the anomaly exposure-response was imprecise, with "
-         "a wide confidence band that included the null throughout (Fig. 9); the same-day "
+         "a wide confidence band that included the null throughout (Fig. 10); the same-day "
          f"point estimate for a +9 °C anomaly was {rr(JP, 'sameday_RR_anom+9C')} and was not "
-         "stable across specifications. A direct comparison of the two countries (Fig. 10) shows a precise acute effect in the "
+         "stable across specifications. A direct comparison of the two countries (Fig. 11) shows a precise acute effect in the "
          f"US, whereas the Japanese panel—with roughly {US_JP_RATIO:.0f}-fold fewer annual crash deaths and sparser temperature coverage—is underpowered.")
-    add_figure(doc, FIGURES[8][0], 9, FIGURES[8][1])
     add_figure(doc, FIGURES[9][0], 10, FIGURES[9][1])
+    add_figure(doc, FIGURES[10][0], 11, FIGURES[10][1])
 
     h(doc, "Discussion", 1)
     para(doc,
@@ -768,7 +829,11 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
          "it was small for enclosed, often air-conditioned vehicle occupants but several-fold "
          "larger for motorcyclists, pedestrians and cyclists, who are directly exposed and "
          "often physically exerting. It was also largest in the hottest hours of the day. Both "
-         "patterns are consistent with heat degrading psychomotor and cognitive performance. "
+         "patterns are consistent with heat degrading psychomotor and cognitive "
+         "performance. The crash-circumstance strata point the same way: the excess "
+         "was larger for single-vehicle crashes than for multi-vehicle collisions, "
+         "persisted on clear days, and was similar whether or not a driver was "
+         "reported to have been drinking."
          "These gradients are not proof of mechanism, however: open-air travel is itself "
          "weather-sensitive, so more motorcycling, cycling and walking on hotter-than-normal "
          "days could inflate the open-air estimates through greater exposure rather than "
@@ -824,11 +889,14 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
          "illustrative of magnitude, not as a forecast. Sixth, the road-user, age and "
          "time-of-day subgroup analyses are exploratory: they entail multiple comparisons "
          "without formal adjustment, and the open-air road-user gradient may in part reflect "
-         "weather-related differences in activity rather than physiology. Seventh, the "
+         "weather-related differences in activity rather than physiology. Seventh, "
+         "police-reported drinking is incompletely ascertained in FARS, so similar "
+         "estimates with and without a reported drinking driver do not fully exclude "
+         "an alcohol-related contribution. Eighth, the "
          "quasi-Poisson model accounts for overdispersion but does not include an explicit "
          "autoregressive error term; although the distributed-lag, seasonal, trend and "
          "day-of-week controls absorb much short-term temporal autocorrelation, unmodelled "
-         f"residual serial correlation could affect confidence intervals. Eighth, the findings are drawn from the United States and Japan because, among high-income countries with comparably robust road-crash and meteorological data collection, no other country currently provides a fully open, daily, individual-level crash record equivalent to FARS or the Japanese NPA open data; the EU CARE database contains detailed individual accident records but is not publicly available at the daily individual level, and national open road-safety datasets in Europe are not harmonised, so the United States and Japan represent the best available public sources for this study design.{cite('care')} These findings should "
+         f"residual serial correlation could affect confidence intervals. Ninth, the findings are drawn from the United States and Japan because, among high-income countries with comparably robust road-crash and meteorological data collection, no other country currently provides a fully open, daily, individual-level crash record equivalent to FARS or the Japanese NPA open data; the EU CARE database contains detailed individual accident records but is not publicly available at the daily individual level, and national open road-safety datasets in Europe are not harmonised, so the United States and Japan represent the best available public sources for this study design.{cite('care')} These findings should "
          "motivate, but cannot replace, individual-level studies linking crash decedents to "
          "ambient heat and, where available, post-mortem findings.")
 
@@ -903,7 +971,7 @@ def build_pptx():
 def build_tables_docx():
     doc = Document(); setup(doc)
     doc.add_heading("Tables (editable)", 1)
-    tbl1(doc); tbl2(doc); tbl4(doc); tbl3(doc); tbl5(doc); tbl6(doc)
+    tbl1(doc); tbl2(doc); tbl4(doc); tbl3(doc); tbl5(doc); tbl7(doc); tbl6(doc)
     path = os.path.join(MAN, "tables.docx"); doc.save(path); print("wrote", path)
 
 
@@ -924,8 +992,8 @@ STROBE_ITEMS = [
     ("12", "Statistical methods", "Methods (quasi-Poisson DLM, attributable risk, projections, subgroups)"),
     ("13", "Descriptive data", "Results (panel sizes); Table 1"),
     ("14", "Outcome data", "Results; Tables 2-4"),
-    ("15", "Main results (estimates, CIs)", "Results; Tables 2-6; Figures 1-10"),
-    ("16", "Other analyses (subgroups, sensitivity)", "Results (activity, precipitation and heat-stress controls; road-user/age/time-of-day; projection); Table 6"),
+    ("15", "Main results (estimates, CIs)", "Results; Tables 2-7; Figures 1-11"),
+    ("16", "Other analyses (subgroups, sensitivity)", "Results (activity, precipitation and heat-stress controls; road-user/age/time-of-day; crash circumstances; projection); Tables 6-7"),
     ("17", "Key results", "Discussion (first paragraph); Conclusion"),
     ("18", "Limitations", "Discussion (limitations paragraph)"),
     ("19", "Interpretation", "Discussion; Summary (Interpretation)"),

@@ -76,6 +76,23 @@ def main():
                   f"({r['sameday_lo']}-{r['sameday_hi']}), n={r['deaths']:,}")
     pd.DataFrame(sub).to_csv(os.path.join(PROC, "us_subgroup_response.csv"), index=False)
 
+    ctx = []
+    order_ctx = [
+        ("manner", ["single_vehicle", "multi_vehicle"]),
+        ("weather", ["clear_or_cloudy", "adverse"]),
+        ("rururb", ["rural", "urban"]),
+        ("alcohol", ["no_drinking", "drinking_driver"]),
+    ]
+    for dim, vals in order_ctx:
+        for val in vals:
+            r = fit_stratum(base, st[st.dim == dim], val)
+            r = {"dimension": dim, "group": val, **r}
+            ctx.append(r)
+            print(f"{dim} {val}: same-day RR+9C = {r['sameday_RR_+9C']} "
+                  f"({r['sameday_lo']}-{r['sameday_hi']}), n={r['deaths']:,}")
+    pd.DataFrame(ctx).to_csv(os.path.join(PROC, "us_crashcontext_response.csv"),
+                             index=False)
+
 
 if __name__ == "__main__":
     main()

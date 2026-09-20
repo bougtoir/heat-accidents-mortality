@@ -140,6 +140,35 @@ def fig_timeofday():
     save(fig, "fig_us_timeofday")
 
 
+def fig_crashcontext():
+    d = pd.read_csv(os.path.join(PROC, "us_crashcontext_response.csv"))
+    labels = {
+        "single_vehicle": "Single-vehicle / not MVIT",
+        "multi_vehicle": "Multi-vehicle collision",
+        "clear_or_cloudy": "Clear or cloudy",
+        "adverse": "Adverse weather",
+        "rural": "Rural",
+        "urban": "Urban",
+        "no_drinking": "No drinking driver",
+        "drinking_driver": "Drinking driver involved",
+    }
+    d["lab"] = d.group.map(labels)
+    # visual separation between the four dimension groups
+    gaps = {"manner": 0, "weather": 1, "rururb": 2, "alcohol": 3}
+    d["y"] = np.arange(len(d)) + d.dimension.map(gaps) * 0.8
+    fig, ax = plt.subplots(figsize=(6.8, 4.6))
+    ax.errorbar(d["sameday_RR_+9C"], d.y,
+                xerr=[d["sameday_RR_+9C"] - d.sameday_lo,
+                      d.sameday_hi - d["sameday_RR_+9C"]],
+                fmt="o", capsize=4, color=C_MAIN)
+    ax.axvline(1, ls="--", color="k", lw=0.8)
+    ax.set_yticks(d.y); ax.set_yticklabels(d.lab)
+    ax.set_xlabel("Same-day rate ratio for +9\u00b0C anomaly (95% CI)")
+    ax.set_title("Heat effect by crash circumstances:\nmanner, weather, rurality, alcohol")
+    ax.set_ylim(d.y.max() + 1, d.y.min() - 1)
+    save(fig, "fig_us_crashcontext")
+
+
 def fig_projection():
     d = pd.read_csv(os.path.join(PROC, "us_projection.csv"))
     x = np.arange(len(d))
@@ -158,7 +187,7 @@ def fig_projection():
 
 def main():
     fig_abs(); fig_anom(); fig_lag(); fig_year(); fig_compare()
-    fig_roaduser(); fig_timeofday(); fig_projection()
+    fig_roaduser(); fig_timeofday(); fig_crashcontext(); fig_projection()
     print("figures written to", FIG)
 
 

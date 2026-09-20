@@ -52,7 +52,7 @@ Dear Editors,
 
 We submit for your consideration our manuscript, "Ambient heat as an under-recognised risk factor for US traffic-crash mortality: a distributed-lag analysis with road-safety implications", as a Research Article.
 
-Road traffic crashes remain a leading cause of preventable death, and climate change is adding a heat-related layer of risk that road-safety statistics do not capture: fatal crashes on unusually hot days may involve heat-related impairment or unrecorded heat illness, yet decedents are almost never assessed for a heat contribution. Using only public data, this ecological time-series study shows that days hotter than the local seasonal norm carry an acute, same-day excess of US traffic-crash deaths. The excess survives adjustment for driving activity, is concentrated in heat-exposed open-air road users (motorcyclists, pedestrians and cyclists) and in the hottest hours of the day, and is comparable in magnitude to all officially recorded direct-heat deaths. Scenario projections suggest the burden would grow under uniform warming.
+Road traffic crashes remain a leading cause of preventable death, and climate change is adding a heat-related layer of risk that road-safety statistics do not capture: fatal crashes on unusually hot days may involve heat-related impairment or unrecorded heat illness, yet decedents are almost never assessed for a heat contribution. Using only public data, this ecological time-series study shows that days hotter than the local seasonal norm carry an acute, same-day excess of US traffic-crash deaths. The excess survives adjustment for driving activity, is concentrated in heat-exposed open-air road users (motorcyclists, pedestrians and cyclists) and in the hottest hours of the day, and is comparable in magnitude to all officially recorded direct-heat deaths. Crash-circumstance analyses add mechanistic support: the excess is larger for single-vehicle than multi-vehicle crashes, persists on clear days, and is similar whether or not a driver was reported to have been drinking—patterns expected from heat-related performance degradation rather than driving volume, road-surface conditions or alcohol. Scenario projections suggest the burden would grow under uniform warming.
 
 We believe this work fits the Journal of Safety Research's interdisciplinary scope on traffic safety and accident countermeasures: it quantifies an environmental risk factor that is invisible to both heat-mortality surveillance and crash statistics, and it translates the findings into practical applications for heat-aware road-safety messaging, targeted warnings for open-air road users, and shared-mobility heat-adaptation measures.
 
@@ -80,8 +80,8 @@ TITLE_PAGE_LINES = [
      "Research Promotion Center, Shiga University of Medical Science, Seta "
      "Tsukinowa-cho, Otsu, Shiga 520-2192, Japan. E-mail: bougtoir@gmail.com. "
      "ORCID: [iD to be added]", "corr"),
-    ("Word count of main text: [to be confirmed]. Number of tables: 6. "
-     "Number of figures: 10.", "meta"),
+    ("Word count of main text: [to be confirmed]. Number of tables: 7. "
+     "Number of figures: 11.", "meta"),
     ("Declarations of interest: none.", "decl"),
     ("Author contributions: Tatsuki Onishi conceived the study, performed "
      "the analysis, drafted the manuscript, and approved the final version. "
@@ -653,6 +653,21 @@ def _build_cover_letter(path):
     print("wrote", path)
 
 
+def _build_figures_dir():
+    """Stage per-figure PNG + TIFF files (Figure1..N) for delivery."""
+    from PIL import Image
+    stage_dir = tempfile.mkdtemp(prefix="jsr_figures_", dir=MAN)
+    out_dir = os.path.join(stage_dir, "jsr_figures")
+    os.makedirs(out_dir)
+    for i, (img, _cap) in enumerate(mm.FIGURES, 1):
+        src = os.path.join(mm.FIG, img)
+        shutil.copyfile(src, os.path.join(out_dir, f"Figure{i}.png"))
+        with Image.open(src) as im:
+            im.convert("RGB").save(os.path.join(out_dir, f"Figure{i}.tiff"),
+                                   compression="tiff_lzw")
+    return stage_dir, out_dir
+
+
 def _build_submission_zip():
     zip_base = os.path.join(MAN, "jsr_submission_package")
     stage = zip_base + "_stage"
@@ -664,6 +679,7 @@ def _build_submission_zip():
         "jsr_title_page.docx",                # author details (separate)
         "jsr_highlights.docx",
         "jsr_cover_letter.docx",
+        "tables.docx",
         "strobe_checklist.docx",
     ]
     for name in files:
@@ -672,10 +688,15 @@ def _build_submission_zip():
             shutil.copyfile(src, os.path.join(stage, name))
         else:
             print(f"WARNING: missing {name}")
-    if os.path.exists(zip_base + ".zip"):
-        os.remove(zip_base + ".zip")
-    shutil.make_archive(zip_base, "zip", stage)
-    shutil.rmtree(stage)
+    fig_stage, out_dir = _build_figures_dir()
+    try:
+        shutil.copytree(out_dir, os.path.join(stage, "figures"))
+        if os.path.exists(zip_base + ".zip"):
+            os.remove(zip_base + ".zip")
+        shutil.make_archive(zip_base, "zip", stage)
+    finally:
+        shutil.rmtree(fig_stage)
+        shutil.rmtree(stage)
     print("wrote", zip_base + ".zip")
 
 
