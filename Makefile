@@ -17,6 +17,8 @@ data_us:
 
 data_jp:
 	$(PY) $(S)/build_japan.py
+	$(PY) $(S)/build_jp_strata.py
+	$(PY) $(S)/build_jp_density.py
 
 ## --- analysis ---
 us: data_us

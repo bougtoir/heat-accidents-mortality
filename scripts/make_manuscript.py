@@ -90,12 +90,14 @@ CTRL_VIF5 = CTRL_ROWS.get("with_population_stateVMT_prcp_VIFscreened", CTRL)
 CTRL_FREE = CTRL_ROWS.get("with_population_stateVMT_prcp_VIFfree", CTRL)
 SUB = read_csv("us_subgroup_response.csv")
 CTX = read_csv("us_crashcontext_response.csv")
+JPS = read_csv("jp_strata_response.csv")
 TOD = read_csv("us_timeofday_response.csv")
 PROJ = read_csv("us_projection.csv")
 USER = {r["group"]: r for r in SUB if r["dimension"] == "user"}
 AGE = {r["group"]: r for r in SUB if r["dimension"] == "age"}
 PROJ_D = {int(float(r["delta_degC"])): r for r in PROJ}
 CTXG = {(r["dimension"], r["group"]): r for r in CTX}
+JPSG = {(r["dimension"], r["group"]): r for r in JPS}
 TOD_D = {r["hour_band"]: r for r in TOD}
 TOD_MAX = max(TOD, key=lambda r: float(r["sameday_RR_+9C"]))
 US_JP_RATIO = (float(US["total_deaths"]) / float(US["years"])) / (float(JP["total_deaths"]) / float(JP["years"]))
@@ -305,13 +307,21 @@ FIGURES = [
      "Same-day rate ratio of traffic-crash deaths for a +9 °C anomaly, United States "
      "versus Japan. The US shows a precise acute effect; the Japanese estimate is "
      "underpowered. This comparison is exploratory and is not adjusted for multiple comparisons."),
+    ("fig_jp_strata.png",
+     "Japan same-day rate ratio of crash death for a +9 °C anomaly by accident type "
+     "(single-vehicle, vehicle-vehicle, vehicle-pedestrian) and by prefecture "
+     "population density (a proxy for public-transport availability, split at the "
+     "median). All confidence intervals are wide and include the null; these "
+     "stratified analyses are exploratory and are not adjusted for multiple "
+     "comparisons."),
 ]
 
 _BW_NOTES = {
     "fig_us_roaduser.png": "Black-and-white version: categories are distinguished by the y-axis labels.",
     "fig_us_timeofday.png": "Black-and-white version: the 12-17 h point is filled and the others are open to highlight the peak band.",
     "fig5_hidden_vs_official.png": "Black-and-white version: the right-hand (estimate) bar is hatched to distinguish it from the left-hand (official) bar.",
-    "cross_fig_us_vs_japan_sameday.png": "Black-and-white version: US (square) and Japan (circle) estimates use different marker shapes."
+    "cross_fig_us_vs_japan_sameday.png": "Black-and-white version: US (square) and Japan (circle) estimates use different marker shapes.",
+    "fig_jp_strata.png": "Black-and-white version: categories are distinguished by the y-axis labels."
 }
 if os.environ.get("FIGURES_BW") == "1":
     FIGURES = [(fn, cap + " " + _BW_NOTES.get(fn, "Black-and-white version: line styles and marker shapes distinguish categories.")) for fn, cap in FIGURES]
@@ -465,6 +475,30 @@ def tbl6(doc):
               "temperature and can be collinear with the anomaly.",
               ["Model", "Same-day RR (95% CI)", "Cumulative RR (95% CI)", "Max control VIF"],
               rows)
+
+
+def tbl8(doc):
+    label = {"atype": "Accident type", "density": "Prefecture density"}
+    names = {"single_vehicle": "Single-vehicle",
+             "vehicle_vehicle": "Vehicle-vehicle",
+             "vehicle_pedestrian": "Vehicle-pedestrian",
+             "high_density": "High-density prefectures (transit-rich proxy)",
+             "low_density": "Low-density prefectures (transit-poor proxy)"}
+    rows = []
+    for dim in ("atype", "density"):
+        for r in JPS:
+            if r["dimension"] == dim:
+                rows.append([f"{label[dim]}: {names[r['group']]}",
+                             f"{int(r['deaths']):,}", subrr(r)])
+    add_table(doc, 8, "Japan same-day rate ratio of crash death for a +9 \u00b0C "
+              "anomaly, by accident type (NPA classification: single-vehicle, "
+              "vehicle-vehicle, vehicle-pedestrian; the fatality in a "
+              "vehicle-pedestrian accident is the struck pedestrian) and by "
+              "prefecture population density, split at the median as a proxy "
+              "for public-transport availability. All estimates are "
+              "underpowered; analyses are exploratory and not adjusted for "
+              "multiple comparisons.",
+              ["Stratum", "Crash deaths", "Same-day RR (95% CI)"], rows)
 
 
 def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
@@ -805,6 +839,22 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
          f"US, whereas the Japanese panel—with roughly {US_JP_RATIO:.0f}-fold fewer annual crash deaths and sparser temperature coverage—is underpowered.")
     add_figure(doc, FIGURES[9][0], 10, FIGURES[9][1])
     add_figure(doc, FIGURES[10][0], 11, FIGURES[10][1])
+    para(doc,
+         "Within Japan, the same-day estimates were again imprecise, but their "
+         "ordering descriptively mirrored the US pattern: largest for "
+         f"single-vehicle accidents (RR {subrr(JPSG[('atype', 'single_vehicle')])}), "
+         f"intermediate for vehicle-vehicle accidents (RR {subrr(JPSG[('atype', 'vehicle_vehicle')])}), "
+         "and below one for vehicle-pedestrian accidents "
+         f"(RR {subrr(JPSG[('atype', 'vehicle_pedestrian')])}), consistent with—but "
+         "far from proving—reduced pedestrian exposure on unusually hot days "
+         "(Fig. 12; Table 8). Splitting prefectures at the median population "
+         "density, a proxy for public-transport availability, did not separate "
+         f"the estimates (high-density RR {subrr(JPSG[('density', 'high_density')])}; "
+         f"low-density RR {subrr(JPSG[('density', 'low_density')])}); both confidence "
+         "intervals are wide and overlap, so the transit-availability hypothesis "
+         "remains untestable at this sample size.")
+    add_figure(doc, FIGURES[11][0], 12, FIGURES[11][1])
+    tbl8(doc)
 
     h(doc, "Discussion", 1)
     para(doc,
@@ -833,7 +883,11 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
          "performance. The crash-circumstance strata point the same way: the excess "
          "was larger for single-vehicle crashes than for multi-vehicle collisions, "
          "persisted on clear days, and was similar whether or not a driver was "
-         "reported to have been drinking."
+         "reported to have been drinking. The Japanese strata, although very "
+         "imprecise, point the same way: the single-vehicle estimate was again "
+         "the largest and the vehicle-pedestrian point estimate fell below one, "
+         "the ordering expected if hot days both degrade vehicle control and "
+         "reduce pedestrian exposure."
          "These gradients are not proof of mechanism, however: open-air travel is itself "
          "weather-sensitive, so more motorcycling, cycling and walking on hotter-than-normal "
          "days could inflate the open-air estimates through greater exposure rather than "
@@ -857,7 +911,13 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
          "and integrate heat warnings into app-based routing. Linking shared-mobility heat "
          "alerts with public transit and cooled shelter maps would help preserve access for "
          "users who depend on these modes, particularly in low-income neighbourhoods where "
-         "private air-conditioned transport is less available. Road safety agencies typically "
+         "private air-conditioned transport is less available. The Japanese data also "
+         "raise the possibility of modal substitution: where cooled public transit offers "
+         "an alternative, unusually hot days may suppress walking and riding rather than "
+         "generate excess crash deaths. In the US, where such alternatives are limited, "
+         "safe transit options could plausibly prevent part of the heat-associated "
+         "burden; our prefecture-density split was too imprecise to test this and the "
+         "hypothesis remains open. Road safety agencies typically "
          "classify fatal crashes by driver error, vehicle failure or road conditions; the "
          "possibility that ambient heat impairs psychomotor or cognitive performance is rarely "
          "considered. Integrating temperature forecasts into crash-prevention messaging and "
@@ -971,7 +1031,7 @@ def build_pptx():
 def build_tables_docx():
     doc = Document(); setup(doc)
     doc.add_heading("Tables (editable)", 1)
-    tbl1(doc); tbl2(doc); tbl4(doc); tbl3(doc); tbl5(doc); tbl7(doc); tbl6(doc)
+    tbl1(doc); tbl2(doc); tbl4(doc); tbl3(doc); tbl5(doc); tbl7(doc); tbl6(doc); tbl8(doc)
     path = os.path.join(MAN, "tables.docx"); doc.save(path); print("wrote", path)
 
 
@@ -992,8 +1052,8 @@ STROBE_ITEMS = [
     ("12", "Statistical methods", "Methods (quasi-Poisson DLM, attributable risk, projections, subgroups)"),
     ("13", "Descriptive data", "Results (panel sizes); Table 1"),
     ("14", "Outcome data", "Results; Tables 2-4"),
-    ("15", "Main results (estimates, CIs)", "Results; Tables 2-7; Figures 1-11"),
-    ("16", "Other analyses (subgroups, sensitivity)", "Results (activity, precipitation and heat-stress controls; road-user/age/time-of-day; crash circumstances; projection); Tables 6-7"),
+    ("15", "Main results (estimates, CIs)", "Results; Tables 2-8; Figures 1-12"),
+    ("16", "Other analyses (subgroups, sensitivity)", "Results (activity, precipitation and heat-stress controls; road-user/age/time-of-day; crash circumstances; projection); Tables 6-8"),
     ("17", "Key results", "Discussion (first paragraph); Conclusion"),
     ("18", "Limitations", "Discussion (limitations paragraph)"),
     ("19", "Interpretation", "Discussion; Summary (Interpretation)"),

@@ -89,8 +89,33 @@ def fig_compare():
     save(fig, "cross_fig_us_vs_japan_sameday")
 
 
+def fig_strata():
+    d = pd.read_csv(os.path.join(PROC, "jp_strata_response.csv"))
+    labels = {
+        "single_vehicle": "Single-vehicle",
+        "vehicle_vehicle": "Vehicle-vehicle",
+        "vehicle_pedestrian": "Vehicle-pedestrian",
+        "high_density": "High-density prefectures",
+        "low_density": "Low-density prefectures",
+    }
+    d["lab"] = d.group.map(labels)
+    gaps = {"atype": 0, "density": 1}
+    d["y"] = np.arange(len(d)) + d.dimension.map(gaps) * 0.8
+    fig, ax = plt.subplots(figsize=(6.8, 4.2))
+    ax.errorbar(d["sameday_RR_+9C"], d.y,
+                xerr=[d["sameday_RR_+9C"] - d.sameday_lo,
+                      d.sameday_hi - d["sameday_RR_+9C"]],
+                fmt="o", capsize=4, color=C_SEC)
+    ax.axvline(1, ls="--", color="k", lw=0.8)
+    ax.set_yticks(d.y); ax.set_yticklabels(d.lab)
+    ax.set_xlabel("Same-day rate ratio for +9\u00b0C anomaly (95% CI)")
+    ax.set_title("Japan strata: accident type and prefecture density\n(all estimates underpowered)")
+    ax.set_ylim(d.y.max() + 1, d.y.min() - 1)
+    save(fig, "fig_jp_strata")
+
+
 def main():
-    fig_abs(); fig_anom(); fig_lag(); fig_compare()
+    fig_abs(); fig_anom(); fig_lag(); fig_compare(); fig_strata()
     print("Japan figures written to", FIG)
 
 

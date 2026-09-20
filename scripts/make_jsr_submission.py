@@ -80,8 +80,8 @@ TITLE_PAGE_LINES = [
      "Research Promotion Center, Shiga University of Medical Science, Seta "
      "Tsukinowa-cho, Otsu, Shiga 520-2192, Japan. E-mail: bougtoir@gmail.com. "
      "ORCID: [iD to be added]", "corr"),
-    ("Word count of main text: [to be confirmed]. Number of tables: 7. "
-     "Number of figures: 11.", "meta"),
+    ("Word count of main text: [to be confirmed]. Number of tables: 8. "
+     "Number of figures: 12.", "meta"),
     ("Declarations of interest: none.", "decl"),
     ("Author contributions: Tatsuki Onishi conceived the study, performed "
      "the analysis, drafted the manuscript, and approved the final version. "
