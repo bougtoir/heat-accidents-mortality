@@ -289,8 +289,17 @@ def _build_num_to_key(doc):
 
 
 def _apa_for_keys(keys):
-    parts = [f"{_apa_intext(k)[0]}, {_apa_intext(k)[1]}" for k in keys]
-    return "; ".join(parts)
+    """APA parenthetical ordering: alphabetical by first author; works by the
+    same author are grouped and listed chronologically ('X, 2021, 2022')."""
+    pairs = sorted((_apa_intext(k) for k in keys),
+                   key=lambda ay: (ay[0].lower(), ay[1]))
+    parts = []
+    for authors, year in pairs:
+        if parts and parts[-1][0] == authors:
+            parts[-1][1].append(year)
+        else:
+            parts.append([authors, [year]])
+    return "; ".join(f"{a}, {', '.join(ys)}" for a, ys in parts)
 
 
 def _convert_citations_to_apa(doc, num_to_key):
