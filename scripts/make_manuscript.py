@@ -404,6 +404,7 @@ SENS_LABELS = {
     "with_population_stateVMT_prcp_VIFfree": "Full controls, no VIF screen",
     "with_population_stateVMT_prcp_VIFscreened10": "VIF-screened full controls (VIF < 10)",
     "with_population_stateVMT_prcp_VIFscreened": "VIF-screened full controls (VIF < 5)",
+    "exclude_DST_transition_weeks": "Excluding +/-7 d around DST transitions",
 }
 SENS_ORDER = [
     "with_national_VMT_gasoline",
@@ -416,6 +417,7 @@ SENS_ORDER = [
     "with_population_stateVMT_prcp_humidex",
     "with_population_stateVMT_prcp_heat_index",
     "with_population_stateVMT_prcp_wbgt",
+    "exclude_DST_transition_weeks",
 ]
 
 
@@ -827,7 +829,10 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
          f"dropped variables were {CTRL.get('dropped', 'none')}. "
          "A stricter VIF < 5 screen and an unscreened full-controls model are also shown. "
          "Heat-stress metrics showed high collinearity with the temperature anomaly when entered individually, "
-         "so they are reported separately as sensitivity analyses rather than being included simultaneously.")
+         "so they are reported separately as sensitivity analyses rather than being included simultaneously. "
+         "Because crash spikes have been reported around daylight-saving-time transitions, "
+         "we additionally refit the model excluding all state-days within 7 days of each "
+         f"US clock change; the estimate was unchanged (same-day RR {ctrlrr(CTRL_ROWS['exclude_DST_transition_weeks'])}).")
     tbl6(doc)
     h(doc, "Exploratory external validation: Japan comparison", 2)
     para(doc,
