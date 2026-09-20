@@ -876,8 +876,9 @@ def build_manuscript(filename="heat_crash_mortality.docx", embed=True):
          "findings are consistent with heat-related impairment or under-recognised heat illness "
          f"contributing to road deaths without appearing in cause-of-death data.{cite('liang2022','liang2021_aap')}")
     para(doc,
-         "Two features of the data argue against confounding by overall driving volume and "
-         "are consistent with a direct heat effect. The excess rose with direct heat exposure: "
+         "Two features of the data are not readily explained by overall driving "
+         "volume alone and are consistent with a direct heat effect. The excess rose "
+         "with direct heat exposure: "
          "it was small for enclosed, often air-conditioned vehicle occupants but several-fold "
          "larger for motorcyclists, pedestrians and cyclists, who are directly exposed and "
          "often physically exerting. It was also largest in the hottest hours of the day. Both "
