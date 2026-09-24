@@ -668,6 +668,32 @@ def _build_figures_dir():
     return stage_dir, out_dir
 
 
+JSR_VITAE = """Tatsuki Onishi is a researcher at the Data Science and AI \
+Innovation Research Promotion Center, Shiga University of Medical Science, \
+Otsu, Japan. His work applies statistical and distributed-lag methods to \
+public-health and safety questions, including the health burden of \
+environmental exposures. [Position title, highest degree, and any relevant \
+appointments to be added. A passport-type photograph may accompany the \
+figures if desired.]"""
+
+
+def _build_vitae(path):
+    """Elsevier Vitae: short biography of each author, <=100 words each,
+    editable format. Separate file because the main manuscript is anonymized."""
+    doc = Document()
+    mm.setup(doc)
+    doc.add_heading("Author biography", 1)
+    for line in JSR_VITAE.strip().splitlines():
+        p = doc.add_paragraph(line.strip())
+        p.paragraph_format.line_spacing = 1.5
+        p.paragraph_format.space_after = Pt(6)
+    n_words = len(JSR_VITAE.split())
+    if n_words > 100:
+        print(f"WARNING: vitae exceeds 100 words ({n_words})")
+    doc.save(path)
+    print("wrote", path, f"({n_words} words)")
+
+
 def _build_submission_zip():
     zip_base = os.path.join(MAN, "jsr_submission_package")
     stage = zip_base + "_stage"
@@ -679,6 +705,7 @@ def _build_submission_zip():
         "jsr_title_page.docx",                # author details (separate)
         "jsr_highlights.docx",
         "jsr_cover_letter.docx",
+        "jsr_vitae.docx",                    # author biography (separate, identifying)
         "tables.docx",
         "strobe_checklist.docx",
     ]
@@ -720,6 +747,7 @@ def main():
     _build_title_page(os.path.join(MAN, "jsr_title_page.docx"))
     _build_highlights(os.path.join(MAN, "jsr_highlights.docx"))
     _build_cover_letter(os.path.join(MAN, "jsr_cover_letter.docx"))
+    _build_vitae(os.path.join(MAN, "jsr_vitae.docx"))
     _build_submission_zip()
 
 
