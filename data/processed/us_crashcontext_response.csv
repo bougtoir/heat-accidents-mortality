@@ -1,0 +1,9 @@
+dimension,group,deaths,sameday_RR_+9C,sameday_lo,sameday_hi,cumRR_+9C,cum_lo,cum_hi,dispersion_phi
+manner,single_vehicle,160517,1.199,1.161,1.238,1.107,1.031,1.189,1.132
+manner,multi_vehicle,111415,1.113,1.066,1.162,1.039,0.947,1.139,1.336
+weather,clear_or_cloudy,212319,1.185,1.148,1.224,1.04,0.971,1.114,1.318
+weather,adverse,44401,1.119,1.054,1.188,1.155,1.013,1.317,1.378
+rururb,rural,119138,1.139,1.096,1.184,1.105,1.018,1.2,1.244
+rururb,urban,153418,1.19,1.15,1.232,1.052,0.973,1.137,1.173
+alcohol,no_drinking,121958,1.178,1.133,1.224,1.165,1.073,1.264,1.235
+alcohol,drinking_driver,47963,1.191,1.119,1.269,1.084,0.946,1.242,1.243

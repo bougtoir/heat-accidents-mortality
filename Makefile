@@ -1,7 +1,7 @@
 PY = python3
 S  = scripts
 
-.PHONY: all us japan figures clean data_us data_jp manuscript test aap ehp ehp_bw
+.PHONY: all us japan figures clean data_us data_jp manuscript test aap ehp ehp_bw jsr
 
 all: us japan figures
 
@@ -17,6 +17,8 @@ data_us:
 
 data_jp:
 	$(PY) $(S)/build_japan.py
+	$(PY) $(S)/build_jp_strata.py
+	$(PY) $(S)/build_jp_density.py
 
 ## --- analysis ---
 us: data_us
@@ -39,6 +41,9 @@ aap: manuscript
 
 ehp: manuscript
 	$(PY) $(S)/make_ehp_submission.py
+
+jsr: manuscript
+	$(PY) $(S)/make_jsr_submission.py
 
 figures_bw:
 	FIGURES_BW=1 $(PY) $(S)/figures_us.py

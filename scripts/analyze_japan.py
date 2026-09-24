@@ -76,6 +76,49 @@ def confounders(df, season_df=6):
                    % (season_df, 3 * nyears), df, return_type="dataframe")
 
 
+def strata(df):
+    """Crash-circumstance + transit-proxy strata, same anomaly model.
+
+    Accident-type strata refit the model with deaths restricted to that type.
+    Density strata refit within high- vs low-density prefecture subsets
+    (population density = public-transport availability proxy)."""
+    rows = []
+    t = pd.read_csv(os.path.join(PROC, "jp_pref_day_type.csv"), parse_dates=["date"])
+    for atype in ("single_vehicle", "vehicle_vehicle", "vehicle_pedestrian"):
+        s = t[t.atype == atype]
+        d = df.drop(columns="deaths").merge(
+            s[["pref_id", "date", "deaths"]], on=["pref_id", "date"], how="left")
+        d["deaths"] = d.deaths.fillna(0).astype(int)
+        if d.deaths.sum() < 500:
+            print(f"  {atype}: only {d.deaths.sum()} deaths - skipped"); continue
+        m = fit_model(d, "anom", confounders, group="unit")
+        br = bin_response(m, 9.0, 0.0); cum = cumulative_curve(m, [9.0], 0.0).iloc[0]
+        r = br.iloc[0]
+        rows.append({"dimension": "atype", "group": atype, "deaths": int(d.deaths.sum()),
+                     "sameday_RR_+9C": round(float(r.rr), 3), "sameday_lo": round(float(r.lo), 3),
+                     "sameday_hi": round(float(r.hi), 3), "cumRR_+9C": round(float(cum.rr), 3),
+                     "cum_lo": round(float(cum.lo), 3), "cum_hi": round(float(cum.hi), 3),
+                     "dispersion_phi": round(float(m["phi"]), 3)})
+        print(f"  atype {atype}: {d.deaths.sum()} deaths, same-day RR {r.rr:.3f}")
+
+    dens = pd.read_csv(os.path.join(PROC, "jp_pref_density.csv"))
+    for grp in ("high_density", "low_density"):
+        keep = set(dens[dens.density_group == grp].pref_name)
+        d = df[df.pref_name.isin(keep)]
+        m = fit_model(d, "anom", confounders, group="unit")
+        br = bin_response(m, 9.0, 0.0); cum = cumulative_curve(m, [9.0], 0.0).iloc[0]
+        r = br.iloc[0]
+        rows.append({"dimension": "density", "group": grp, "deaths": int(d.deaths.sum()),
+                     "sameday_RR_+9C": round(float(r.rr), 3), "sameday_lo": round(float(r.lo), 3),
+                     "sameday_hi": round(float(r.hi), 3), "cumRR_+9C": round(float(cum.rr), 3),
+                     "cum_lo": round(float(cum.lo), 3), "cum_hi": round(float(cum.hi), 3),
+                     "dispersion_phi": round(float(m["phi"]), 3)})
+        print(f"  density {grp}: {d.pref_id.nunique()} prefectures, "
+              f"{d.deaths.sum()} deaths, same-day RR {r.rr:.3f}")
+
+    pd.DataFrame(rows).to_csv(os.path.join(PROC, "jp_strata_response.csv"), index=False)
+
+
 def main():
     df = load_panel()
 
@@ -134,6 +177,8 @@ def main():
         for k, v in res.items():
             f.write(f"{k}: {v}\n")
     print(open(os.path.join(OUT, "jp_model_summary.txt")).read())
+
+    strata(df)
 
 
 if __name__ == "__main__":

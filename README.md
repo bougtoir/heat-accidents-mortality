@@ -58,6 +58,7 @@ export EIA_API_KEY=...      # for US gasoline (sensitivity only)
 make all          # build data, fit US + Japan models, make figures
 make manuscript   # build DOCX + editable PPTX (after `make all`)
 make aap          # build Accident Analysis & Prevention submission package
+make jsr          # build Journal of Safety Research submission package
 make ehp          # build Environmental Health Perspectives submission package
 make test         # light unit tests
 ```
@@ -105,6 +106,21 @@ and EHP scripts re-use `make_manuscript.py` and only reformat text and citations
 - `ehp_submission_figures/` — separate `Figure1..N.{png,pdf}` files;
 - `ehp_submission_package.zip` — bundle of the above plus `tables.docx`,
   `figures.pptx` and `strobe_checklist.docx`.
+
+`make jsr` produces the Journal of Safety Research submission package under
+`output/manuscript/` (double-anonymized review format):
+
+- `heat_crash_mortality_jsr.docx` — anonymized main manuscript with inline
+  figures/tables, structured abstract (Introduction, Method, Results,
+  Conclusions, Practical Applications; <=300 words), keywords, numbered
+  sections, a closing Practical Applications section, and APA-style
+  author-date citations with an alphabetical reference list;
+- `jsr_title_page.docx` — author details and declarations (separate file for
+  double-anonymized review);
+- `jsr_highlights.docx` — highlights;
+- `jsr_cover_letter.docx` — cover letter;
+- `jsr_submission_package.zip` — bundle of the above plus
+  `strobe_checklist.docx`.
 
 Raw downloads are cached under `data/raw/`; re-running skips existing files.
 

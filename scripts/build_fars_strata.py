@@ -7,6 +7,14 @@ Lancet-Planetary-Health additional analyses:
     heat-anomaly excess concentrated in the hottest part of the day (afternoon)?
   * road-user type (pedestrian / cyclist / motorcyclist / vehicle occupant)
   * age band (<25 / 25-64 / 65+)   -> who bears the burden (vulnerability/equity)
+  * manner of collision (MAN_COLL) -> mechanism: heat impairment predicts
+    single-vehicle (driver-lapse) deaths more than multi-vehicle deaths
+  * weather condition (WEATHER)    -> robustness: does the effect persist on
+    clear/cloudy days (excluding precipitation-surface confounding)?
+  * rural/urban land use (RUR_URB) -> EMS latency / heat-island context
+  * alcohol involvement (any involved driver with police-reported drinking)
+    -> if the excess is confined to alcohol-free crashes, it argues against a
+    purely behavioural (drink-driving) pathway
 
 Deaths are killed persons (INJ_SEV == 4) joined to their crash (accident.csv) to
 recover the calendar date, state and crash hour. Output is one long CSV:
@@ -74,6 +82,38 @@ def hour_band(h):
     return ["00-05", "06-11", "12-17", "18-23"][int(h) // 6]
 
 
+def manner(mc):
+    """MAN_COLL: 0 = not a collision with a motor vehicle in transport
+    (single-vehicle / pedestrian crashes); 1-9 = collision types."""
+    if not np.isfinite(mc):
+        return None
+    mc = int(mc)
+    if mc == 0:
+        return "single_vehicle"
+    if 1 <= mc <= 9:
+        return "multi_vehicle"
+    return None
+
+
+def weather_grp(w):
+    """WEATHER: 1 clear, 2 cloudy; 3-10 adverse (rain, sleet, snow, fog,
+    crosswinds, blowing conditions, other)."""
+    if not np.isfinite(w):
+        return None
+    w = int(w)
+    if w in (1, 2):
+        return "clear_or_cloudy"
+    if 3 <= w <= 10:
+        return "adverse"
+    return None
+
+
+def rururb(r):
+    if not np.isfinite(r):
+        return None
+    return {1: "rural", 2: "urban"}.get(int(r))
+
+
 def main():
     frames = []
     for y in YEARS:
@@ -83,27 +123,43 @@ def main():
             urllib.request.urlretrieve(URL.format(y=y), zpath)
         with zipfile.ZipFile(zpath) as z:
             acc = read_member(z, "accident.csv",
-                              ["STATE", "ST_CASE", "YEAR", "MONTH", "DAY", "HOUR"])
+                              ["STATE", "ST_CASE", "YEAR", "MONTH", "DAY", "HOUR",
+                               "MAN_COLL", "WEATHER", "RUR_URB"])
             per = read_member(z, "person.csv",
-                              ["STATE", "ST_CASE", "PER_TYP", "BODY_TYP", "AGE", "INJ_SEV"])
+                              ["STATE", "ST_CASE", "PER_TYP", "BODY_TYP", "AGE",
+                               "INJ_SEV", "DRINKING"])
+        # crash-level alcohol flag: any involved driver with drinking reported
+        drivers = per[per.PER_TYP == 1]
+        drunk = (drivers.assign(drinking=pd.to_numeric(drivers.DRINKING, errors="coerce"))
+                        .groupby(["STATE", "ST_CASE"])["drinking"].max())
+        acc = acc.merge(drunk.rename("any_driver_drinking").reset_index(),
+                        on=["STATE", "ST_CASE"], how="left")
         per = per[per.INJ_SEV == 4].copy()                    # killed persons
         acc = acc[(acc.MONTH.between(1, 12)) & (acc.DAY.between(1, 31))]
         acc["date"] = pd.to_datetime(dict(year=acc.YEAR, month=acc.MONTH, day=acc.DAY),
                                      errors="coerce")
         acc = acc.dropna(subset=["date"])
-        m = per.merge(acc[["STATE", "ST_CASE", "date", "HOUR"]],
+        m = per.merge(acc[["STATE", "ST_CASE", "date", "HOUR", "MAN_COLL",
+                           "WEATHER", "RUR_URB", "any_driver_drinking"]],
                       on=["STATE", "ST_CASE"], how="inner")
-        for c in ("PER_TYP", "BODY_TYP", "AGE", "HOUR"):
+        for c in ("PER_TYP", "BODY_TYP", "AGE", "HOUR", "MAN_COLL", "WEATHER",
+                  "RUR_URB", "any_driver_drinking"):
             m[c] = pd.to_numeric(m[c], errors="coerce")
         m["user"] = [user_type(p, b) for p, b in zip(m.PER_TYP, m.BODY_TYP)]
         m["age"] = m.AGE.map(age_band)
         m["hour"] = m.HOUR.map(hour_band)
-        frames.append(m[["STATE", "date", "user", "age", "hour"]])
+        m["manner"] = m.MAN_COLL.map(manner)
+        m["weather"] = m.WEATHER.map(weather_grp)
+        m["rururb"] = m.RUR_URB.map(rururb)
+        m["alcohol"] = m.any_driver_drinking.map(
+            lambda x: "drinking_driver" if x == 1 else ("no_drinking" if x == 0 else None))
+        frames.append(m[["STATE", "date", "user", "age", "hour", "manner",
+                         "weather", "rururb", "alcohol"]])
         print(f"  {y}: {len(m):,} killed persons", flush=True)
     allp = pd.concat(frames, ignore_index=True).rename(columns={"STATE": "state"})
 
     out = []
-    for dim in ("user", "age", "hour"):
+    for dim in ("user", "age", "hour", "manner", "weather", "rururb", "alcohol"):
         g = (allp.dropna(subset=[dim])
              .groupby(["state", "date", dim]).size().reset_index(name="deaths"))
         g = g.rename(columns={dim: "val"}); g["dim"] = dim

@@ -352,6 +352,25 @@ def main():
         res["cumRR_+9C_ctrl_hi"] = chosen["cumRR_hi"]
         res["max_control_VIF"] = chosen.get("max_control_VIF")
 
+    # Daylight-saving-time transition sensitivity: crash spikes reported around
+    # the spring clock change could co-occur with seasonal weather shifts, so we
+    # refit the primary model excluding state-days within +-7 days of each US
+    # DST transition (2nd Sunday of March, 1st Sunday of November; Arizona and
+    # Hawaii days are excluded too, which is conservative).
+    dst_dates = []
+    for yr in range(df.date.dt.year.min(), df.date.dt.year.max() + 1):
+        mar = pd.date_range(f"{yr}-03-08", f"{yr}-03-14")          # 2nd Sunday
+        nov = pd.date_range(f"{yr}-11-01", f"{yr}-11-07")          # 1st Sunday
+        dst_dates += [mar[mar.dayofweek == 6][0], nov[nov.dayofweek == 6][0]]
+    near = np.zeros(len(df), bool)
+    dd = df.date.values.astype("datetime64[D]")
+    for t in dst_dates:
+        near |= np.abs((dd - np.datetime64(t)).astype(int)) <= 7
+    d_dst = df[~near]
+    m_dst = fit_model(d_dst, "anom", confounders, group="unit")
+    row, _ = _sensitivity_row(m_dst, "exclude_DST_transition_weeks")
+    sensitivity_rows.append(row)
+
     if sensitivity_rows:
         pd.DataFrame(sensitivity_rows).to_csv(
             os.path.join(PROC, "us_sensitivity_controls.csv"), index=False)
