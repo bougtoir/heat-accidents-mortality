@@ -59,6 +59,7 @@ make all          # build data, fit US + Japan models, make figures
 make manuscript   # build DOCX + editable PPTX (after `make all`)
 make aap          # build Accident Analysis & Prevention submission package
 make ehp          # build Environmental Health Perspectives submission package
+make jsr          # build Journal of Safety Research submission package
 make test         # light unit tests
 ```
 
@@ -104,6 +105,23 @@ and EHP scripts re-use `make_manuscript.py` and only reformat text and citations
   Contribution and Environmental-Health Significance;
 - `ehp_submission_figures/` — separate `Figure1..N.{png,pdf}` files;
 - `ehp_submission_package.zip` — bundle of the above plus `tables.docx`,
+  `figures.pptx` and `strobe_checklist.docx`.
+
+`make jsr` produces the Journal of Safety Research submission package under
+`output/manuscript/`, restructured around injury safety, road-user-specific
+risk and policy implications:
+
+- `heat_crash_mortality_jsr.docx` — main manuscript with inline figures/tables,
+  JSR structured abstract (Introduction, Method, Results, Conclusions,
+  Practical Applications; <=300 words), keywords, APA author-date citations
+  and an alphabetical reference list, and a `Practical Applications` section
+  at the end of the main text;
+- `heat_crash_mortality_jsr_legends.docx` — optional legends-only version;
+- `jsr_cover_letter.docx` — cover letter addressed to the Journal of Safety
+  Research;
+- `highlights.docx` — 3-5 bullet highlights (<=85 characters each);
+- `jsr_submission_figures/` — separate `Figure1..N.{png,pdf}` files;
+- `jsr_submission_package.zip` — bundle of the above plus `tables.docx`,
   `figures.pptx` and `strobe_checklist.docx`.
 
 Raw downloads are cached under `data/raw/`; re-running skips existing files.
