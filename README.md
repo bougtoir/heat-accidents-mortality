@@ -122,6 +122,22 @@ and EHP scripts re-use `make_manuscript.py` and only reformat text and citations
 - `jsr_submission_package.zip` — bundle of the above plus
   `strobe_checklist.docx`.
 
+`make ijbm` produces the International Journal of Biometeorology submission
+package. It refits the primary US model for a contrast-robustness check
+(`us_contrast_sensitivity.csv`), then builds:
+
+- `ijbm_main_inline.docx` / `ijbm_main_submission.docx` — revised manuscript
+  (author-year citations, alphabetical Springer-style references, ~190-word
+  abstract, keywords); repositioned to acknowledge prior heat-crash literature
+  and framed as a biometeorology paper;
+- `ijbm_title_page.docx`, `ijbm_cover_letter.docx`,
+  `ijbm_strobe_checklist.docx`;
+- `ijbm_supplement.docx` — Figs. S1-S6 and Tables S1-S4 (secondary display
+  items moved out of the main text to satisfy IJBM's 7,500-word budget where
+  each figure/table counts 250 words);
+- `IJBM_submission_FINAL/` and `IJBM_submission_FINAL.zip` — full package
+  including audit files and `data_processed/` for reproduction.
+
 Raw downloads are cached under `data/raw/`; re-running skips existing files.
 
 ## Layout

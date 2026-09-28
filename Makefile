@@ -1,7 +1,7 @@
 PY = python3
 S  = scripts
 
-.PHONY: all us japan figures clean data_us data_jp manuscript test aap ehp ehp_bw jsr
+.PHONY: all us japan figures clean data_us data_jp manuscript test aap ehp ehp_bw jsr ijbm
 
 all: us japan figures
 
@@ -44,6 +44,10 @@ ehp: manuscript
 
 jsr: manuscript
 	$(PY) $(S)/make_jsr_submission.py
+
+ijbm: manuscript
+	$(PY) $(S)/sensitivity_contrast.py
+	$(PY) $(S)/make_ijbm_submission.py
 
 figures_bw:
 	FIGURES_BW=1 $(PY) $(S)/figures_us.py
