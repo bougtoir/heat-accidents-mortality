@@ -1,0 +1,6 @@
+dimension,group,deaths,sameday_RR_+9C,sameday_lo,sameday_hi,cumRR_+9C,cum_lo,cum_hi,dispersion_phi
+atype,single_vehicle,3227,1.133,0.722,1.778,0.745,0.108,5.135,1.077
+atype,vehicle_vehicle,4280,1.079,0.731,1.594,0.348,0.065,1.858,1.071
+atype,vehicle_pedestrian,3968,0.74,0.5,1.097,0.673,0.129,3.513,1.005
+density,high_density,7583,0.938,0.696,1.264,0.307,0.089,1.057,1.046
+density,low_density,4081,0.958,0.664,1.383,1.457,0.297,7.148,1.064

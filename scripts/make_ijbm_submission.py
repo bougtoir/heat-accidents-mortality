@@ -30,7 +30,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 MAN = os.path.join(ROOT, "output", "manuscript")
 FIG = os.path.join(ROOT, "output", "figures")
-FINAL = os.path.join(ROOT, "IJBM_submission_FINAL")
+FINAL = os.path.join(ROOT, "IJBM_submission_FINAL_v2")
 
 sys.path.insert(0, HERE)
 import make_manuscript as mm  # noqa: E402  (loads all result CSVs)
@@ -250,7 +250,8 @@ MAIN_FIGS = [
     ("fig3_lag_response.png", "Fig. 2",
      "United States lag structure of the crash-death response to a +9 °C "
      "anomaly: an acute same-day excess followed by a 1-3 day deficit "
-     "consistent with short-term displacement (harvesting)."),
+     "consistent with short-term temporal displacement in aggregate "
+     "crash mortality."),
     ("fig_us_roaduser.png", "Fig. 3",
      "United States same-day rate ratio of crash death for a +9 °C anomaly by "
      "road-user type. Estimates for open-air users (motorcyclists, "
@@ -482,8 +483,9 @@ def abstract_text():
         "+9 °C anomaly was associated with higher same-day mortality (rate "
         f"ratio {f(US['sameday_RR_anom+9C'])}, 95% CI "
         f"{f(US['sameday_RR_anom+9C_lo'])}-{f(US['sameday_RR_anom+9C_hi'])}), "
-        "followed by a 1-3 day deficit consistent with partial short-term "
-        "displacement; the cumulative 0-10 day rate ratio was "
+        "followed by a 1-3 day deficit consistent with short-term "
+        "temporal displacement in aggregate crash mortality; the "
+        "cumulative 0-10 day rate ratio was "
         f"{f(US['cumRR_anom+9C'])} ({f(US['cumRR_anom+9C_lo'])}-"
         f"{f(US['cumRR_anom+9C_hi'])}). The excess was much larger for "
         "open-air road users (motorcyclists, pedestrians, cyclists) than for "
@@ -494,12 +496,13 @@ def abstract_text():
         "mortality, although the two measures represent different "
         "constructs. Japanese estimates were imprecise and did not provide "
         "clear replication. Days that are unusually hot for the local season "
-        "are associated with an acute excess of US crash mortality "
-        "concentrated in heat-exposed road users.")
+        "are associated with an acute excess of US crash mortality, "
+        "with substantially larger associations among open-air road "
+        "users.")
 
 
 KEYWORDS = ("temperature anomaly; extreme heat; traffic-crash mortality; "
-            "distributed-lag model; vulnerable road users; biometeorology")
+            "distributed-lag model; road-user heterogeneity; biometeorology")
 
 
 def body(doc, embed):
@@ -552,10 +555,10 @@ def body(doc, embed):
          "even though anomaly-based metrics are central to biometeorological "
          "studies of heat-health relationships. Second, the temporal "
          "structure of the association—whether an acute excess is followed "
-         "by compensating deficits (short-term displacement or "
-         "'harvesting')—has rarely been decomposed for crash mortality, "
-         "leaving open whether heat adds deaths or advances deaths that "
-         "would have occurred soon anyway. Third, the population mortality "
+         "by compensating deficits, i.e. a temporal redistribution "
+         "pattern—has rarely been decomposed for crash mortality, "
+         "leaving open whether the association adds deaths or reflects "
+         "short-term displacement at the population level. Third, the population mortality "
          "burden attributable to such exposure, in deaths per year, has not "
          "been quantified at the national scale alongside the risk ratios "
          "that dominate the literature.")
@@ -719,7 +722,8 @@ def body(doc, embed):
          f"RR {rr(US, 'sameday_RR_anom+9C')}. The lag structure showed an "
          "acute same-day excess followed by a deficit at 1-3 days, "
          f"RR {lagrr(US_LAG['lag1-3'])}, consistent with short-term "
-         "displacement (harvesting) rather than a net addition of deaths at "
+         "temporal displacement in aggregate crash mortality rather than "
+         "a net addition of deaths at "
          f"every lag (Fig. 2; Table 2); the cumulative 0-10 day RR was "
          f"{rr(US, 'cumRR_anom+9C')}. The conclusion was not sensitive to the "
          "choice of contrast: same-day and cumulative RRs were similar at "
@@ -823,7 +827,7 @@ def body(doc, embed):
          "local seasonal norm was associated with a same-day rate ratio of "
          f"{rr(US, 'sameday_RR_anom+9C')} for US traffic-crash deaths. The "
          "excess was acute: the 1-3 day window showed a deficit consistent "
-         "with short-term displacement, and the cumulative 0-10 day "
+         "with short-term temporal displacement, and the cumulative 0-10 day "
          "association was positive but smaller "
          f"(RR {rr(US, 'cumRR_anom+9C')}). The model-based net "
          "heat-attributable burden was "
@@ -844,7 +848,8 @@ def body(doc, embed):
          f"{cite('hsu2025')} and California{cite('hsu2026')}. Our results "
          "align with that evidence while adding three elements: an "
          "exposure metric defined relative to local seasonal conditions, a "
-         "distributed-lag decomposition of acute versus displaced deaths, "
+         "distributed-lag decomposition separating an acute excess from "
+         "subsequent temporal displacement, "
          "and a national attributable-burden estimate for fatal crashes.")
     para(doc,
          "What the anomaly adds. Because absolute temperature is entangled "
@@ -930,8 +935,8 @@ def body(doc, embed):
          "with anomaly-based, distributed-lag methods, and identifies "
          "open-air road users as a group in whom heat exposure is "
          "occupational or behavioural rather than incidental. The "
-         "harvesting pattern implies that the acute signal is larger than "
-         "the net burden, which matters for the timing of heat-health "
+         "displacement pattern implies that the acute signal is larger "
+         "than the net burden, which matters for the timing of heat-health "
          "warnings. Whether heat-targeted advisories for motorcyclists, "
          "cyclists, pedestrians and outdoor workers reduce crash risk is a "
          "testable hypothesis for intervention studies, not a conclusion of "
@@ -941,8 +946,10 @@ def body(doc, embed):
     para(doc,
          "Days that are unusually hot relative to the local seasonal norm "
          "were associated with an acute, same-day excess of US "
-         "traffic-crash mortality, concentrated in open-air road users and "
-         "followed by partial short-term displacement. The model-based "
+         "traffic-crash mortality, with substantially larger associations "
+         "among open-air road users and followed by a short-term deficit "
+         "compatible with temporal displacement at the population level. "
+         "The model-based "
          "attributable burden was of a similar numerical magnitude to "
          "officially coded direct-heat mortality, although the two "
          "constructs differ. A harmonized analysis in Japan was too "
@@ -1055,9 +1062,9 @@ def build_cover_letter():
          "environment and human health and safety: it applies "
          "biometeorological exposure concepts (seasonal anomalies, lag "
          "structure, heat-stress metrics) to a human safety outcome, "
-         "identifies occupationally and behaviourally heat-exposed "
-         "population groups, and quantifies a heat-health burden with "
-         "relevance to adaptation.")
+         "describes road-user heterogeneity compatible with "
+         "mode-specific differences in heat exposure, and quantifies a "
+         "heat-health burden with relevance to adaptation.")
     para(doc,
          "The manuscript is original, is not under consideration elsewhere, "
          "and all authors approve submission. All data are public and the "
@@ -1122,12 +1129,12 @@ def build_strobe():
 def build_final_package():
     os.makedirs(FINAL, exist_ok=True)
     mapping = {
-        "ijbm_main_inline.docx": "IJBM_MAIN_inline.docx",
-        "ijbm_main_submission.docx": "IJBM_MAIN_submission.docx",
-        "ijbm_title_page.docx": "IJBM_TITLE_PAGE.docx",
-        "ijbm_cover_letter.docx": "IJBM_COVER_LETTER.docx",
-        "ijbm_strobe_checklist.docx": "IJBM_STROBE_CHECKLIST.docx",
-        "ijbm_supplement.docx": "IJBM_SUPPLEMENT.docx",
+        "ijbm_main_inline.docx": "IJBM_MAIN_inline_v2.docx",
+        "ijbm_main_submission.docx": "IJBM_MAIN_submission_v2.docx",
+        "ijbm_title_page.docx": "IJBM_TITLE_PAGE_v2.docx",
+        "ijbm_cover_letter.docx": "IJBM_COVER_LETTER_v2.docx",
+        "ijbm_strobe_checklist.docx": "IJBM_STROBE_CHECKLIST_v2.docx",
+        "ijbm_supplement.docx": "IJBM_SUPPLEMENT_v2.docx",
     }
     for src, dst in mapping.items():
         p = os.path.join(MAN, src)
@@ -1162,12 +1169,12 @@ def build_final_package():
                             os.path.join(dst, name))
     for name in ("IJBM_INITIAL_AUDIT.md", "REFERENCE_AND_NOVELTY_AUDIT.md",
                  "IJBM_FORMAT_AUDIT.md", "IJBM_HOSTILE_REVIEW.md",
-                 "AUTHOR_QUERIES.md", "FINAL_HANDOFF.md", "Makefile",
-                 "README.md"):
+                 "AUTHOR_QUERIES.md", "FINAL_HANDOFF.md",
+                 "FINAL_FINISHING_HANDOFF.md", "Makefile", "README.md"):
         p = os.path.join(ROOT, name)
         if os.path.exists(p):
             shutil.copyfile(p, os.path.join(FINAL, name))
-    zip_base = os.path.join(ROOT, "IJBM_submission_FINAL")
+    zip_base = os.path.join(ROOT, "IJBM_submission_FINAL_v2")
     if os.path.exists(zip_base + ".zip"):
         os.remove(zip_base + ".zip")
     shutil.make_archive(zip_base, "zip", FINAL)
